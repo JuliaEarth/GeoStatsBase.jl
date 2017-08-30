@@ -13,45 +13,84 @@
 ## OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 """
-    EstimationProblem(geodata, domain, targetvars)
+    EstimationProblem(spatialdata, domain, targetvars)
 
 A spatial estimation problem on a given `domain` in which the
 variables to be estimated are listed in `targetvars`. The
-data of the problem is stored in `geodata`.
+data of the problem is stored in `spatialdata`.
 """
-struct EstimationProblem{D<:AbstractDomain} <: AbstractProblem
-  geodata::GeoDataFrame
+struct EstimationProblem{S<:AbstractSpatialData,D<:AbstractDomain} <: AbstractProblem
+  spatialdata::S
   domain::D
-  targetvars::Vector{Symbol}
+  targetvars::Dict{Symbol,DataType}
 
-  function EstimationProblem{D}(geodata, domain, targetvars) where {D<:AbstractDomain}
-    @assert targetvars ⊆ names(data(geodata)) "target variables must be columns of geodata"
-    @assert isempty(targetvars ∩ coordnames(geodata)) "target variables can't be coordinates"
-    @assert ndims(domain) == length(coordnames(geodata)) "data and domain must have the same number of dimensions"
+  function EstimationProblem{S,D}(spatialdata, domain, targetvars) where {S<:AbstractSpatialData,D<:AbstractDomain}
+    probvnames = keys(targetvars)
+    datavnames = [var for (var,T) in variables(spatialdata)]
+    datacnames = [var for (var,T) in coordinates(spatialdata)]
 
-    new(geodata, domain, targetvars)
+    @assert !isempty(probvnames) "target variables must be specified"
+    @assert probvnames ⊆ datavnames "target variables must be present in spatial data"
+    @assert isempty(probvnames ∩ datacnames) "target variables can't be coordinates"
+    @assert ndims(domain) == length(datacnames) "data and domain must have the same number of dimensions"
+
+    new(spatialdata, domain, targetvars)
   end
 end
 
-EstimationProblem(geodata::GeoDataFrame, domain::D,
-                  targetvars::Vector{Symbol}) where {D<:AbstractDomain} =
-  EstimationProblem{D}(geodata, domain, targetvars)
+function EstimationProblem(spatialdata::S, domain::D, targetvarnames::Vector{Symbol}
+                          ) where {S<:AbstractSpatialData,D<:AbstractDomain}
+  # build dictionary of target variables
+  datavars = variables(spatialdata)
+  targetvars = Dict(var => T for (var,T) in datavars if var ∈ targetvarnames)
 
-EstimationProblem(geodata::GeoDataFrame, domain::D,
-                  targetvar::Symbol) where {D<:AbstractDomain} =
-  EstimationProblem(geodata, domain, [targetvar])
+  EstimationProblem{S,D}(spatialdata, domain, targetvars)
+end
+
+EstimationProblem(spatialdata::S, domain::D, targetvarname::Symbol
+                 ) where {S<:AbstractSpatialData,D<:AbstractDomain} =
+  EstimationProblem(spatialdata, domain, [targetvarname])
+
+"""
+    data(problem)
+
+Return the spatial data of the estimation `problem`.
+"""
+data(problem::EstimationProblem) = problem.spatialdata
+
+"""
+    domain(problem)
+
+Return the spatial domain of the estimation `problem`.
+"""
+domain(problem::EstimationProblem) = problem.domain
+
+"""
+    variables(problem)
+
+Return the variable names of the estimation `problem` and their types.
+"""
+variables(problem::EstimationProblem) = problem.targetvars
+
+"""
+    coordinates(problem)
+
+Return the name of the coordinates of the estimation `problem` and their types.
+"""
+coordinates(problem::EstimationProblem) = coordinates(problem.spatialdata)
 
 # ------------
 # IO methods
 # ------------
-function Base.show(io::IO, problem::EstimationProblem{D}) where {D<:AbstractDomain}
+function Base.show(io::IO, problem::EstimationProblem)
   dim = ndims(problem.domain)
   print(io, "$(dim)D EstimationProblem")
 end
 
-function Base.show(io::IO, ::MIME"text/plain", problem::EstimationProblem{D}) where {D<:AbstractDomain}
+function Base.show(io::IO, ::MIME"text/plain", problem::EstimationProblem)
+  vars = ["$var ($T)" for (var,T) in problem.targetvars]
   println(io, problem)
-  println(io, "  data:      ", problem.geodata)
+  println(io, "  data:      ", problem.spatialdata)
   println(io, "  domain:    ", problem.domain)
-  print(  io, "  variables: ", join(problem.targetvars, ", ", " and "))
+  print(  io, "  variables: ", join(vars, ", ", " and "))
 end

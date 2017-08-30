@@ -16,23 +16,20 @@ __precompile__(true)
 
 module GeoStatsBase
 
-using DataFrames
-
-include("geodataframe.jl")
+include("spatialdata.jl")
 include("domains.jl")
 include("problems.jl")
 include("solutions.jl")
 
 export
-  # data
-  GeoDataFrame,
-  data,
-  coordnames,
+  # spatial data
   coordinates,
+  variables,
   npoints,
+  valid,
   readtable,
 
-  # domain
+  # domains
   AbstractDomain,
   coordtypes,
   npoints,
