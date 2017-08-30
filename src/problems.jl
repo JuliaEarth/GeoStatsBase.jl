@@ -12,44 +12,43 @@
 ## ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 ## OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-__precompile__(true)
+"""
+    AbstractProblem
 
-module GeoStatsBase
+A generic problem in geostatistics.
+"""
+abstract type AbstractProblem end
 
-using DataFrames
+"""
+    data(problem)
 
-include("geodataframe.jl")
-include("domains.jl")
-include("problems.jl")
-include("solutions.jl")
+Return the spatial data of the `problem`.
+"""
+data(problem::AbstractProblem) = problem.geodata
 
-export
-  # data
-  GeoDataFrame,
-  data,
-  coordnames,
-  coordinates,
-  npoints,
-  readtable,
+"""
+    domain(problem)
 
-  # domain
-  AbstractDomain,
-  coordtypes,
-  npoints,
-  coordinates,
+Return the spatial domain of the `problem`.
+"""
+domain(problem::AbstractProblem) = problem.domain
 
-  # problems
-  EstimationProblem,
-  SimulationProblem,
-  data,
-  domain,
-  variables,
-  hasdata,
-  nreals
+"""
+    variables(problem)
 
-  # solutions
-  EstimationSolution,
-  SimulationSolution,
-  digest
+Return the target variables of the `problem`.
+"""
+variables(problem::AbstractProblem) = problem.targetvars
 
-end
+"""
+    hasdata(problem)
+
+Return `true` if `problem` has data.
+"""
+hasdata(problem::AbstractProblem) = npoints(problem.geodata) > 0
+
+#------------------
+# IMPLEMENTATIONS
+#------------------
+include("problems/estimation_problem.jl")
+include("problems/simulation_problem.jl")

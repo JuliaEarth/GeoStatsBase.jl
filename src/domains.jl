@@ -12,44 +12,38 @@
 ## ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 ## OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-__precompile__(true)
+"""
+    AbstractDomain{N,T}
 
-module GeoStatsBase
+A spatial domain with `N` dimensions in which
+points are represented with coordinates of type `T`.
+"""
+abstract type AbstractDomain{T<:Real,N} end
 
-using DataFrames
+"""
+    ndims(domain)
 
-include("geodataframe.jl")
-include("domains.jl")
-include("problems.jl")
-include("solutions.jl")
+Return the number of dimensions of a spatial domain.
+"""
+Base.ndims(::AbstractDomain{T,N}) where {N,T<:Real} = N
 
-export
-  # data
-  GeoDataFrame,
-  data,
-  coordnames,
-  coordinates,
-  npoints,
-  readtable,
+"""
+    coordtype(domain)
 
-  # domain
-  AbstractDomain,
-  coordtypes,
-  npoints,
-  coordinates,
+Return the coordinate type of a spatial domain.
+"""
+coordtype(::AbstractDomain{T,N}) where {N,T<:Real} = T
 
-  # problems
-  EstimationProblem,
-  SimulationProblem,
-  data,
-  domain,
-  variables,
-  hasdata,
-  nreals
+"""
+    npoints(domain)
 
-  # solutions
-  EstimationSolution,
-  SimulationSolution,
-  digest
+Return the number of points of a spatial domain.
+"""
+npoints(::AbstractDomain) = error("not implemented")
 
-end
+"""
+    coordinates(domain, location)
+
+Return the coordinates of the `location` in the `domain`.
+"""
+coordinates(::AbstractDomain, location::I) where {I<:Integer} = error("not implemented")

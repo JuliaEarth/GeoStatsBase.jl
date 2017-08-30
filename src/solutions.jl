@@ -12,44 +12,30 @@
 ## ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 ## OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-__precompile__(true)
+"""
+    AbstractSolution
 
-module GeoStatsBase
+A generic solution to a problem in geostatistics.
+"""
+abstract type AbstractSolution end
 
-using DataFrames
+"""
+    domain(solution)
 
-include("geodataframe.jl")
-include("domains.jl")
-include("problems.jl")
-include("solutions.jl")
+Return the spatial domain of the `solution`.
+"""
+domain(solution::AbstractSolution) = solution.domain
 
-export
-  # data
-  GeoDataFrame,
-  data,
-  coordnames,
-  coordinates,
-  npoints,
-  readtable,
+"""
+    digest(solution)
 
-  # domain
-  AbstractDomain,
-  coordtypes,
-  npoints,
-  coordinates,
+Convert solution to a dictionary-like format where the
+keys of the dictionary are the variables of the problem.
+"""
+digest(solution::AbstractSolution) = error("not implemented")
 
-  # problems
-  EstimationProblem,
-  SimulationProblem,
-  data,
-  domain,
-  variables,
-  hasdata,
-  nreals
-
-  # solutions
-  EstimationSolution,
-  SimulationSolution,
-  digest
-
-end
+#------------------
+# IMPLEMENTATIONS
+#------------------
+include("solutions/estimation_solution.jl")
+include("solutions/simulation_solution.jl")

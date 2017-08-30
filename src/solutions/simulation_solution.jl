@@ -12,44 +12,29 @@
 ## ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 ## OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-__precompile__(true)
+"""
+    SimulationSolution
 
-module GeoStatsBase
+A solution to a spatial simulation problem.
+"""
+struct SimulationSolution{D<:AbstractDomain} <: AbstractSolution
+  domain::D
+  realizations::Dict{Symbol,Vector{Vector}}
+end
 
-using DataFrames
+SimulationSolution(domain, realizations) =
+  SimulationSolution{typeof(domain)}(domain, realizations)
 
-include("geodataframe.jl")
-include("domains.jl")
-include("problems.jl")
-include("solutions.jl")
+# ------------
+# IO methods
+# ------------
+function Base.show(io::IO, solution::SimulationSolution)
+  dim = ndims(solution.domain)
+  print(io, "$(dim)D SimulationSolution")
+end
 
-export
-  # data
-  GeoDataFrame,
-  data,
-  coordnames,
-  coordinates,
-  npoints,
-  readtable,
-
-  # domain
-  AbstractDomain,
-  coordtypes,
-  npoints,
-  coordinates,
-
-  # problems
-  EstimationProblem,
-  SimulationProblem,
-  data,
-  domain,
-  variables,
-  hasdata,
-  nreals
-
-  # solutions
-  EstimationSolution,
-  SimulationSolution,
-  digest
-
+function Base.show(io::IO, ::MIME"text/plain", solution::SimulationSolution)
+  println(io, solution)
+  println(io, "  domain: ", solution.domain)
+  print(  io, "  variables: ", join(keys(solution.realizations), ", ", " and "))
 end
