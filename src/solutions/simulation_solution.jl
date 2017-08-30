@@ -25,6 +25,8 @@ end
 SimulationSolution(domain, realizations) =
   SimulationSolution{typeof(domain)}(domain, realizations)
 
+domain(solution::SimulationSolution) = solution.domain
+
 # ------------
 # IO methods
 # ------------

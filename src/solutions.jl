@@ -24,7 +24,7 @@ abstract type AbstractSolution end
 
 Return the spatial domain of the `solution`.
 """
-domain(solution::AbstractSolution) = solution.domain
+domain(solution::AbstractSolution) = error("not implemented")
 
 """
     digest(solution)

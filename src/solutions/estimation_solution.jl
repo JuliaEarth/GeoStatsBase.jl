@@ -26,6 +26,8 @@ end
 EstimationSolution(domain, mean, variance) =
   EstimationSolution{typeof(domain)}(domain, mean, variance)
 
+domain(solution::EstimationSolution) = solution.domain
+
 # ------------
 # IO methods
 # ------------

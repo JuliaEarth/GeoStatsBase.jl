@@ -12,7 +12,7 @@
 ## ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 ## OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-__precompile__(true)
+__precompile__()
 
 module GeoStatsBase
 
@@ -23,6 +23,7 @@ include("solutions.jl")
 
 export
   # spatial data
+  AbstractSpatialData,
   coordinates,
   variables,
   npoints,
@@ -31,7 +32,7 @@ export
 
   # domains
   AbstractDomain,
-  coordtypes,
+  coordtype,
   npoints,
   coordinates,
 
@@ -42,7 +43,7 @@ export
   domain,
   variables,
   hasdata,
-  nreals
+  nreals,
 
   # solutions
   EstimationSolution,

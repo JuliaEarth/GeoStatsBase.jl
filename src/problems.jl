@@ -19,34 +19,6 @@ A generic problem in geostatistics.
 """
 abstract type AbstractProblem end
 
-"""
-    data(problem)
-
-Return the spatial data of the `problem`.
-"""
-data(problem::AbstractProblem) = problem.geodata
-
-"""
-    domain(problem)
-
-Return the spatial domain of the `problem`.
-"""
-domain(problem::AbstractProblem) = problem.domain
-
-"""
-    variables(problem)
-
-Return the target variables of the `problem`.
-"""
-variables(problem::AbstractProblem) = problem.targetvars
-
-"""
-    hasdata(problem)
-
-Return `true` if `problem` has data.
-"""
-hasdata(problem::AbstractProblem) = npoints(problem.geodata) > 0
-
 #------------------
 # IMPLEMENTATIONS
 #------------------
