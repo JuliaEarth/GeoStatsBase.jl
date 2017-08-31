@@ -24,19 +24,3 @@ end
 
 SimulationSolution(domain, realizations) =
   SimulationSolution{typeof(domain)}(domain, realizations)
-
-domain(solution::SimulationSolution) = solution.domain
-
-# ------------
-# IO methods
-# ------------
-function Base.show(io::IO, solution::SimulationSolution)
-  dim = ndims(solution.domain)
-  print(io, "$(dim)D SimulationSolution")
-end
-
-function Base.show(io::IO, ::MIME"text/plain", solution::SimulationSolution)
-  println(io, solution)
-  println(io, "  domain: ", solution.domain)
-  print(  io, "  variables: ", join(keys(solution.realizations), ", ", " and "))
-end

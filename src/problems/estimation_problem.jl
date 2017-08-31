@@ -78,19 +78,3 @@ variables(problem::EstimationProblem) = problem.targetvars
 Return the name of the coordinates of the estimation `problem` and their types.
 """
 coordinates(problem::EstimationProblem) = coordinates(problem.spatialdata)
-
-# ------------
-# IO methods
-# ------------
-function Base.show(io::IO, problem::EstimationProblem)
-  dim = ndims(problem.domain)
-  print(io, "$(dim)D EstimationProblem")
-end
-
-function Base.show(io::IO, ::MIME"text/plain", problem::EstimationProblem)
-  vars = ["$var ($T)" for (var,T) in problem.targetvars]
-  println(io, problem)
-  println(io, "  data:      ", problem.spatialdata)
-  println(io, "  domain:    ", problem.domain)
-  print(  io, "  variables: ", join(vars, ", ", " and "))
-end

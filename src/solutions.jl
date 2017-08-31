@@ -20,13 +20,6 @@ A generic solution to a problem in geostatistics.
 abstract type AbstractSolution end
 
 """
-    domain(solution)
-
-Return the spatial domain of the `solution`.
-"""
-domain(solution::AbstractSolution) = error("not implemented")
-
-"""
     digest(solution)
 
 Convert solution to a dictionary-like format where the

@@ -25,19 +25,3 @@ end
 
 EstimationSolution(domain, mean, variance) =
   EstimationSolution{typeof(domain)}(domain, mean, variance)
-
-domain(solution::EstimationSolution) = solution.domain
-
-# ------------
-# IO methods
-# ------------
-function Base.show(io::IO, solution::EstimationSolution)
-  dim = ndims(solution.domain)
-  print(io, "$(dim)D EstimationSolution")
-end
-
-function Base.show(io::IO, ::MIME"text/plain", solution::EstimationSolution)
-  println(io, solution)
-  println(io, "  domain: ", solution.domain)
-  print(  io, "  variables: ", join(keys(solution.mean), ", ", " and "))
-end
