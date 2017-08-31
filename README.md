@@ -151,6 +151,27 @@ solution = solve(problem, MyCoolSolver())
 plot(solution)
 ```
 
+#### Simulation solvers
+
+The process of writing a simulation solver is very similar, but there is an alternative function
+to `solve` called `solve_single` that is *preferred*. The function `solve_single` takes a simulation
+problem, one of the variables to be simulated, and a solver, and returns a *vector* with the simulation
+results:
+
+```julia
+function solve_single(problem::SimulationProblem, var::Symbol, solver::MySimSolver)
+  # algorithm goes here
+  # ...
+  
+  # return a single realization for the variable
+  Vector(npoints(domain(problem)))
+end
+```
+
+This function is preferred over `solve` if your algorithm is the same for every single realization
+(the algorithm is only a function of the random seed). In this case, GeoStats.jl will provide an
+implementation of `solve` for you that calls `solve_single` in parallel.
+
 ### Asking for help
 
 If you have any questions, please [open an issue](https://github.com/juliohm/GeoStatsBase.jl/issues)
