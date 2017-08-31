@@ -1,6 +1,6 @@
 # GeoStatsBase.jl
 
-[![Build Status](https://travis-ci.org/juliohm/GeoStatsBase.jl.svg?branch=master)](https://travis-ci.org/juliohm/GeoStatsBase.jl)
+[![][travis-img]][travis-url] [![][julia-pkg-img]][julia-pkg-url]
 
 This package contains problem and solution specifications for the
 [GeoStats.jl](https://github.com/juliohm/GeoStats.jl) framework.
@@ -176,3 +176,9 @@ implementation of `solve` for you that calls `solve_single` in parallel.
 
 If you have any questions, please [open an issue](https://github.com/juliohm/GeoStatsBase.jl/issues)
 without thinking twice. I will be happy to help.
+
+[travis-img]: https://travis-ci.org/juliohm/GeoStatsBase.jl.svg?branch=master
+[travis-url]: https://travis-ci.org/juliohm/GeoStatsBase.jl
+
+[julia-pkg-img]: http://pkg.julialang.org/badges/GeoStatsBase_0.6.svg
+[julia-pkg-url]: http://pkg.julialang.org/?pkg=GeoStatsBase
