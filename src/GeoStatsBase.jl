@@ -28,7 +28,6 @@ export
   variables,
   npoints,
   valid,
-  readtable,
 
   # domains
   AbstractDomain,
