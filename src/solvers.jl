@@ -12,47 +12,37 @@
 ## ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 ## OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-__precompile__()
+"""
+    AbstractSolver
 
-module GeoStatsBase
+A solver for geostatistical problems.
+"""
+abstract type AbstractSolver end
 
-include("spatialdata.jl")
-include("domains.jl")
-include("problems.jl")
-include("solutions.jl")
-include("solvers.jl")
+"""
+    AbstractEstimationSolver
 
-export
-  # spatial data
-  AbstractSpatialData,
-  coordinates,
-  variables,
-  npoints,
-  valid,
+A solver for a geostatistical estimation problem.
+"""
+abstract type AbstractEstimationSolver <: AbstractSolver end
 
-  # domains
-  AbstractDomain,
-  coordtype,
-  npoints,
-  coordinates,
+"""
+    solve(problem, solver)
 
-  # problems
-  EstimationProblem,
-  SimulationProblem,
-  data,
-  domain,
-  variables,
-  hasdata,
-  nreals,
+Solve the estimation `problem` with estimation `solver`.
+"""
+solve(::EstimationProblem, ::AbstractEstimationSolver) = error("not implemented")
 
-  # solutions
-  EstimationSolution,
-  SimulationSolution,
-  digest,
+"""
+    AbstractSimulationSolver
 
-  # solvers
-  AbstractEstimationSolver,
-  AbstractSimulationSolver,
-  solve
+A solver for a geostatistical simulation problem.
+"""
+abstract type AbstractSimulationSolver <: AbstractSolver end
 
-end
+"""
+    solve(problem, solver)
+
+Solve the `problem` with the `solver`.
+"""
+solve(::AbstractProblem, ::AbstractSolver) = error("not implemented")
