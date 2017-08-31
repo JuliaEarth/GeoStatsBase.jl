@@ -13,16 +13,15 @@ as short instructions on how you can write your own solver.
 ## Contents
 
 - [Geostatistical problems](#geostatistical-problems)
-  - [Estimation](#estimation)
-  - [Simulation](#simulation)
+  - [Estimation](#estimationproblem)
+  - [Simulation](#simulationproblem)
 - [Writing your own solver](#writing-your-own-solver)
 - [Asking for help](#asking-for-help)
 
 ### Geostatistical problems
 
-#### Estimation
+#### EstimationProblem
 
-An estimation problem in GeoStats.jl is constructed with the `EstimationProblem` type.
 Objects of this type store the spatial data, the geometry of the domain, and the target
 variables to be estimated.
 
@@ -30,12 +29,12 @@ A solution to an estimation problem is constructed with the `EstimationSolution`
 Objects of this type store the geometry of the domain, the mean estimate, and the
 variance, for each variable of the problem.
 
-#### Simulation
+#### SimulationProblem
 
-A simulation problem in GeoStats.jl is constructed with the `SimulationProblem` type.
-Objects of this type store the spatial data (optional), the geometry of the domain, and
-the target variables to be estimated. The function `hasdata` can be used to check if
-the given `SimulationProblem` is conditional or unconditional.
+Objects of this type store the spatial data (optional), the geometry of the domain,
+the target variables to be estimated, and the number of realizations. The function
+`hasdata` can be used to check if the given simulation problem is conditional or
+unconditional.
 
 A solution to a simulation problem is constructed with the `SimulationSolution` type.
 Objects of this type store the geometry of the domain, and the realizations, for each
