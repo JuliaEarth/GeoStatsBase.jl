@@ -56,9 +56,9 @@ using PkgDev
 PkgDev.generate("MySolver","ISC") # create a package with the ISC license
 ```
 
-This command will create a folder `~/user/.julia/v0.x/MySolver` with all the files that
-are necessary to start coding. You can check that the package is available by loading it
-in the Julia prompt:
+This command will create a folder named `~/user/.julia/v0.x/MySolver` with all the files
+that are necessary to start coding. You can check that the package is available by loading
+it in the Julia prompt:
 
 ```julia
 using MySolver
@@ -94,7 +94,7 @@ and export it so that it becomes available for users:
 export MyCoolSolver
 ```
 
-At this point, the `MySolver.jl` should have the following content:
+At this point, the `MySolver.jl` file should have the following content:
 
 ```julia
 module MySolver
@@ -174,7 +174,7 @@ implementation of `solve` for you that calls `solve_single` in parallel.
 ### Asking for help
 
 If you have any questions, please [open an issue](https://github.com/juliohm/GeoStatsBase.jl/issues)
-without thinking twice. I will be happy to help.
+without thinking twice! I will be happy to help.
 
 [travis-img]: https://travis-ci.org/juliohm/GeoStatsBase.jl.svg?branch=master
 [travis-url]: https://travis-ci.org/juliohm/GeoStatsBase.jl
