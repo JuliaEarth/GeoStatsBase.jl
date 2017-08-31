@@ -10,9 +10,16 @@ solvers independently of the main project. Below we give an
 overview of the types defined in the package, and short
 instructions on how you can write your own solver.
 
-## Geostatistical problems
+## Contents
 
-### Estimation
+- [Geostatistical problems](#geostatistical-problems)
+  - [Estimation](#estimation)
+  - [Simulation](#simulation)
+- [Writing your own solver](#writing-your-own-solver)
+
+### Geostatistical problems
+
+#### Estimation
 
 An estimation problem in GeoStats.jl is constructed with the `EstimationProblem` type.
 Objects of this type store the spatial data, the geometry of the domain, and the target
@@ -22,7 +29,7 @@ A solution to an estimation problem is constructed with the `EstimationSolution`
 Objects of this type store the geometry of the domain, the mean estimate, and the
 variance, for each variable of the problem.
 
-### Simulation
+#### Simulation
 
 A simulation problem in GeoStats.jl is constructed with the `SimulationProblem` type.
 Objects of this type store the spatial data (optional), the geometry of the domain, and
@@ -33,13 +40,13 @@ A solution to a simulation problem is constructed with the `SimulationSolution` 
 Objects of this type store the geometry of the domain, and the realizations, for each
 variable of the problem.
 
-## Writing your own solver
+### Writing your own solver
 
 The task of writing a solver for a problem reduces to writing a simple function in Julia
 that takes the problem as input and returns the solution. In this tutorial, I will write
 an estimation solver that is not very useful, but illustrates the development process.
 
-### Create the package
+#### Create the package
 
 Install the `PkgDev.jl` package and create a new project:
 
@@ -63,7 +70,7 @@ licenses, plus it eliminates [unncessary language](https://en.wikipedia.org/wiki
 All these licenses are permissive meaning that the software that uses it can be incorported
 into commercial products.
 
-### Import GeoStatsBase
+#### Import GeoStatsBase
 
 After the package is created, open the main source file `MySolver.jl` and add the following
 line:
@@ -103,7 +110,7 @@ end
 end # module
 ```
 
-### Write the algorithm
+#### Write the algorithm
 
 Now that your solver type is defined, write your algorithm. Write a function called `solve`
 that takes an estimation problem and your solver, and returns an estimation solution:
@@ -126,7 +133,7 @@ end
 
 Paste this function somewhere in your package, and you are all set.
 
-### Test solver
+#### Test the solver
 
 To test your new solver, load the `GeoStats.jl` package and solve a simple problem:
 
