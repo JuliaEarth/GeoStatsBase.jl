@@ -16,6 +16,7 @@ instructions on how you can write your own solver.
   - [Estimation](#estimation)
   - [Simulation](#simulation)
 - [Writing your own solver](#writing-your-own-solver)
+- [Asking for help](#asking-for-help)
 
 ### Geostatistical problems
 
@@ -149,3 +150,8 @@ solution = solve(problem, MyCoolSolver())
 
 plot(solution)
 ```
+
+### Asking for help
+
+If you have any questions, please [open an issue](https://github.com/juliohm/GeoStatsBase.jl/issues)
+without thinking twice. I will be happy to help.
