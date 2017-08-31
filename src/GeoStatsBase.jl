@@ -53,6 +53,6 @@ export
   # solvers
   AbstractEstimationSolver,
   AbstractSimulationSolver,
-  solve
+  solve, solve_single
 
 end
