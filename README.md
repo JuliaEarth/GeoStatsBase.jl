@@ -6,9 +6,9 @@ This package contains problem and solution specifications for the
 [GeoStats.jl](https://github.com/juliohm/GeoStats.jl) framework.
 It is not intended to be used as a standalone package, and only
 exists to make it possible for researchers to write their own
-solvers independently of the main project. Below we give an
-overview of the types defined in the package, and short
-instructions on how you can write your own solver.
+solvers independently of the main project. A quick overview of
+the problem types defined in the package is provided, as well
+as short instructions on how you can write your own solver.
 
 ## Contents
 
