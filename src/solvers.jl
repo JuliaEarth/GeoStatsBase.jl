@@ -48,9 +48,9 @@ with the simulation `solver`.
 
 ### Notes
 
-By implementing this function, the developer is informing the package
-that realizations generated with his/her solver are indenpendent one
-from another. The package will then automatically trigger the algorithm
-in parallel at the top-level `solve` call.
+By implementing this function, the developer is informing the framework
+that realizations generated with his/her solver are indenpendent one from
+another. GeoStats.jl will trigger the algorithm in parallel (if enough
+processes are available) at the top-level `solve` call.
 """
 solve_single(::SimulationProblem, ::Symbol, ::AbstractSimulationSolver) = error("not implemented")
