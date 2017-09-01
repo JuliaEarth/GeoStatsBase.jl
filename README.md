@@ -45,7 +45,8 @@ variable of the problem.
 
 The task of writing a solver for a problem reduces to writing a simple function in Julia
 that takes the problem as input and returns the solution. In this tutorial, I will write
-an estimation solver that is not very useful, but illustrates the development process.
+an estimation solver that is not very useful (it fills the domain with random numbers),
+but illustrates the development process.
 
 #### Create the package
 
