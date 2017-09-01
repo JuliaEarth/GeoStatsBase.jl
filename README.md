@@ -175,7 +175,6 @@ implementation of `solve` for you that calls `solve_single` in parallel.
 ### Asking for help
 
 If you have any questions, please [open an issue](https://github.com/juliohm/GeoStatsBase.jl/issues).
-I will be happy to help.
 
 [travis-img]: https://travis-ci.org/juliohm/GeoStatsBase.jl.svg?branch=master
 [travis-url]: https://travis-ci.org/juliohm/GeoStatsBase.jl
