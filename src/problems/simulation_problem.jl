@@ -46,7 +46,7 @@ julia> SimulationProblem(domain, Dict(:porosity => Float64, :facies => Int), 100
 ### Notes
 
 To check if a simulation problem has data (i.e. conditional vs.
-unconditional) use the `hasdata` method.
+unconditional) use the [`hasdata`](@ref) method.
 """
 struct SimulationProblem{S<:Union{AbstractSpatialData,Void},D<:AbstractDomain} <: AbstractProblem
   spatialdata::S
