@@ -18,6 +18,14 @@
 A spatial estimation problem on a given `domain` in which the
 variables to be estimated are listed in `targetvars`. The
 data of the problem is stored in `spatialdata`.
+
+## Examples
+
+Create an estimation problem for rainfall precipitation measurements:
+
+```julia
+julia> EstimationProblem(spatialdata, domain, :precipitation)
+```
 """
 struct EstimationProblem{S<:AbstractSpatialData,D<:AbstractDomain} <: AbstractProblem
   spatialdata::S
