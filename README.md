@@ -26,9 +26,25 @@ as well as short instructions on how to write solvers.
 Objects of this type store the spatial data, the geometry of the domain, and the target
 variables to be estimated.
 
+```julia
+struct EstimationProblem{S<:AbstractSpatialData,D<:AbstractDomain} <: AbstractProblem
+  spatialdata::S
+  domain::D
+  targetvars::Dict{Symbol,DataType}
+end
+```
+
 A solution to an estimation problem is constructed with the `EstimationSolution` type.
 Objects of this type store the geometry of the domain, the mean estimate, and the
 variance, for each variable of the problem.
+
+```julia
+struct EstimationSolution{D<:AbstractDomain} <: AbstractSolution
+  domain::D
+  mean::Dict{Symbol,Vector}
+  variance::Dict{Symbol,Vector}
+end
+```
 
 #### SimulationProblem
 
@@ -37,9 +53,25 @@ the target variables to be estimated, and the number of realizations. The functi
 `hasdata` can be used to check if the given simulation problem is conditional or
 unconditional.
 
+```julia
+struct SimulationProblem{S<:Union{AbstractSpatialData,Void},D<:AbstractDomain} <: AbstractProblem
+  spatialdata::S
+  domain::D
+  targetvars::Dict{Symbol,DataType}
+  nreals::Int
+end
+```
+
 A solution to a simulation problem is constructed with the `SimulationSolution` type.
 Objects of this type store the geometry of the domain, and the realizations, for each
 variable of the problem.
+
+```julia
+struct SimulationSolution{D<:AbstractDomain} <: AbstractSolution
+  domain::D
+  realizations::Dict{Symbol,Vector{Vector}}
+end
+```
 
 ### Writing your own solver
 
