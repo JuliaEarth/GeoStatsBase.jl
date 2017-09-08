@@ -142,3 +142,21 @@ hasdata(problem::SimulationProblem) = (problem.spatialdata ≠ nothing &&
 Return the number of realizations of the simulation `problem`.
 """
 nreals(problem::SimulationProblem) = problem.nreals
+
+# ------------
+# IO methods
+# ------------
+function Base.show(io::IO, problem::SimulationProblem)
+  dim = ndims(problem.domain)
+  kind = hasdata(problem) ? "conditional" : "unconditional"
+  print(io, "$(dim)D SimulationProblem ($kind)")
+end
+
+function Base.show(io::IO, ::MIME"text/plain", problem::SimulationProblem)
+  vars = ["$var ($T)" for (var,T) in problem.targetvars]
+  println(io, problem)
+  println(io, "  data:      ", problem.spatialdata)
+  println(io, "  domain:    ", problem.domain)
+  println(io, "  variables: ", join(vars, ", ", " and "))
+  print(  io, "  N° reals:  ", problem.nreals)
+end
