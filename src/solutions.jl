@@ -19,14 +19,6 @@ A generic solution to a problem in geostatistics.
 """
 abstract type AbstractSolution end
 
-"""
-    digest(solution)
-
-Convert solution to a dictionary-like format where the
-keys of the dictionary are the variables of the problem.
-"""
-digest(solution::AbstractSolution) = error("not implemented")
-
 #------------------
 # IMPLEMENTATIONS
 #------------------

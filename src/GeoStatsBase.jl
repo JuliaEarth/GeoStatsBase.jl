@@ -48,6 +48,7 @@ export
   # solutions
   EstimationSolution,
   SimulationSolution,
+  domain,
   digest,
 
   # solvers
