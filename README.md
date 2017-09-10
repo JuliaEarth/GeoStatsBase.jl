@@ -7,9 +7,11 @@ This package contains problem and solution specifications for the
 It is not intended to be used as a standalone package, and only
 exists to make it possible for researchers to write their own
 solvers independently of the main project, and its development cycle.
-
 A quick overview of the problems defined in the package is provided,
 as well as short instructions on how to write solvers.
+
+For additional developer tools, please check
+[GeoStatsDevTools.jl](https://github.com/juliohm/GeoStatsDevTools.jl).
 
 ## Contents
 
