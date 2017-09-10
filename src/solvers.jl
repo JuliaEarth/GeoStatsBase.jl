@@ -41,10 +41,10 @@ Solve the `problem` with the `solver`.
 solve(::AbstractProblem, ::AbstractSolver) = error("not implemented")
 
 """
-    solve_single(problem, var, solver)
+    solve_single(problem, var, solver, extra...)
 
 Solve a single realization of `var` in the simulation `problem`
-with the simulation `solver`.
+with the simulation `solver` and possibly `extra` state variables.
 
 ### Notes
 
@@ -53,4 +53,5 @@ that realizations generated with his/her solver are indenpendent one from
 another. GeoStats.jl will trigger the algorithm in parallel (if enough
 processes are available) at the top-level `solve` call.
 """
-solve_single(::SimulationProblem, ::Symbol, ::AbstractSimulationSolver) = error("not implemented")
+solve_single(::SimulationProblem, ::Symbol, ::AbstractSimulationSolver,
+             extra...) = error("not implemented")
