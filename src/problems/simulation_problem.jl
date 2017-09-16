@@ -143,7 +143,7 @@ end
 """
     datamap(problem, targetvar)
 
-Return the mapping from data locations to domain locations for the
+Return the mapping from domain locations to data locations for the
 `targetvar` of the `problem`.
 """
 datamap(problem::SimulationProblem, var) = problem.mappings[var]
