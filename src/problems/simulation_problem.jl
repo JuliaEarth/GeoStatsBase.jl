@@ -68,7 +68,7 @@ struct SimulationProblem{S<:Union{AbstractSpatialData,Void},D<:AbstractDomain} <
     if spatialdata ≠ nothing
       mappings = map(spatialdata, domain, probvnames, mapper)
     else
-      mappings = Dict()
+      mappings = Dict(var => Dict() for var in probvnames)
     end
 
     new(spatialdata, domain, targetvars, nreals, mappings)
@@ -139,6 +139,14 @@ function coordinates(problem::SimulationProblem)
     Dict("x$i" => T for i=1:ndims(problem.domain))
   end
 end
+
+"""
+    datamap(problem, targetvar)
+
+Return the mapping from data locations to domain locations for the
+`targetvar` of the `problem`.
+"""
+datamap(problem::SimulationProblem, var) = problem.mappings[var]
 
 """
     hasdata(problem)

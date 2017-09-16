@@ -49,6 +49,8 @@ export
   data,
   domain,
   variables,
+  coordinates,
+  datamap,
   hasdata,
   nreals,
 

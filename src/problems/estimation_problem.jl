@@ -101,6 +101,14 @@ Return the name of the coordinates of the estimation `problem` and their types.
 """
 coordinates(problem::EstimationProblem) = coordinates(problem.spatialdata)
 
+"""
+    datamap(problem, targetvar)
+
+Return the mapping from data locations to domain locations for the
+`targetvar` of the `problem`.
+"""
+datamap(problem::EstimationProblem, var) = problem.mappings[var]
+
 # ------------
 # IO methods
 # ------------

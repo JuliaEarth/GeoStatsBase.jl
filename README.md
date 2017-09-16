@@ -190,23 +190,26 @@ plot(solution)
 
 The process of writing a simulation solver is very similar, but there is an alternative function
 to `solve` called `solve_single` that is *preferred*. The function `solve_single` takes a simulation
-problem, one of the variables to be simulated, a solver, and a mapper, and returns a *vector* with
-the simulation results:
+problem, one of the variables to be simulated, and a solver, and returns a *vector* with the
+simulation results:
 
 ```julia
-function solve_single(problem::SimulationProblem, var::Symbol,
-                      solver::MySimSolver, mapper::AbstractMapper)
+function solve_single(problem::SimulationProblem, var::Symbol, solver::MySimSolver)
+  # retrieve problem info
+  pdata = data(problem)
+  pdomain = domain(problem)
+
   # output is a single realization
-  realization = Vector(npoints(domain(problem)))
-  
+  realization = Vector(npoints(pdomain))
+
   # fill realization with hard data
-  for (location, value) in mapping(mapper, var)
-    realization[location] = value
+  for (loc, datloc) in datamap(problem, var)
+    realization[loc] = value(pdata, datloc, var)
   end
 
   # algorithm goes here
   # ...
-  
+
   realization
 end
 ```
