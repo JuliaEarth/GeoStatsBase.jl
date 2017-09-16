@@ -13,7 +13,7 @@
 ## OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 """
-    AbstractDomain{N,T}
+    AbstractDomain{T,N}
 
 A spatial domain with `N` dimensions in which
 points are represented with coordinates of type `T`.
@@ -46,4 +46,14 @@ npoints(::AbstractDomain) = error("not implemented")
 
 Return the coordinates of the `location` in the `domain`.
 """
-coordinates(::AbstractDomain, location::I) where {I<:Integer} = error("not implemented")
+coordinates(::AbstractDomain, ::Int) = error("not implemented")
+
+"""
+    nearestlocation(domain, coords)
+
+Return the nearest location of `coords` in the `domain`.
+"""
+function nearestlocation(domain::AbstractDomain{T,N},
+                         coords::AbstractVector{T}) where {T<:Real,N}
+  indmin(norm(coords .- coordinates(domain, loc)) for loc in 1:npoints(domain))
+end

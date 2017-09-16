@@ -41,10 +41,53 @@ Return the number of points in `spatialdata`.
 npoints(::AbstractSpatialData) = error("not implemented")
 
 """
+    coordinates(spatialdata, idx)
+
+Return the coordinates of the `idx`-th point in `spatialdata`.
+"""
+coordinates(::AbstractSpatialData, ::Int) = error("not implemented")
+
+"""
+    value(spatialdata, idx, var)
+
+Return the value of `var` for the `idx`-th point in `spatialdata`.
+"""
+value(::AbstractSpatialData, ::Int, ::Symbol) = error("not implemented")
+
+"""
+    isvalid(spatialdata, idx, var)
+
+Return `true` if the `idx`-th point in `spatialdata` has a valid value for `var`.
+"""
+Base.isvalid(::AbstractSpatialData, ::Int, ::Symbol) = error("not implemented")
+
+"""
     valid(spatialdata, var)
 
-Return the valid data for the variable `var` in `spatialdata`
-as a tuple `(X, z)` where `X` is a matrix with data coordinates
-as columns and `z` are the corresponding variable values.
+Return all points in `spatialdata` with a valid value for `var`. The output
+is a tuple with the matrix of coordinates as the first item and the vector
+of values as the second item.
 """
-valid(::AbstractSpatialData, var::Symbol) = error("not implemented")
+function valid(spatialdata::AbstractSpatialData, var::Symbol)
+  # determine coordinate type
+  datacoords = coordinates(spatialdata)
+  T = promote_type([T for (var,T) in datacoords]...)
+
+  # determine value type
+  V = variables(spatialdata)[var]
+
+  # provide size hint for output
+  xs = Vector{Vector{T}}(); zs = Vector{V}()
+  sizehint!(xs, npoints(spatialdata))
+  sizehint!(zs, npoints(spatialdata))
+
+  for location in 1:npoints(spatialdata)
+    if isvalid(spatialdata, location, var)
+      push!(xs, coordinates(spatialdata, location))
+      push!(zs, value(spatialdata, location, var))
+    end
+  end
+
+  # return matrix and vector
+  hcat(xs...), zs
+end

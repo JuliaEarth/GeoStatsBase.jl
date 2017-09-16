@@ -12,55 +12,22 @@
 ## ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 ## OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-__precompile__()
+"""
+    AbstractMapper
 
-module GeoStatsBase
+A mapping strategy for mapping spatial data onto a domain.
+"""
+abstract type AbstractMapper end
 
-include("spatialdata.jl")
-include("domains.jl")
-include("mappers.jl")
-include("problems.jl")
-include("solutions.jl")
-include("solvers.jl")
+"""
+    map(spatialdata, domain, targetvars, mapper)
 
-export
-  # spatial data
-  AbstractSpatialData,
-  coordinates,
-  variables,
-  npoints,
-  value,
-  valid,
+Map the `targetvars` in `spatialdata` to `domain` with `mapper`.
+"""
+Base.map(::AbstractSpatialData, ::AbstractDomain,
+         ::Vector{Symbol}, ::AbstractMapper) = error("not implemented")
 
-  # domains
-  AbstractDomain,
-  coordtype,
-  npoints,
-  coordinates,
-  nearestlocation,
-
-  # mappers
-  AbstractMapper,
-  SimpleMapper,
-
-  # problems
-  EstimationProblem,
-  SimulationProblem,
-  data,
-  domain,
-  variables,
-  hasdata,
-  nreals,
-
-  # solutions
-  EstimationSolution,
-  SimulationSolution,
-  domain,
-  digest,
-
-  # solvers
-  AbstractEstimationSolver,
-  AbstractSimulationSolver,
-  solve, solve_single
-
-end
+#------------------
+# IMPLEMENTATIONS
+#------------------
+include("mappers/simple_mapper.jl")

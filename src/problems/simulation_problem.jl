@@ -49,24 +49,36 @@ To check if a simulation problem has data (i.e. conditional vs.
 unconditional) use the [`hasdata`](@ref) method.
 """
 struct SimulationProblem{S<:Union{AbstractSpatialData,Void},D<:AbstractDomain} <: AbstractProblem
+  # input fields
   spatialdata::S
   domain::D
   targetvars::Dict{Symbol,DataType}
   nreals::Int
 
-  function SimulationProblem{S,D}(spatialdata, domain, targetvars, nreals
-                                 ) where {S<:Union{AbstractSpatialData,Void},D<:AbstractDomain}
-    @assert !isempty(targetvars) "target variables must be specified"
+  # state fields
+  mappings::Dict{Symbol,Dict{Int,Int}}
+
+  function SimulationProblem{S,D}(spatialdata, domain, targetvars, nreals,
+                                  mapper) where {S<:Union{AbstractSpatialData,Void},D<:AbstractDomain}
+    probvnames = [var for (var,V) in targetvars]
+
+    @assert !isempty(probvnames) "target variables must be specified"
     @assert nreals > 0 "number of realizations must be positive"
 
-    new(spatialdata, domain, targetvars, nreals)
+    if spatialdata ≠ nothing
+      mappings = map(spatialdata, domain, probvnames, mapper)
+    else
+      mappings = Dict()
+    end
+
+    new(spatialdata, domain, targetvars, nreals, mappings)
   end
 end
 
-function SimulationProblem(spatialdata::S, domain::D, targetvarnames::Vector{Symbol}, nreals::Int
-                          ) where {S<:AbstractSpatialData,D<:AbstractDomain}
-  datavnames = [var for (var,T) in variables(spatialdata)]
-  datacnames = [var for (var,T) in coordinates(spatialdata)]
+function SimulationProblem(spatialdata::S, domain::D, targetvarnames::Vector{Symbol}, nreals::Int;
+                           mapper=SimpleMapper()) where {S<:AbstractSpatialData,D<:AbstractDomain}
+  datavnames = [var for (var,V) in variables(spatialdata)]
+  datacnames = [coord for (coord,T) in coordinates(spatialdata)]
 
   @assert targetvarnames ⊆ datavnames "target variables must be present in spatial data"
   @assert isempty(targetvarnames ∩ datacnames) "target variables can't be coordinates"
@@ -76,17 +88,17 @@ function SimulationProblem(spatialdata::S, domain::D, targetvarnames::Vector{Sym
   datavars = variables(spatialdata)
   targetvars = Dict(var => T for (var,T) in datavars if var ∈ targetvarnames)
 
-  SimulationProblem{S,D}(spatialdata, domain, targetvars, nreals)
+  SimulationProblem{S,D}(spatialdata, domain, targetvars, nreals, mapper)
 end
 
-SimulationProblem(spatialdata::S, domain::D, targetvarname::Symbol,
-                  nreals::Int) where {S<:AbstractSpatialData,D<:AbstractDomain} =
-  SimulationProblem(spatialdata, domain, [targetvarname], nreals)
+SimulationProblem(spatialdata::S, domain::D, targetvarname::Symbol, nreals::Int;
+                  mapper=SimpleMapper()) where {S<:AbstractSpatialData,D<:AbstractDomain} =
+  SimulationProblem(spatialdata, domain, [targetvarname], nreals; mapper=mapper)
 
 function SimulationProblem(domain::D, targetvars::Dict{Symbol,DataType},
                            nreals::Int) where {D<:AbstractDomain}
 
-  SimulationProblem{Void,D}(nothing, domain, targetvars, nreals)
+  SimulationProblem{Void,D}(nothing, domain, targetvars, nreals, SimpleMapper())
 end
 
 SimulationProblem(domain::D, targetvar::Pair{Symbol,DataType},
