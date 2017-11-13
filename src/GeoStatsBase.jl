@@ -44,6 +44,7 @@ export
   SimpleMapper,
 
   # problems
+  AbstractProblem,
   EstimationProblem,
   SimulationProblem,
   data,
@@ -55,12 +56,14 @@ export
   nreals,
 
   # solutions
+  AbstractSolution,
   EstimationSolution,
   SimulationSolution,
   domain,
   digest,
 
   # solvers
+  AbstractSolver,
   AbstractEstimationSolver,
   AbstractSimulationSolver,
   solve, solve_single
