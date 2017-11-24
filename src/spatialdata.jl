@@ -91,3 +91,10 @@ function valid(spatialdata::AbstractSpatialData, var::Symbol)
   # return matrix and vector
   hcat(xs...), zs
 end
+
+"""
+    view(spatialdata, inds)
+
+Return a view of `spatialdata` with all points in `inds` locations.
+"""
+Base.view(spatialdata::AbstractSpatialData, inds::AbstractVector{Int}) = error("not implemented")
