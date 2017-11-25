@@ -48,8 +48,7 @@ struct EstimationProblem{S<:AbstractSpatialData,D<:AbstractDomain} <: AbstractPr
     datavnames = [var for (var,V) in variables(spatialdata)]
     datacnames = [coord for (coord,T) in coordinates(spatialdata)]
 
-    @assert !isempty(probvnames) "target variables must be specified"
-    @assert probvnames ⊆ datavnames "target variables must be present in spatial data"
+    @assert !isempty(probvnames) && probvnames ⊆ datavnames "target variables must be present in spatial data"
     @assert isempty(probvnames ∩ datacnames) "target variables can't be coordinates"
     @assert ndims(domain) == length(datacnames) "data and domain must have the same number of dimensions"
 
