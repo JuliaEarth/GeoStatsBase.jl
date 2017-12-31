@@ -93,6 +93,23 @@ function valid(spatialdata::AbstractSpatialData, var::Symbol)
 end
 
 """
+    coordtype(spatialdata)
+
+Return the promoted type of all individual coordinates of `spatialdata`.
+"""
+function coordtype(spatialdata::AbstractSpatialData)
+  datacoords = coordinates(spatialdata)
+  promote_type([T for (var,T) in datacoords]...)
+end
+
+"""
+    valuetype(spatialdata, var)
+
+Return the value type of `var` in `spatialdata`.
+"""
+valuetype(spatialdata::AbstractSpatialData, var::Symbol) = variables(spatialdata)[var]
+
+"""
     view(spatialdata, inds)
 
 Return a view of `spatialdata` with all points in `inds` locations.
