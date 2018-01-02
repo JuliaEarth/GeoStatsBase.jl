@@ -127,20 +127,6 @@ Return the target variables of the simulation `problem` and their types.
 variables(problem::SimulationProblem) = problem.targetvars
 
 """
-    coordinates(problem)
-
-Return the name of the coordinates of the simulation `problem` and their types.
-"""
-function coordinates(problem::SimulationProblem)
-  if problem.spatialdata ≠ nothing
-    coordinates(problem.spatialdata)
-  else
-    T = coordtype(problem.domain)
-    Dict("x$i" => T for i=1:ndims(problem.domain))
-  end
-end
-
-"""
     datamap(problem, targetvar)
 
 Return the mapping from domain locations to data locations for the

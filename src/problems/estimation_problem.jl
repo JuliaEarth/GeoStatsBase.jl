@@ -94,13 +94,6 @@ Return the variable names of the estimation `problem` and their types.
 variables(problem::EstimationProblem) = problem.targetvars
 
 """
-    coordinates(problem)
-
-Return the name of the coordinates of the estimation `problem` and their types.
-"""
-coordinates(problem::EstimationProblem) = coordinates(problem.spatialdata)
-
-"""
     datamap(problem, targetvar)
 
 Return the mapping from domain locations to data locations for the
