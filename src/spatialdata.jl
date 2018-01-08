@@ -69,12 +69,9 @@ is a tuple with the matrix of coordinates as the first item and the vector
 of values as the second item.
 """
 function valid(spatialdata::AbstractSpatialData, var::Symbol)
-  # determine coordinate type
-  datacoords = coordinates(spatialdata)
-  T = promote_type([T for (var,T) in datacoords]...)
-
-  # determine value type
-  V = variables(spatialdata)[var]
+  # determine coordinate and value type
+  T = coordtype(spatialdata)
+  V = valuetype(spatialdata, var)
 
   # provide size hint for output
   xs = Vector{Vector{T}}(); zs = Vector{V}()
