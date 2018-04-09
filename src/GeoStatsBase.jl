@@ -7,6 +7,8 @@ __precompile__()
 
 module GeoStatsBase
 
+using Missings
+
 include("spatialdata.jl")
 include("domains.jl")
 include("mappers.jl")

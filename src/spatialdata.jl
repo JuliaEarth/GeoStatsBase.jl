@@ -50,7 +50,10 @@ value(::AbstractSpatialData, ::Int, ::Symbol) = error("not implemented")
 
 Return `true` if the `idx`-th point in `spatialdata` has a valid value for `var`.
 """
-Base.isvalid(::AbstractSpatialData, ::Int, ::Symbol) = error("not implemented")
+function Base.isvalid(spatialdata::AbstractSpatialData, idx::Int, var::Symbol)
+  val = value(spatialdata, idx, var)
+  !(val ≡ missing || (val isa Number && isnan(val)))
+end
 
 """
     valid(spatialdata, var)
