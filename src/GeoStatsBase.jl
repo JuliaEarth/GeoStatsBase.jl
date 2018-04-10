@@ -15,6 +15,7 @@ include("mappers.jl")
 include("problems.jl")
 include("solutions.jl")
 include("solvers.jl")
+include("comparisons.jl")
 
 export
   # spatial data
@@ -61,6 +62,12 @@ export
   AbstractSolver,
   AbstractEstimationSolver,
   AbstractSimulationSolver,
-  solve, solve_single
+  solve, solve_single,
+
+  # comparisons
+  AbstractSolverComparison,
+  AbstractEstimSolverComparison,
+  AbstractSimSolverComparison,
+  compare
 
 end
