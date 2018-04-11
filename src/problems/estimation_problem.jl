@@ -42,6 +42,7 @@ struct EstimationProblem{S<:AbstractSpatialData,D<:AbstractDomain} <: AbstractPr
     @assert !isempty(probvnames) && probvnames ⊆ datavnames "target variables must be present in spatial data"
     @assert isempty(probvnames ∩ datacnames) "target variables can't be coordinates"
     @assert ndims(domain) == length(datacnames) "data and domain must have the same number of dimensions"
+    @assert coordtype(spatialdata) == coordtype(domain) "data and domain must have the same coordinate type"
 
     mappings = map(spatialdata, domain, probvnames, mapper)
 

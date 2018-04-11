@@ -74,6 +74,7 @@ function SimulationProblem(spatialdata::S, domain::D, targetvarnames::Vector{Sym
   @assert targetvarnames ⊆ datavnames "target variables must be present in spatial data"
   @assert isempty(targetvarnames ∩ datacnames) "target variables can't be coordinates"
   @assert ndims(domain) == length(datacnames) "data and domain must have the same number of dimensions"
+  @assert coordtype(spatialdata) == coordtype(domain) "data and domain must have the same coordinate type"
 
   # build dictionary of target variables
   datavars = variables(spatialdata)
