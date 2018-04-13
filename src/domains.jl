@@ -37,7 +37,18 @@ npoints(::AbstractDomain) = error("not implemented")
 
 Return the coordinates of the `location` in the `domain`.
 """
-coordinates(::AbstractDomain, ::Int) = error("not implemented")
+function coordinates(domain::AbstractDomain{T,N}, location::Int) where {N,T<:Real}
+  coords = MVector{N,T}()
+  coordinates!(coords, domain, location)
+  coords
+end
+
+"""
+    coordinates!(buff, domain, location)
+
+Non-allocating version of [`coordinates`](@ref).
+"""
+coordinates!(::AbstractVector, ::AbstractDomain, ::Int) = error("not implemented")
 
 """
     nearestlocation(domain, coords)

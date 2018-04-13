@@ -7,6 +7,7 @@ __precompile__()
 
 module GeoStatsBase
 
+using StaticArrays
 using Missings
 
 include("spatialdata.jl")
@@ -33,6 +34,7 @@ export
   coordtype,
   npoints,
   coordinates,
+  coordinates!,
   nearestlocation,
 
   # mappers
