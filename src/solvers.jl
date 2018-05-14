@@ -44,15 +44,18 @@ function solve(problem::SimulationProblem, solver::AbstractSimulationSolver)
   # sanity checks
   @assert keys(solver.params) ⊆ keys(variables(problem)) "invalid variable names in solver parameters"
 
+  # optional preprocessing step
+  preproc = preprocess(problem, solver)
+
   realizations = []
   for (var,V) in variables(problem)
     if nworkers() > 1
       # generate realizations in parallel
-      λ = _ -> solve_single(problem, var, solver)
+      λ = _ -> solve_single(problem, var, solver, preproc)
       varreals = pmap(λ, 1:nreals(problem))
     else
       # fallback to serial execution
-      varreals = [solve_single(problem, var, solver) for i=1:nreals(problem)]
+      varreals = [solve_single(problem, var, solver, preproc) for i=1:nreals(problem)]
     end
 
     push!(realizations, var => varreals)
@@ -62,10 +65,24 @@ function solve(problem::SimulationProblem, solver::AbstractSimulationSolver)
 end
 
 """
-    solve_single(problem, var, solver)
+    preprocess(problem, solver)
+
+Preprocess the simulation `problem` once before generating each realization
+with simulation `solver`.
+
+### Notes
+
+The output of the function is defined by the solver developer.
+Default implementation returns nothing.
+"""
+preprocess(::SimulationProblem, ::AbstractSimulationSolver) = nothing
+
+"""
+    solve_single(problem, var, solver, preproc)
 
 Solve a single realization of `var` in the simulation `problem`
-with the simulation `solver`.
+with the simulation `solver`, optionally using preprocessed
+data in `preproc`.
 
 ### Notes
 
@@ -74,4 +91,5 @@ informing the framework that realizations generated with his/her
 solver are indenpendent one from another. GeoStats.jl will trigger
 the algorithm in parallel (if enough processes are available).
 """
-solve_single(::SimulationProblem, ::Symbol, ::AbstractSimulationSolver) = error("not implemented")
+solve_single(::SimulationProblem, ::Symbol, ::AbstractSimulationSolver,
+             ::Any) = error("not implemented")

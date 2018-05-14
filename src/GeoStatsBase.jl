@@ -65,6 +65,7 @@ export
   AbstractEstimationSolver,
   AbstractSimulationSolver,
   solve, solve_single,
+  preprocess,
 
   # comparisons
   AbstractSolverComparison,
