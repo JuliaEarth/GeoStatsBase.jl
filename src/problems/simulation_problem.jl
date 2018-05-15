@@ -51,7 +51,7 @@ struct SimulationProblem{S<:Union{AbstractSpatialData,Void},D<:AbstractDomain,M<
   mappings::Dict{Symbol,Dict{Int,Int}}
 
   function SimulationProblem{S,D,M}(spatialdata, domain, targetvars, nreals,
-                                  mapper) where {S<:Union{AbstractSpatialData,Void},D<:AbstractDomain,M<:AbstractMapper}
+                                    mapper) where {S<:Union{AbstractSpatialData,Void},D<:AbstractDomain,M<:AbstractMapper}
     probvnames = [var for (var,V) in targetvars]
 
     @assert !isempty(probvnames) "target variables must be specified"
@@ -89,13 +89,15 @@ function SimulationProblem(spatialdata::S, domain::D, targetvarname::Symbol, nre
   SimulationProblem(spatialdata, domain, [targetvarname], nreals; mapper=mapper)
 end
 
-function SimulationProblem(domain::D, targetvars::Dict{Symbol,DataType},
-                           nreals::Int) where {D<:AbstractDomain}
-  SimulationProblem{Void,D,SimpleMapper}(nothing, domain, targetvars, nreals, SimpleMapper())
+function SimulationProblem(domain::D, targetvars::Dict{Symbol,DataType}, nreals::Int;
+                           mapper::M=SimpleMapper()) where {D<:AbstractDomain,M<:AbstractMapper}
+  SimulationProblem{Void,D,M}(nothing, domain, targetvars, nreals, mapper)
 end
 
-SimulationProblem(domain::D, targetvar::Pair{Symbol,DataType}, nreals::Int) where {D<:AbstractDomain} =
-  SimulationProblem(domain, Dict(targetvar), nreals)
+function SimulationProblem(domain::D, targetvar::Pair{Symbol,DataType}, nreals::Int;
+                           mapper::M=SimpleMapper()) where {D<:AbstractDomain,M<:AbstractMapper}
+  SimulationProblem(domain, Dict(targetvar), nreals; mapper=mapper)
+end
 
 """
     data(problem)
