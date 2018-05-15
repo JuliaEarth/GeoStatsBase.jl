@@ -24,17 +24,18 @@ Create an estimation problem for precipitation and CO₂:
 julia> EstimationProblem(spatialdata, domain, [:precipitation, :CO₂])
 ```
 """
-struct EstimationProblem{S<:AbstractSpatialData,D<:AbstractDomain} <: AbstractProblem
+struct EstimationProblem{S<:AbstractSpatialData,D<:AbstractDomain,M<:AbstractMapper} <: AbstractProblem
   # input fields
   spatialdata::S
   domain::D
+  mapper::M
   targetvars::Dict{Symbol,DataType}
 
   # state fields
   mappings::Dict{Symbol,Dict{Int,Int}}
 
-  function EstimationProblem{S,D}(spatialdata, domain, targetvars,
-                                  mapper) where {S<:AbstractSpatialData,D<:AbstractDomain}
+  function EstimationProblem{S,D,M}(spatialdata, domain, targetvars,
+                                    mapper) where {S<:AbstractSpatialData,D<:AbstractDomain,M<:AbstractMapper}
     probvnames = [var for (var,V) in targetvars]
     datavnames = [var for (var,V) in variables(spatialdata)]
     datacnames = [coord for (coord,T) in coordinates(spatialdata)]
@@ -46,21 +47,21 @@ struct EstimationProblem{S<:AbstractSpatialData,D<:AbstractDomain} <: AbstractPr
 
     mappings = map(spatialdata, domain, probvnames, mapper)
 
-    new(spatialdata, domain, targetvars, mappings)
+    new(spatialdata, domain, mapper, targetvars, mappings)
   end
 end
 
 function EstimationProblem(spatialdata::S, domain::D, targetvarnames::Vector{Symbol};
-                           mapper=SimpleMapper()) where {S<:AbstractSpatialData,D<:AbstractDomain}
+                           mapper::M=SimpleMapper()) where {S<:AbstractSpatialData,D<:AbstractDomain,M<:AbstractMapper}
   # build dictionary of target variables
   datavars = variables(spatialdata)
   targetvars = Dict(var => T for (var,T) in datavars if var ∈ targetvarnames)
 
-  EstimationProblem{S,D}(spatialdata, domain, targetvars, mapper)
+  EstimationProblem{S,D,M}(spatialdata, domain, targetvars, mapper)
 end
 
 function EstimationProblem(spatialdata::S, domain::D, targetvarname::Symbol;
-                           mapper=SimpleMapper()) where {S<:AbstractSpatialData,D<:AbstractDomain}
+                           mapper::M=SimpleMapper()) where {S<:AbstractSpatialData,D<:AbstractDomain,M<:AbstractMapper}
   EstimationProblem(spatialdata, domain, [targetvarname]; mapper=mapper)
 end
 
@@ -77,6 +78,13 @@ data(problem::EstimationProblem) = problem.spatialdata
 Return the spatial domain of the estimation `problem`.
 """
 domain(problem::EstimationProblem) = problem.domain
+
+"""
+    mapper(problem)
+
+Return the mapper of the estimation `problem`.
+"""
+mapper(problem::EstimationProblem) = problem.mapper
 
 """
     variables(problem)

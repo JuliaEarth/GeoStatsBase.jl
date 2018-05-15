@@ -47,6 +47,7 @@ export
   SimulationProblem,
   data,
   domain,
+  mapper,
   variables,
   coordinates,
   datamap,

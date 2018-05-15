@@ -39,18 +39,19 @@ julia> SimulationProblem(domain, Dict(:porosity => Float64, :facies => Int), 100
 To check if a simulation problem has data (i.e. conditional vs.
 unconditional) use the [`hasdata`](@ref) method.
 """
-struct SimulationProblem{S<:Union{AbstractSpatialData,Void},D<:AbstractDomain} <: AbstractProblem
+struct SimulationProblem{S<:Union{AbstractSpatialData,Void},D<:AbstractDomain,M<:AbstractMapper} <: AbstractProblem
   # input fields
   spatialdata::S
   domain::D
+  mapper::M
   targetvars::Dict{Symbol,DataType}
   nreals::Int
 
   # state fields
   mappings::Dict{Symbol,Dict{Int,Int}}
 
-  function SimulationProblem{S,D}(spatialdata, domain, targetvars, nreals,
-                                  mapper) where {S<:Union{AbstractSpatialData,Void},D<:AbstractDomain}
+  function SimulationProblem{S,D,M}(spatialdata, domain, targetvars, nreals,
+                                  mapper) where {S<:Union{AbstractSpatialData,Void},D<:AbstractDomain,M<:AbstractMapper}
     probvnames = [var for (var,V) in targetvars]
 
     @assert !isempty(probvnames) "target variables must be specified"
@@ -62,12 +63,12 @@ struct SimulationProblem{S<:Union{AbstractSpatialData,Void},D<:AbstractDomain} <
       mappings = Dict(var => Dict() for var in probvnames)
     end
 
-    new(spatialdata, domain, targetvars, nreals, mappings)
+    new(spatialdata, domain, mapper, targetvars, nreals, mappings)
   end
 end
 
 function SimulationProblem(spatialdata::S, domain::D, targetvarnames::Vector{Symbol}, nreals::Int;
-                           mapper=SimpleMapper()) where {S<:AbstractSpatialData,D<:AbstractDomain}
+                           mapper::M=SimpleMapper()) where {S<:AbstractSpatialData,D<:AbstractDomain,M<:AbstractMapper}
   datavnames = [var for (var,V) in variables(spatialdata)]
   datacnames = [coord for (coord,T) in coordinates(spatialdata)]
 
@@ -80,21 +81,20 @@ function SimulationProblem(spatialdata::S, domain::D, targetvarnames::Vector{Sym
   datavars = variables(spatialdata)
   targetvars = Dict(var => T for (var,T) in datavars if var ∈ targetvarnames)
 
-  SimulationProblem{S,D}(spatialdata, domain, targetvars, nreals, mapper)
+  SimulationProblem{S,D,M}(spatialdata, domain, targetvars, nreals, mapper)
 end
 
-SimulationProblem(spatialdata::S, domain::D, targetvarname::Symbol, nreals::Int;
-                  mapper=SimpleMapper()) where {S<:AbstractSpatialData,D<:AbstractDomain} =
+function SimulationProblem(spatialdata::S, domain::D, targetvarname::Symbol, nreals::Int;
+                           mapper::M=SimpleMapper()) where {S<:AbstractSpatialData,D<:AbstractDomain,M<:AbstractMapper}
   SimulationProblem(spatialdata, domain, [targetvarname], nreals; mapper=mapper)
+end
 
 function SimulationProblem(domain::D, targetvars::Dict{Symbol,DataType},
                            nreals::Int) where {D<:AbstractDomain}
-
-  SimulationProblem{Void,D}(nothing, domain, targetvars, nreals, SimpleMapper())
+  SimulationProblem{Void,D,SimpleMapper}(nothing, domain, targetvars, nreals, SimpleMapper())
 end
 
-SimulationProblem(domain::D, targetvar::Pair{Symbol,DataType},
-                  nreals::Int) where {D<:AbstractDomain} =
+SimulationProblem(domain::D, targetvar::Pair{Symbol,DataType}, nreals::Int) where {D<:AbstractDomain} =
   SimulationProblem(domain, Dict(targetvar), nreals)
 
 """
@@ -110,6 +110,13 @@ data(problem::SimulationProblem) = problem.spatialdata
 Return the spatial domain of the simulation `problem`.
 """
 domain(problem::SimulationProblem) = problem.domain
+
+"""
+    mapper(problem)
+
+Return the mapper of the simulation `problem`.
+"""
+mapper(problem::SimulationProblem) = problem.mapper
 
 """
     variables(problem)
