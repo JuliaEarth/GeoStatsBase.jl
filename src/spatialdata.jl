@@ -32,26 +32,26 @@ Return the number of points in `spatialdata`.
 npoints(::AbstractSpatialData) = error("not implemented")
 
 """
-    coordinates(spatialdata, idx)
+    coordinates(spatialdata, ind)
 
-Return the coordinates of the `idx`-th point in `spatialdata`.
+Return the coordinates of the `ind`-th point in `spatialdata`.
 """
 coordinates(::AbstractSpatialData, ::Int) = error("not implemented")
 
 """
-    value(spatialdata, idx, var)
+    value(spatialdata, ind, var)
 
-Return the value of `var` for the `idx`-th point in `spatialdata`.
+Return the value of `var` for the `ind`-th point in `spatialdata`.
 """
 value(::AbstractSpatialData, ::Int, ::Symbol) = error("not implemented")
 
 """
-    isvalid(spatialdata, idx, var)
+    isvalid(spatialdata, ind, var)
 
-Return `true` if the `idx`-th point in `spatialdata` has a valid value for `var`.
+Return `true` if the `ind`-th point in `spatialdata` has a valid value for `var`.
 """
-function Base.isvalid(spatialdata::AbstractSpatialData, idx::Int, var::Symbol)
-  val = value(spatialdata, idx, var)
+function Base.isvalid(spatialdata::AbstractSpatialData, ind::Int, var::Symbol)
+  val = value(spatialdata, ind, var)
   !(val ≡ missing || (val isa Number && isnan(val)))
 end
 
