@@ -8,7 +8,6 @@ __precompile__()
 module GeoStatsBase
 
 using StaticArrays
-using Missings
 
 include("spatialdata.jl")
 include("domains.jl")

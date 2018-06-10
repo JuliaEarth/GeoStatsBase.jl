@@ -39,7 +39,7 @@ julia> SimulationProblem(domain, Dict(:porosity => Float64, :facies => Int), 100
 To check if a simulation problem has data (i.e. conditional vs.
 unconditional) use the [`hasdata`](@ref) method.
 """
-struct SimulationProblem{S<:Union{AbstractSpatialData,Void},D<:AbstractDomain,M<:AbstractMapper} <: AbstractProblem
+struct SimulationProblem{S<:Union{AbstractSpatialData,Nothing},D<:AbstractDomain,M<:AbstractMapper} <: AbstractProblem
   # input fields
   spatialdata::S
   domain::D
@@ -51,7 +51,7 @@ struct SimulationProblem{S<:Union{AbstractSpatialData,Void},D<:AbstractDomain,M<
   mappings::Dict{Symbol,Dict{Int,Int}}
 
   function SimulationProblem{S,D,M}(spatialdata, domain, targetvars, nreals,
-                                    mapper) where {S<:Union{AbstractSpatialData,Void},D<:AbstractDomain,M<:AbstractMapper}
+                                    mapper) where {S<:Union{AbstractSpatialData,Nothing},D<:AbstractDomain,M<:AbstractMapper}
     probvnames = [var for (var,V) in targetvars]
 
     @assert !isempty(probvnames) "target variables must be specified"
@@ -91,7 +91,7 @@ end
 
 function SimulationProblem(domain::D, targetvars::Dict{Symbol,DataType}, nreals::Int;
                            mapper::M=SimpleMapper()) where {D<:AbstractDomain,M<:AbstractMapper}
-  SimulationProblem{Void,D,M}(nothing, domain, targetvars, nreals, mapper)
+  SimulationProblem{Nothing,D,M}(nothing, domain, targetvars, nreals, mapper)
 end
 
 function SimulationProblem(domain::D, targetvar::Pair{Symbol,DataType}, nreals::Int;
