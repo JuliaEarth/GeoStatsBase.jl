@@ -56,7 +56,7 @@ the target variables to be estimated, and the number of realizations. The functi
 unconditional.
 
 ```julia
-struct SimulationProblem{S<:Union{AbstractSpatialData,Void},D<:AbstractDomain} <: AbstractProblem
+struct SimulationProblem{S<:Union{AbstractSpatialData,Nothing},D<:AbstractDomain} <: AbstractProblem
   spatialdata::S
   domain::D
   targetvars::Dict{Symbol,DataType}
@@ -84,12 +84,12 @@ but illustrates the development process.
 
 #### Create the package
 
-Install the `PkgDev.jl` package and create a new project:
+Install the `PkgTemplates.jl` package and create a new project:
 
 ```julia
-using PkgDev
+using PkgTemplates
 
-PkgDev.generate("MySolver","ISC") # create a package with the ISC license
+generate_interactive("MySolver")
 ```
 
 This command will create a folder named `~/user/.julia/v0.x/MySolver` with all the files
@@ -190,11 +190,11 @@ plot(solution)
 
 The process of writing a simulation solver is very similar, but there is an alternative function
 to `solve` called `solve_single` that is *preferred*. The function `solve_single` takes a simulation
-problem, one of the variables to be simulated, and a solver, and returns a *vector* with the
-simulation results:
+problem, one of the variables to be simulated, a solver, and a preprocessed input, and returns a
+*vector* with the simulation results:
 
 ```julia
-function solve_single(problem::SimulationProblem, var::Symbol, solver::MySimSolver)
+function solve_single(problem::SimulationProblem, var::Symbol, solver::MySimSolver, preproc)
   # retrieve problem info
   pdata = data(problem)
   pdomain = domain(problem)
@@ -218,9 +218,17 @@ This function is preferred over `solve` if your algorithm is the same for every 
 (the algorithm is only a function of the random seed). In this case, GeoStats.jl will provide an
 implementation of `solve` for you that calls `solve_single` in parallel.
 
+The argument `preproc` is ignored unless the function `preprocess` is also defined for the solver.
+The function takes a simulation problem and a solver, and returns an arbitrary object with
+preprocessed data:
+
+```julia
+preprocess(problem::SimulationProblem, solver::MySimSolver) = nothing
+```
+
 ### Asking for help
 
-If you have any questions, please [open an issue](https://github.com/juliohm/GeoStatsBase.jl/issues).
+If you have any questions, please contact our community on the [gitter channel](https://gitter.im/JuliaEarth/GeoStats.jl).
 
 [travis-img]: https://travis-ci.org/juliohm/GeoStatsBase.jl.svg?branch=master
 [travis-url]: https://travis-ci.org/juliohm/GeoStatsBase.jl
