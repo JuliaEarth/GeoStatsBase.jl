@@ -1,5 +1,5 @@
 using GeoStatsBase
-using Base.Test
+using Test
 
 # list of maintainers
 maintainers = ["juliohm"]
