@@ -57,5 +57,5 @@ Return the nearest location of `coords` in the `domain`.
 """
 function nearestlocation(domain::AbstractDomain{T,N},
                          coords::AbstractVector{T}) where {T<:Real,N}
-  argmin(norm(coords .- coordinates(domain, loc)) for loc in 1:npoints(domain))
+  argmin([norm(coords .- coordinates(domain, loc)) for loc in 1:npoints(domain)])
 end
