@@ -7,6 +7,7 @@ __precompile__()
 
 module GeoStatsBase
 
+using LinearAlgebra
 using StaticArrays
 
 include("spatialdata.jl")
