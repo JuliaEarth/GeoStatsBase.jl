@@ -38,7 +38,7 @@ npoints(::AbstractDomain) = error("not implemented")
 Return the coordinates of the `location` in the `domain`.
 """
 function coordinates(domain::AbstractDomain{T,N}, location::Int) where {N,T<:Real}
-  coords = MVector{N,T}()
+  coords = MVector{N,T}(undef)
   coordinates!(coords, domain, location)
   coords
 end
@@ -57,5 +57,16 @@ Return the nearest location of `coords` in the `domain`.
 """
 function nearestlocation(domain::AbstractDomain{T,N},
                          coords::AbstractVector{T}) where {T<:Real,N}
-  argmin([norm(coords .- coordinates(domain, loc)) for loc in 1:npoints(domain)])
+  lmin, dmin = 0, Inf
+  c = MVector{N,T}(undef)
+  for loc in 1:npoints(domain)
+    coordinates!(c, domain, loc)
+    d = norm(coords - c)
+    if d < dmin
+      dmin = d
+      lmin = loc
+    end
+  end
+
+  lmin
 end
