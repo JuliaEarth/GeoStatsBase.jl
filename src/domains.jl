@@ -59,13 +59,10 @@ function nearestlocation(domain::AbstractDomain{T,N},
                          coords::AbstractVector{T}) where {T<:Real,N}
   lmin, dmin = 0, Inf
   c = MVector{N,T}(undef)
-  for loc in 1:npoints(domain)
-    coordinates!(c, domain, loc)
+  for l in 1:npoints(domain)
+    coordinates!(c, domain, l)
     d = norm(coords - c)
-    if d < dmin
-      dmin = d
-      lmin = loc
-    end
+    d < dmin && ((lmin, dmin) = (l, d))
   end
 
   lmin
