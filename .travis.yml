@@ -1,25 +1,16 @@
 language: julia
-
 os:
   - linux
   - osx
-
 julia:
   - 0.7
   - 1.0
   - nightly
-
 matrix:
   allow_failures:
     - julia: nightly
   fast_finish: true
-
 notifications:
   email: false
-
-script:
-  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - julia --check-bounds=yes --color=yes -e 'Pkg.clone(pwd()); Pkg.build("GeoStatsBase"); Pkg.test("GeoStatsBase"; coverage=true)'
-
 after_success:
   - julia -e 'cd(Pkg.dir("GeoStatsBase")); Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder())'
