@@ -112,11 +112,12 @@ After the package is created, open the main source file `MySolver.jl` and add th
 line:
 
 ```julia
-importall GeoStatsBase
+using GeoStatsBase
+import GeoStatsBase: solve
 ```
 
-This line brings all the symbols defined in `GeoStatsBase` into scope. Next, give your solver
-a name:
+These lines brings all the symbols defined in `GeoStatsBase` into scope, and tells Julia that
+the method `solve` will be specialized for the new solver. Next, give your solver a name:
 
 ```julia
 struct MyCoolSolver <: AbstractEstimationSolver
@@ -135,7 +136,8 @@ At this point, the `MySolver.jl` file should have the following content:
 ```julia
 module MySolver
 
-importall GeoStatsBase
+using GeoStatsBase
+import GeoStatsBase: solve
 
 export MyCoolSolver
 
@@ -157,7 +159,7 @@ function solve(problem::EstimationProblem, solver::MyCoolSolver)
 
   mean = Dict{Symbol,Vector}()
   variance = Dict{Symbol,Vector}()
-  
+
   for (var,V) in variables(problem)
     push!(mean, var => rand(npoints(pdomain)))
     push!(variance, var => rand(npoints(pdomain)))
