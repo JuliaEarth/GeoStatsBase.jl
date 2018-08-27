@@ -235,5 +235,5 @@ If you have any questions, please contact our community on the [gitter channel](
 [travis-img]: https://travis-ci.org/juliohm/GeoStatsBase.jl.svg?branch=master
 [travis-url]: https://travis-ci.org/juliohm/GeoStatsBase.jl
 
-[julia-pkg-img]: http://pkg.julialang.org/badges/GeoStatsBase_0.7.svg
+[julia-pkg-img]: http://pkg.julialang.org/badges/GeoStatsBase_1.0.svg
 [julia-pkg-url]: http://pkg.julialang.org/?pkg=GeoStatsBase
