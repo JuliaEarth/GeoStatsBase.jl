@@ -162,7 +162,9 @@ end
 function Base.show(io::IO, ::MIME"text/plain", problem::SimulationProblem)
   vars = ["$var ($T)" for (var,T) in problem.targetvars]
   println(io, problem)
-  println(io, "  data:      ", problem.spatialdata)
+  if problem.spatialdata ≠ nothing
+    println(io, "  data:      ", problem.spatialdata)
+  end
   println(io, "  domain:    ", problem.domain)
   println(io, "  variables: ", join(vars, ", ", " and "))
   print(  io, "  N° reals:  ", problem.nreals)
