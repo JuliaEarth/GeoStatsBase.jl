@@ -4,11 +4,26 @@
 # ------------------------------------------------------------------
 
 """
-    AbstractSpatialData
+    AbstractSpatialData{T,N}
 
-A container with spatial data.
+Spatial data distributed in a `N`-dimensional
+space using coordinates of type `T`.
 """
-abstract type AbstractSpatialData end
+abstract type AbstractSpatialData{T<:Real,N} end
+
+"""
+    coordtype(spatialdata)
+
+Return the coordinate type of a spatial domain.
+"""
+coordtype(::AbstractSpatialData{T,N}) where {N,T<:Real} = T
+
+"""
+    valuetype(spatialdata, var)
+
+Return the value type of `var` in `spatialdata`.
+"""
+valuetype(spatialdata::AbstractSpatialData, var::Symbol) = variables(spatialdata)[var]
 
 """
     coordinates(spatialdata)
@@ -82,23 +97,6 @@ function valid(spatialdata::AbstractSpatialData, var::Symbol)
   # return matrix and vector
   hcat(xs...), zs
 end
-
-"""
-    coordtype(spatialdata)
-
-Return the promoted type of all individual coordinates of `spatialdata`.
-"""
-function coordtype(spatialdata::AbstractSpatialData)
-  datacoords = coordinates(spatialdata)
-  promote_type([T for (var,T) in datacoords]...)
-end
-
-"""
-    valuetype(spatialdata, var)
-
-Return the value type of `var` in `spatialdata`.
-"""
-valuetype(spatialdata::AbstractSpatialData, var::Symbol) = variables(spatialdata)[var]
 
 """
     view(spatialdata, inds)
