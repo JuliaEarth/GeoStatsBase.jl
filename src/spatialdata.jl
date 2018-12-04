@@ -51,7 +51,18 @@ npoints(::AbstractSpatialData) = error("not implemented")
 
 Return the coordinates of the `ind`-th point in `spatialdata`.
 """
-coordinates(::AbstractSpatialData, ::Int) = error("not implemented")
+function coordinates(spatialdata::AbstractSpatialData{T,N}, ind::Int) where {N,T<:Real}
+  coords = MVector{N,T}(undef)
+  coordinates!(coords, spatialdata, ind)
+  coords
+end
+
+"""
+    coordinates!(buff, spatialdata, ind)
+
+Non-allocating version of [`coordinates`](@ref).
+"""
+coordinates!(::AbstractVector, ::AbstractSpatialData, ::Int) = error("not implemented")
 
 """
     value(spatialdata, ind, var)

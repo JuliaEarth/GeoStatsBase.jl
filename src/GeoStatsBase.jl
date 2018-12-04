@@ -21,6 +21,7 @@ export
   # spatial data
   AbstractSpatialData,
   coordinates,
+  coordinates!,
   coordtype,
   variables,
   valuetype,
