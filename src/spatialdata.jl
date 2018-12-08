@@ -12,9 +12,16 @@ space using coordinates of type `T`.
 abstract type AbstractSpatialData{T<:Real,N} end
 
 """
+    ndims(spatialdata)
+
+Return the number of dimensions of domain underlying `spatialdata`.
+"""
+Base.ndims(::AbstractSpatialData{T,N}) where {N,T<:Real} = N
+
+"""
     coordtype(spatialdata)
 
-Return the coordinate type of a spatial domain.
+Return the coordinate type of a spatial data.
 """
 coordtype(::AbstractSpatialData{T,N}) where {N,T<:Real} = T
 
