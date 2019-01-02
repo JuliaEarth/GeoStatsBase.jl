@@ -36,11 +36,33 @@ npoints(::AbstractDomain) = error("not implemented")
 
 Return the coordinates of the `location` in the `domain`.
 """
-function coordinates(domain::AbstractDomain{T,N}, location::Int) where {N,T<:Real}
+function coordinates(domain::AbstractDomain{T,N},
+                     location::Int) where {N,T<:Real}
   coords = MVector{N,T}(undef)
   coordinates!(coords, domain, location)
   coords
 end
+
+"""
+    coordinates(domain, locations)
+
+Return the coordinates of `locations` in the `domain`.
+"""
+function coordinates(domain::AbstractDomain{T,N},
+                     locations::AbstractVector{Int}) where {N,T<:Real}
+  X = Matrix{T}(undef, N, length(locations))
+  for j in 1:length(locations)
+    coordinates!(view(X,:,j), domain, locations[j])
+  end
+  X
+end
+
+"""
+    coordinates(domain)
+
+Return the coordinates of all locations in `domain`.
+"""
+coordinates(domain::AbstractDomain) = coordinates(domain, 1:npoints(domain))
 
 """
     coordinates!(buff, domain, location)
@@ -55,7 +77,7 @@ coordinates!(::AbstractVector, ::AbstractDomain, ::Int) = error("not implemented
 Return the nearest location of `coords` in the `domain`.
 """
 function nearestlocation(domain::AbstractDomain{T,N},
-                         coords::AbstractVector{T}) where {T<:Real,N}
+                         coords::AbstractVector{T}) where {N,T<:Real}
   lmin, dmin = 0, Inf
   c = MVector{N,T}(undef)
   for l in 1:npoints(domain)
