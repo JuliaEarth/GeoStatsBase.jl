@@ -7,6 +7,7 @@ module GeoStatsBase
 using LinearAlgebra
 using Distributed
 using StaticArrays
+using Parameters
 
 include("spatialdata.jl")
 include("domains.jl")
@@ -15,6 +16,7 @@ include("problems.jl")
 include("solutions.jl")
 include("solvers.jl")
 include("comparisons.jl")
+include("macros.jl")
 
 export
   # spatial data
@@ -72,6 +74,10 @@ export
   AbstractSolverComparison,
   AbstractEstimSolverComparison,
   AbstractSimSolverComparison,
-  compare
+  compare,
+
+  # helper macros
+  @estimsolver,
+  @simsolver
 
 end
