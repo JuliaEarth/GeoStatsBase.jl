@@ -21,3 +21,4 @@ Base.map(::AbstractSpatialData, ::AbstractDomain,
 # IMPLEMENTATIONS
 #------------------
 include("mappers/simple_mapper.jl")
+include("mappers/copy_mapper.jl")

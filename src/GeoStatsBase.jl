@@ -39,6 +39,7 @@ export
   # mappers
   AbstractMapper,
   SimpleMapper,
+  CopyMapper,
 
   # problems
   AbstractProblem,
