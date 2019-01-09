@@ -32,11 +32,11 @@ Return the value type of `var` in `spatialdata`.
 valuetype(spatialdata::AbstractSpatialData, var::Symbol) = variables(spatialdata)[var]
 
 """
-    coordinates(spatialdata)
+    coordnames(spatialdata)
 
 Return the name of the coordinates in `spatialdata` and their types.
 """
-coordinates(::AbstractSpatialData) = error("not implemented")
+coordnames(::AbstractSpatialData) = error("not implemented")
 
 """
     variables(spatialdata)

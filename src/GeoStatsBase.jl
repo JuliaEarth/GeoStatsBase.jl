@@ -21,9 +21,10 @@ include("macros.jl")
 export
   # spatial data
   AbstractSpatialData,
+  coordtype,
+  coordnames,
   coordinates,
   coordinates!,
-  coordtype,
   variables,
   valuetype,
   npoints,
@@ -33,9 +34,9 @@ export
   # domains
   AbstractDomain,
   coordtype,
-  npoints,
   coordinates,
   coordinates!,
+  npoints,
   nearestlocation,
 
   # mappers
