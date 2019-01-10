@@ -64,6 +64,37 @@ function coordinates(spatialdata::AbstractSpatialData{T,N}, ind::Int) where {N,T
 end
 
 """
+    coordinates(spatialdata, inds)
+
+Return the coordinates of `inds` in the `spatialdata`.
+"""
+function coordinates(spatialdata::AbstractSpatialData{T,N},
+                     inds::AbstractVector{Int}) where {N,T<:Real}
+  X = Matrix{T}(undef, N, length(inds))
+  coordinates!(X, spatialdata, inds)
+  X
+end
+
+"""
+    coordinates(spatialdata)
+
+Return the coordinates of all indices in `spatialdata`.
+"""
+coordinates(spatialdata::AbstractSpatialData) = coordinates(spatialdata, 1:npoints(spatialdata))
+
+"""
+    coordinates!(buff, spatialdata, indices)
+
+Non-allocating version of [`coordinates`](@ref)
+"""
+function coordinates!(buff::AbstractMatrix, spatialdata::AbstractSpatialData,
+                      indices::AbstractVector{Int})
+  for j in 1:length(indices)
+    coordinates!(view(buff,:,j), spatialdata, indices[j])
+  end
+end
+
+"""
     coordinates!(buff, spatialdata, ind)
 
 Non-allocating version of [`coordinates`](@ref).
@@ -118,6 +149,6 @@ end
 """
     view(spatialdata, inds)
 
-Return a view of `spatialdata` with all points in `inds` locations.
+Return a view of `spatialdata` with all points in `inds`.
 """
 Base.view(spatialdata::AbstractSpatialData, inds::AbstractVector{Int}) = error("not implemented")
