@@ -91,12 +91,12 @@ macro metasolver(solver, solvertype, body)
     function Base.show(io::IO, ::MIME"text/plain", solver::$solver)
       println(io, solver)
       for (var, varparams) in solver.params
-        println(io, "  └─$var")
+        println(io, "  └─", var)
         pnames = setdiff(fieldnames(typeof(varparams)), [:__dummy__])
         for pname in pnames
           pval = getfield(varparams, pname)
           if pval ≠ nothing
-            print(io, "    └─$pname = ")
+            print(io, "    └─", pname, " ⇨ ")
             show(IOContext(io, :compact => true), pval)
             println(io, "")
           end
