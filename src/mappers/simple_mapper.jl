@@ -10,24 +10,29 @@ point in the domain.
 """
 struct SimpleMapper <: AbstractMapper end
 
-function Base.map(spatialdata::S, domain::D, targetvars::Vector{Symbol},
-                  mapper::SimpleMapper) where {S<:AbstractSpatialData,D<:AbstractDomain}
+function Base.map(spatialdata::AbstractSpatialData{T,N},
+                  domain::AbstractDomain{T,N},
+                  targetvars::Vector{Symbol},
+                  mapper::SimpleMapper) where {N,T<:Real}
   @assert targetvars ⊆ keys(variables(spatialdata)) "target variables must be present in spatial data"
 
   # dictionary with mappings
   mappings = Dict(var => Dict{Int,Int}() for var in targetvars)
 
-  for location in 1:npoints(spatialdata)
-    # get datum coordinates
-    coords = coordinates(spatialdata, location)
+  # pre-allocate memory for coordinates
+  coords = MVector{N,T}(undef)
+
+  for ind in 1:npoints(spatialdata)
+    # update datum coordinates
+    coordinates!(coords, spatialdata, ind)
 
     # find nearest location in the domain
     near = nearestlocation(domain, coords)
 
     # save pair if there is data for variable
     for var in targetvars
-      if isvalid(spatialdata, location, var)
-        push!(mappings[var], near => location)
+      if isvalid(spatialdata, ind, var)
+        push!(mappings[var], near => ind)
       end
     end
   end
