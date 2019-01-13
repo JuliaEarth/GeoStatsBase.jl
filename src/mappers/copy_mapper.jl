@@ -9,7 +9,7 @@ A mapping strategy in which data points are copied directly to the
 domain at the same location.
 """
 struct CopyMapper <: AbstractMapper
-  inds::Union{Vector{Int},Nothing}
+  locations::Union{Vector{Int},Nothing}
 end
 
 CopyMapper() = CopyMapper(nothing)
@@ -21,16 +21,16 @@ function Base.map(spatialdata::S, domain::D, targetvars::Vector{Symbol},
   # dictionary with mappings
   mappings = Dict(var => Dict{Int,Int}() for var in targetvars)
 
-  # indices in domain where to copy the data
-  inds = mapper.inds ≠ nothing ? inds : 1:npoints(spatialdata)
+  # locations in domain where to copy the data
+  locations = mapper.locations ≠ nothing ? mapper.locations : 1:npoints(spatialdata)
 
-  @assert length(inds) == npoints(spatialdata) "invalid indices in copy mapper"
+  @assert length(locations) == npoints(spatialdata) "invalid indices in copy mapper"
 
-  for location in 1:npoints(spatialdata)
+  for ind in 1:npoints(spatialdata)
     # save pair if there is data for variable
     for var in targetvars
-      if isvalid(spatialdata, location, var)
-        push!(mappings[var], inds[location] => location)
+      if isvalid(spatialdata, ind, var)
+        push!(mappings[var], locations[ind] => ind)
       end
     end
   end
