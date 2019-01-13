@@ -6,13 +6,14 @@
     CopyMapper
 
 A mapping strategy in which data points are copied directly to the
-domain at the same location.
+domain at specified locations.
 """
-struct CopyMapper <: AbstractMapper
-  locations::Union{Vector{Int},Nothing}
+struct CopyMapper{V1,V2} <: AbstractMapper
+  orig::V1
+  dest::V2
 end
 
-CopyMapper() = CopyMapper(nothing)
+CopyMapper(dest) = CopyMapper(nothing, dest)
 
 function Base.map(spatialdata::S, domain::D, targetvars::Vector{Symbol},
                   mapper::CopyMapper) where {S<:AbstractSpatialData,D<:AbstractDomain}
@@ -21,16 +22,17 @@ function Base.map(spatialdata::S, domain::D, targetvars::Vector{Symbol},
   # dictionary with mappings
   mappings = Dict(var => Dict{Int,Int}() for var in targetvars)
 
-  # locations in domain where to copy the data
-  locations = mapper.locations ≠ nothing ? mapper.locations : 1:npoints(spatialdata)
+  # retrieve origin and destination indices
+  orig = mapper.orig ≠ nothing ? mapper.orig : 1:npoints(spatialdata)
+  dest = mapper.dest
 
-  @assert length(locations) == npoints(spatialdata) "invalid indices in copy mapper"
+  @assert length(orig) == length(dest) "invalid mapping specification"
 
-  for ind in 1:npoints(spatialdata)
+  for i in eachindex(orig, dest)
     # save pair if there is data for variable
     for var in targetvars
-      if isvalid(spatialdata, ind, var)
-        push!(mappings[var], locations[ind] => ind)
+      if isvalid(spatialdata, orig[i], var)
+        push!(mappings[var], dest[i] => orig[i])
       end
     end
   end
