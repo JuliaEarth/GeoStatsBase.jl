@@ -14,6 +14,7 @@ struct CopyMapper{V1,V2} <: AbstractMapper
 end
 
 CopyMapper(dest) = CopyMapper(nothing, dest)
+CopyMapper() = CopyMapper(nothing, nothing)
 
 function Base.map(spatialdata::S, domain::D, targetvars::Vector{Symbol},
                   mapper::CopyMapper) where {S<:AbstractSpatialData,D<:AbstractDomain}
@@ -24,7 +25,7 @@ function Base.map(spatialdata::S, domain::D, targetvars::Vector{Symbol},
 
   # retrieve origin and destination indices
   orig = mapper.orig ≠ nothing ? mapper.orig : 1:npoints(spatialdata)
-  dest = mapper.dest
+  dest = mapper.dest ≠ nothing ? mapper.dest : 1:npoints(spatialdata)
 
   @assert length(orig) == length(dest) "invalid mapping specification"
 
