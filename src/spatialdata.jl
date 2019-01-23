@@ -152,4 +152,5 @@ end
 
 Return a view of `spatialdata` with all points in `inds`.
 """
-Base.view(spatialdata::AbstractSpatialData, inds::AbstractVector{Int}) = error("not implemented")
+Base.view(spatialdata::AbstractSpatialData,
+          inds::AbstractVector{Int}) = SpatialDataView(spatialdata, inds)

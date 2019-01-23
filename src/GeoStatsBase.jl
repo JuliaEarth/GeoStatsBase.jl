@@ -10,6 +10,7 @@ using StaticArrays
 using Parameters
 
 include("spatialdata.jl")
+include("spatialdataview.jl")
 include("domains.jl")
 include("mappers.jl")
 include("problems.jl")
