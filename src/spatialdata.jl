@@ -125,25 +125,26 @@ Return all points in `spatialdata` with a valid value for `var`. The output
 is a tuple with the matrix of coordinates as the first item and the vector
 of values as the second item.
 """
-function valid(spatialdata::AbstractSpatialData, var::Symbol)
+function valid(spatialdata::AbstractSpatialData{T,N}, var::Symbol) where {N,T<:Real}
   # determine coordinate and value type
-  T = coordtype(spatialdata)
   V = valuetype(spatialdata, var)
+  npts = npoints(spatialdata)
 
-  # provide size hint for output
-  xs = Vector{Vector{T}}(); zs = Vector{V}()
-  sizehint!(xs, npoints(spatialdata))
-  sizehint!(zs, npoints(spatialdata))
+  # pre-allocate memory for result
+  X = Matrix{T}(undef, N, npts)
+  z = Vector{V}(undef, npts)
 
-  for location in 1:npoints(spatialdata)
-    if isvalid(spatialdata, location, var)
-      push!(xs, coordinates(spatialdata, location))
-      push!(zs, value(spatialdata, location, var))
+  nvalid = 0
+  for ind in 1:npoints(spatialdata)
+    if isvalid(spatialdata, ind, var)
+      nvalid += 1
+      coordinates!(view(X,:,nvalid), spatialdata, ind)
+      z[nvalid] = value(spatialdata, ind, var)
     end
   end
 
   # return matrix and vector
-  hcat(xs...), zs
+  view(X,:,1:nvalid), view(z,1:nvalid)
 end
 
 """
