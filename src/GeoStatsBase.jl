@@ -12,6 +12,7 @@ using Parameters
 include("spatialdata.jl")
 include("spatialdataview.jl")
 include("domains.jl")
+include("domainview.jl")
 include("mappers.jl")
 include("problems.jl")
 include("solutions.jl")

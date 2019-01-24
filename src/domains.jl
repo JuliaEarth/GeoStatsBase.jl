@@ -80,3 +80,11 @@ end
 Non-allocating version of [`coordinates`](@ref).
 """
 coordinates!(::AbstractVector, ::AbstractDomain, ::Int) = error("not implemented")
+
+"""
+    view(domain, locations)
+
+Return a view of `domain` with all points in `locations`.
+"""
+Base.view(domain::AbstractDomain,
+          locations::AbstractVector{Int}) = DomainView(domain, locations)

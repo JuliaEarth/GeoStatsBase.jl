@@ -5,8 +5,11 @@
 """
     SpatialDataView(spatialdata, inds)
 
-Return a view of `spatialdata` at indices `inds`. This type implements
-the `AbstractSpatialData` interface.
+Return a view of `spatialdata` at `inds`.
+
+### Notes
+
+This type implements the `AbstractSpatialData` interface.
 """
 struct SpatialDataView{T<:Real,N,
                        S<:AbstractSpatialData{T,N},
