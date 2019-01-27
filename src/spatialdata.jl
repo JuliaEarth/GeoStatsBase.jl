@@ -36,7 +36,7 @@ valuetype(spatialdata::AbstractSpatialData, var::Symbol) = variables(spatialdata
 
 Return the name of the coordinates in `spatialdata` and their types.
 """
-coordnames(spatialdata::AbstractSpatialData{T,N}) where {N,T<:Real} = Dict(Symbol("x$i") => T for i=1:N)
+coordnames(spatialdata::AbstractSpatialData{T,N}) where {N,T<:Real} = [(Symbol(:x,i), T) for i=1:N]
 
 """
     variables(spatialdata)
