@@ -69,7 +69,7 @@ end
 function SimulationProblem(spatialdata::S, domain::D, targetvarnames::Vector{Symbol}, nreals::Int;
                            mapper::M=SimpleMapper()) where {S<:AbstractSpatialData,D<:AbstractDomain,M<:AbstractMapper}
   datavnames = [var for (var,V) in variables(spatialdata)]
-  datacnames = [coord for (coord,T) in coordnames(spatialdata)]
+  datacnames = coordnames(spatialdata)
 
   @assert targetvarnames ⊆ datavnames "target variables must be present in spatial data"
   @assert isempty(targetvarnames ∩ datacnames) "target variables can't be coordinates"

@@ -37,7 +37,7 @@ struct EstimationProblem{S<:AbstractSpatialData,D<:AbstractDomain,M<:AbstractMap
                                     mapper) where {S<:AbstractSpatialData,D<:AbstractDomain,M<:AbstractMapper}
     probvnames = [var for (var,V) in targetvars]
     datavnames = [var for (var,V) in variables(spatialdata)]
-    datacnames = [coord for (coord,T) in coordnames(spatialdata)]
+    datacnames = coordnames(spatialdata)
 
     @assert !isempty(probvnames) && probvnames ⊆ datavnames "target variables must be present in spatial data"
     @assert isempty(probvnames ∩ datacnames) "target variables can't be coordinates"

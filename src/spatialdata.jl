@@ -25,18 +25,18 @@ Return the coordinate type of a spatial data.
 coordtype(::AbstractSpatialData{T,N}) where {N,T<:Real} = T
 
 """
+    coordnames(spatialdata)
+
+Return the name of the coordinates in `spatialdata`.
+"""
+coordnames(spatialdata::AbstractSpatialData{T,N}) where {N,T<:Real} = ntuple(i -> Symbol(:x,i), N)
+
+"""
     valuetype(spatialdata, var)
 
 Return the value type of `var` in `spatialdata`.
 """
 valuetype(spatialdata::AbstractSpatialData, var::Symbol) = variables(spatialdata)[var]
-
-"""
-    coordnames(spatialdata)
-
-Return the name of the coordinates in `spatialdata` and their types.
-"""
-coordnames(spatialdata::AbstractSpatialData{T,N}) where {N,T<:Real} = [(Symbol(:x,i), T) for i=1:N]
 
 """
     variables(spatialdata)
