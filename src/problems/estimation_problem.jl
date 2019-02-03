@@ -100,6 +100,14 @@ Return the mapping from domain locations to data locations for the
 """
 datamap(problem::EstimationProblem, var) = problem.mappings[var]
 
+"""
+    datamap(problem)
+
+Return the mappings from domain locations to data locations for all
+the variables of the `problem`.
+"""
+datamap(problem::EstimationProblem) = problem.mappings
+
 # ------------
 # IO methods
 # ------------
