@@ -143,8 +143,7 @@ function valid(spatialdata::AbstractSpatialData{T,N}, var::Symbol) where {N,T<:R
     end
   end
 
-  # return matrix and vector
-  view(X,:,1:nvalid), view(z,1:nvalid)
+  X[:,1:nvalid], z[1:nvalid]
 end
 
 """
