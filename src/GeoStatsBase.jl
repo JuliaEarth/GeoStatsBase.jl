@@ -20,6 +20,10 @@ include("solvers.jl")
 include("comparisons.jl")
 include("macros.jl")
 
+# sometimes spatial data and domain can be treated as equal
+const AbstractDataOrDomain{T,N} = Union{AbstractSpatialData{T,N},
+                                        AbstractDomain{T,N}}
+
 export
   # spatial data
   AbstractSpatialData,
@@ -40,6 +44,9 @@ export
   coordinates!,
   npoints,
   nearestlocation,
+
+  # data or domain
+  AbstractDataOrDomain,
 
   # mappers
   AbstractMapper,
