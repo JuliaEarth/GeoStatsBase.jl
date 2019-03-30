@@ -40,6 +40,7 @@ Convert solution to a dictionary-like format where the
 keys of the dictionary are the variables of the problem.
 """
 function digest(solution::EstimationSolution)
+  Base.depwarn("digest(solution) is deprecated, use solution[:var] instead", :digest)
   # solution variables
   variables = keys(solution.mean)
 
