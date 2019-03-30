@@ -9,7 +9,7 @@ A solution to a spatial simulation problem.
 """
 struct SimulationSolution{D<:AbstractDomain} <: AbstractSolution
   domain::D
-  realizations::Dict{Symbol,Vector{Vector}}
+  realizations::Dict{Symbol,Vector{Vector{<:Number}}}
 end
 
 SimulationSolution(domain, realizations) =
@@ -21,6 +21,16 @@ SimulationSolution(domain, realizations) =
 Return the domain of a simulation `solution`.
 """
 domain(solution::SimulationSolution) = solution.domain
+
+"""
+    getindex(solution, var)
+
+Return simulation solution for specific variable `var`
+as a vector of realizations.
+"""
+function Base.getindex(solution::SimulationSolution, var::Symbol)
+  solution.realizations[var]
+end
 
 """
     digest(solution)
