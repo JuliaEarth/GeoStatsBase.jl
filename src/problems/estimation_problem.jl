@@ -54,7 +54,7 @@ function EstimationProblem(spatialdata::S, domain::D, targetvarnames::Vector{Sym
                            mapper::M=SimpleMapper()) where {S<:AbstractSpatialData,D<:AbstractDomain,M<:AbstractMapper}
   # build dictionary of target variables
   datavars = variables(spatialdata)
-  targetvars = Dict(var => T for (var,T) in datavars if var ∈ targetvarnames)
+  targetvars = Dict(var => Base.nonmissingtype(T) for (var,T) in datavars if var ∈ targetvarnames)
 
   EstimationProblem{S,D,M}(spatialdata, domain, targetvars, mapper)
 end

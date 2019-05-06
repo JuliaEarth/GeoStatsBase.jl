@@ -78,7 +78,7 @@ function SimulationProblem(spatialdata::S, domain::D, targetvarnames::Vector{Sym
 
   # build dictionary of target variables
   datavars = variables(spatialdata)
-  targetvars = Dict(var => T for (var,T) in datavars if var ∈ targetvarnames)
+  targetvars = Dict(var => Base.nonmissingtype(T) for (var,T) in datavars if var ∈ targetvarnames)
 
   SimulationProblem{S,D,M}(spatialdata, domain, targetvars, nreals, mapper)
 end
