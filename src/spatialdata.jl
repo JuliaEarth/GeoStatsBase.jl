@@ -109,6 +109,14 @@ Return the value of `var` for the `ind`-th point in `spatialdata`.
 value(::AbstractSpatialData, ::Int, ::Symbol) = error("not implemented")
 
 """
+    values(spatialdata, var)
+
+Return the values of `var` for all the points in `spatialdata`.
+"""
+Base.values(spatialdata::AbstractSpatialData, var::Symbol) =
+  [value(spatialdata, ind, var) for ind in 1:npoints(spatialdata)]
+
+"""
     isvalid(spatialdata, ind, var)
 
 Return `true` if the `ind`-th point in `spatialdata` has a valid value for `var`.
