@@ -27,6 +27,7 @@ const AbstractDataOrDomain{T,N} = Union{AbstractSpatialData{T,N},
 export
   # spatial data
   AbstractSpatialData,
+  domain,
   coordtype,
   coordnames,
   coordinates,

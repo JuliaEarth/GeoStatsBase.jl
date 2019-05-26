@@ -25,6 +25,13 @@ Return the coordinate type of a spatial data.
 coordtype(::AbstractSpatialData{T,N}) where {N,T<:Real} = T
 
 """
+    domain(spatialdata)
+
+Return the underlying domain of spatial data.
+"""
+domain(spatialdata::AbstractSpatialData) = spatialdata.domain
+
+"""
     coordnames(spatialdata)
 
 Return the name of the coordinates in `spatialdata`.
