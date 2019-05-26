@@ -162,3 +162,18 @@ Return a view of `spatialdata` with all points in `inds`.
 """
 Base.view(spatialdata::AbstractSpatialData,
           inds::AbstractVector{Int}) = SpatialDataView(spatialdata, inds)
+
+# ------------
+# IO methods
+# ------------
+function Base.show(io::IO, spatialdata::AbstractSpatialData{T,N}) where {N,T<:Real}
+  npts = npoints(spatialdata)
+  print(io, "$npts SpatialData{$T,$N}")
+end
+
+function Base.show(io::IO, ::MIME"text/plain", spatialdata::AbstractSpatialData{T,N}) where {N,T<:Real}
+  println(io, spatialdata)
+  println(io, "  variables")
+  varlines = ["    └─$var ($(eltype(array)))" for (var,array) in spatialdata.data]
+  print(io, join(varlines, "\n"))
+end

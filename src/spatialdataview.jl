@@ -34,3 +34,20 @@ value(view::SpatialDataView, ind::Int, var::Symbol) =
 
 Base.isvalid(view::SpatialDataView, ind::Int, var::Symbol) =
   isvalid(view.data, view.inds[ind], var)
+
+# ------------
+# IO methods
+# ------------
+function Base.show(io::IO, view::SpatialDataView{T,N,S,I}) where {T<:Real,N,
+                                                                  S<:AbstractSpatialData{T,N},
+                                                                  I<:AbstractVector{Int}}
+  npts = npoints(view)
+  print(io, "$npts SpatialDataView{$T,$N}")
+end
+
+function Base.show(io::IO, ::MIME"text/plain", view::SpatialDataView)
+  println(io, view)
+  println(io, "  variables")
+  varlines = ["    └─$var ($(eltype(array)))" for (var,array) in view.data.data]
+  print(io, join(varlines, "\n"))
+end
