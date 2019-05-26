@@ -18,10 +18,6 @@ struct SpatialDataView{T<:Real,N,
   inds::I
 end
 
-Base.ndims(view::SpatialDataView) = ndims(view.data)
-
-coordtype(view::SpatialDataView) = coordtype(view.data)
-
 valuetype(view::SpatialDataView, var::Symbol) = valuetype(view.data, var)
 
 coordnames(view::SpatialDataView) = coordnames(view.data)
