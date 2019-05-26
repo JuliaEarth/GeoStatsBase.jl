@@ -32,21 +32,6 @@ function Base.getindex(solution::SimulationSolution, var::Symbol)
   solution.realizations[var]
 end
 
-"""
-    digest(solution)
-
-Convert solution to a dictionary-like format where the
-keys of the dictionary are the variables of the problem.
-"""
-function digest(solution::SimulationSolution)
-  Base.depwarn("digest(solution) is deprecated, use solution[:var] instead", :digest)
-  # solution variables
-  variables = collect(keys(solution.realizations))
-
-  # output dictionary
-  Dict(var => solution.realizations[var] for var in variables)
-end
-
 # ------------
 # IO methods
 # ------------

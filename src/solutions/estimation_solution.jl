@@ -33,30 +33,6 @@ function Base.getindex(solution::EstimationSolution, var::Symbol)
   (mean=solution.mean[var], variance=solution.variance[var])
 end
 
-"""
-    digest(solution)
-
-Convert solution to a dictionary-like format where the
-keys of the dictionary are the variables of the problem.
-"""
-function digest(solution::EstimationSolution)
-  Base.depwarn("digest(solution) is deprecated, use solution[:var] instead", :digest)
-  # solution variables
-  variables = keys(solution.mean)
-
-  # build dictionary pairs
-  pairs = []
-  for var in variables
-    M = solution.mean[var]
-    V = solution.variance[var]
-
-    push!(pairs, var => Dict(:mean => M, :variance => V))
-  end
-
-  # output dictionary
-  Dict(pairs)
-end
-
 # ------------
 # IO methods
 # ------------

@@ -72,7 +72,6 @@ export
   EstimationSolution,
   SimulationSolution,
   domain,
-  digest,
 
   # solvers
   AbstractSolver,
