@@ -16,13 +16,6 @@ SimulationSolution(domain, realizations) =
   SimulationSolution{typeof(domain)}(domain, realizations)
 
 """
-    domain(solution)
-
-Return the domain of a simulation `solution`.
-"""
-domain(solution::SimulationSolution) = solution.domain
-
-"""
     getindex(solution, var)
 
 Return simulation solution for specific variable `var`

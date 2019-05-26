@@ -17,13 +17,6 @@ EstimationSolution(domain, mean, variance) =
   EstimationSolution{typeof(domain)}(domain, mean, variance)
 
 """
-    domain(solution)
-
-Return the domain of the estimation `solution`.
-"""
-domain(solution::EstimationSolution) = solution.domain
-
-"""
     getindex(solution, var)
 
 Return estimation solution for specific variable `var`

@@ -18,10 +18,6 @@ struct DomainView{T<:Real,N,
   locations::I
 end
 
-Base.ndims(view::DomainView) = ndims(view.domain)
-
-coordtype(view::DomainView) = coordtype(view.domain)
-
 npoints(view::DomainView) = length(view.locations)
 
 coordinates!(buff::AbstractVector, view::DomainView, location::Int) =

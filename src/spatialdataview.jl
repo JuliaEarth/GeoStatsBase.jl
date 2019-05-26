@@ -18,6 +18,8 @@ struct SpatialDataView{T<:Real,N,
   inds::I
 end
 
+domain(dv::SpatialDataView) = view(domain(dv.data), dv.inds)
+
 valuetype(view::SpatialDataView, var::Symbol) = valuetype(view.data, var)
 
 coordnames(view::SpatialDataView) = coordnames(view.data)
