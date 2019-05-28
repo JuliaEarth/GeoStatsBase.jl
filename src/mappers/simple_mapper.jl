@@ -39,21 +39,3 @@ function Base.map(spatialdata::AbstractSpatialData{T,N},
 
   mappings
 end
-
-"""
-    nearestlocation(domain, coords)
-
-Return the nearest location of `coords` in the `domain`.
-"""
-function nearestlocation(domain::AbstractDomain{T,N},
-                         coords::AbstractVector{T}) where {N,T<:Real}
-  lmin, dmin = 0, Inf
-  c = MVector{N,T}(undef)
-  for l in 1:npoints(domain)
-    coordinates!(c, domain, l)
-    d = norm(coords - c)
-    d < dmin && ((lmin, dmin) = (l, d))
-  end
-
-  lmin
-end

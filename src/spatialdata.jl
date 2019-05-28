@@ -5,31 +5,9 @@
 """
     AbstractSpatialData{T,N}
 
-Spatial data distributed in a `N`-dimensional
-space using coordinates of type `T`.
+Spatial data in a `N`-dimensional space with coordinates of type `T`.
 """
-abstract type AbstractSpatialData{T<:Real,N} end
-
-"""
-    ndims(spatialdata)
-
-Return the number of dimensions of domain underlying `spatialdata`.
-"""
-Base.ndims(::AbstractSpatialData{T,N}) where {N,T<:Real} = N
-
-"""
-    coordtype(spatialdata)
-
-Return the coordinate type of `spatialdata`.
-"""
-coordtype(::AbstractSpatialData{T,N}) where {N,T<:Real} = T
-
-"""
-    coordnames(spatialdata)
-
-Return the name of the coordinates in `spatialdata`.
-"""
-coordnames(spatialdata::AbstractSpatialData{T,N}) where {N,T<:Real} = ntuple(i -> Symbol(:x,i), N)
+abstract type AbstractSpatialData{T<:Real,N} <: AbstractSpatialObject{T,N} end
 
 """
     valuetype(spatialdata, var)
@@ -44,63 +22,6 @@ valuetype(spatialdata::AbstractSpatialData, var::Symbol) = variables(spatialdata
 Return the variable names in `spatialdata` and their types.
 """
 variables(spatialdata::AbstractSpatialData) = Dict(var => eltype(array) for (var,array) in spatialdata.data)
-
-"""
-    npoints(spatialdata)
-
-Return the number of points in `spatialdata`.
-"""
-npoints(spatialdata::AbstractSpatialData) = npoints(spatialdata.domain)
-
-"""
-    coordinates(spatialdata, ind)
-
-Return the coordinates of the `ind`-th point in `spatialdata`.
-"""
-function coordinates(spatialdata::AbstractSpatialData{T,N}, ind::Int) where {N,T<:Real}
-  coords = MVector{N,T}(undef)
-  coordinates!(coords, spatialdata, ind)
-  coords
-end
-
-"""
-    coordinates(spatialdata, inds)
-
-Return the coordinates of `inds` in the `spatialdata`.
-"""
-function coordinates(spatialdata::AbstractSpatialData{T,N},
-                     inds::AbstractVector{Int}) where {N,T<:Real}
-  X = Matrix{T}(undef, N, length(inds))
-  coordinates!(X, spatialdata, inds)
-  X
-end
-
-"""
-    coordinates(spatialdata)
-
-Return the coordinates of all indices in `spatialdata`.
-"""
-coordinates(spatialdata::AbstractSpatialData) = coordinates(spatialdata, 1:npoints(spatialdata))
-
-"""
-    coordinates!(buff, spatialdata, indices)
-
-Non-allocating version of [`coordinates`](@ref)
-"""
-function coordinates!(buff::AbstractMatrix, spatialdata::AbstractSpatialData,
-                      indices::AbstractVector{Int})
-  for j in 1:length(indices)
-    coordinates!(view(buff,:,j), spatialdata, indices[j])
-  end
-end
-
-"""
-    coordinates!(buff, spatialdata, ind)
-
-Non-allocating version of [`coordinates`](@ref).
-"""
-coordinates!(buff::AbstractVector, spatialdata::AbstractSpatialData, ind::Int) =
-  coordinates!(buff, spatialdata.domain, ind)
 
 """
     value(spatialdata, ind, var)

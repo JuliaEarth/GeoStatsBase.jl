@@ -9,10 +9,11 @@ using Distributed
 using StaticArrays
 using Parameters
 
-include("spatialdata.jl")
-include("spatialdataview.jl")
+include("spatialobject.jl")
 include("domains.jl")
 include("domainview.jl")
+include("spatialdata.jl")
+include("spatialdataview.jl")
 include("mappers.jl")
 include("problems.jl")
 include("solutions.jl")
@@ -20,36 +21,26 @@ include("solvers.jl")
 include("comparisons.jl")
 include("macros.jl")
 
-# sometimes spatial data and domain can be treated as equal
-const AbstractDataOrDomain{T,N} = Union{AbstractSpatialData{T,N},
-                                        AbstractDomain{T,N}}
-
-# spatial objects have a domain
-domain(object) = object.domain
-
 export
-  # spatial data
-  AbstractSpatialData,
+  # spatial object
+  AbstractSpatialObject,
+  domain,
+  npoints,
   coordtype,
   coordnames,
   coordinates,
   coordinates!,
-  variables,
-  valuetype,
-  npoints,
-  value,
-  valid,
+  nearestlocation,
 
   # domains
   AbstractDomain,
-  coordtype,
-  coordinates,
-  coordinates!,
-  npoints,
-  nearestlocation,
 
-  # data or domain
-  AbstractDataOrDomain,
+  # spatial data
+  AbstractSpatialData,
+  variables,
+  valuetype,
+  value,
+  valid,
 
   # mappers
   AbstractMapper,
