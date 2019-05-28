@@ -30,6 +30,7 @@ export
   coordnames,
   coordinates,
   coordinates!,
+  coordextrema,
   nearestlocation,
 
   # domains
