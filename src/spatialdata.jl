@@ -39,6 +39,14 @@ Base.values(spatialdata::AbstractSpatialData, var::Symbol) =
   [value(spatialdata, ind, var) for ind in 1:npoints(spatialdata)]
 
 """
+    values(spatialdata)
+
+Return the values of all variables in `spatialdata`.
+"""
+Base.values(spatialdata::AbstractSpatialData) =
+  Dict(var => values(spatialdata, var) for (var,V) in variables(spatialdata))
+
+"""
     isvalid(spatialdata, ind, var)
 
 Return `true` if the `ind`-th point in `spatialdata` has a valid value for `var`.
