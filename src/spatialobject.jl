@@ -101,19 +101,19 @@ coordinates!(buff::AbstractVector, object::AbstractSpatialObject, location::Int)
 Return the extrema of the coordinates of the `object`.
 """
 function coordextrema(object::AbstractSpatialObject{T,N}) where {N,T<:Real}
-  bottomleft = MVector(ntuple(i->typemax(T), N))
+  lowerleft  = MVector(ntuple(i->typemax(T), N))
   upperright = MVector(ntuple(i->typemin(T), N))
 
   x = MVector{N,T}(undef)
   for l in 1:npoints(object)
     coordinates!(x, object, l)
     for d in 1:N
-      x[d] < bottomleft[d] && (bottomleft[d] = x[d])
+      x[d] < lowerleft[d]  && (lowerleft[d]  = x[d])
       x[d] > upperright[d] && (upperright[d] = x[d])
     end
   end
 
-  bottomleft, upperright
+  lowerleft, upperright
 end
 
 """
