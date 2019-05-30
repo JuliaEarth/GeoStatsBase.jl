@@ -20,22 +20,10 @@ end
 
 domain(dv::SpatialDataView) = view(domain(dv.data), dv.inds)
 
-valuetype(view::SpatialDataView, var::Symbol) = valuetype(view.data, var)
-
-coordnames(view::SpatialDataView) = coordnames(view.data)
-
 variables(view::SpatialDataView) = variables(view.data)
-
-npoints(view::SpatialDataView) = length(view.inds)
-
-coordinates!(buff::AbstractVector, view::SpatialDataView, ind::Int) =
-  coordinates!(buff, view.data, view.inds[ind])
 
 value(view::SpatialDataView, ind::Int, var::Symbol) =
   value(view.data, view.inds[ind], var)
-
-Base.isvalid(view::SpatialDataView, ind::Int, var::Symbol) =
-  isvalid(view.data, view.inds[ind], var)
 
 # ------------
 # IO methods
@@ -50,6 +38,6 @@ end
 function Base.show(io::IO, ::MIME"text/plain", view::SpatialDataView)
   println(io, view)
   println(io, "  variables")
-  varlines = ["    └─$var ($(eltype(array)))" for (var,array) in view.data.data]
+  varlines = ["    └─$var ($V)" for (var,V) in variables(view)]
   print(io, join(varlines, "\n"))
 end
