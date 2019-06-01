@@ -25,12 +25,12 @@ export
   # spatial object
   AbstractSpatialObject,
   domain,
+  extent,
   npoints,
   coordtype,
   coordnames,
   coordinates,
   coordinates!,
-  coordextrema,
   nearestlocation,
 
   # domains

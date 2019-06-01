@@ -9,12 +9,7 @@ Spatial domain in a `N`-dimensional space with coordinates of type `T`.
 """
 abstract type AbstractDomain{T<:Real,N} <: AbstractSpatialObject{T,N} end
 
-"""
-    coordextrema(domain)
-
-Return the extrema of the coordinates of the `domain`.
-"""
-function coordextrema(domain::AbstractDomain{T,N}) where {N,T<:Real}
+function extent(domain::AbstractDomain{T,N}) where {N,T<:Real}
   lowerleft  = MVector(ntuple(i->typemax(T), N))
   upperright = MVector(ntuple(i->typemin(T), N))
 
@@ -27,14 +22,9 @@ function coordextrema(domain::AbstractDomain{T,N}) where {N,T<:Real}
     end
   end
 
-  lowerleft, upperright
+  ntuple(i->(lowerleft[i],upperright[i]), N)
 end
 
-"""
-    nearestlocation(domain, coords)
-
-Return the nearest location of `coords` in the `domain`.
-"""
 function nearestlocation(domain::AbstractDomain{T,N},
                          coords::AbstractVector{T}) where {N,T<:Real}
   lmin, dmin = 0, Inf

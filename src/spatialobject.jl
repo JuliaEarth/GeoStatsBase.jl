@@ -96,11 +96,11 @@ coordinates!(buff::AbstractVector, object::AbstractSpatialObject, location::Int)
   coordinates!(buff, domain(object), location)
 
 """
-    coordextrema(object)
+    extent(object)
 
-Return the extrema of the coordinates of the `object`.
+Return the extent (i.e. bounds of each dimension) of the `object`.
 """
-coordextrema(object::AbstractSpatialObject) = coordextrema(domain(object))
+extent(object::AbstractSpatialObject) = extent(domain(object))
 
 """
     nearestlocation(object, coords)
