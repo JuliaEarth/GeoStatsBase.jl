@@ -47,6 +47,13 @@ Base.values(spatialdata::AbstractSpatialData) =
   Dict(var => values(spatialdata, var) for (var,V) in variables(spatialdata))
 
 """
+    spatialdata[var]
+
+Return `values(spatialdata, var)` with the correct shape of the underlying domain.
+"""
+Base.getindex(spatialdata::AbstractSpatialData, var::Symbol) = values(spatialdata, var)
+
+"""
     isvalid(spatialdata, ind, var)
 
 Return `true` if the `ind`-th point in `spatialdata` has a valid value for `var`.
