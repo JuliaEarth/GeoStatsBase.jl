@@ -54,19 +54,6 @@ Return `values(spatialdata, var)` with the correct shape of the underlying domai
 Base.getindex(spatialdata::AbstractSpatialData, var::Symbol) = values(spatialdata, var)
 
 """
-    spatialdata[x,y,...]
-
-Return nearest data to the coordinates (x,y,...) as a named tuple.
-"""
-function Base.getindex(spatialdata::AbstractSpatialData{T,N},
-                       coords::Vararg{T,N}) where {N,T<:Real}
-  ind = nearestlocation(spatialdata, SVector(coords))
-  vars = [var for (var,V) in variables(spatialdata)]
-  vals = [value(spatialdata, ind, var) for var in vars]
-  NamedTuple{tuple(vars...)}(vals)
-end
-
-"""
     isvalid(spatialdata, ind, var)
 
 Return `true` if the `ind`-th point in `spatialdata` has a valid value for `var`.
