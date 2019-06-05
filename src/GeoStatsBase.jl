@@ -25,7 +25,7 @@ export
   # spatial object
   AbstractSpatialObject,
   domain,
-  extent,
+  bounds,
   npoints,
   coordtype,
   coordnames,

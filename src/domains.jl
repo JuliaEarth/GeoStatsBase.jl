@@ -9,7 +9,7 @@ Spatial domain in a `N`-dimensional space with coordinates of type `T`.
 """
 abstract type AbstractDomain{T<:Real,N} <: AbstractSpatialObject{T,N} end
 
-function extent(domain::AbstractDomain{T,N}) where {N,T<:Real}
+function bounds(domain::AbstractDomain{T,N}) where {N,T<:Real}
   lowerleft  = MVector(ntuple(i->typemax(T), N))
   upperright = MVector(ntuple(i->typemin(T), N))
 

@@ -96,11 +96,11 @@ coordinates!(buff::AbstractVector, object::AbstractSpatialObject, location::Int)
   coordinates!(buff, domain(object), location)
 
 """
-    extent(object)
+    bounds(object)
 
-Return the extent (i.e. bounds of each dimension) of the `object`.
+Return the bounds (i.e. ranges of bounding box) of the `object`.
 """
-extent(object::AbstractSpatialObject) = extent(domain(object))
+bounds(object::AbstractSpatialObject) = bounds(domain(object))
 
 """
     nearestlocation(object, coords)
