@@ -7,7 +7,7 @@
 
 Spatial object in a `N`-dimensional space with coordinates of type `T`.
 """
-abstract type AbstractSpatialObject{T<:Real,N} end
+abstract type AbstractSpatialObject{T,N} end
 
 """
     domain(object)
@@ -21,21 +21,21 @@ domain(object) = object.domain
 
 Return the number of dimensions of domain underlying `object`.
 """
-Base.ndims(::AbstractSpatialObject{T,N}) where {N,T<:Real} = N
+Base.ndims(::AbstractSpatialObject{T,N}) where {N,T} = N
 
 """
     coordtype(object)
 
 Return the coordinate type of `object`.
 """
-coordtype(::AbstractSpatialObject{T,N}) where {N,T<:Real} = T
+coordtype(::AbstractSpatialObject{T,N}) where {N,T} = T
 
 """
     coordnames(object)
 
 Return the name of the coordinates in `object`.
 """
-coordnames(object::AbstractSpatialObject{T,N}) where {N,T<:Real} = ntuple(i -> Symbol(:x,i), N)
+coordnames(object::AbstractSpatialObject{T,N}) where {N,T} = ntuple(i -> Symbol(:x,i), N)
 
 """
     npoints(object)
@@ -50,7 +50,7 @@ npoints(object::AbstractSpatialObject) = npoints(domain(object))
 Return the coordinates of the `location` in the `object`.
 """
 function coordinates(object::AbstractSpatialObject{T,N},
-                     location::Int) where {N,T<:Real}
+                     location::Int) where {N,T}
   x = MVector{N,T}(undef)
   coordinates!(x, object, location)
   x
@@ -62,7 +62,7 @@ end
 Return the coordinates of `locations` in the `object`.
 """
 function coordinates(object::AbstractSpatialObject{T,N},
-                     locations::AbstractVector{Int}) where {N,T<:Real}
+                     locations::AbstractVector{Int}) where {N,T}
   X = Matrix{T}(undef, N, length(locations))
   coordinates!(X, object, locations)
   X
@@ -108,5 +108,5 @@ bounds(object::AbstractSpatialObject) = bounds(domain(object))
 Return the nearest location of `coords` in the `object`.
 """
 nearestlocation(object::AbstractSpatialObject{T,N},
-                coords::AbstractVector{T}) where {N,T<:Real} =
+                coords::AbstractVector{T}) where {N,T} =
   nearestlocation(domain(object), coords)

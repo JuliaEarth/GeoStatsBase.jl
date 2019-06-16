@@ -11,7 +11,7 @@ Return a view of `domain` at `locations`.
 
 This type implements the `AbstractDomain` interface.
 """
-struct DomainView{T<:Real,N,
+struct DomainView{T,N,
                   D<:AbstractDomain{T,N},
                   I<:AbstractVector{Int}} <: AbstractDomain{T,N}
   domain::D
@@ -26,7 +26,7 @@ coordinates!(buff::AbstractVector, view::DomainView, location::Int) =
 # ------------
 # IO methods
 # ------------
-function Base.show(io::IO, view::DomainView{T,N,D,I}) where {T<:Real,N,
+function Base.show(io::IO, view::DomainView{T,N,D,I}) where {T,N,
                                                              D<:AbstractDomain{T,N},
                                                              I<:AbstractVector{Int}}
   npts = npoints(view)

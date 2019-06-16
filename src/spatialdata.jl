@@ -7,7 +7,7 @@
 
 Spatial data in a `N`-dimensional space with coordinates of type `T`.
 """
-abstract type AbstractSpatialData{T<:Real,N} <: AbstractSpatialObject{T,N} end
+abstract type AbstractSpatialData{T,N} <: AbstractSpatialObject{T,N} end
 
 """
     valuetype(spatialdata, var)
@@ -70,7 +70,7 @@ Return all points in `spatialdata` with a valid value for `var`. The output
 is a tuple with the matrix of coordinates as the first item and the vector
 of values as the second item.
 """
-function valid(spatialdata::AbstractSpatialData{T,N}, var::Symbol) where {N,T<:Real}
+function valid(spatialdata::AbstractSpatialData{T,N}, var::Symbol) where {N,T}
   V = valuetype(spatialdata, var)
   npts = npoints(spatialdata)
 
@@ -101,12 +101,12 @@ Base.view(spatialdata::AbstractSpatialData,
 # ------------
 # IO methods
 # ------------
-function Base.show(io::IO, spatialdata::AbstractSpatialData{T,N}) where {N,T<:Real}
+function Base.show(io::IO, spatialdata::AbstractSpatialData{T,N}) where {N,T}
   npts = npoints(spatialdata)
   print(io, "$npts SpatialData{$T,$N}")
 end
 
-function Base.show(io::IO, ::MIME"text/plain", spatialdata::AbstractSpatialData{T,N}) where {N,T<:Real}
+function Base.show(io::IO, ::MIME"text/plain", spatialdata::AbstractSpatialData{T,N}) where {N,T}
   println(io, spatialdata)
   println(io, "  variables")
   varlines = ["    └─$var ($V)" for (var,V) in variables(spatialdata)]

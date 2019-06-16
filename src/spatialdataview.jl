@@ -11,7 +11,7 @@ Return a view of `spatialdata` at `inds`.
 
 This type implements the `AbstractSpatialData` interface.
 """
-struct SpatialDataView{T<:Real,N,
+struct SpatialDataView{T,N,
                        S<:AbstractSpatialData{T,N},
                        I<:AbstractVector{Int}} <: AbstractSpatialData{T,N}
   data::S
@@ -28,7 +28,7 @@ value(view::SpatialDataView, ind::Int, var::Symbol) =
 # ------------
 # IO methods
 # ------------
-function Base.show(io::IO, view::SpatialDataView{T,N,S,I}) where {T<:Real,N,
+function Base.show(io::IO, view::SpatialDataView{T,N,S,I}) where {T,N,
                                                                   S<:AbstractSpatialData{T,N},
                                                                   I<:AbstractVector{Int}}
   npts = npoints(view)

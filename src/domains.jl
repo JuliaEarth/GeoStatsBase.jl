@@ -7,9 +7,9 @@
 
 Spatial domain in a `N`-dimensional space with coordinates of type `T`.
 """
-abstract type AbstractDomain{T<:Real,N} <: AbstractSpatialObject{T,N} end
+abstract type AbstractDomain{T,N} <: AbstractSpatialObject{T,N} end
 
-function bounds(domain::AbstractDomain{T,N}) where {N,T<:Real}
+function bounds(domain::AbstractDomain{T,N}) where {N,T}
   lowerleft  = MVector(ntuple(i->typemax(T), N))
   upperright = MVector(ntuple(i->typemin(T), N))
 
@@ -26,7 +26,7 @@ function bounds(domain::AbstractDomain{T,N}) where {N,T<:Real}
 end
 
 function nearestlocation(domain::AbstractDomain{T,N},
-                         coords::AbstractVector{T}) where {N,T<:Real}
+                         coords::AbstractVector{T}) where {N,T}
   lmin, dmin = 0, Inf
   c = MVector{N,T}(undef)
   for l in 1:npoints(domain)
@@ -49,7 +49,7 @@ Base.view(domain::AbstractDomain,
 # ------------
 # IO methods
 # ------------
-function Base.show(io::IO, domain::AbstractDomain{T,N}) where {N,T<:Real}
+function Base.show(io::IO, domain::AbstractDomain{T,N}) where {N,T}
   npts = npoints(domain)
   print(io, "$npts SpatialDomain{$T,$N}")
 end
