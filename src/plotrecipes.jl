@@ -14,3 +14,7 @@ include("plotrecipes/spatialdata.jl")
 # solutions
 include("plotrecipes/solutions/estimation.jl")
 include("plotrecipes/solutions/simulation.jl")
+
+# partitions and weights
+include("plotrecipes/partitions.jl")
+include("plotrecipes/weighting.jl")
