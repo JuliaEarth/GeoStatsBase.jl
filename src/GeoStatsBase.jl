@@ -9,6 +9,7 @@ using Distributed
 using DataFrames
 using StaticArrays
 using Parameters
+using RecipesBase
 
 include("spatialobject.jl")
 include("domains.jl")
@@ -21,6 +22,7 @@ include("solutions.jl")
 include("solvers.jl")
 include("comparisons.jl")
 include("macros.jl")
+include("plotrecipes.jl")
 
 export
   # spatial object
