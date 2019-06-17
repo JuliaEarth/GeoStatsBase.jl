@@ -33,6 +33,7 @@ include("paths.jl")
 include("distances.jl")
 include("neighborhoods.jl")
 include("distributions.jl")
+include("partitions.jl")
 
 # plot recipes
 include("plotrecipes.jl")
@@ -133,6 +134,24 @@ export
   EmpiricalDistribution,
   transform!,
   quantile,
-  cdf
+  cdf,
+
+  # partitions
+  SpatialPartition,
+  AbstractPartitioner,
+  AbstractFunctionPartitioner,
+  AbstractSpatialFunctionPartitioner,
+  UniformPartitioner,
+  FractionPartitioner,
+  BlockPartitioner,
+  BallPartitioner,
+  PlanePartitioner,
+  DirectionPartitioner,
+  FunctionPartitioner,
+  ProductPartitioner,
+  HierarchicalPartitioner,
+  partition,
+  subsets,
+  →
 
 end
