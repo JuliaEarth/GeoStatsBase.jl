@@ -35,6 +35,7 @@ include("neighborhoods.jl")
 include("distributions.jl")
 include("partitions.jl")
 include("weighting.jl")
+include("statistics.jl")
 
 # plot recipes
 include("plotrecipes.jl")
@@ -159,6 +160,11 @@ export
   WeightedSpatialData,
   AbstractWeighter,
   BlockWeighter,
-  weight
+  weight,
+
+  # statistics
+  SpatialStatistic,
+  mean, var,
+  quantile
 
 end
