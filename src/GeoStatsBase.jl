@@ -34,6 +34,7 @@ include("distances.jl")
 include("neighborhoods.jl")
 include("distributions.jl")
 include("partitions.jl")
+include("weighting.jl")
 
 # plot recipes
 include("plotrecipes.jl")
@@ -152,6 +153,12 @@ export
   HierarchicalPartitioner,
   partition,
   subsets,
-  →
+  →,
+
+  # weighting
+  WeightedSpatialData,
+  AbstractWeighter,
+  BlockWeighter,
+  weight
 
 end
