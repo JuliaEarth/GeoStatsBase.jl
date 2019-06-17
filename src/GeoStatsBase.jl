@@ -7,6 +7,7 @@ module GeoStatsBase
 using Random
 using StatsBase
 using Distances
+using Distributions
 using Distributed
 using LinearAlgebra
 using DataFrames
@@ -31,6 +32,7 @@ include("macros.jl")
 include("paths.jl")
 include("distances.jl")
 include("neighborhoods.jl")
+include("distributions.jl")
 
 # plot recipes
 include("plotrecipes.jl")
@@ -125,6 +127,12 @@ export
   AbstractNeighborhood,
   BallNeighborhood,
   CylinderNeighborhood,
-  isneighbor
+  isneighbor,
+
+  # distributions
+  EmpiricalDistribution,
+  transform!,
+  quantile,
+  cdf
 
 end
