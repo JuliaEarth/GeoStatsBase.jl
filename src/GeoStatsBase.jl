@@ -6,8 +6,9 @@ module GeoStatsBase
 
 using Random
 using StatsBase
-using LinearAlgebra
+using Distances
 using Distributed
+using LinearAlgebra
 using DataFrames
 using NearestNeighbors
 using StaticArrays
@@ -28,6 +29,8 @@ include("comparisons.jl")
 # developer tools
 include("macros.jl")
 include("paths.jl")
+include("distances.jl")
+include("neighborhoods.jl")
 
 # plot recipes
 include("plotrecipes.jl")
@@ -112,6 +115,16 @@ export
   SimplePath,
   RandomPath,
   SourcePath,
-  ShiftedPath
+  ShiftedPath,
+
+  # distances
+  Ellipsoidal,
+  evaluate,
+
+  # neighborhoods
+  AbstractNeighborhood,
+  BallNeighborhood,
+  CylinderNeighborhood,
+  isneighbor
 
 end
