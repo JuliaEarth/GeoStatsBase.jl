@@ -4,10 +4,12 @@
 
 module GeoStatsBase
 
+using Random
 using StatsBase
 using LinearAlgebra
 using Distributed
 using DataFrames
+using NearestNeighbors
 using StaticArrays
 using Parameters
 using RecipesBase
@@ -22,7 +24,12 @@ include("problems.jl")
 include("solutions.jl")
 include("solvers.jl")
 include("comparisons.jl")
+
+# developer tools
 include("macros.jl")
+include("paths.jl")
+
+# plot recipes
 include("plotrecipes.jl")
 
 export
@@ -92,8 +99,19 @@ export
   AbstractSimSolverComparison,
   compare,
 
+  ###################
+  # DEVELOPER TOOLS #
+  ###################
+
   # helper macros
   @estimsolver,
-  @simsolver
+  @simsolver,
+
+  # paths
+  AbstractPath,
+  SimplePath,
+  RandomPath,
+  SourcePath,
+  ShiftedPath
 
 end
