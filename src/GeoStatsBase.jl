@@ -6,6 +6,7 @@ module GeoStatsBase
 
 using LinearAlgebra
 using Distributed
+using DataFrames
 using StaticArrays
 using Parameters
 
@@ -43,6 +44,10 @@ export
 
   # spatial data
   AbstractSpatialData,
+  GeoDataFrame,
+  PointSetData,
+  RegularGridData,
+  StructuredGridData,
   variables,
   valuetype,
   value,

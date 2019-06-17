@@ -112,3 +112,11 @@ function Base.show(io::IO, ::MIME"text/plain", spatialdata::AbstractSpatialData{
   varlines = ["    └─$var ($V)" for (var,V) in variables(spatialdata)]
   print(io, join(varlines, "\n"))
 end
+
+#------------------
+# IMPLEMENTATIONS
+#------------------
+include("spatialdata/geodataframe.jl")
+include("spatialdata/point_set_data.jl")
+include("spatialdata/regular_grid_data.jl")
+include("spatialdata/structured_grid_data.jl")
