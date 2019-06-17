@@ -25,6 +25,11 @@ function Base.getindex(solution::SimulationSolution, var::Symbol)
   solution.realizations[var]
 end
 
+function Base.getindex(solution::SimulationSolution{<:RegularGrid}, var::Symbol)
+  sz = size(solution.domain)
+  [reshape(real, sz) for real in solution.realizations[var]]
+end
+
 # ------------
 # IO methods
 # ------------
