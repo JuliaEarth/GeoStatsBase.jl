@@ -53,3 +53,10 @@ function Base.show(io::IO, domain::AbstractDomain{T,N}) where {N,T}
   npts = npoints(domain)
   print(io, "$npts SpatialDomain{$T,$N}")
 end
+
+#------------------
+# IMPLEMENTATIONS
+#------------------
+include("domains/point_set.jl")
+include("domains/regular_grid.jl")
+include("domains/structured_grid.jl")

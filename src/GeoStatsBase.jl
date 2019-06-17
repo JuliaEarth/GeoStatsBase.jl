@@ -35,6 +35,11 @@ export
 
   # domains
   AbstractDomain,
+  PointSet,
+  RegularGrid,
+  StructuredGrid,
+  origin,
+  spacing,
 
   # spatial data
   AbstractSpatialData,
