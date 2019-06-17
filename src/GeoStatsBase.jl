@@ -4,6 +4,7 @@
 
 module GeoStatsBase
 
+using StatsBase
 using LinearAlgebra
 using Distributed
 using DataFrames
