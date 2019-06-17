@@ -4,6 +4,7 @@
 
 module GeoStatsBase
 
+using CSV
 using Random
 using StatsBase
 using Distances
@@ -16,6 +17,7 @@ using StaticArrays
 using Parameters
 using RecipesBase
 
+# core concepts
 include("spatialobject.jl")
 include("domains.jl")
 include("domainview.jl")
@@ -39,6 +41,9 @@ include("statistics.jl")
 
 # plot recipes
 include("plotrecipes.jl")
+
+# utilities
+include("utils.jl")
 
 export
   # spatial object
@@ -107,10 +112,6 @@ export
   AbstractSimSolverComparison,
   compare,
 
-  ###################
-  # DEVELOPER TOOLS #
-  ###################
-
   # helper macros
   @estimsolver,
   @simsolver,
@@ -165,6 +166,9 @@ export
   # statistics
   SpatialStatistic,
   mean, var,
-  quantile
+  quantile,
+
+  # utilities
+  readgeotable
 
 end
