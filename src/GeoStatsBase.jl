@@ -34,6 +34,7 @@ include("macros.jl")
 include("paths.jl")
 include("distances.jl")
 include("neighborhoods.jl")
+include("neighsearch.jl")
 include("distributions.jl")
 include("partitions.jl")
 include("weighting.jl")
@@ -132,6 +133,12 @@ export
   BallNeighborhood,
   CylinderNeighborhood,
   isneighbor,
+
+  # neighborhood search
+  AbstractNeighborSearcher,
+  NearestNeighborSearcher,
+  LocalNeighborSearcher,
+  search!,
 
   # distributions
   EmpiricalDistribution,
