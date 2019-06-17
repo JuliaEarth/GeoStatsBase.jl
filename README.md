@@ -1,6 +1,6 @@
 # GeoStatsBase.jl
 
-[![][travis-img]][travis-url]
+[![][travis-img]][travis-url] [![][codecov-img]][codecov-url]
 
 This package contains problem and solution specifications for the
 [GeoStats.jl](https://github.com/juliohm/GeoStats.jl) framework.
@@ -16,3 +16,6 @@ If you have any questions, please contact our community on the [gitter channel](
 
 [travis-img]: https://travis-ci.org/juliohm/GeoStatsBase.jl.svg?branch=master
 [travis-url]: https://travis-ci.org/juliohm/GeoStatsBase.jl
+
+[codecov-img]: https://codecov.io/gh/juliohm/GeoStatsBase.jl/branch/master/graph/badge.svg
+[codecov-url]: https://codecov.io/gh/juliohm/GeoStatsBase.jl
