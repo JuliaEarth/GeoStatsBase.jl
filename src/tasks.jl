@@ -10,19 +10,19 @@ A statistical learning task (e.g. regression, clustering)
 abstract type AbstractLearningTask end
 
 """
+    features(task)
+
+Return features of learning `task`.
+"""
+features(task::AbstractLearningTask) = task.features
+
+"""
     SupervisedLearningTask
 
 A supervised learning task, i.e. training examples are pairs `(x,y)`
 with `x` the features, and `y` the labels.
 """
 abstract type SupervisedLearningTask <: AbstractLearningTask end
-
-"""
-    features(task)
-
-Return features of supervised learning `task`.
-"""
-features(task::SupervisedLearningTask) = task.features
 
 """
     label(task)
@@ -37,13 +37,6 @@ label(task::SupervisedLearningTask) = task.label
 An unsupervised learning task, i.e. training examples are features `x`.
 """
 abstract type UnsupervisedLearningTask <: AbstractLearningTask end
-
-"""
-    features(task)
-
-Return features of unsupervised learning `task`.
-"""
-features(task::UnsupervisedLearningTask) = task.features
 
 """
     RegressionTask
