@@ -23,7 +23,7 @@ Create a conditional simulation problem for porosity and permeability
 with 100 realizations:
 
 ```julia
-julia> SimulationProblem(spatialdata, domain, [:porosity,:permeability], 100)
+julia> SimulationProblem(spatialdata, domain, (:porosity,:permeability), 100)
 ```
 
 Create an unconditional simulation problem for porosity and facies type

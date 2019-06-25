@@ -20,7 +20,7 @@ julia> EstimationProblem(spatialdata, domain, :precipitation)
 Create an estimation problem for precipitation and CO₂:
 
 ```julia
-julia> EstimationProblem(spatialdata, domain, [:precipitation, :CO₂])
+julia> EstimationProblem(spatialdata, domain, (:precipitation,:CO₂))
 ```
 """
 struct EstimationProblem{S<:AbstractSpatialData,
