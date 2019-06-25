@@ -139,7 +139,7 @@ variables(problem::SimulationProblem) = problem.targetvars
 Return the mapping from domain locations to data locations for the
 `targetvar` of the `problem`.
 """
-datamap(problem::SimulationProblem, var) = problem.mappings[var]
+datamap(problem::SimulationProblem, var::Symbol) = problem.mappings[var]
 
 """
     datamap(problem)
