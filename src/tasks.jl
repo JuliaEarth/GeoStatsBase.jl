@@ -18,11 +18,32 @@ with `x` the features, and `y` the labels.
 abstract type SupervisedLearningTask <: AbstractLearningTask end
 
 """
+    features(task)
+
+Return features of supervised learning `task`.
+"""
+features(task::SupervisedLearningTask) = task.features
+
+"""
+    label(task)
+
+Return label of supervised learning `task`.
+"""
+label(task::SupervisedLearningTask) = task.label
+
+"""
     UnsupervisedLearningTask
 
 An unsupervised learning task, i.e. training examples are features `x`.
 """
 abstract type UnsupervisedLearningTask <: AbstractLearningTask end
+
+"""
+    features(task)
+
+Return features of unsupervised learning `task`.
+"""
+features(task::UnsupervisedLearningTask) = task.features
 
 """
     RegressionTask

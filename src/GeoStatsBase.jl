@@ -90,6 +90,7 @@ export
   RegressionTask,
   ClassificationTask,
   ClusteringTask,
+  features, label,
 
   # problems
   AbstractProblem,
