@@ -96,6 +96,7 @@ export
   AbstractProblem,
   EstimationProblem,
   SimulationProblem,
+  LearningProblem,
   data,
   domain,
   mapper,
