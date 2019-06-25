@@ -23,7 +23,9 @@ Create an estimation problem for precipitation and CO₂:
 julia> EstimationProblem(spatialdata, domain, [:precipitation, :CO₂])
 ```
 """
-struct EstimationProblem{S<:AbstractSpatialData,D<:AbstractDomain,M<:AbstractMapper} <: AbstractProblem
+struct EstimationProblem{S<:AbstractSpatialData,
+                         D<:AbstractDomain,
+                         M<:AbstractMapper} <: AbstractProblem
   # input fields
   spatialdata::S
   domain::D
@@ -34,9 +36,11 @@ struct EstimationProblem{S<:AbstractSpatialData,D<:AbstractDomain,M<:AbstractMap
   mappings::Dict{Symbol,Dict{Int,Int}}
 
   function EstimationProblem{S,D,M}(spatialdata, domain, targetvars,
-                                    mapper) where {S<:AbstractSpatialData,D<:AbstractDomain,M<:AbstractMapper}
-    probvnames = [var for (var,V) in targetvars]
-    datavnames = [var for (var,V) in variables(spatialdata)]
+                                    mapper) where {S<:AbstractSpatialData,
+                                                   D<:AbstractDomain,
+                                                   M<:AbstractMapper}
+    probvnames = Tuple(keys(targetvars))
+    datavnames = Tuple(keys(variables(spatialdata)))
     datacnames = coordnames(spatialdata)
 
     @assert !isempty(probvnames) && probvnames ⊆ datavnames "target variables must be present in spatial data"
@@ -50,8 +54,11 @@ struct EstimationProblem{S<:AbstractSpatialData,D<:AbstractDomain,M<:AbstractMap
   end
 end
 
-function EstimationProblem(spatialdata::S, domain::D, targetvarnames::Vector{Symbol};
-                           mapper::M=SimpleMapper()) where {S<:AbstractSpatialData,D<:AbstractDomain,M<:AbstractMapper}
+function EstimationProblem(spatialdata::S, domain::D, targetvarnames::NTuple{N,Symbol};
+                           mapper::M=SimpleMapper()) where {S<:AbstractSpatialData,
+                                                            D<:AbstractDomain,
+                                                            M<:AbstractMapper,
+                                                            N}
   # build dictionary of target variables
   datavars = variables(spatialdata)
   targetvars = Dict(var => Base.nonmissingtype(T) for (var,T) in datavars if var ∈ targetvarnames)
@@ -60,8 +67,10 @@ function EstimationProblem(spatialdata::S, domain::D, targetvarnames::Vector{Sym
 end
 
 function EstimationProblem(spatialdata::S, domain::D, targetvarname::Symbol;
-                           mapper::M=SimpleMapper()) where {S<:AbstractSpatialData,D<:AbstractDomain,M<:AbstractMapper}
-  EstimationProblem(spatialdata, domain, [targetvarname]; mapper=mapper)
+                           mapper::M=SimpleMapper()) where {S<:AbstractSpatialData,
+                                                            D<:AbstractDomain,
+                                                            M<:AbstractMapper}
+  EstimationProblem(spatialdata, domain, (targetvarname,); mapper=mapper)
 end
 
 """

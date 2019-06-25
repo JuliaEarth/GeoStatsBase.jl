@@ -16,8 +16,10 @@ end
 CopyMapper(dest) = CopyMapper(nothing, dest)
 CopyMapper() = CopyMapper(nothing, nothing)
 
-function Base.map(spatialdata::S, domain::D, targetvars::Vector{Symbol},
-                  mapper::CopyMapper) where {S<:AbstractSpatialData,D<:AbstractDomain}
+function Base.map(spatialdata::AbstractSpatialData{T,N},
+                  domain::AbstractDomain{T,N},
+                  targetvars::NTuple{K,Symbol},
+                  mapper::CopyMapper) where {N,T,K}
   @assert targetvars ⊆ keys(variables(spatialdata)) "target variables must be present in spatial data"
 
   # dictionary with mappings

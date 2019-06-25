@@ -12,8 +12,8 @@ struct SimpleMapper <: AbstractMapper end
 
 function Base.map(spatialdata::AbstractSpatialData{T,N},
                   domain::AbstractDomain{T,N},
-                  targetvars::Vector{Symbol},
-                  mapper::SimpleMapper) where {N,T}
+                  targetvars::NTuple{K,Symbol},
+                  mapper::SimpleMapper) where {N,T,K}
   @assert targetvars ⊆ keys(variables(spatialdata)) "target variables must be present in spatial data"
 
   # dictionary with mappings
