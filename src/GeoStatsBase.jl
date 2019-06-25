@@ -24,6 +24,7 @@ include("domainview.jl")
 include("spatialdata.jl")
 include("spatialdataview.jl")
 include("mappers.jl")
+include("tasks.jl")
 include("problems.jl")
 include("solutions.jl")
 include("solvers.jl")
@@ -81,6 +82,14 @@ export
   AbstractMapper,
   SimpleMapper,
   CopyMapper,
+
+  # tasks
+  AbstractLearningTask,
+  SupervisedLearningTask,
+  UnsupervisedLearningTask,
+  RegressionTask,
+  ClassificationTask,
+  ClusteringTask,
 
   # problems
   AbstractProblem,
