@@ -57,6 +57,7 @@ end
 #------------------
 # IMPLEMENTATIONS
 #------------------
+include("domains/curve.jl")
 include("domains/point_set.jl")
 include("domains/regular_grid.jl")
 include("domains/structured_grid.jl")

@@ -61,11 +61,11 @@ export
 
   # domains
   AbstractDomain,
+  Curve,
   PointSet,
   RegularGrid,
   StructuredGrid,
-  origin,
-  spacing,
+  origin, spacing,
 
   # spatial data
   AbstractSpatialData,

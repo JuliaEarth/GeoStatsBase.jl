@@ -38,9 +38,8 @@ end
 # IO methods
 # ------------
 function Base.show(io::IO, ps::PointSet{T,N}) where {N,T}
-  dims = size(ps.coords, 1)
   npts = size(ps.coords, 2)
-  print(io, "$dims×$npts PointSet{$T,$N}")
+  print(io, "$npts PointSet{$T,$N}")
 end
 
 function Base.show(io::IO, ::MIME"text/plain", ps::PointSet{T,N}) where {N,T}
