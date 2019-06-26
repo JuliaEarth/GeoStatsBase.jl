@@ -5,7 +5,17 @@
 """
     Curve(x, y, z, ...)
 
-A curve along coordinates `x`, `y`, `z`, ...
+A curve along parametric coordinates `x`, `y`, `z`, ...
+
+## Examples
+
+A 3D borehole or directional well can be represented with a curve
+where `x`, `y`, and `z` are the parametric coordinates `(x(t), y(t), z(t))`
+with parameter `t ∈ R`:
+
+```julia
+julia> Curve(x, y, z)
+```
 """
 struct Curve{T,N} <: AbstractDomain{T,N}
   coords::Matrix{T}
