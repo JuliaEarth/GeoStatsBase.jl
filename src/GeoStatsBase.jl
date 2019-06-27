@@ -23,6 +23,7 @@ include("domains.jl")
 include("domainview.jl")
 include("spatialdata.jl")
 include("spatialdataview.jl")
+include("collections.jl")
 include("mappers.jl")
 include("tasks.jl")
 include("problems.jl")
@@ -78,6 +79,9 @@ export
   valuetype,
   value,
   valid,
+
+  # collections
+  DomainCollection,
 
   # mappers
   AbstractMapper,
