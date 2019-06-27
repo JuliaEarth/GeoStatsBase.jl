@@ -1,4 +1,8 @@
 @testset "Spatial data" begin
+  @testset "CurveData" begin
+    # TODO
+  end
+
   @testset "GeoDataFrame" begin
     # basic checks
     data3D   = readgeotable(joinpath(datadir,"data3D.tsv"), delim='\t')
