@@ -69,6 +69,7 @@ export
 
   # spatial data
   AbstractSpatialData,
+  CurveData,
   GeoDataFrame,
   PointSetData,
   RegularGridData,

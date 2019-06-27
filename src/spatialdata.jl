@@ -116,6 +116,7 @@ end
 #------------------
 # IMPLEMENTATIONS
 #------------------
+include("spatialdata/curve_data.jl")
 include("spatialdata/geodataframe.jl")
 include("spatialdata/point_set_data.jl")
 include("spatialdata/regular_grid_data.jl")

@@ -7,6 +7,12 @@
 
 A curve along parametric coordinates `x`, `y`, `z`, ...
 
+    Curve(coords)
+
+Alternatively, construct curve from `coords` matrix. The number of rows
+of the matrix is the dimensionality of the curve whereas the number
+of columns is the number of points.
+
 ## Examples
 
 A 3D borehole or directional well can be represented with a curve
