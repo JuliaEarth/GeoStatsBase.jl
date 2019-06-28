@@ -82,6 +82,7 @@ export
 
   # collections
   DomainCollection,
+  DataCollection,
 
   # mappers
   AbstractMapper,
