@@ -24,6 +24,7 @@ testfiles = [
   "distributions.jl",
   "spatialdata.jl",
   "domains.jl",
+  "collections.jl",
   "partitions.jl",
   "paths.jl",
   "neighborhoods.jl",
