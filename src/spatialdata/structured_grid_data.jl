@@ -24,7 +24,7 @@ julia> StructuredGridData(data, LAT, LON)
 
 See also: [`StructuredGrid`](@ref)
 """
-struct StructuredGridData{T,N} <: AbstractSpatialData{T,N}
+struct StructuredGridData{T,N} <: AbstractData{T,N}
   data::Dict{Symbol,<:AbstractArray}
   domain::StructuredGrid{T,N}
 

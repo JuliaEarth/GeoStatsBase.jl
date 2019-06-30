@@ -10,7 +10,7 @@ point in the domain.
 """
 struct SimpleMapper <: AbstractMapper end
 
-function Base.map(spatialdata::AbstractSpatialData{T,N},
+function Base.map(spatialdata::AbstractData{T,N},
                   domain::AbstractDomain{T,N},
                   targetvars::NTuple{K,Symbol},
                   mapper::SimpleMapper) where {N,T,K}

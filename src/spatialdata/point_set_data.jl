@@ -11,7 +11,7 @@ names to Julia arrays with the actual data.
 
 See also: [`PointSet`](@ref)
 """
-struct PointSetData{T,N} <: AbstractSpatialData{T,N}
+struct PointSetData{T,N} <: AbstractData{T,N}
   data::Dict{Symbol,<:AbstractArray}
   domain::PointSet{T,N}
 

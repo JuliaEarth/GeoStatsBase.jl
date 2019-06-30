@@ -13,7 +13,7 @@ struct BlockWeighter{T} <: AbstractWeighter
   side::T
 end
 
-function weight(spatialdata::AbstractSpatialData, weighter::BlockWeighter)
+function weight(spatialdata::AbstractData, weighter::BlockWeighter)
   p = partition(spatialdata, BlockPartitioner(weighter.side))
 
   weights = Vector{Float64}(undef, npoints(spatialdata))

@@ -17,8 +17,8 @@ julia> LearningProblem(sourcedata, targetdata => targetdomain,
                        ClusteringTask((:moisture,:mineral,:planttype)))
 ```
 """
-struct LearningProblem{Sₛ<:AbstractSpatialData,
-                       Sₜ<:AbstractSpatialData,
+struct LearningProblem{Sₛ<:AbstractData,
+                       Sₜ<:AbstractData,
                        Dₜ<:AbstractDomain,
                        T<:AbstractLearningTask,
                        M<:AbstractMapper} <: AbstractProblem
@@ -33,8 +33,8 @@ struct LearningProblem{Sₛ<:AbstractSpatialData,
 
   function LearningProblem{Sₛ,Sₜ,Dₜ,T,M}(sourcedata,
                                          targetdata, targetdomain,
-                                         task, mapper) where {Sₛ<:AbstractSpatialData,
-                                                              Sₜ<:AbstractSpatialData,
+                                         task, mapper) where {Sₛ<:AbstractData,
+                                                              Sₜ<:AbstractData,
                                                               Dₜ<:AbstractDomain,
                                                               T<:AbstractLearningTask,
                                                               M<:AbstractMapper}
@@ -61,8 +61,8 @@ struct LearningProblem{Sₛ<:AbstractSpatialData,
 end
 
 function LearningProblem(sourcedata::Sₛ, target::Pair{Sₜ,Dₜ}, task::T;
-                         mapper::M=SimpleMapper()) where {Sₛ<:AbstractSpatialData,
-                                                          Sₜ<:AbstractSpatialData,
+                         mapper::M=SimpleMapper()) where {Sₛ<:AbstractData,
+                                                          Sₜ<:AbstractData,
                                                           Dₜ<:AbstractDomain,
                                                           T<:AbstractLearningTask,
                                                           M<:AbstractMapper}

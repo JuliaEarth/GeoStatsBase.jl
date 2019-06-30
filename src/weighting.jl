@@ -7,7 +7,7 @@
 
 Assign `weights` for each point in `spatialdata`.
 """
-struct WeightedSpatialData{T,N,S<:AbstractSpatialData{T,N},V} <: AbstractSpatialData{T,N}
+struct WeightedSpatialData{T,N,S<:AbstractData{T,N},V} <: AbstractData{T,N}
   spatialdata::S
   weights::Vector{V}
 end
@@ -30,7 +30,7 @@ abstract type AbstractWeighter end
 
 Weight `spatialdata` with `weighter` method.
 """
-weight(spatialdata::AbstractSpatialData, weighter::AbstractWeighter) = error("not implemented")
+weight(spatialdata::AbstractData, weighter::AbstractWeighter) = error("not implemented")
 
 #------------------
 # IMPLEMENTATIONS

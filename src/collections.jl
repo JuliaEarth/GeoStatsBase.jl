@@ -50,19 +50,19 @@ end
 
 A collection of data `data₁`, `data₂`, ...
 """
-struct DataCollection{T,N} <: AbstractSpatialData{T,N}
-  data::Vector{AbstractSpatialData{T,N}}
+struct DataCollection{T,N} <: AbstractData{T,N}
+  data::Vector{AbstractData{T,N}}
   domain::DomainCollection{T,N}
   offsets::Vector{Int}
 end
 
-function DataCollection(data::AbstractVector{AbstractSpatialData{T,N}}) where {N,T}
+function DataCollection(data::AbstractVector{AbstractData{T,N}}) where {N,T}
   cdomain = DomainCollection(domain.(data))
   offsets = cumsum([npoints(d) for d in data])
   DataCollection{T,N}(data, cdomain, offsets)
 end
 
-DataCollection(data::Vararg{AbstractSpatialData{T,N}}) where {N,T} =
+DataCollection(data::Vararg{AbstractData{T,N}}) where {N,T} =
   DataCollection([d for d in data])
 
 variables(collection::DataCollection) = merge([variables(d) for d in collection.data]...)

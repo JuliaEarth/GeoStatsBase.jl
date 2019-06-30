@@ -38,7 +38,7 @@ julia> SimulationProblem(domain, Dict(:porosity => Float64, :facies => Int), 100
 To check if a simulation problem has data (i.e. conditional vs.
 unconditional) use the [`hasdata`](@ref) method.
 """
-struct SimulationProblem{S<:Union{AbstractSpatialData,Nothing},
+struct SimulationProblem{S<:Union{AbstractData,Nothing},
                          D<:AbstractDomain,M<:AbstractMapper} <: AbstractProblem
   # input fields
   spatialdata::S
@@ -51,7 +51,7 @@ struct SimulationProblem{S<:Union{AbstractSpatialData,Nothing},
   mappings::Dict{Symbol,Dict{Int,Int}}
 
   function SimulationProblem{S,D,M}(spatialdata, domain, targetvars, nreals,
-                                    mapper) where {S<:Union{AbstractSpatialData,Nothing},
+                                    mapper) where {S<:Union{AbstractData,Nothing},
                                                    D<:AbstractDomain,M<:AbstractMapper}
     probvnames = Tuple(keys(targetvars))
 
@@ -69,7 +69,7 @@ struct SimulationProblem{S<:Union{AbstractSpatialData,Nothing},
 end
 
 function SimulationProblem(spatialdata::S, domain::D, targetvarnames::NTuple{N,Symbol}, nreals::Int;
-                           mapper::M=SimpleMapper()) where {S<:AbstractSpatialData,
+                           mapper::M=SimpleMapper()) where {S<:AbstractData,
                                                             D<:AbstractDomain,
                                                             M<:AbstractMapper,
                                                             N}
@@ -89,7 +89,7 @@ function SimulationProblem(spatialdata::S, domain::D, targetvarnames::NTuple{N,S
 end
 
 function SimulationProblem(spatialdata::S, domain::D, targetvarname::Symbol, nreals::Int;
-                           mapper::M=SimpleMapper()) where {S<:AbstractSpatialData,
+                           mapper::M=SimpleMapper()) where {S<:AbstractData,
                                                             D<:AbstractDomain,
                                                             M<:AbstractMapper}
   SimulationProblem(spatialdata, domain, (targetvarname,), nreals; mapper=mapper)

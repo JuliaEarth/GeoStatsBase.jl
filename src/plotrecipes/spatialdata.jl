@@ -2,7 +2,7 @@
 # Licensed under the ISC License. See LICENCE in the project root.
 # ------------------------------------------------------------------
 
-@recipe function f(spatialdata::AbstractSpatialData; variables=nothing)
+@recipe function f(spatialdata::AbstractData; variables=nothing)
   # retrieve underlying domain
   sdomain = domain(spatialdata)
 

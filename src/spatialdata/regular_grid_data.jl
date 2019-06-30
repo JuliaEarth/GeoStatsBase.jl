@@ -34,7 +34,7 @@ julia> RegularGridData{Float64}(data)
 
 See also: [`RegularGrid`](@ref)
 """
-struct RegularGridData{T,N} <: AbstractSpatialData{T,N}
+struct RegularGridData{T,N} <: AbstractData{T,N}
   data::Dict{Symbol,<:AbstractArray}
   domain::RegularGrid{T,N}
 

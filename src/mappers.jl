@@ -14,7 +14,7 @@ abstract type AbstractMapper end
 
 Map the `targetvars` in `spatialdata` to `domain` with `mapper`.
 """
-Base.map(::AbstractSpatialData, ::AbstractDomain,
+Base.map(::AbstractData, ::AbstractDomain,
          ::NTuple{N,Symbol}, ::AbstractMapper) where {N} = error("not implemented")
 
 #------------------

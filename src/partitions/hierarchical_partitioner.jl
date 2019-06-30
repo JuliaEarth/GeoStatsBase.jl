@@ -14,7 +14,7 @@ struct HierarchicalPartitioner <: AbstractPartitioner
   second::AbstractPartitioner
 end
 
-function partition(spatialdata::AbstractSpatialData,
+function partition(spatialdata::AbstractData,
                    partitioner::HierarchicalPartitioner)
   result = Vector{Vector{Int}}()
 

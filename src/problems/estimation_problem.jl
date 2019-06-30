@@ -23,7 +23,7 @@ Create an estimation problem for precipitation and CO₂:
 julia> EstimationProblem(spatialdata, domain, (:precipitation,:CO₂))
 ```
 """
-struct EstimationProblem{S<:AbstractSpatialData,
+struct EstimationProblem{S<:AbstractData,
                          D<:AbstractDomain,
                          M<:AbstractMapper} <: AbstractProblem
   # input fields
@@ -36,7 +36,7 @@ struct EstimationProblem{S<:AbstractSpatialData,
   mappings::Dict{Symbol,Dict{Int,Int}}
 
   function EstimationProblem{S,D,M}(spatialdata, domain, targetvars,
-                                    mapper) where {S<:AbstractSpatialData,
+                                    mapper) where {S<:AbstractData,
                                                    D<:AbstractDomain,
                                                    M<:AbstractMapper}
     probvnames = Tuple(keys(targetvars))
@@ -55,7 +55,7 @@ struct EstimationProblem{S<:AbstractSpatialData,
 end
 
 function EstimationProblem(spatialdata::S, domain::D, targetvarnames::NTuple{N,Symbol};
-                           mapper::M=SimpleMapper()) where {S<:AbstractSpatialData,
+                           mapper::M=SimpleMapper()) where {S<:AbstractData,
                                                             D<:AbstractDomain,
                                                             M<:AbstractMapper,
                                                             N}
@@ -67,7 +67,7 @@ function EstimationProblem(spatialdata::S, domain::D, targetvarnames::NTuple{N,S
 end
 
 function EstimationProblem(spatialdata::S, domain::D, targetvarname::Symbol;
-                           mapper::M=SimpleMapper()) where {S<:AbstractSpatialData,
+                           mapper::M=SimpleMapper()) where {S<:AbstractData,
                                                             D<:AbstractDomain,
                                                             M<:AbstractMapper}
   EstimationProblem(spatialdata, domain, (targetvarname,); mapper=mapper)

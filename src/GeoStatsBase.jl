@@ -69,7 +69,7 @@ export
   origin, spacing,
 
   # spatial data
-  AbstractSpatialData,
+  AbstractData,
   CurveData,
   GeoDataFrame,
   PointSetData,

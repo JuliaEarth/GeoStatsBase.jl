@@ -16,7 +16,7 @@ end
 CopyMapper(dest) = CopyMapper(nothing, dest)
 CopyMapper() = CopyMapper(nothing, nothing)
 
-function Base.map(spatialdata::AbstractSpatialData{T,N},
+function Base.map(spatialdata::AbstractData{T,N},
                   domain::AbstractDomain{T,N},
                   targetvars::NTuple{K,Symbol},
                   mapper::CopyMapper) where {N,T,K}

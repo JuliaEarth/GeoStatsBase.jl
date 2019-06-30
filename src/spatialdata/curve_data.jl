@@ -11,7 +11,7 @@ with the actual data.
 
 See also: [`Curve`](@ref)
 """
-struct CurveData{T,N} <: AbstractSpatialData{T,N}
+struct CurveData{T,N} <: AbstractData{T,N}
   data::Dict{Symbol,<:AbstractArray}
   domain::Curve{T,N}
 
