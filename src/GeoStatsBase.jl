@@ -4,18 +4,21 @@
 
 module GeoStatsBase
 
-using CSV
-using Random
-using StatsBase
-using Distances
-using Distributions
-using Distributed
-using LinearAlgebra
-using DataFrames
-using NearestNeighbors
-using StaticArrays
+using CSV: read
+using Random: randperm, shuffle
+using StatsBase: sample, weights
+using Distributed: pmap, nworkers
+using Distances: Metric, Euclidean, Mahalanobis, evaluate
+using LinearAlgebra: Diagonal, normalize, norm, ⋅
+using Distributions: ContinuousUnivariateDistribution, quantile
+using DataFrames: AbstractDataFrame, eltypes, nrow
+using NearestNeighbors: KDTree, knn, inrange
+using StaticArrays: SVector, MVector
+using RecipesBase: @recipe, @series, plot, RecipesBase
 using Parameters
-using RecipesBase
+
+import Distances
+import Distributions
 
 # core concepts
 include("spatialobject.jl")
@@ -36,6 +39,7 @@ include("distances.jl")
 include("neighborhoods.jl")
 include("neighsearch.jl")
 include("distributions.jl")
+include("estimators.jl")
 include("partitions.jl")
 include("weighting.jl")
 include("statistics.jl")
@@ -153,7 +157,6 @@ export
 
   # distances
   Ellipsoidal,
-  evaluate,
 
   # neighborhoods
   AbstractNeighborhood,
@@ -170,8 +173,9 @@ export
   # distributions
   EmpiricalDistribution,
   transform!,
-  quantile,
-  cdf,
+
+  # estimators
+  fit, predict, status,
 
   # partitions
   SpatialPartition,

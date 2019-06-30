@@ -83,6 +83,5 @@ end
 Ellipsoidal(semiaxes::AbstractVector{T}, angles::AbstractVector{T}) where {T} =
   Ellipsoidal{length(semiaxes),T}(semiaxes, angles)
 
-function Distances.evaluate(dist::Ellipsoidal{N,T}, a::AbstractVector, b::AbstractVector) where {N,T}
+Distances.evaluate(dist::Ellipsoidal{N,T}, a::AbstractVector, b::AbstractVector) where {N,T} =
   evaluate(dist.dist, a, b)
-end
