@@ -28,8 +28,6 @@ include("mappers.jl")
 include("tasks.jl")
 include("problems.jl")
 include("solutions.jl")
-include("solvers.jl")
-include("comparisons.jl")
 
 # developer tools
 include("macros.jl")
@@ -41,6 +39,10 @@ include("distributions.jl")
 include("partitions.jl")
 include("weighting.jl")
 include("statistics.jl")
+
+# solvers and comparisons
+include("solvers.jl")
+include("comparisons.jl")
 
 # plot recipes
 include("plotrecipes.jl")
@@ -125,6 +127,8 @@ export
   AbstractSolver,
   AbstractEstimationSolver,
   AbstractSimulationSolver,
+  SeqSim, SeqSimParam,
+  CookieCutter, CookieCutterParam,
   solve, solve_single,
   preprocess,
 

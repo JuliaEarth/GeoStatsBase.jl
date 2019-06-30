@@ -92,3 +92,9 @@ the algorithm in parallel (if enough processes are available).
 """
 solve_single(::SimulationProblem, ::Symbol, ::AbstractSimulationSolver,
              ::Any) = error("not implemented")
+
+#------------------
+# IMPLEMENTATIONS
+#------------------
+include("solvers/sequential_simulation.jl")
+include("solvers/cookie_cutter.jl")
