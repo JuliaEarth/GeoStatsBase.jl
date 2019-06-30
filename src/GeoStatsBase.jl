@@ -8,17 +8,17 @@ using CSV: read
 using Random: randperm, shuffle
 using StatsBase: sample, weights
 using Distributed: pmap, nworkers
-using Distances: Metric, Euclidean, Mahalanobis, evaluate
+using Distances: Metric, Euclidean, Mahalanobis
 using LinearAlgebra: Diagonal, normalize, norm, ⋅
-using Distributions: ContinuousUnivariateDistribution, quantile
+using Distributions: ContinuousUnivariateDistribution
 using DataFrames: AbstractDataFrame, eltypes, nrow
 using NearestNeighbors: KDTree, knn, inrange
 using StaticArrays: SVector, MVector
 using RecipesBase: @recipe, @series, plot, RecipesBase
 using Parameters
 
-import Distances
-import Distributions
+import Distances: evaluate
+import Distributions: quantile, cdf
 
 # core concepts
 include("spatialobject.jl")
@@ -157,6 +157,7 @@ export
 
   # distances
   Ellipsoidal,
+  evaluate,
 
   # neighborhoods
   AbstractNeighborhood,
@@ -172,7 +173,7 @@ export
 
   # distributions
   EmpiricalDistribution,
-  transform!,
+  transform!, quantile, cdf,
 
   # estimators
   fit, predict, status,

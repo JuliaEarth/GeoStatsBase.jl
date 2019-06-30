@@ -17,9 +17,9 @@ struct EmpiricalDistribution{T<:Real} <: ContinuousUnivariateDistribution
 end
 EmpiricalDistribution(values) = EmpiricalDistribution{eltype(values)}(values)
 
-Distributions.quantile(d::EmpiricalDistribution, p::Real) = quantile(d.values, p, sorted=true)
+quantile(d::EmpiricalDistribution, p::Real) = quantile(d.values, p, sorted=true)
 
-function Distributions.cdf(d::EmpiricalDistribution{T}, x::T) where {T<:Real}
+function cdf(d::EmpiricalDistribution{T}, x::T) where {T<:Real}
   v = d.values
   N = length(v)
 
