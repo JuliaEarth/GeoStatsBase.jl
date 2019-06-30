@@ -30,3 +30,9 @@ Compare `solvers` on a given `problem` using a comparison `method`.
 """
 compare(::AbstractVector{S}, ::AbstractProblem,
         ::AbstractSolverComparison) where {S<:AbstractSolver} = error("not implemented")
+
+#------------------
+# IMPLEMENTATIONS
+#------------------
+include("comparisons/visual_comparison.jl")
+include("comparisons/cross_validation.jl")

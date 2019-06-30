@@ -132,6 +132,8 @@ export
   AbstractSolverComparison,
   AbstractEstimSolverComparison,
   AbstractSimSolverComparison,
+  VisualComparison,
+  CrossValidation,
   compare,
 
   # helper macros
