@@ -3,11 +3,11 @@
 # ------------------------------------------------------------------
 
 """
-    AbstractNeighborhood{D}
+    AbstractNeighborhood{O}
 
-A neighborhood on a spatial domain of type `D`.
+A neighborhood on a spatial object of type `O`.
 """
-abstract type AbstractNeighborhood{D<:AbstractDomain} end
+abstract type AbstractNeighborhood{D<:AbstractSpatialObject} end
 
 # Neighborhoods are functor objects that can be evaluated
 # at a given location:
@@ -24,8 +24,8 @@ Tells whether or not the `location` is in the `neighborhood`
 centered at `center`.
 """
 function isneighbor(neigh::AbstractNeighborhood, center::Int, location::Int)
-  xₒ = coordinates(neigh.domain, center)
-  x  = coordinates(neigh.domain, location)
+  xₒ = coordinates(neigh.object, center)
+  x  = coordinates(neigh.object, location)
   isneighbor(neigh, xₒ, x)
 end
 

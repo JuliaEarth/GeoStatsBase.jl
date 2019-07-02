@@ -3,31 +3,35 @@
 # ------------------------------------------------------------------
 
 """
-    BallNeighborhood(domain, radius)
+    BallNeighborhood(object, radius)
 
-A ball neighborhood of a given `radius` on a spatial `domain`.
+A ball neighborhood of a given `radius` on a spatial `object`.
 """
-struct BallNeighborhood{T,N,D<:AbstractDomain{T,N},M<:Metric} <: AbstractNeighborhood{D}
+struct BallNeighborhood{T,N,O<:AbstractSpatialObject{T,N},M<:Metric} <: AbstractNeighborhood{O}
   # input fields
-  domain::D
+  object::O
   radius::T
   metric::M
 
   # state fields
   kdtree::KDTree
 
-  function BallNeighborhood{T,N,D,M}(domain, radius, metric) where {T,N,D<:AbstractDomain{T,N},M<:Metric}
+  function BallNeighborhood{T,N,O,M}(object, radius, metric) where {T,N,
+                                                                    O<:AbstractSpatialObject{T,N},
+                                                                    M<:Metric}
     @assert radius > 0 "radius must be positive"
-    kdtree = KDTree(coordinates(domain), metric)
-    new(domain, radius, metric, kdtree)
+    kdtree = KDTree(coordinates(object), metric)
+    new(object, radius, metric, kdtree)
   end
 end
 
-BallNeighborhood(domain::D, radius::T, metric::M=Euclidean()) where {T,N,D<:AbstractDomain{T,N},M<:Metric} =
-  BallNeighborhood{T,N,D,M}(domain, radius, metric)
+BallNeighborhood(object::O, radius::T, metric::M=Euclidean()) where {T,N,
+                                                                     O<:AbstractSpatialObject{T,N},
+                                                                     M<:Metric} =
+  BallNeighborhood{T,N,O,M}(object, radius, metric)
 
 function (neigh::BallNeighborhood)(location::Int)
-  neigh(coordinates(neigh.domain, location))
+  neigh(coordinates(neigh.object, location))
 end
 
 function (neigh::BallNeighborhood)(xₒ::AbstractVector)

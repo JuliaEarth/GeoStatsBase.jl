@@ -3,47 +3,47 @@
 # ------------------------------------------------------------------
 
 """
-    CylinderNeighborhood(domain, radius, height)
+    CylinderNeighborhood(object, radius, height)
 
-A cylinder neighborhood with a given `radius` and `height` on a spatial `domain`.
+A cylinder neighborhood with a given `radius` and `height` on a spatial `object`.
 
 ### Notes
 
 The `height` parameter is only half of the actual cylinder height.
 """
-struct CylinderNeighborhood{T,N,D<:AbstractDomain{T,N}} <: AbstractNeighborhood{D}
-  domain::D
+struct CylinderNeighborhood{T,N,O<:AbstractSpatialObject{T,N}} <: AbstractNeighborhood{O}
+  object::O
   radius::T
   height::T
 
-  function CylinderNeighborhood{T,N,D}(domain, radius, height) where {T,N,D<:AbstractDomain}
+  function CylinderNeighborhood{T,N,O}(object, radius, height) where {T,N,O<:AbstractSpatialObject{T,N}}
     @assert radius > 0 "cylinder radius must be positive"
     @assert height > 0 "cylinder height must be positive"
-    new(domain, radius, height)
+    new(object, radius, height)
   end
 end
 
-CylinderNeighborhood(domain::D, radius::T, height::T) where {T,N,D<:AbstractDomain{T,N}} =
-  CylinderNeighborhood{T,N,D}(domain, radius, height)
+CylinderNeighborhood(object::O, radius::T, height::T) where {T,N,O<:AbstractSpatialObject{T,N}} =
+  CylinderNeighborhood{T,N,O}(object, radius, height)
 
 function (neigh::CylinderNeighborhood)(location::Int)
-  neigh(coordinates(neigh.domain, location))
+  neigh(coordinates(neigh.object, location))
 end
 
 function (neigh::CylinderNeighborhood)(xₒ::AbstractVector)
-  # retrieve domain
-  ndomain = neigh.domain
+  # retrieve object
+  nobject = neigh.object
 
   # neighborhood specs
   r = neigh.radius
   h = neigh.height
 
   # pre-allocate memory for neighbors coordinates
-  x = MVector{ndims(ndomain),coordtype(ndomain)}(undef)
+  x = MVector{ndims(nobject),coordtype(nobject)}(undef)
 
   neighbors = Vector{Int}()
-  for loc in 1:npoints(ndomain)
-    coordinates!(x, ndomain, loc)
+  for loc in 1:npoints(nobject)
+    coordinates!(x, nobject, loc)
 
     if isneighbor(neigh, xₒ, x)
       push!(neighbors, loc)
