@@ -127,6 +127,7 @@ end
 #------------------
 include("partitions/uniform_partitioner.jl")
 include("partitions/fraction_partitioner.jl")
+include("partitions/slic_partitioner.jl")
 include("partitions/block_partitioner.jl")
 include("partitions/ball_partitioner.jl")
 include("partitions/plane_partitioner.jl")

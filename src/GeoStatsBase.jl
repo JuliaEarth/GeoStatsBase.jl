@@ -8,7 +8,7 @@ using CSV: read
 using Random: randperm, shuffle
 using StatsBase: sample, weights
 using Distributed: pmap, nworkers
-using Distances: Metric, Euclidean, Mahalanobis
+using Distances: Metric, Euclidean, Mahalanobis, pairwise
 using LinearAlgebra: Diagonal, normalize, norm, ⋅
 using Distributions: ContinuousUnivariateDistribution
 using DataFrames: AbstractDataFrame, eltypes, nrow
@@ -59,6 +59,7 @@ export
   AbstractSpatialObject,
   domain,
   bounds,
+  boundvolume,
   npoints,
   coordtype,
   coordnames,
@@ -185,6 +186,7 @@ export
   AbstractSpatialFunctionPartitioner,
   UniformPartitioner,
   FractionPartitioner,
+  SLICPartitioner,
   BlockPartitioner,
   BallPartitioner,
   PlanePartitioner,
