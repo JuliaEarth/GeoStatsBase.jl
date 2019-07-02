@@ -15,8 +15,8 @@ abstract type AbstractNeighborSearcher end
 Update `neighbors` of coordinates `xₒ` with the `searcher` and `mask`,
 and return number of neighbors found.
 """
-search!(::AbstractVector{Int}, ::AbstractVector{T}, ::AbstractNeighborSearcher,
-        ::AbstractVector{Bool}) where {T,N} = error("not implemented")
+search!(neighbors::AbstractVector{Int}, xₒ::AbstractVector{T},
+        searcher::AbstractNeighborSearcher; mask=nothing) where {T,N} = error("not implemented")
 
 #------------------
 # IMPLEMENTATIONS

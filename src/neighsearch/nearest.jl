@@ -3,33 +3,40 @@
 # ------------------------------------------------------------------
 
 """
-    NearestNeighborSearcher(domain, locations, K, metric)
+    NearestNeighborSearcher(object, locations, k, metric)
 
-A search method that finds `K` nearest neighbors in `domain`
+A search method that finds `k` nearest neighbors in spatial `object`
 `locations` according to `metric`.
 """
 struct NearestNeighborSearcher{KD<:KDTree} <: AbstractNeighborSearcher
   kdtree::KD
-  K::Int
+  k::Int
   locs::Vector{Int}
 end
 
-function NearestNeighborSearcher(domain::AbstractDomain, locs::AbstractVector{Int}, K::Int, metric::Metric)
-  @assert 1 ≤ K ≤ length(locs) "number of neighbors must be smaller than number of data locations"
-  @assert length(locs) ≤ npoints(domain) "number of data locations must be smaller than number of points"
-  kdtree = KDTree(coordinates(domain, locs), metric)
-  NearestNeighborSearcher{typeof(kdtree)}(kdtree, K, locs)
+function NearestNeighborSearcher(object::AbstractSpatialObject,
+                                 locs::AbstractVector{Int}, k::Int, metric::Metric)
+  @assert 1 ≤ k ≤ length(locs) "number of neighbors must be smaller than number of data locations"
+  @assert length(locs) ≤ npoints(object) "number of data locations must be smaller than number of points"
+  kdtree = KDTree(coordinates(object, locs), metric)
+  NearestNeighborSearcher{typeof(kdtree)}(kdtree, k, locs)
 end
 
+NearestNeighborSearcher(object::AbstractSpatialObject, k::Int, metric::Metric) =
+  NearestNeighborSearcher(object, 1:npoints(object), k, metric)
+
+NearestNeighborSearcher(object::AbstractSpatialObject, k::Int) =
+  NearestNeighborSearcher(object, k, Euclidean())
+
 function search!(neighbors::AbstractVector{Int}, xₒ::AbstractVector{T},
-                 searcher::NearestNeighborSearcher, mask::AbstractVector{Bool}) where {T,N}
-  K       = searcher.K
-  inds, _ = knn(searcher.kdtree, xₒ, K, true)
+                 searcher::NearestNeighborSearcher; mask=nothing) where {T,N}
+  k       = searcher.k
+  inds, _ = knn(searcher.kdtree, xₒ, k, true)
   locs    = view(searcher.locs, inds)
 
-  @inbounds for i in 1:K
+  @inbounds for i in 1:k
     neighbors[i] = locs[i]
   end
 
-  K
+  k
 end

@@ -130,7 +130,7 @@ function solve_single(problem::SimulationProblem, var::Symbol,
       coordinates!(xₒ, pdomain, location)
 
       # find neighbors with previously simulated values
-      nneigh = search!(neighbors, xₒ, neighsearcher, simulated)
+      nneigh = search!(neighbors, xₒ, neighsearcher, mask=simulated)
 
       # choose between marginal and conditional distribution
       if nneigh == 0
