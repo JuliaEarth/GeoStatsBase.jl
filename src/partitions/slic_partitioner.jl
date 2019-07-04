@@ -10,14 +10,14 @@ clusters using Simple Linear Iterative Clustering (SLIC).
 The method produces clusters of samples that are spatially
 connected based on a distance `dₛ` and that, at the same
 time, are similar in terms of `vars` with distance `dᵥ`.
-The tradeoff is controlled with a weight parameter `m` in
-an additive model `d = √(dᵥ² + m²dₛ²)`.
+The tradeoff is controlled with a hyperparameter parameter
+`m` in an additive model `dₜ = √(dᵥ² + m²(dₛ/s)²)`.
 
 ## Parameters
 
 * `k`       - Approximate number of clusters
-* `m`       - Normalization constant in feature space
-* `tol`     - Tolerance of clustering algorithm (default to `1e-4`)
+* `m`       - Hyperparameter of SLIC model
+* `tol`     - Tolerance of k-means algorithm (default to `1e-4`)
 * `maxiter` - Maximum number of iterations (default to `10`)
 * `vars`    - Variables (or features) to consider (default to all)
 
@@ -43,6 +43,15 @@ SLICPartitioner(k::Int, m::Real; tol=1e-4, maxiter=10, vars=nothing) =
   SLICPartitioner(k, m, tol, maxiter, nothing)
 
 function partition(sdata::AbstractData, partitioner::SLICPartitioner)
+  # SLIC hyperparameter
+  m = partitioner.m
+
+  # variables used for clustering
+  datavars = collect(keys(variables(sdata)))
+  vars = partitioner.vars == nothing ? datavars : partitioner.vars
+
+  @assert vars ⊆ datavars "SLIC features not found in spatial data"
+
   # initial spacing of clusters
   s = slic_spacing(sdata, partitioner)
 
@@ -65,7 +74,7 @@ function partition(sdata::AbstractData, partitioner::SLICPartitioner)
   while err > tol && iter < maxiter
     o = copy(c)
 
-    slic_assignment!(sdata, neigh, c, d, l)
+    slic_assignment!(sdata, neigh, vars, m, s, c, l, d)
     slic_update!(sdata, c, l)
 
     err = norm(c - o) / norm(o)
@@ -103,23 +112,30 @@ end
 
 function slic_assignment!(sdata::AbstractData,
                           neigh::BallNeighborhood,
+                          vars::AbstractVector{Symbol},
+                          m::Real, s::Real,
                           c::AbstractVector{Int},
-                          d::AbstractVector{Float64},
-                          l::AbstractVector{Int})
+                          l::AbstractVector{Int},
+                          d::AbstractVector{Float64})
   for (k, cₖ) in enumerate(c)
     inds = neigh(cₖ)
 
-    # spatial distance
+    # distance between coordinates
     X  = coordinates(sdata, inds)
     xₖ = coordinates(sdata, [cₖ])
     dₛ = pairwise(Euclidean(), X, xₖ, dims=2)
 
-    # feature distance
-    # TODO:
+    # distance between variables
+    V  = [value(sdata, ind, var) for var in vars, ind in inds]
+    vₖ = [value(sdata, ind, var) for var in vars, ind in [cₖ]]
+    dᵥ = pairwise(Euclidean(), V, vₖ, dims=2)
+
+    # total distance
+    dₜ = @. √(dᵥ^2 + m^2 * (dₛ/s)^2)
 
     @inbounds for (i, ind) in enumerate(inds)
-      if dₛ[i] < d[ind]
-        d[ind] = dₛ[i]
+      if dₜ[i] < d[ind]
+        d[ind] = dₜ[i]
         l[ind] = k
       end
     end
