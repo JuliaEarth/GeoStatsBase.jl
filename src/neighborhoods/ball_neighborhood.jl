@@ -3,55 +3,51 @@
 # ------------------------------------------------------------------
 
 """
-    BallNeighborhood(object, radius)
+    BallNeighborhood(radius, metric=Euclidean())
 
-A ball neighborhood of a given `radius` on a spatial `object`.
+A ball neighborhood with `radius` and `metric`.
 """
-struct BallNeighborhood{T,N,O<:AbstractSpatialObject{T,N},M<:Metric} <: AbstractNeighborhood{O}
-  # input fields
-  object::O
+struct BallNeighborhood{T,M} <: AbstractNeighborhood
   radius::T
   metric::M
 
-  # state fields
-  kdtree::KDTree
-
-  function BallNeighborhood{T,N,O,M}(object, radius, metric) where {T,N,
-                                                                    O<:AbstractSpatialObject{T,N},
-                                                                    M<:Metric}
+  function BallNeighborhood{T,M}(radius, metric) where {T,M}
     @assert radius > 0 "radius must be positive"
-    kdtree = KDTree(coordinates(object), metric)
-    new(object, radius, metric, kdtree)
+    new(radius, metric)
   end
 end
 
-BallNeighborhood(object::O, radius::T, metric::M=Euclidean()) where {T,N,
-                                                                     O<:AbstractSpatialObject{T,N},
-                                                                     M<:Metric} =
-  BallNeighborhood{T,N,O,M}(object, radius, metric)
+BallNeighborhood(radius::T, metric::M=Euclidean()) where {T,M} =
+  BallNeighborhood{T,M}(radius, metric)
 
-function (neigh::BallNeighborhood)(location::Int)
-  neigh(coordinates(neigh.object, location))
-end
+"""
+    radius(ball)
 
-function (neigh::BallNeighborhood)(xₒ::AbstractVector)
-  inrange(neigh.kdtree, xₒ, neigh.radius, true)
-end
+Return the radius of the `ball`.
+"""
+radius(ball::BallNeighborhood) = ball.radius
 
-function isneighbor(neigh::BallNeighborhood, xₒ::AbstractVector, x::AbstractVector)
-  evaluate(neigh.metric, xₒ, x) ≤ neigh.radius
-end
+"""
+    metric(ball)
+
+Return the metric of the `ball`.
+"""
+metric(ball::BallNeighborhood) = ball.metric
+
+isneighbor(ball::BallNeighborhood, xₒ::AbstractVector, x::AbstractVector) =
+  evaluate(ball.metric, xₒ, x) ≤ ball.radius
 
 # ------------
 # IO methods
 # ------------
-function Base.show(io::IO, neigh::BallNeighborhood)
-  r = neigh.radius
-  print(io, "BallNeighborhood($r)")
+function Base.show(io::IO, ball::BallNeighborhood)
+  r = ball.radius
+  d = ball.metric
+  print(io, "BallNeighborhood($r, $d)")
 end
 
-function Base.show(io::IO, ::MIME"text/plain", neigh::BallNeighborhood)
+function Base.show(io::IO, ::MIME"text/plain", ball::BallNeighborhood)
   println(io, "BallNeighborhood")
-  println(io, "  radius: ", neigh.radius)
-  println(io, "  metric: ", neigh.metric)
+  println(io, "  radius: ", ball.radius)
+  print(  io, "  metric: ", ball.metric)
 end
