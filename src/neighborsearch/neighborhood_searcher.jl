@@ -23,7 +23,8 @@ function NeighborhoodSearcher(object::O, neigh::N) where {O,N}
 end
 
 # search method for any neighborhood
-function search(xₒ::AbstractVector, searcher::NeighborhoodSearcher; mask=nothing)
+function search(xₒ::AbstractVector, searcher::NeighborhoodSearcher{O,N,T};
+                mask=nothing) where {O,N,T}
   object = searcher.object
   neigh  = searcher.neigh
   locs   = mask ≠ nothing ? view(1:npoints(object), mask) : 1:npoints(object)
@@ -53,5 +54,7 @@ function search(xₒ::AbstractVector, searcher::NeighborhoodSearcher{O,N,T};
       end
     end
     neighbors
+  else
+    locs
   end
 end
