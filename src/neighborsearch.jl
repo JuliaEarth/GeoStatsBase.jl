@@ -53,3 +53,4 @@ end
 #------------------
 include("neighborsearch/nearest_searcher.jl")
 include("neighborsearch/neighborhood_searcher.jl")
+include("neighborsearch/bounded_searcher.jl")
