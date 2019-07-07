@@ -174,6 +174,7 @@ export
   AbstractBoundedNeighborSearcher,
   NearestNeighborSearcher,
   NeighborhoodSearcher,
+  BoundedSearcher,
   search!, search,
   maxneighbors,
 
