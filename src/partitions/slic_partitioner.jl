@@ -27,30 +27,25 @@ The tradeoff is controlled with a hyperparameter parameter
   state-of-the-art superpixel methods.
 """
 struct SLICPartitioner <: AbstractPartitioner
-  # hyperparameters
   k::Int
   m::Float64
-
-  # performance parameters
   tol::Float64
   maxiter::Int
-
-  # spatial variables to consider
   vars::Union{Vector{Symbol},Nothing}
 end
 
 SLICPartitioner(k::Int, m::Real; tol=1e-4, maxiter=10, vars=nothing) =
-  SLICPartitioner(k, m, tol, maxiter, nothing)
+  SLICPartitioner(k, m, tol, maxiter, vars)
 
 function partition(sdata::AbstractData, partitioner::SLICPartitioner)
-  # SLIC hyperparameter
-  m = partitioner.m
-
   # variables used for clustering
   datavars = collect(keys(variables(sdata)))
-  vars = partitioner.vars == nothing ? datavars : partitioner.vars
+  vars = partitioner.vars ≠ nothing ? partitioner.vars : datavars
 
   @assert vars ⊆ datavars "SLIC features not found in spatial data"
+
+  # SLIC hyperparameter
+  m = partitioner.m
 
   # initial spacing of clusters
   s = slic_spacing(sdata, partitioner)
@@ -58,8 +53,8 @@ function partition(sdata::AbstractData, partitioner::SLICPartitioner)
   # initialize cluster centers
   c = slic_initialization(sdata, s)
 
-  # ball neighborhood for local search
-  neigh = BallNeighborhood(sdata, s)
+  # ball neighborhood search
+  searcher = NeighborhoodSearcher(sdata, BallNeighborhood(s))
 
   # pre-allocate memory for label and distance
   l = fill(0, npoints(sdata))
@@ -74,7 +69,7 @@ function partition(sdata::AbstractData, partitioner::SLICPartitioner)
   while err > tol && iter < maxiter
     o = copy(c)
 
-    slic_assignment!(sdata, neigh, vars, m, s, c, l, d)
+    slic_assignment!(sdata, searcher, vars, m, s, c, l, d)
     slic_update!(sdata, c, l)
 
     err = norm(c - o) / norm(o)
@@ -111,19 +106,19 @@ function slic_initialization(sdata::AbstractData, s::Real)
 end
 
 function slic_assignment!(sdata::AbstractData,
-                          neigh::BallNeighborhood,
+                          searcher::NeighborhoodSearcher,
                           vars::AbstractVector{Symbol},
                           m::Real, s::Real,
                           c::AbstractVector{Int},
                           l::AbstractVector{Int},
                           d::AbstractVector{Float64})
   for (k, cₖ) in enumerate(c)
-    inds = neigh(cₖ)
+    xₖ = coordinates(sdata, cₖ)
+    inds = search(xₖ, searcher)
 
     # distance between coordinates
     X  = coordinates(sdata, inds)
-    xₖ = coordinates(sdata, [cₖ])
-    dₛ = pairwise(Euclidean(), X, xₖ, dims=2)
+    dₛ = pairwise(Euclidean(), X, reshape(xₖ, length(xₖ), 1), dims=2)
 
     # distance between variables
     V  = [value(sdata, ind, var) for var in vars, ind in inds]
