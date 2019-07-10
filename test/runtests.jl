@@ -23,7 +23,7 @@ end
 testfiles = [
   "distances.jl",
   "distributions.jl",
-  "spatialdata.jl",
+  "data.jl",
   "domains.jl",
   "collections.jl",
   "partitions.jl",
