@@ -84,7 +84,6 @@ export
   StructuredGridData,
   variables,
   valuetype,
-  value,
   valid,
 
   # collections

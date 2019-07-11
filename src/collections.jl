@@ -67,12 +67,12 @@ DataCollection(data::Vararg{AbstractData{T,N}}) where {N,T} =
 
 variables(collection::DataCollection) = merge([variables(d) for d in collection.data]...)
 
-function value(collection::DataCollection, ind::Int, var::Symbol)
+function Base.getindex(collection::DataCollection, ind::Int, var::Symbol)
   k = findfirst(ind .≤ collection.offsets)
   d = collection.data[k]
   if var ∈ keys(variables(d))
     i = k > 1 ? (@inbounds return ind - collection.offsets[k-1]) : ind
-    value(collection.data[k], i, var)
+    getindex(collection.data[k], i, var)
   else
     missing
   end

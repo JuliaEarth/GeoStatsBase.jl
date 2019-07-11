@@ -70,8 +70,10 @@ Base.size(geodata::RegularGridData) = size(geodata.domain)
 origin(geodata::RegularGridData) = origin(geodata.domain)
 spacing(geodata::RegularGridData) = spacing(geodata.domain)
 
-Base.getindex(geodata::RegularGridData, var::Symbol) =
-  reshape(values(geodata, var), size(geodata))
+function Base.getindex(geodata::RegularGridData, var::Symbol)
+  vals = [getindex(geodata, ind, var) for ind in 1:npoints(geodata)]
+  reshape(vals, size(geodata))
+end
 
 function Base.getindex(geodata::RegularGridData,
                        icoords::Vararg{Int,N}) where {N}

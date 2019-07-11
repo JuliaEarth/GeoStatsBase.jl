@@ -42,8 +42,10 @@ StructuredGridData(data::Dict{Symbol,<:AbstractArray},
 
 Base.size(geodata::StructuredGridData) = size(geodata.domain)
 
-Base.getindex(geodata::StructuredGridData, var::Symbol) =
-  reshape(values(geodata, var), size(geodata))
+function Base.getindex(geodata::StructuredGridData, var::Symbol)
+  vals = [getindex(geodata, ind, var) for ind in 1:npoints(geodata)]
+  reshape(vals, size(geodata))
+end
 
 function Base.getindex(geodata::StructuredGridData,
                        icoords::Vararg{Int,N}) where {N}

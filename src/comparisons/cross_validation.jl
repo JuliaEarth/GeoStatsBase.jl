@@ -98,7 +98,7 @@ function compare(solvers::AbstractVector{S}, problem::EstimationProblem,
 
       for (s, solution) in enumerate(solutions)
         # get true holdout values
-        observations = [value(pdata, loc, var) for loc in hold]
+        observations = [pdata[loc,var] for loc in hold]
 
         # get solver estimate at holdout locations
         estimates = [solution.mean[var][varmap[loc]] for loc in hold]

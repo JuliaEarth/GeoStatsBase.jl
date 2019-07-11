@@ -16,7 +16,8 @@ domain(d::WeightedSpatialData) = domain(d.spatialdata)
 
 variables(d::WeightedSpatialData) = variables(d.spatialdata)
 
-value(d::WeightedSpatialData, ind::Int, var::Symbol) = value(d.spatialdata, ind, var)
+Base.getindex(d::WeightedSpatialData, ind::Int, var::Symbol) =
+  getindex(d.spatialdata, ind, var)
 
 """
     AbstractWeighter

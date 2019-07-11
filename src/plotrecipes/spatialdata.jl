@@ -2,12 +2,12 @@
 # Licensed under the ISC License. See LICENCE in the project root.
 # ------------------------------------------------------------------
 
-@recipe function f(spatialdata::AbstractData; variables=nothing)
+@recipe function f(sdata::AbstractData; variables=nothing)
   # retrieve underlying domain
-  sdomain = domain(spatialdata)
+  sdomain = domain(sdata)
 
   # valid variables
-  vars = GeoStatsBase.variables(spatialdata)
+  vars = GeoStatsBase.variables(sdata)
   validvars = sort([var for (var, V) in vars if V <: Number])
 
   # plot all variables by default
@@ -19,9 +19,9 @@
 
   for (i, var) in enumerate(variables)
     # retrieve valid values
-    vals = map(1:npoints(spatialdata)) do ind
-      if isvalid(spatialdata, ind, var)
-        value(spatialdata, ind, var)
+    vals = map(1:npoints(sdata)) do ind
+      if isvalid(sdata, ind, var)
+        sdata[ind,var]
       else
         NaN
       end

@@ -22,8 +22,8 @@ domain(dv::SpatialDataView) = view(domain(dv.data), dv.inds)
 
 variables(view::SpatialDataView) = variables(view.data)
 
-value(view::SpatialDataView, ind::Int, var::Symbol) =
-  value(view.data, view.inds[ind], var)
+Base.getindex(view::SpatialDataView, ind::Int, var::Symbol) =
+  getindex(view.data, view.inds[ind], var)
 
 # ------------
 # IO methods

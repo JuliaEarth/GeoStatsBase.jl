@@ -24,19 +24,20 @@ Return the variable names in `spatialdata` and their types.
 variables(spatialdata::AbstractData) = Dict(var => eltype(array) for (var,array) in spatialdata.data)
 
 """
-    value(spatialdata, ind, var)
+    spatialdata[ind,var]
 
 Return the value of `var` for the `ind`-th point in `spatialdata`.
 """
-value(spatialdata::AbstractData, ind::Int, var::Symbol) = spatialdata.data[var][ind]
+Base.getindex(spatialdata::AbstractData, ind::Int, var::Symbol) = spatialdata.data[var][ind]
 
 """
-    values(spatialdata, var)
+    spatialdata[var]
 
-Return the values of `var` for all the points in `spatialdata`.
+Return the values of `var` for all points in `spatialdata` with the shape
+of the underlying domain.
 """
-Base.values(spatialdata::AbstractData, var::Symbol) =
-  [value(spatialdata, ind, var) for ind in 1:npoints(spatialdata)]
+Base.getindex(spatialdata::AbstractData, var::Symbol) =
+  [getindex(spatialdata, ind, var) for ind in 1:npoints(spatialdata)]
 
 """
     values(spatialdata)
@@ -44,14 +45,7 @@ Base.values(spatialdata::AbstractData, var::Symbol) =
 Return the values of all variables in `spatialdata`.
 """
 Base.values(spatialdata::AbstractData) =
-  Dict(var => values(spatialdata, var) for (var,V) in variables(spatialdata))
-
-"""
-    spatialdata[var]
-
-Return `values(spatialdata, var)` with the correct shape of the underlying domain.
-"""
-Base.getindex(spatialdata::AbstractData, var::Symbol) = values(spatialdata, var)
+  Dict(var => getindex(spatialdata, var) for (var,V) in variables(spatialdata))
 
 """
     isvalid(spatialdata, ind, var)
@@ -59,7 +53,7 @@ Base.getindex(spatialdata::AbstractData, var::Symbol) = values(spatialdata, var)
 Return `true` if the `ind`-th point in `spatialdata` has a valid value for `var`.
 """
 function Base.isvalid(spatialdata::AbstractData, ind::Int, var::Symbol)
-  val = value(spatialdata, ind, var)
+  val = getindex(spatialdata, ind, var)
   !(val ≡ missing || (val isa Number && isnan(val)))
 end
 
@@ -83,7 +77,7 @@ function valid(spatialdata::AbstractData{T,N}, var::Symbol) where {N,T}
     if isvalid(spatialdata, ind, var)
       nvalid += 1
       coordinates!(view(X,:,nvalid), spatialdata, ind)
-      z[nvalid] = value(spatialdata, ind, var)
+      z[nvalid] = getindex(spatialdata, ind, var)
     end
   end
 

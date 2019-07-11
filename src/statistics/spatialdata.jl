@@ -7,14 +7,14 @@ const RealOrVec = Union{Real,AbstractVector}
 #------------------------
 # WEIGHTED SPATIAL DATA
 #------------------------
-mean(d::WeightedSpatialData, v::Symbol) = mean(values(d, v), weights(d.weights))
+mean(d::WeightedSpatialData, v::Symbol) = mean(d[v], weights(d.weights))
 mean(d::WeightedSpatialData) = Dict(v => mean(d, v) for (v,V) in variables(d))
 
-var(d::WeightedSpatialData, v::Symbol) = var(values(d, v), weights(d.weights),
+var(d::WeightedSpatialData, v::Symbol) = var(d[v], weights(d.weights),
                                              mean=mean(d, v), corrected=false)
 var(d::WeightedSpatialData) = Dict(v => var(d, v) for (v,V) in variables(d))
 
-quantile(d::WeightedSpatialData, v::Symbol, p::T) where {T<:RealOrVec} = quantile(values(d, v), weights(d.weights), p)
+quantile(d::WeightedSpatialData, v::Symbol, p::T) where {T<:RealOrVec} = quantile(d[v], weights(d.weights), p)
 quantile(d::WeightedSpatialData, p::T) where {T<:RealOrVec} = Dict(v => quantile(d, v, p) for (v,V) in variables(d))
 
 #---------------
