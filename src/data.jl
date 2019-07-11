@@ -25,10 +25,20 @@ variables(spatialdata::AbstractData) = Dict(var => eltype(array) for (var,array)
 
 """
     spatialdata[ind,var]
+    spatialdata[inds,vars]
 
 Return the value of `var` for the `ind`-th point in `spatialdata`.
 """
 Base.getindex(spatialdata::AbstractData, ind::Int, var::Symbol) = spatialdata.data[var][ind]
+
+Base.getindex(spatialdata::AbstractData, inds::AbstractVector{Int}, var::Symbol) =
+  [getindex(spatialdata, ind, var) for ind in inds]
+
+Base.getindex(spatialdata::AbstractData, ind::Int, vars::AbstractVector{Symbol}) =
+  [getindex(spatialdata, ind, var) for var in vars]
+
+Base.getindex(spatialdata::AbstractData, inds::AbstractVector{Int}, vars::AbstractVector{Symbol}) =
+  [getindex(spatialdata, ind, var) for ind in inds, var in vars]
 
 """
     spatialdata[var]
