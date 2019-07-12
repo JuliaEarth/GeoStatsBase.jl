@@ -9,8 +9,8 @@ include("plotrecipes/domains/regular_grid.jl")
 include("plotrecipes/domains/structured_grid.jl")
 include("plotrecipes/domains/abstract_domain.jl")
 
-# spatial data
-include("plotrecipes/spatialdata.jl")
+# data
+include("plotrecipes/data.jl")
 
 # solutions
 include("plotrecipes/solutions/estimation.jl")

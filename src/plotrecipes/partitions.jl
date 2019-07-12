@@ -4,9 +4,9 @@
 
 @recipe function f(partition::SpatialPartition)
   marker --> :auto
-  for p in partition
+  for object in partition
     @series begin
-      p
+      object
     end
   end
 end
