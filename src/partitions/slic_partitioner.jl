@@ -113,17 +113,17 @@ function slic_assignment!(sdata::AbstractData,
                           l::AbstractVector{Int},
                           d::AbstractVector{Float64})
   for (k, cₖ) in enumerate(c)
-    xₖ = coordinates(sdata, cₖ)
-    inds = search(xₖ, searcher)
+    xₖ = coordinates(sdata, [cₖ])
+    inds = search(vec(xₖ), searcher)
 
     # distance between coordinates
     X  = coordinates(sdata, inds)
-    dₛ = pairwise(Euclidean(), X, reshape(xₖ, length(xₖ), 1), dims=2)
+    dₛ = pairwise(Euclidean(), X, xₖ, dims=2)
 
     # distance between variables
-    V  = [sdata[ind,var] for var in vars, ind in inds]
-    vₖ = [sdata[ind,var] for var in vars, ind in [cₖ]]
-    dᵥ = pairwise(Euclidean(), V, vₖ, dims=2)
+    V  = sdata[inds,vars]
+    vₖ = sdata[[cₖ],vars]
+    dᵥ = pairwise(Euclidean(), V, vₖ, dims=1)
 
     # total distance
     dₜ = @. √(dᵥ^2 + m^2 * (dₛ/s)^2)
