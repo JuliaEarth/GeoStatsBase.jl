@@ -54,12 +54,15 @@ struct SimulationProblem{S<:Union{AbstractData,Nothing},
                                     mapper) where {S<:Union{AbstractData,Nothing},
                                                    D<:AbstractDomain,M<:AbstractMapper}
     probvnames = Tuple(keys(targetvars))
+    datavnames = Tuple(keys(variables(spatialdata)))
 
     @assert !isempty(probvnames) "target variables must be specified"
     @assert nreals > 0 "number of realizations must be positive"
 
     if spatialdata ≠ nothing
-      mappings = map(spatialdata, domain, probvnames, mapper)
+      dmappings = map(spatialdata, domain, datavnames, mapper)
+      omappings = Dict(var => Dict() for var in probvnames if var ∉ datavnames)
+      mappings  = merge(dmappings, omappings)
     else
       mappings = Dict(var => Dict() for var in probvnames)
     end
@@ -68,42 +71,52 @@ struct SimulationProblem{S<:Union{AbstractData,Nothing},
   end
 end
 
-function SimulationProblem(spatialdata::S, domain::D, targetvarnames::NTuple{N,Symbol}, nreals::Int;
-                           mapper::M=SimpleMapper()) where {S<:AbstractData,
-                                                            D<:AbstractDomain,
-                                                            M<:AbstractMapper,
-                                                            N}
-  datavnames = Tuple(keys(variables(spatialdata)))
-  datacnames = coordnames(spatialdata)
+const VarType      = Pair{Symbol,DataType}
+const VarOrVarType = Union{Symbol,VarType}
 
-  @assert targetvarnames ⊆ datavnames "target variables must be present in spatial data"
-  @assert isempty(targetvarnames ∩ datacnames) "target variables can't be coordinates"
-  @assert ndims(domain) == length(datacnames) "data and domain must have the same number of dimensions"
+function SimulationProblem(spatialdata::S, domain::D, vars::NTuple{N,VarOrVarType}, nreals::Int;
+                           mapper::M=SimpleMapper()) where {S<:AbstractData,D<:AbstractDomain,M<:AbstractMapper,N}
+  datavars = Dict(var => Base.nonmissingtype(V) for (var,V) in variables(spatialdata))
+
+  # for variables without type, find the type in spatial data
+  targetvars₁ = map(Iterators.filter(v -> v isa Symbol, vars)) do var
+    if var ∈ keys(datavars)
+      var => datavars[var]
+    else
+      @error "please specify the type of target variable $var"
+    end
+  end
+
+  # for variables with type, make sure the type is valid
+  targetvars₂ = map(Iterators.filter(v -> v isa Pair, vars)) do pair
+    var, T = pair
+    if var ∈ keys(datavars)
+      U = datavars[var]
+      @assert U <: T "type $T for variable $var cannot hold values of type $U in spatial data"
+    end
+    pair
+  end
+
+  targetvars = merge(Dict(targetvars₁), Dict(targetvars₂))
+
+  @assert ndims(spatialdata) == ndims(domain) "data and domain must have the same number of dimensions"
   @assert coordtype(spatialdata) == coordtype(domain) "data and domain must have the same coordinate type"
-
-  # build dictionary of target variables
-  datavars = variables(spatialdata)
-  targetvars = Dict(var => Base.nonmissingtype(T) for (var,T) in datavars if var ∈ targetvarnames)
+  @assert isempty(keys(targetvars) ∩ coordnames(domain)) "target variables can't be coordinates"
 
   SimulationProblem{S,D,M}(spatialdata, domain, targetvars, nreals, mapper)
 end
 
-function SimulationProblem(spatialdata::S, domain::D, targetvarname::Symbol, nreals::Int;
-                           mapper::M=SimpleMapper()) where {S<:AbstractData,
-                                                            D<:AbstractDomain,
-                                                            M<:AbstractMapper}
-  SimulationProblem(spatialdata, domain, (targetvarname,), nreals; mapper=mapper)
-end
+SimulationProblem(spatialdata::S, domain::D, var::VarOrVarType, nreals::Int;
+                  mapper::M=SimpleMapper()) where {S<:AbstractData,D<:AbstractDomain,M<:AbstractMapper} =
+  SimulationProblem(spatialdata, domain, (var,), nreals; mapper=mapper)
 
-function SimulationProblem(domain::D, targetvars::Dict{Symbol,DataType}, nreals::Int;
-                           mapper::M=SimpleMapper()) where {D<:AbstractDomain,M<:AbstractMapper}
-  SimulationProblem{Nothing,D,M}(nothing, domain, targetvars, nreals, mapper)
-end
+SimulationProblem(domain::D, vars::NTuple{N,VarType}, nreals::Int;
+                  mapper::M=SimpleMapper()) where {D<:AbstractDomain,M<:AbstractMapper,N} =
+  SimulationProblem{Nothing,D,M}(nothing, domain, Dict(vars), nreals, mapper)
 
-function SimulationProblem(domain::D, targetvar::Pair{Symbol,DataType}, nreals::Int;
-                           mapper::M=SimpleMapper()) where {D<:AbstractDomain,M<:AbstractMapper}
-  SimulationProblem(domain, Dict(targetvar), nreals; mapper=mapper)
-end
+SimulationProblem(domain::D, var::VarType, nreals::Int;
+                  mapper::M=SimpleMapper()) where {D<:AbstractDomain,M<:AbstractMapper} =
+  SimulationProblem(domain, (var,), nreals; mapper=mapper)
 
 """
     data(problem)

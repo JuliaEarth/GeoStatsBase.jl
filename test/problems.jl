@@ -27,6 +27,20 @@
     @test nreals(problem) == 100
     @test_throws AssertionError SimulationProblem(data3D, grid2D, :value, 100)
 
+    # specify type of variable explicitly
+    problem = SimulationProblem(data3D, grid3D, :value => Float64, 100)
+    @test variables(problem) == Dict(:value => Float64)
+
+    # add variable not present in spatial data
+    problem = SimulationProblem(data3D, grid3D, (:value => Float64, :other => Int), 100)
+    @test variables(problem) == Dict(:value => Float64, :other => Int)
+    @test isempty(datamap(problem)[:other])
+
+    # infer type of variables in spatial data whenever possible
+    problem = SimulationProblem(data3D, grid3D, (:value, :other => Int), 100)
+    @test variables(problem) == Dict(:value => Float64, :other => Int)
+    @test isempty(datamap(problem)[:other])
+
     # show methods
     grid2D = RegularGrid{Float64}(100,200)
     problem = SimulationProblem(data2D, grid2D, :value, 100)
