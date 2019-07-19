@@ -25,19 +25,6 @@ function bounds(domain::AbstractDomain{T,N}) where {N,T}
   ntuple(i->(lowerleft[i],upperright[i]), N)
 end
 
-function nearestlocation(domain::AbstractDomain{T,N},
-                         coords::AbstractVector{T}) where {N,T}
-  lmin, dmin = 0, Inf
-  c = MVector{N,T}(undef)
-  for l in 1:npoints(domain)
-    coordinates!(c, domain, l)
-    d = norm(coords - c)
-    d < dmin && ((lmin, dmin) = (l, d))
-  end
-
-  lmin
-end
-
 """
     view(domain, locations)
 

@@ -22,17 +22,21 @@ function Base.map(spatialdata::AbstractData{T,N},
   # pre-allocate memory for coordinates
   coords = MVector{N,T}(undef)
 
+  # nearest neighbor search method
+  neighbor = Vector{Int}(undef, 1)
+  searcher = NearestNeighborSearcher(domain, 1)
+
   for ind in 1:npoints(spatialdata)
     # update datum coordinates
     coordinates!(coords, spatialdata, ind)
 
     # find nearest location in the domain
-    near = nearestlocation(domain, coords)
+    search!(neighbor, coords, searcher)
 
     # save pair if there is data for variable
     for var in targetvars
       if isvalid(spatialdata, ind, var)
-        push!(mappings[var], near => ind)
+        push!(mappings[var], neighbor[1] => ind)
       end
     end
   end

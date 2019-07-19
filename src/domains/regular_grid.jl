@@ -88,28 +88,6 @@ function bounds(grid::RegularGrid{T,N}) where {N,T}
   ntuple(i->(lowerleft[i],upperright[i]), N)
 end
 
-function nearestlocation(grid::RegularGrid{T,N}, coords::AbstractVector{T}) where {N,T}
-  sz = size(grid)
-  or = origin(grid)
-  sp = spacing(grid)
-
-  units = ntuple(i -> @inbounds(return round(Int, (coords[i] - or[i]) / sp[i])), N)
-  icoords = ntuple(i -> @inbounds(return units[i] + 1), N) # 1-based indexing
-
-  # make sure integer coordinates lie inside of the grid
-  c = ntuple(i -> @inbounds(return clamp(icoords[i], 1, sz[i])), N)
-
-  if N == 1
-    @inbounds return c[1]
-  elseif N == 2
-    @inbounds return c[1] + sz[1]*(c[2]-1)
-  elseif N == 3
-    @inbounds return c[1] + sz[1]*(c[2]-1) + sz[1]*sz[2]*(c[3]-1)
-  else # higher dimensions
-    LinearIndices(sz)[c...]
-  end
-end
-
 # ------------
 # IO methods
 # ------------

@@ -20,20 +20,14 @@ using Parameters
 import Distances: evaluate
 import Distributions: quantile, cdf
 
-# core concepts
 include("spatialobject.jl")
 include("domains.jl")
 include("domainview.jl")
 include("data.jl")
 include("dataview.jl")
 include("collections.jl")
-include("mappers.jl")
-include("tasks.jl")
-include("problems.jl")
-include("solutions.jl")
-
-# developer tools
 include("macros.jl")
+include("tasks.jl")
 include("paths.jl")
 include("distances.jl")
 include("neighborhoods.jl")
@@ -42,16 +36,13 @@ include("distributions.jl")
 include("estimators.jl")
 include("partitions.jl")
 include("weighting.jl")
-include("statistics.jl")
-
-# solvers and comparisons
+include("mappers.jl")
+include("problems.jl")
 include("solvers.jl")
+include("solutions.jl")
+include("statistics.jl")
 include("comparisons.jl")
-
-# plot recipes
 include("plotrecipes.jl")
-
-# utilities
 include("utils.jl")
 
 export
@@ -65,7 +56,6 @@ export
   coordnames,
   coordinates,
   coordinates!,
-  nearestlocation,
 
   # domains
   AbstractDomain,

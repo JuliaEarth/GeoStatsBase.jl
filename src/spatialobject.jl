@@ -108,12 +108,3 @@ bounds(object::AbstractSpatialObject) = bounds(domain(object))
 Return the volume of the bounding box of the `object`.
 """
 boundvolume(object::AbstractSpatialObject) = prod(u-l for (l,u) in bounds(object))
-
-"""
-    nearestlocation(object, coords)
-
-Return the nearest location of `coords` in the `object`.
-"""
-nearestlocation(object::AbstractSpatialObject{T,N},
-                coords::AbstractVector{T}) where {N,T} =
-  nearestlocation(domain(object), coords)
