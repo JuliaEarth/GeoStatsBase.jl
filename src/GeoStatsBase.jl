@@ -82,7 +82,7 @@ export
 
   # mappers
   AbstractMapper,
-  SimpleMapper,
+  NearestMapper,
   CopyMapper,
 
   # tasks

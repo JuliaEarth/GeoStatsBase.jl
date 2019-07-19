@@ -55,7 +55,7 @@ struct EstimationProblem{S<:AbstractData,
 end
 
 function EstimationProblem(spatialdata::S, domain::D, targetvarnames::NTuple{N,Symbol};
-                           mapper::M=SimpleMapper()) where {S<:AbstractData,
+                           mapper::M=NearestMapper()) where {S<:AbstractData,
                                                             D<:AbstractDomain,
                                                             M<:AbstractMapper,
                                                             N}
@@ -67,7 +67,7 @@ function EstimationProblem(spatialdata::S, domain::D, targetvarnames::NTuple{N,S
 end
 
 function EstimationProblem(spatialdata::S, domain::D, targetvarname::Symbol;
-                           mapper::M=SimpleMapper()) where {S<:AbstractData,
+                           mapper::M=NearestMapper()) where {S<:AbstractData,
                                                             D<:AbstractDomain,
                                                             M<:AbstractMapper}
   EstimationProblem(spatialdata, domain, (targetvarname,); mapper=mapper)

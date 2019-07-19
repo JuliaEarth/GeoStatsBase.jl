@@ -3,17 +3,17 @@
 # ------------------------------------------------------------------
 
 """
-    SimpleMapper
+    NearestMapper
 
 A mapping strategy in which data points are assigned to their nearest
 point in the domain.
 """
-struct SimpleMapper <: AbstractMapper end
+struct NearestMapper <: AbstractMapper end
 
 function Base.map(spatialdata::AbstractData{T,N},
                   domain::AbstractDomain{T,N},
                   targetvars::NTuple{K,Symbol},
-                  mapper::SimpleMapper) where {N,T,K}
+                  mapper::NearestMapper) where {N,T,K}
   @assert targetvars ⊆ keys(variables(spatialdata)) "target variables must be present in spatial data"
 
   # dictionary with mappings

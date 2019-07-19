@@ -20,5 +20,5 @@ Base.map(::AbstractData, ::AbstractDomain,
 #------------------
 # IMPLEMENTATIONS
 #------------------
-include("mappers/simple_mapper.jl")
+include("mappers/nearest_mapper.jl")
 include("mappers/copy_mapper.jl")

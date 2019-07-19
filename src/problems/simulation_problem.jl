@@ -75,7 +75,7 @@ const VarType      = Pair{Symbol,DataType}
 const VarOrVarType = Union{Symbol,VarType}
 
 function SimulationProblem(spatialdata::S, domain::D, vars::NTuple{N,VarOrVarType}, nreals::Int;
-                           mapper::M=SimpleMapper()) where {S<:AbstractData,D<:AbstractDomain,M<:AbstractMapper,N}
+                           mapper::M=NearestMapper()) where {S<:AbstractData,D<:AbstractDomain,M<:AbstractMapper,N}
   datavars = Dict(var => Base.nonmissingtype(V) for (var,V) in variables(spatialdata))
 
   # for variables without type, find the type in spatial data
@@ -107,15 +107,15 @@ function SimulationProblem(spatialdata::S, domain::D, vars::NTuple{N,VarOrVarTyp
 end
 
 SimulationProblem(spatialdata::S, domain::D, var::VarOrVarType, nreals::Int;
-                  mapper::M=SimpleMapper()) where {S<:AbstractData,D<:AbstractDomain,M<:AbstractMapper} =
+                  mapper::M=NearestMapper()) where {S<:AbstractData,D<:AbstractDomain,M<:AbstractMapper} =
   SimulationProblem(spatialdata, domain, (var,), nreals; mapper=mapper)
 
 SimulationProblem(domain::D, vars::NTuple{N,VarType}, nreals::Int;
-                  mapper::M=SimpleMapper()) where {D<:AbstractDomain,M<:AbstractMapper,N} =
+                  mapper::M=NearestMapper()) where {D<:AbstractDomain,M<:AbstractMapper,N} =
   SimulationProblem{Nothing,D,M}(nothing, domain, Dict(vars), nreals, mapper)
 
 SimulationProblem(domain::D, var::VarType, nreals::Int;
-                  mapper::M=SimpleMapper()) where {D<:AbstractDomain,M<:AbstractMapper} =
+                  mapper::M=NearestMapper()) where {D<:AbstractDomain,M<:AbstractMapper} =
   SimulationProblem(domain, (var,), nreals; mapper=mapper)
 
 """

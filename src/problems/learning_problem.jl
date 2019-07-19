@@ -61,7 +61,7 @@ struct LearningProblem{Sₛ<:AbstractData,
 end
 
 function LearningProblem(sourcedata::Sₛ, target::Pair{Sₜ,Dₜ}, task::T;
-                         mapper::M=SimpleMapper()) where {Sₛ<:AbstractData,
+                         mapper::M=NearestMapper()) where {Sₛ<:AbstractData,
                                                           Sₜ<:AbstractData,
                                                           Dₜ<:AbstractDomain,
                                                           T<:AbstractLearningTask,
