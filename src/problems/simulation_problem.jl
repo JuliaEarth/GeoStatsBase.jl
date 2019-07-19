@@ -54,12 +54,12 @@ struct SimulationProblem{S<:Union{AbstractData,Nothing},
                                     mapper) where {S<:Union{AbstractData,Nothing},
                                                    D<:AbstractDomain,M<:AbstractMapper}
     probvnames = Tuple(keys(targetvars))
-    datavnames = Tuple(keys(variables(spatialdata)))
 
     @assert !isempty(probvnames) "target variables must be specified"
     @assert nreals > 0 "number of realizations must be positive"
 
     if spatialdata ≠ nothing
+      datavnames = Tuple(keys(variables(spatialdata)))
       dmappings = map(spatialdata, domain, datavnames, mapper)
       omappings = Dict(var => Dict() for var in probvnames if var ∉ datavnames)
       mappings  = merge(dmappings, omappings)

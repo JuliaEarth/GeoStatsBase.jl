@@ -19,6 +19,7 @@
   end
 
   @testset "Simulation" begin
+    # test basic problem interface
     problem = SimulationProblem(data3D, grid3D, :value, 100)
     @test data(problem) == data3D
     @test domain(problem) == grid3D
@@ -40,6 +41,12 @@
     problem = SimulationProblem(data3D, grid3D, (:value, :other => Int), 100)
     @test variables(problem) == Dict(:value => Float64, :other => Int)
     @test isempty(datamap(problem)[:other])
+
+    # constructors without spatial data require variables with types
+    problem = SimulationProblem(grid3D, :value => Float64, 100)
+    @test variables(problem) == Dict(:value => Float64)
+    @test isempty(datamap(problem)[:value])
+    @test_throws MethodError SimulationProblem(grid3D, :value, 100)
 
     # show methods
     grid2D = RegularGrid{Float64}(100,200)
