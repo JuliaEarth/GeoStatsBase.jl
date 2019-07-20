@@ -106,7 +106,7 @@
 
     if visualtests
       gr(size=(800,800))
-      # TODO
+      @plottest plot(g,ms=0.5) joinpath(datadir,"StructuredGridData.png") !istravis
     end
   end
 end
