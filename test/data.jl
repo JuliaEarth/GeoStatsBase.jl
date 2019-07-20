@@ -1,6 +1,14 @@
 @testset "Spatial data" begin
   @testset "CurveData" begin
-    # TODO
+    c = CurveData(Dict(:z => 1:10), [j for i in 1:3, j in 1:10])
+    @test coordnames(c) == (:x1, :x2, :x3)
+    @test variables(c) == Dict(:z => Int)
+    @test npoints(c) == 10
+
+    if visualtests
+      gr(size=(800,800))
+      @plottest plot(c,ms=4) joinpath(datadir,"CurveData.png") !istravis
+    end
   end
 
   @testset "GeoDataFrame" begin
