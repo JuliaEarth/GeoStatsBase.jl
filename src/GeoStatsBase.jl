@@ -166,6 +166,7 @@ export
   BoundedSearcher,
   search!, search,
   maxneighbors,
+  object,
 
   # distributions
   EmpiricalDistribution,

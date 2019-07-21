@@ -10,9 +10,17 @@ A method for searching neighbors in a spatial object given a reference point.
 abstract type AbstractNeighborSearcher end
 
 """
+    object(searcher)
+
+Return the spatial object containing all possible neighbors.
+"""
+object(searcher::AbstractNeighborSearcher) = searcher.object
+
+"""
     search(xₒ, searcher, mask=nothing)
 
-Return neighbors of coordinates `xₒ` with the `searcher` and `mask`.
+Return neighbors of coordinates `xₒ` using `searcher` and a `mask` over
+the spatial object.
 """
 search(xₒ::AbstractVector, searcher::AbstractNeighborSearcher;
        mask=nothing) = error("not implemented")

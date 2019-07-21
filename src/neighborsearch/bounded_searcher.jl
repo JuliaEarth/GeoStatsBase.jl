@@ -5,12 +5,14 @@
 """
     BoundedSearcher(searcher, nmax)
 
-A method for searching at most `nmax` neighbors in `object` using `searcher`.
+A method for searching at most `nmax` neighbors using `searcher`.
 """
 struct BoundedSearcher{S<:AbstractNeighborSearcher} <: AbstractBoundedNeighborSearcher
   searcher::S
   nmax::Int
 end
+
+object(searcher::BoundedSearcher) = object(searcher.searcher)
 
 maxneighbors(searcher::BoundedSearcher) = searcher.nmax
 

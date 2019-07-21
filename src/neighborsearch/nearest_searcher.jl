@@ -8,18 +8,21 @@
 A method for searching `k` nearest neighbors in spatial `object`
 `locations` according to `metric`.
 """
-struct NearestNeighborSearcher{KD<:KDTree} <: AbstractBoundedNeighborSearcher
-  kdtree::KD
+struct NearestNeighborSearcher{O,K} <: AbstractBoundedNeighborSearcher
+  # input fields
+  object::O
   k::Int
   locations::Vector{Int}
+
+  # state fields
+  kdtree::K
 end
 
-function NearestNeighborSearcher(object::AbstractSpatialObject, k::Int;
-                                 locations=1:npoints(object), metric=Euclidean())
+function NearestNeighborSearcher(object::O, k::Int; locations=1:npoints(object), metric=Euclidean()) where {O}
   @assert 1 ≤ k ≤ length(locations) "number of neighbors must be smaller than number of locations"
   @assert locations ⊆ 1:npoints(object) "invalid locations for spatial object"
   kdtree = KDTree(coordinates(object, locations), metric)
-  NearestNeighborSearcher{typeof(kdtree)}(kdtree, k, locations)
+  NearestNeighborSearcher{O,typeof(kdtree)}(object, k, locations, kdtree)
 end
 
 maxneighbors(searcher::NearestNeighborSearcher) = searcher.k
