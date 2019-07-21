@@ -51,6 +51,9 @@ macro metasolver(solver, solvertype, body)
   # solver parameter type
   solverparam = Symbol(solver,"Param")
 
+  # variables are symbols or tuples of symbols
+  varstype = Union{Symbol,NTuple{N,Symbol}} where N
+
   esc(quote
     $Parameters.@with_kw_noshow struct $solverparam
       __dummy__ = nothing
@@ -59,18 +62,18 @@ macro metasolver(solver, solvertype, body)
 
     @doc (@doc $solverparam) (
     struct $solver <: $solvertype
-      params::Dict{Symbol,$solverparam}
+      params::Dict{$varstype,$solverparam}
 
       $(gkeys...)
 
-      function $solver(params::Dict{Symbol,$solverparam}, $(gkeys...))
+      function $solver(params::Dict{$varstype,$solverparam}, $(gkeys...))
         new(params, $(gkeys...))
       end
     end)
 
     function $solver(params...; $(gparams...))
       # build dictionary for inner constructor
-      dict = Dict{Symbol,$solverparam}()
+      dict = Dict{$varstype,$solverparam}()
 
       # convert named tuples to solver parameters
       for (varname, varparams) in params
@@ -91,7 +94,11 @@ macro metasolver(solver, solvertype, body)
     function Base.show(io::IO, ::MIME"text/plain", solver::$solver)
       println(io, solver)
       for (var, varparams) in solver.params
-        println(io, "  └─", var)
+        if var isa Symbol
+          println(io, "  └─", var)
+        else
+          println(io, "  └─", "(", join(var, ", "), ")")
+        end
         pnames = setdiff(fieldnames(typeof(varparams)), [:__dummy__])
         for pname in pnames
           pval = getfield(varparams, pname)
