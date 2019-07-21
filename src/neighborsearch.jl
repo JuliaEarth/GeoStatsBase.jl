@@ -26,6 +26,14 @@ search(xₒ::AbstractVector, searcher::AbstractNeighborSearcher;
        mask=nothing) = error("not implemented")
 
 """
+    search(location, searcher, mask=nothing)
+
+Return neighbors of `location` in spatial object using `searcher` and a `mask`.
+"""
+search(location::Int, searcher::AbstractNeighborSearcher; mask=nothing) =
+  search(coordinates(object(searcher), location), searcher; mask=mask)
+
+"""
     AbstractBoundedNeighborSearcher
 
 A method for searching neighbors with the property that the number of neighbors
