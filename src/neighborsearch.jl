@@ -51,12 +51,22 @@ maxneighbors(searcher::AbstractBoundedNeighborSearcher) = error("not implemented
 """
     search!(neighbors, xₒ, searcher, mask)
 
-Update `neighbors` of coordinates `xₒ` with the `searcher` and `mask`,
+Update `neighbors` of coordinates `xₒ` using `searcher` and `mask`,
 and return number of neighbors found.
 """
 search!(neighbors::AbstractVector{Int}, xₒ::AbstractVector,
         searcher::AbstractBoundedNeighborSearcher;
         mask=nothing) = error("not implemented")
+
+"""
+    search!(neighbors, location, searcher, mask)
+
+Update `neighbors` of `location` in spatial object using `searcher` and `mask`,
+and return number of neighbors found.
+"""
+search!(neighbors::AbstractVector{Int}, location::Int,
+        searcher::AbstractBoundedNeighborSearcher; mask=nothing) =
+  search!(neighbors, coordinates(object(searcher), location), searcher; mask=mask)
 
 function search(xₒ::AbstractVector, searcher::AbstractBoundedNeighborSearcher; mask=nothing)
   neighbors = Vector{Int}(undef, maxneighbors(searcher))
