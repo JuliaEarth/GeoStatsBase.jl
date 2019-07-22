@@ -17,27 +17,27 @@ julia> LearningProblem(sourcedata, targetdata => targetdomain,
                        ClusteringTask((:moisture,:mineral,:planttype)))
 ```
 """
-struct LearningProblem{Sₛ<:AbstractData,
-                       Sₜ<:AbstractData,
-                       Dₜ<:AbstractDomain,
-                       T<:AbstractLearningTask,
-                       M<:AbstractMapper} <: AbstractProblem
-  sourcedata::Sₛ
-  targetdata::Sₜ
-  targetdomain::Dₜ
+struct LearningProblem{DΩₛ<:AbstractData,
+                       DΩₜ<:AbstractData,
+                        Ωₜ<:AbstractDomain,
+                        T<:AbstractLearningTask,
+                        M<:AbstractMapper} <: AbstractProblem
+  sourcedata::DΩₛ
+  targetdata::DΩₜ
+  targetdomain::Ωₜ
   task::T
   mapper::M
 
   # state fields
   mappings::Dict{Symbol,Dict{Int,Int}}
 
-  function LearningProblem{Sₛ,Sₜ,Dₜ,T,M}(sourcedata,
-                                         targetdata, targetdomain,
-                                         task, mapper) where {Sₛ<:AbstractData,
-                                                              Sₜ<:AbstractData,
-                                                              Dₜ<:AbstractDomain,
-                                                              T<:AbstractLearningTask,
-                                                              M<:AbstractMapper}
+  function LearningProblem{DΩₛ,DΩₜ,Ωₜ,T,M}(sourcedata,
+                                           targetdata, targetdomain,
+                                           task, mapper) where {DΩₛ<:AbstractData,
+                                                                DΩₜ<:AbstractData,
+                                                                 Ωₜ<:AbstractDomain,
+                                                                 T<:AbstractLearningTask,
+                                                                 M<:AbstractMapper}
     sourcevars = keys(variables(sourcedata))
     targetvars = keys(variables(targetdata))
 
@@ -60,13 +60,13 @@ struct LearningProblem{Sₛ<:AbstractData,
   end
 end
 
-function LearningProblem(sourcedata::Sₛ, target::Pair{Sₜ,Dₜ}, task::T;
-                         mapper::M=NearestMapper()) where {Sₛ<:AbstractData,
-                                                          Sₜ<:AbstractData,
-                                                          Dₜ<:AbstractDomain,
-                                                          T<:AbstractLearningTask,
-                                                          M<:AbstractMapper}
-  LearningProblem{Sₛ,Sₜ,Dₜ,T,M}(sourcedata, target[1], target[2], task, mapper)
+function LearningProblem(sourcedata::DΩₛ, target::Pair{DΩₜ,Ωₜ}, task::T;
+                         mapper::M=NearestMapper()) where {DΩₛ<:AbstractData,
+                                                           DΩₜ<:AbstractData,
+                                                            Ωₜ<:AbstractDomain,
+                                                            T<:AbstractLearningTask,
+                                                            M<:AbstractMapper}
+  LearningProblem{DΩₛ,DΩₜ,Ωₜ,T,M}(sourcedata, target[1], target[2], task, mapper)
 end
 
 """
