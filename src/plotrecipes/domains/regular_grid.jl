@@ -49,12 +49,14 @@ end
     for i in 1:sz[1]
       @series begin
         seriestype --> :path
+        primary --> false
         [or[1]+(i-1)*sp[1],or[1]+(i-1)*sp[1]], [or[2],or[2]+(sz[2]-1)*sp[2]]
       end
     end
     for j in 1:sz[2]
       @series begin
         seriestype --> :path
+        primary --> false
         [or[1],or[1]+(sz[1]-1)*sp[1]], [or[2]+(j-1)*sp[2],or[2]+(j-1)*sp[2]]
       end
     end
@@ -67,18 +69,21 @@ end
     for i in 1:sz[1], j in 1:sz[2]
       @series begin
         seriestype --> :path
+        primary --> false
         [or[1]+(i-1)*sp[1],or[1]+(i-1)*sp[1]], [or[2]+(j-1)*sp[2],or[2]+(j-1)*sp[2]], [or[3],or[3]+(sz[3]-1)*sp[3]]
       end
     end
     for i in 1:sz[1], k in 1:sz[3]
       @series begin
         seriestype --> :path
+        primary --> false
         [or[1]+(i-1)*sp[1],or[1]+(i-1)*sp[1]], [or[2],or[2]+(sz[2]-1)*sp[2]], [or[3]+(k-1)*sp[3],or[3]+(k-1)*sp[3]]
       end
     end
     for j in 1:sz[2], k in 1:sz[3]
       @series begin
         seriestype --> :path
+        primary --> false
         [or[1],or[1]+(sz[1]-1)*sp[1]], [or[2]+(j-1)*sp[2],or[2]+(j-1)*sp[2]], [or[3]+(k-1)*sp[3],or[3]+(k-1)*sp[3]]
       end
     end

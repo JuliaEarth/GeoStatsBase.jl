@@ -12,6 +12,11 @@ include("plotrecipes/domains/abstract_domain.jl")
 # data
 include("plotrecipes/data.jl")
 
+# problems
+include("plotrecipes/problems/estimation.jl")
+include("plotrecipes/problems/simulation.jl")
+include("plotrecipes/problems/learning.jl")
+
 # solutions
 include("plotrecipes/solutions/estimation.jl")
 include("plotrecipes/solutions/simulation.jl")
