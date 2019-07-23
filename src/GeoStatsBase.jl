@@ -103,7 +103,6 @@ export
   domain,
   sourcedata,
   targetdata,
-  targetdomain,
   task,
   mapper,
   variables,

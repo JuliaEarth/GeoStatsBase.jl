@@ -19,31 +19,20 @@ julia> LearningProblem(sourcedata, targetdata => targetdomain,
 """
 struct LearningProblem{DΩₛ<:AbstractData,
                        DΩₜ<:AbstractData,
-                        Ωₜ<:AbstractDomain,
-                        T<:AbstractLearningTask,
-                        M<:AbstractMapper} <: AbstractProblem
+                       T<:AbstractLearningTask} <: AbstractProblem
   sourcedata::DΩₛ
   targetdata::DΩₜ
-  targetdomain::Ωₜ
   task::T
-  mapper::M
 
-  # state fields
-  mappings::Dict{Symbol,Dict{Int,Int}}
-
-  function LearningProblem{DΩₛ,DΩₜ,Ωₜ,T,M}(sourcedata,
-                                           targetdata, targetdomain,
-                                           task, mapper) where {DΩₛ<:AbstractData,
-                                                                DΩₜ<:AbstractData,
-                                                                 Ωₜ<:AbstractDomain,
-                                                                 T<:AbstractLearningTask,
-                                                                 M<:AbstractMapper}
+  function LearningProblem{DΩₛ,DΩₜ,T}(sourcedata, targetdata, task) where {DΩₛ<:AbstractData,
+                                                                           DΩₜ<:AbstractData,
+                                                                           T<:AbstractLearningTask}
     sourcevars = keys(variables(sourcedata))
     targetvars = keys(variables(targetdata))
 
     # assert spatial configuration
-    @assert ndims(targetdata) == ndims(targetdomain) "target data and domain must have the same number of dimensions"
-    @assert coordtype(targetdata) == coordtype(targetdomain) "target data and domain must have the same coordinate type"
+    @assert ndims(sourcedata) == ndims(targetdata) "source and target data must have the same number of dimensions"
+    @assert coordtype(sourcedata) == coordtype(targetdata) "source and target data must have the same coordinate type"
 
     # assert that tasks are valid for the data
     @assert features(task) ⊆ sourcevars ⊆ targetvars "features must be present in data"
@@ -54,19 +43,14 @@ struct LearningProblem{DΩₛ<:AbstractData,
       varnames = features(task)
     end
 
-    mappings = map(targetdata, targetdomain, varnames, mapper)
-
-    new(sourcedata, targetdata, targetdomain, task, mapper, mappings)
+    new(sourcedata, targetdata, task)
   end
 end
 
-function LearningProblem(sourcedata::DΩₛ, target::Pair{DΩₜ,Ωₜ}, task::T;
-                         mapper::M=NearestMapper()) where {DΩₛ<:AbstractData,
-                                                           DΩₜ<:AbstractData,
-                                                            Ωₜ<:AbstractDomain,
-                                                            T<:AbstractLearningTask,
-                                                            M<:AbstractMapper}
-  LearningProblem{DΩₛ,DΩₜ,Ωₜ,T,M}(sourcedata, target[1], target[2], task, mapper)
+function LearningProblem(sourcedata::DΩₛ, targetdata::DΩₜ, task::T) where {DΩₛ<:AbstractData,
+                                                                           DΩₜ<:AbstractData,
+                                                                           T<:AbstractLearningTask}
+  LearningProblem{DΩₛ,DΩₜ,T}(sourcedata, targetdata, task)
 end
 
 """
@@ -84,41 +68,11 @@ Return the target data of the learning `problem`.
 targetdata(problem::LearningProblem) = problem.targetdata
 
 """
-    targetdomain(problem)
-
-Return the target domain of the learning `problem`.
-"""
-targetdomain(problem::LearningProblem) = problem.targetdomain
-
-"""
     task(problem)
 
 Return the learning task of the learning `problem`.
 """
 task(problem::LearningProblem) = problem.task
-
-"""
-    mapper(problem)
-
-Return the mapper of the learning `problem`.
-"""
-mapper(problem::LearningProblem) = problem.mapper
-
-"""
-    datamap(problem, var)
-
-Return the mapping from target domain locations to target data
-locations for the `var` of the `problem`.
-"""
-datamap(problem::LearningProblem, var::Symbol) = problem.mappings[var]
-
-"""
-    datamap(problem)
-
-Return the mappings from target domain locations to target data
-locations for all the variables of the `problem`.
-"""
-datamap(problem::LearningProblem) = problem.mappings
 
 # ------------
 # IO methods
@@ -134,6 +88,5 @@ function Base.show(io::IO, ::MIME"text/plain", problem::LearningProblem)
   println(io, "    └─data:   ", problem.sourcedata)
   println(io, "  target")
   println(io, "    └─data:   ", problem.targetdata)
-  println(io, "    └─domain: ", problem.targetdomain)
   print(  io, "  task: ", problem.task)
 end
