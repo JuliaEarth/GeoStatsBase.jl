@@ -31,7 +31,7 @@ abstract type AbstractWeighter end
 
 Weight `spatialdata` with `weighter` method.
 """
-weight(spatialdata::AbstractData, weighter::AbstractWeighter) = error("not implemented")
+weight(spatialdata::AbstractData, weighter::AbstractWeighter) = @error "not implemented"
 
 #------------------
 # IMPLEMENTATIONS

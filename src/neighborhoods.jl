@@ -16,7 +16,7 @@ Tells whether or not the coordinates `x` are in the `neighborhood`
 centered at coordinates `xₒ`.
 """
 isneighbor(neigh::AbstractNeighborhood,
-           xₒ::AbstractVector, x::AbstractVector) = error("not implemented")
+           xₒ::AbstractVector, x::AbstractVector) = @error "not implemented"
 
 #------------------
 # IMPLEMENTATIONS

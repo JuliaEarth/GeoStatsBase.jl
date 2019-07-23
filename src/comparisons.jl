@@ -29,7 +29,7 @@ abstract type AbstractSimSolverComparison <: AbstractSolverComparison end
 Compare `solvers` on a given `problem` using a comparison `method`.
 """
 compare(::AbstractVector{S}, ::AbstractProblem,
-        ::AbstractSolverComparison) where {S<:AbstractSolver} = error("not implemented")
+        ::AbstractSolverComparison) where {S<:AbstractSolver} = @error "not implemented"
 
 #------------------
 # IMPLEMENTATIONS

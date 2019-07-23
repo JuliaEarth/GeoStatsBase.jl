@@ -14,7 +14,7 @@ abstract type AbstractPath{D<:AbstractDomain} end
 
 Iterate `path` from a given `state`.
 """
-Base.iterate(p::AbstractPath, state=1) = error("not implemented")
+Base.iterate(p::AbstractPath, state=1) = @error "not implemented"
 
 """
     Base.length(path)

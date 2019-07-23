@@ -23,7 +23,7 @@ Return neighbors of coordinates `xₒ` using `searcher` and a `mask` over
 the spatial object.
 """
 search(xₒ::AbstractVector, searcher::AbstractNeighborSearcher;
-       mask=nothing) = error("not implemented")
+       mask=nothing) = @error "not implemented"
 
 """
     search(location, searcher, mask=nothing)
@@ -46,7 +46,7 @@ abstract type AbstractBoundedNeighborSearcher <: AbstractNeighborSearcher end
 
 Return the maximum number of neighbors obtained with `searcher`.
 """
-maxneighbors(searcher::AbstractBoundedNeighborSearcher) = error("not implemented")
+maxneighbors(searcher::AbstractBoundedNeighborSearcher) = @error "not implemented"
 
 """
     search!(neighbors, xₒ, searcher, mask)
@@ -56,7 +56,7 @@ and return number of neighbors found.
 """
 search!(neighbors::AbstractVector{Int}, xₒ::AbstractVector,
         searcher::AbstractBoundedNeighborSearcher;
-        mask=nothing) = error("not implemented")
+        mask=nothing) = @error "not implemented"
 
 """
     search!(neighbors, location, searcher, mask)

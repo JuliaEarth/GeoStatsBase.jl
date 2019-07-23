@@ -35,7 +35,7 @@ abstract type AbstractLearningSolver <: AbstractSolver end
 
 Solve the `problem` with the `solver`.
 """
-solve(::AbstractProblem, ::AbstractSolver) = error("not implemented")
+solve(::AbstractProblem, ::AbstractSolver) = @error "not implemented"
 
 """
     solve(problem, solver)
@@ -98,7 +98,7 @@ solver are indenpendent one from another. GeoStats.jl will trigger
 the algorithm in parallel (if enough processes are available).
 """
 solve_single(::SimulationProblem, ::Symbol, ::AbstractSimulationSolver,
-             ::Any) = error("not implemented")
+             ::Any) = @error "not implemented"
 
 #------------------
 # IMPLEMENTATIONS

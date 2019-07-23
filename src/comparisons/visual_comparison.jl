@@ -23,7 +23,7 @@ function compare(solvers::AbstractVector{S}, problem::AbstractProblem,
                  cmp::VisualComparison) where {S<:AbstractSolver}
 
   # check if Plots.jl is loaded
-  isdefined(Main, :Plots) || error("Please load Plots.jl for visual comparison")
+  isdefined(Main, :Plots) || @error "please load Plots.jl for visual comparison"
 
   if nworkers() > 1
     # run solvers in parallel

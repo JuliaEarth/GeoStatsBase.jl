@@ -69,7 +69,7 @@ abstract type AbstractSpatialFunctionPartitioner <: AbstractFunctionPartitioner 
 
 Partition `object` with partition method `partitioner`.
 """
-partition(::AbstractSpatialObject, ::AbstractPartitioner) = error("not implemented")
+partition(::AbstractSpatialObject, ::AbstractPartitioner) = @error "not implemented"
 
 function partition(object::AbstractSpatialObject{T,N},
                    partitioner::AbstractFunctionPartitioner) where {N,T}
