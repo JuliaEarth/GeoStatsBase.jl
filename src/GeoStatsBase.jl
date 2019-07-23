@@ -114,6 +114,7 @@ export
   # solutions
   EstimationSolution,
   SimulationSolution,
+  LearningSolution,
 
   # solvers
   AbstractSolver,

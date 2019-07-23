@@ -7,3 +7,4 @@
 #------------------
 include("solutions/estimation_solution.jl")
 include("solutions/simulation_solution.jl")
+include("solutions/learning_solution.jl")

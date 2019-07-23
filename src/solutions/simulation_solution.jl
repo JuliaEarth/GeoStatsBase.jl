@@ -9,7 +9,7 @@ A solution to a spatial simulation problem.
 """
 struct SimulationSolution{D<:AbstractDomain}
   domain::D
-  realizations::Dict{Symbol,Vector{Vector{<:Number}}}
+  realizations::Dict{Symbol,Vector{<:AbstractVector}}
 end
 
 SimulationSolution(domain, realizations) =
