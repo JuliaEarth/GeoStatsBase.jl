@@ -112,7 +112,6 @@ export
   nreals,
 
   # solutions
-  AbstractSolution,
   EstimationSolution,
   SimulationSolution,
 
