@@ -3,18 +3,18 @@
 # ------------------------------------------------------------------
 
 """
-    LearningProblem(sourcedata, targetdata => targetdomain, task)
+    LearningProblem(sourcedata, targetdata, task)
 
-A spatial learning problem with source data `sourcedata`, target
-data `targetdata`, target domain `targetdomain`, and learning `task`.
+A spatial learning problem with `sourcedata`, `targetdata`,
+and learning `task`.
 
 ## Examples
 
 Create a clustering problem based on a set of soil features:
 
 ```julia
-julia> LearningProblem(sourcedata, targetdata => targetdomain,
-                       ClusteringTask((:moisture,:mineral,:planttype)))
+julia> LearningProblem(sourcedata, targetdata,
+                       ClusteringTask((:moisture,:mineral)))
 ```
 """
 struct LearningProblem{DΩₛ<:AbstractData,
