@@ -27,8 +27,6 @@ end
 
 @recipe function f(domain::RegularGrid{T,N}) where {N,T}
   X  = coordinates(domain)
-  or = origin(domain)
-  sp = spacing(domain)
   sz = size(domain)
 
   markersize --> 2
@@ -42,6 +40,7 @@ end
     end
   elseif N == 2
     aspect_ratio --> :equal
+    linear = LinearIndices(sz)
     @series begin
       seriestype --> :scatter
       X[1,:], X[2,:]
@@ -50,18 +49,21 @@ end
       @series begin
         seriestype --> :path
         primary --> false
-        [or[1]+(i-1)*sp[1],or[1]+(i-1)*sp[1]], [or[2],or[2]+(sz[2]-1)*sp[2]]
+        inds = [linear[i,j] for j in 1:sz[2]]
+        X[1,inds], X[2,inds]
       end
     end
     for j in 1:sz[2]
       @series begin
         seriestype --> :path
         primary --> false
-        [or[1],or[1]+(sz[1]-1)*sp[1]], [or[2]+(j-1)*sp[2],or[2]+(j-1)*sp[2]]
+        inds = [linear[i,j] for i in 1:sz[1]]
+        X[1,inds], X[2,inds]
       end
     end
   elseif N == 3
     aspect_ratio --> :equal
+    linear = LinearIndices(sz)
     @series begin
       seriestype --> :scatter
       X[1,:], X[2,:], X[3,:]
@@ -70,21 +72,24 @@ end
       @series begin
         seriestype --> :path
         primary --> false
-        [or[1]+(i-1)*sp[1],or[1]+(i-1)*sp[1]], [or[2]+(j-1)*sp[2],or[2]+(j-1)*sp[2]], [or[3],or[3]+(sz[3]-1)*sp[3]]
+        inds = [linear[i,j,k] for k in 1:sz[3]]
+        X[1,inds], X[2,inds], X[3,inds]
       end
     end
     for i in 1:sz[1], k in 1:sz[3]
       @series begin
         seriestype --> :path
         primary --> false
-        [or[1]+(i-1)*sp[1],or[1]+(i-1)*sp[1]], [or[2],or[2]+(sz[2]-1)*sp[2]], [or[3]+(k-1)*sp[3],or[3]+(k-1)*sp[3]]
+        inds = [linear[i,j,k] for j in 1:sz[2]]
+        X[1,inds], X[2,inds], X[3,inds]
       end
     end
     for j in 1:sz[2], k in 1:sz[3]
       @series begin
         seriestype --> :path
         primary --> false
-        [or[1],or[1]+(sz[1]-1)*sp[1]], [or[2]+(j-1)*sp[2],or[2]+(j-1)*sp[2]], [or[3]+(k-1)*sp[3],or[3]+(k-1)*sp[3]]
+        inds = [linear[i,j,k] for i in 1:sz[1]]
+        X[1,inds], X[2,inds], X[3,inds]
       end
     end
   else
