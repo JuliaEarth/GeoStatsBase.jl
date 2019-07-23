@@ -24,6 +24,13 @@ A solver for a geostatistical simulation problem.
 abstract type AbstractSimulationSolver <: AbstractSolver end
 
 """
+    AbstractLearningSolver
+
+A solver for a geostatistical learning problem.
+"""
+abstract type AbstractLearningSolver <: AbstractSolver end
+
+"""
     solve(problem, solver)
 
 Solve the `problem` with the `solver`.
@@ -97,4 +104,4 @@ solve_single(::SimulationProblem, ::Symbol, ::AbstractSimulationSolver,
 # IMPLEMENTATIONS
 #------------------
 include("solvers/sequential_simulation.jl")
-include("solvers/cookie_cutter.jl")
+include("solvers/cookie_cutter_simulation.jl")
