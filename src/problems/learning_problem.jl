@@ -38,9 +38,6 @@ struct LearningProblem{DΩₛ<:AbstractData,
     @assert features(task) ⊆ sourcevars ⊆ targetvars "features must be present in data"
     if task isa SupervisedLearningTask
       @assert label(task) ∈ sourcevars "label must be present in source data"
-      varnames = vcat(features(task)..., label(task))
-    else
-      varnames = features(task)
     end
 
     new(sourcedata, targetdata, task)
