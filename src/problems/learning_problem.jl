@@ -75,7 +75,7 @@ task(problem::LearningProblem) = problem.task
 # IO methods
 # ------------
 function Base.show(io::IO, problem::LearningProblem)
-  dim = ndims(problem.targetdomain)
+  dim = ndims(problem.sourcedata)
   print(io, "$(dim)D LearningProblem")
 end
 

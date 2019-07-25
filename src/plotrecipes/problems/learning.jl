@@ -6,17 +6,12 @@
   ptask   = task(problem)
   sdata   = sourcedata(problem)
   tdata   = targetdata(problem)
-  tdomain = targetdomain(problem)
   svars   = join(keys(variables(sdata)), ", ")
   tvars   = join(keys(variables(tdata)), ", ")
 
   title --> string(ptask)
   legend --> true
 
-  @series begin
-    label --> "domain"
-    tdomain
-  end
   @series begin
     label --> "source data ($svars)"
     color --> :green
