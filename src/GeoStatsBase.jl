@@ -17,6 +17,7 @@ using StaticArrays: SVector, MVector
 using RecipesBase: @recipe, @series, plot, RecipesBase
 using Parameters
 
+import StatsBase: sample
 import Distances: evaluate
 import Distributions: quantile, cdf
 
@@ -36,6 +37,7 @@ include("distributions.jl")
 include("estimators.jl")
 include("partitions.jl")
 include("weighting.jl")
+include("sampling.jl")
 include("mappers.jl")
 include("problems.jl")
 include("solvers.jl")
@@ -198,6 +200,11 @@ export
   AbstractWeighter,
   BlockWeighter,
   weight,
+
+  # sampling
+  AbstractSampler,
+  UniformSampler,
+  sample,
 
   # statistics
   SpatialStatistic,
