@@ -3,9 +3,11 @@
 # ------------------------------------------------------------------
 
 """
-    UniformSampler
+    UniformSampler(size, replace=false)
 
-A method for uniform sampling from spatial objects.
+A method for uniform sampling from spatial objects that produces
+samples of given `size` with or without replacement depending on
+the option `replace`.
 """
 struct UniformSampler <: AbstractSampler
   size::Int

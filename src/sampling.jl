@@ -20,3 +20,4 @@ sample(object::AbstractSpatialObject, sampler::AbstractSampler) = @error "not im
 # IMPLEMENTATIONS
 #------------------
 include("sampling/uniform_sampler.jl")
+include("sampling/ball_sampler.jl")

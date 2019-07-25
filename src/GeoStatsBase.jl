@@ -204,6 +204,7 @@ export
   # sampling
   AbstractSampler,
   UniformSampler,
+  BallSampler,
   sample,
 
   # statistics
