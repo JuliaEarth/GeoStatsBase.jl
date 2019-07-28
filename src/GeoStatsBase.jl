@@ -33,6 +33,7 @@ include("paths.jl")
 include("distances.jl")
 include("neighborhoods.jl")
 include("neighborsearch.jl")
+include("learnexample.jl")
 include("distributions.jl")
 include("estimators.jl")
 include("partitions.jl")
@@ -168,6 +169,13 @@ export
   search!, search,
   maxneighbors,
   object,
+
+  # learning example
+  AbstractLearningExample,
+  AbstractLabeledExample,
+  AbstractUnlabeledExample,
+  LabeledPointExample,
+  UnlabeledPointExample,
 
   # distributions
   EmpiricalDistribution,
