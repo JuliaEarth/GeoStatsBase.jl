@@ -44,7 +44,7 @@ end
 # search method for ball neighborhood
 function search(xₒ::AbstractVector, searcher::NeighborhoodSearcher{O,N,T};
                 mask=nothing) where {O,N<:BallNeighborhood,T}
-  locs = inrange(searcher.kdtree, xₒ, radius(searcher.neigh), true)
+  locs = inrange(searcher.kdtree, xₒ, radius(searcher.neigh))
   if mask ≠ nothing
     neighbors = Vector{Int}()
     @inbounds for loc in locs
