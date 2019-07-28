@@ -33,4 +33,4 @@ abstract type AbstractUnlabeledExample <: AbstractLearningExample end
 #------------------
 # IMPLEMENTATIONS
 #------------------
-include("learnexample/point_example.jl")
+include("examples/point_example.jl")
