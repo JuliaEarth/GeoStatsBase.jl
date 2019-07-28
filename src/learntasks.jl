@@ -41,6 +41,6 @@ abstract type UnsupervisedLearningTask <: AbstractLearningTask end
 #------------------
 # IMPLEMENTATIONS
 #------------------
-include("tasks/regression.jl")
-include("tasks/classification.jl")
-include("tasks/clustering.jl")
+include("learntasks/regression.jl")
+include("learntasks/classification.jl")
+include("learntasks/clustering.jl")
