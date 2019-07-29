@@ -19,6 +19,9 @@ if !istravis
   using Gtk
 end
 
+# dummy variables for testing
+include("dummy.jl")
+
 # list of tests
 testfiles = [
   "distances.jl",
@@ -31,6 +34,7 @@ testfiles = [
   "neighborhoods.jl",
   "mappers.jl",
   "problems.jl",
+  "solvers.jl",
   "comparisons.jl",
   "utils.jl",
   "statistics.jl"
