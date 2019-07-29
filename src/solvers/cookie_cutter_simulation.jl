@@ -45,7 +45,7 @@ function solve(problem::SimulationProblem, solver::CookieCutter)
   mtype = pvars[mvar]
 
   # other variables
-  ovars = Dict(var => V for (var, V) in pvars if var ≠ mvar)
+  ovars = Tuple(var => V for (var, V) in pvars if var ≠ mvar)
   @assert length(ovars) > 0 "cookie-cutter requires problem with more than one target variable"
 
   # copy mappings for master variable
@@ -78,7 +78,7 @@ function solve(problem::SimulationProblem, solver::CookieCutter)
   end
 
   # find mappings for all other variables
-  omaps = merge([pmaps[var] for var in keys(ovars)]...)
+  omaps = merge([pmaps[var] for var in first.(ovars)]...)
 
   # solve other problems
   for (i, mreal) in enumerate(realizations[mvar])
@@ -105,7 +105,7 @@ function solve(problem::SimulationProblem, solver::CookieCutter)
 
         # define subproblem
         if hasdata(problem)
-          oproblem = SimulationProblem(pdata, odomain, collect(keys(ovars)), 1, mapper=omapper)
+          oproblem = SimulationProblem(pdata, odomain, first.(ovars), 1, mapper=omapper)
         else
           oproblem = SimulationProblem(odomain, ovars, 1, mapper=omapper)
         end

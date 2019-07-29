@@ -10,24 +10,20 @@ A sequential simulation solver.
 ## Parameters
 
 * `estimator`    - Estimator used to construct conditional distribution
-* `marginal`     - Marginal distribution used when neighbors are not available
-                   (default to `Normal()`)
+* `neighborhood` - Neighborhood on which to search neighbors
 * `maxneighbors` - Maximum number of neighbors (default to 10)
-* `neighborhood` - Search neighborhood (default to `nothing`)
-* `distance`     - Distance used to find nearest neighbors (default to `Euclidean()`)
+* `marginal`     - Marginal distribution (default to `Normal()`)
 * `path`         - Simulation path (default to `RandomPath`)
 
 For each location in the simulation `path`, a maximum number of
 neighbors `maxneighbors` is used to fit a Gaussian distribution.
-The nearest neighbors are searched according to a `distance`
-or according to a `neighborhood` when the latter is provided.
+The neighbors are searched according to a `neighborhood`.
 """
 @simsolver SeqSim begin
   @param estimator
-  @param marginal = Normal()
+  @param neighborhood
   @param maxneighbors = 10
-  @param neighborhood = nothing
-  @param distance = Euclidean()
+  @param marginal = Normal()
   @param path = nothing
 end
 
@@ -62,33 +58,15 @@ function preprocess(problem::SimulationProblem, solver::SeqSim)
       path = RandomPath(pdomain)
     end
 
-    # determine neighborhood search method
-    if varparams.neighborhood ≠ nothing
-      # local search with a neighborhood
-      neighborhood = varparams.neighborhood
-      neighsearcher = LocalNeighborSearcher(pdomain, maxneighbors,
-                                            neighborhood, path)
-    else
-      # find locations with data
-      varlocs = collect(keys(datamap(problem, var)))
-      if isempty(varlocs)
-        # fallback to local search wiith a neighborhood
-        T = coordtype(pdomain)
-        neighborhood = BallNeighborhood(pdomain, T(10))
-        neighsearcher = LocalNeighborSearcher(pdomain, maxneighbors,
-                                              neighborhood, path)
-      else
-        # nearest neighbor search with a distance
-        distance = varparams.distance
-        neighsearcher = NearestNeighborSearcher(pdomain, varlocs,
-                                                maxneighbors, distance)
-      end
-    end
+    # determine neighbor search method
+    neigh     = varparams.neighborhood
+    searcher  = NeighborhoodSearcher(pdomain, neigh)
+    bsearcher = BoundedSearcher(searcher, maxneighbors)
 
     # save preprocessed input
     preproc[var] = (estimator=estimator, marginal=marginal,
                     path=path, maxneighbors=maxneighbors,
-                    neighsearcher=neighsearcher)
+                    bsearcher=bsearcher)
   end
 
   preproc
@@ -101,7 +79,7 @@ function solve_single(problem::SimulationProblem, var::Symbol,
   pdomain = domain(problem)
 
   # unpack preprocessed parameters
-  estimator, marginal, path, maxneighbors, neighsearcher = preproc[var]
+  estimator, marginal, path, maxneighbors, bsearcher = preproc[var]
 
   # determine value type
   V = variables(problem)[var]
@@ -119,7 +97,7 @@ function solve_single(problem::SimulationProblem, var::Symbol,
   # keep track of simulated locations
   simulated = falses(npoints(pdomain))
   for (loc, datloc) in datamap(problem, var)
-    realization[loc] = value(pdata, datloc, var)
+    realization[loc] = pdata[datloc,var]
     simulated[loc] = true
   end
 
@@ -130,7 +108,7 @@ function solve_single(problem::SimulationProblem, var::Symbol,
       coordinates!(xₒ, pdomain, location)
 
       # find neighbors with previously simulated values
-      nneigh = search!(neighbors, xₒ, neighsearcher, mask=simulated)
+      nneigh = search!(neighbors, xₒ, bsearcher, mask=simulated)
 
       # choose between marginal and conditional distribution
       if nneigh == 0
