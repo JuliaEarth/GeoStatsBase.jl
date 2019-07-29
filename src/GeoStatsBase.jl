@@ -10,7 +10,7 @@ using StatsBase: sample, weights
 using Distributed: pmap, nworkers
 using Distances: Metric, Euclidean, Mahalanobis, pairwise
 using LinearAlgebra: Diagonal, normalize, norm, ⋅
-using Distributions: Normal, ContinuousUnivariateDistribution
+using Distributions: ContinuousUnivariateDistribution
 using DataFrames: AbstractDataFrame, eltypes, nrow
 using NearestNeighbors: KDTree, knn, inrange
 using StaticArrays: SVector, MVector

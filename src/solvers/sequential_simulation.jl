@@ -22,9 +22,10 @@ The neighbors are searched according to a `neighborhood`.
 @simsolver SeqSim begin
   @param estimator
   @param neighborhood
-  @param maxneighbors = 10
-  @param marginal = Normal()
-  @param path = nothing
+  @param minneighbors
+  @param maxneighbors
+  @param marginal
+  @param path
 end
 
 function preprocess(problem::SimulationProblem, solver::SeqSim)
@@ -42,21 +43,8 @@ function preprocess(problem::SimulationProblem, solver::SeqSim)
       varparams = SeqSimParam()
     end
 
-    # determine which estimator to use
-    estimator = varparams.estimator
-
-    # determine marginal distribution
-    marginal = varparams.marginal
-
-    # determine maximum number of conditioning neighbors
+    # determine maximum number of neighbors
     maxneighbors = varparams.maxneighbors
-
-    # determine which path to use
-    if varparams.path ≠ nothing
-      path = varparams.path
-    else
-      path = RandomPath(pdomain)
-    end
 
     # determine neighbor search method
     neigh     = varparams.neighborhood
@@ -64,8 +52,11 @@ function preprocess(problem::SimulationProblem, solver::SeqSim)
     bsearcher = BoundedSearcher(searcher, maxneighbors)
 
     # save preprocessed input
-    preproc[var] = (estimator=estimator, marginal=marginal,
-                    path=path, maxneighbors=maxneighbors,
+    preproc[var] = (estimator=varparams.estimator,
+                    minneighbors=varparams.minneighbors,
+                    maxneighbors=varparams.maxneighbors,
+                    marginal=varparams.marginal,
+                    path=varparams.path,
                     bsearcher=bsearcher)
   end
 
@@ -79,7 +70,7 @@ function solve_single(problem::SimulationProblem, var::Symbol,
   pdomain = domain(problem)
 
   # unpack preprocessed parameters
-  estimator, marginal, path, maxneighbors, bsearcher = preproc[var]
+  estimator, minneighbors, maxneighbors, marginal, path, bsearcher = preproc[var]
 
   # determine value type
   V = variables(problem)[var]
@@ -111,7 +102,7 @@ function solve_single(problem::SimulationProblem, var::Symbol,
       nneigh = search!(neighbors, xₒ, bsearcher, mask=simulated)
 
       # choose between marginal and conditional distribution
-      if nneigh == 0
+      if nneigh < minneighbors
         # draw from marginal
         realization[location] = rand(marginal)
       else
