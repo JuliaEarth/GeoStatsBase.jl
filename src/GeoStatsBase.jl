@@ -127,6 +127,7 @@ export
   SeqSimParam,
   CookieCutter,
   CookieCutterParam,
+  PointwiseLearn,
   solve, solve_single,
   preprocess,
 

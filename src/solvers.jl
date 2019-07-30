@@ -105,3 +105,4 @@ solve_single(::SimulationProblem, ::Symbol, ::AbstractSimulationSolver,
 #------------------
 include("solvers/sequential_simulation.jl")
 include("solvers/cookie_cutter_simulation.jl")
+include("solvers/pointwise_learning.jl")
