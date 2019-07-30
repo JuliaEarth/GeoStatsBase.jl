@@ -14,6 +14,12 @@
     # dimension mismatch
     @test_throws AssertionError EstimationProblem(data3D, grid2D, :value)
 
+    # problems with missing data have types inferred correctly
+    img = Array{Union{Float64,Missing}}(rand(10,10))
+    mdata = RegularGridData{Float64}(Dict(:var => img))
+    problem = EstimationProblem(mdata, grid2D, :var)
+    @test variables(problem) == Dict(:var => Float64)
+
     # show methods
     problem2D = EstimationProblem(data2D, grid2D, :value)
     @test sprint(show, problem2D) == "2D EstimationProblem"
@@ -36,6 +42,12 @@
 
     # dimension mismatch
     @test_throws AssertionError SimulationProblem(data3D, grid2D, :value, 100)
+
+    # problems with missing data have types inferred correctly
+    img = Array{Union{Float64,Missing}}(rand(10,10))
+    mdata = RegularGridData{Float64}(Dict(:var => img))
+    problem = SimulationProblem(mdata, grid2D, :var, 3)
+    @test variables(problem) == Dict(:var => Float64)
 
     # specify type of variable explicitly
     problem = SimulationProblem(data3D, grid3D, :value => Float64, 100)
