@@ -21,10 +21,10 @@ function learn(task::AbstractLearningTask, geodata::AbstractData, model::MLJBase
   if issupervised(task)
     X = geodata[1:npoints(geodata),collect(features(task))]
     y = geodata[1:npoints(geodata),label(task)]
-    θ = MLJBase.fit(model, 0, X, y)
+    θ, _, __ = MLJBase.fit(model, 0, X, y)
   else
     X = geodata[1:npoints(geodata),collect(features(task))]
-    θ = MLJBase.fit(model, 0, X)
+    θ, _, __ = MLJBase.fit(model, 0, X)
   end
 
   LearnedModel(model, θ)
