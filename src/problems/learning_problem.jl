@@ -36,7 +36,7 @@ struct LearningProblem{DΩₛ<:AbstractData,
 
     # assert that tasks are valid for the data
     @assert features(task) ⊆ sourcevars ⊆ targetvars "features must be present in data"
-    if task isa SupervisedLearningTask
+    if issupervised(task)
       @assert label(task) ∈ sourcevars "label must be present in source data"
     end
 

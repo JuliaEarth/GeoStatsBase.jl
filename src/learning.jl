@@ -4,3 +4,5 @@
 
 include("learning/tasks.jl")
 include("learning/examples.jl")
+include("learning/models.jl")
+include("learning/traits.jl")

@@ -17,6 +17,7 @@ using StaticArrays: SVector, MVector
 using RecipesBase: @recipe, @series, plot, RecipesBase
 using Parameters
 
+import MLJBase
 import StatsBase: sample
 import Distances: evaluate
 import Distributions: quantile, cdf
@@ -122,8 +123,10 @@ export
   AbstractSolver,
   AbstractEstimationSolver,
   AbstractSimulationSolver,
-  SeqSim, SeqSimParam,
-  CookieCutter, CookieCutterParam,
+  SeqSim,
+  SeqSimParam,
+  CookieCutter,
+  CookieCutterParam,
   solve, solve_single,
   preprocess,
 
