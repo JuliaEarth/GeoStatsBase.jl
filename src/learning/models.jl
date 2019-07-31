@@ -43,5 +43,5 @@ function perform(task::AbstractLearningTask, geodata::AbstractData, lmodel::Lear
     @error "not implemented"
   end
 
-  LearningSolution(domain(geodata), Dict(label(task) => ŷ))
+  Dict(label(task) => ŷ)
 end

@@ -17,7 +17,8 @@ end
 # IO methods
 # ------------
 function Base.show(io::IO, task::RegressionTask)
-  x = join(features(task), ", ")
+  x = features(task)
   y = label(task)
-  print(io, "Regression ($x) → $y")
+  lhs = length(x) > 1 ? "("*join(x, ", ")*")" : "$(x[1])"
+  print(io, "Regression $lhs → $y")
 end

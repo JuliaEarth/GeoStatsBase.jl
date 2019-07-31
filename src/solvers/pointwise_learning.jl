@@ -3,15 +3,15 @@
 # ------------------------------------------------------------------
 
 """
-    PointwiseLearn(model)
+    PointwiseLearn(models)
 
 A learning solver that converts spatial data to a tabular format
 with features (and possibly labels) for each point, and then solves
-the problem with a statistical learning `model`.
+the problem with statistical learning `models`.
 
 ## Parameters
 
-* `model` - Learning model (e.g. SVM, Logistic Regression, K-means)
+* `models` - Learning models (e.g. SVM, Logistic Regression, K-means)
 
 ## Notes
 
@@ -19,19 +19,35 @@ Any model implementing the `MLJBase` interface can be used in
 pointwise learning. Please refer to the `MLJ` documentation for
 a list of available models.
 """
-struct PointwiseLearn{M<:MLJBase.Model}
-  model::M
+struct PointwiseLearn
+  models::Vector{MLJBase.Model}
 end
 
+PointwiseLearn(model::MLJBase.Model) = PointwiseLearn([model])
+
 function solve(problem::LearningProblem, solver::PointwiseLearn)
-  # TODO: assert model is compatible with task
-  # https://github.com/alan-turing-institute/MLJ.jl/issues/191
+  ptasks = tasks(problem)
+  models = solver.models
 
-  # learn model on source data
-  lmodel = learn(task(problem), sourcedata(problem), solver.model)
+  @assert length(ptasks) == length(models) "please specify a learning model for each task"
 
-  # apply model to target data
-  result = perform(task(problem), targetdata(problem), lmodel)
+  results = []
+
+  for (task, model) in zip(ptasks, models)
+    # TODO: assert model is compatible with task
+
+    # learn model on source data
+    lmodel = learn(task, sourcedata(problem), model)
+
+    # apply model to target data
+    result = perform(task, targetdata(problem), lmodel)
+
+    push!(results, result)
+  end
+
+  dict = reduce(merge, results)
+
+  LearningSolution(domain(targetdata(problem)), dict)
 end
 
 # ------------

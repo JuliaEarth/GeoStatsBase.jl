@@ -17,7 +17,8 @@ end
 # IO methods
 # ------------
 function Base.show(io::IO, task::ClassificationTask)
-  x = join(features(task), ", ")
+  x = features(task)
   y = label(task)
-  print(io, "Classification ($x) → $y")
+  lhs = length(x) > 1 ? "("*join(x, ", ")*")" : "$(x[1])"
+  print(io, "Classification $lhs → $y")
 end

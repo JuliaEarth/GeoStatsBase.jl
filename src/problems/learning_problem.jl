@@ -17,16 +17,13 @@ julia> LearningProblem(sourcedata, targetdata,
                        ClusteringTask((:moisture,:mineral)))
 ```
 """
-struct LearningProblem{DΩₛ<:AbstractData,
-                       DΩₜ<:AbstractData,
-                       T<:AbstractLearningTask} <: AbstractProblem
+struct LearningProblem{DΩₛ<:AbstractData,DΩₜ<:AbstractData} <: AbstractProblem
   sourcedata::DΩₛ
   targetdata::DΩₜ
-  task::T
+  tasks::Vector{AbstractLearningTask}
 
-  function LearningProblem{DΩₛ,DΩₜ,T}(sourcedata, targetdata, task) where {DΩₛ<:AbstractData,
-                                                                           DΩₜ<:AbstractData,
-                                                                           T<:AbstractLearningTask}
+  function LearningProblem{DΩₛ,DΩₜ}(sourcedata, targetdata, tasks) where {DΩₛ<:AbstractData,
+                                                                          DΩₜ<:AbstractData}
     sourcevars = keys(variables(sourcedata))
     targetvars = keys(variables(targetdata))
 
@@ -35,20 +32,26 @@ struct LearningProblem{DΩₛ<:AbstractData,
     @assert coordtype(sourcedata) == coordtype(targetdata) "source and target data must have the same coordinate type"
 
     # assert that tasks are valid for the data
-    @assert features(task) ⊆ sourcevars ⊆ targetvars "features must be present in data"
-    if issupervised(task)
-      @assert label(task) ∈ sourcevars "label must be present in source data"
+    for task in tasks
+      @assert features(task) ⊆ sourcevars ⊆ targetvars "features must be present in data"
+      if issupervised(task)
+        @assert label(task) ∈ sourcevars "label must be present in source data"
+      end
     end
 
-    new(sourcedata, targetdata, task)
+    new(sourcedata, targetdata, tasks)
   end
 end
 
-function LearningProblem(sourcedata::DΩₛ, targetdata::DΩₜ, task::T) where {DΩₛ<:AbstractData,
-                                                                           DΩₜ<:AbstractData,
-                                                                           T<:AbstractLearningTask}
-  LearningProblem{DΩₛ,DΩₜ,T}(sourcedata, targetdata, task)
-end
+LearningProblem(sourcedata::DΩₛ, targetdata::DΩₜ,
+                tasks::AbstractVector) where {DΩₛ<:AbstractData,
+                                              DΩₜ<:AbstractData} =
+  LearningProblem{DΩₛ,DΩₜ}(sourcedata, targetdata, tasks)
+
+LearningProblem(sourcedata::DΩₛ, targetdata::DΩₜ,
+                task::AbstractLearningTask) where {DΩₛ<:AbstractData,
+                                                   DΩₜ<:AbstractData} =
+  LearningProblem(sourcedata, targetdata, [task])
 
 """
     sourcedata(problem)
@@ -65,11 +68,11 @@ Return the target data of the learning `problem`.
 targetdata(problem::LearningProblem) = problem.targetdata
 
 """
-    task(problem)
+    tasks(problem)
 
-Return the learning task of the learning `problem`.
+Return the learning tasks of the learning `problem`.
 """
-task(problem::LearningProblem) = problem.task
+tasks(problem::LearningProblem) = problem.tasks
 
 # ------------
 # IO methods
@@ -85,5 +88,8 @@ function Base.show(io::IO, ::MIME"text/plain", problem::LearningProblem)
   println(io, "    └─data:   ", problem.sourcedata)
   println(io, "  target")
   println(io, "    └─data:   ", problem.targetdata)
-  print(  io, "  task: ", problem.task)
+  println(io, "  tasks")
+  for task in problem.tasks
+    println(io, "    └─", task)
+  end
 end
