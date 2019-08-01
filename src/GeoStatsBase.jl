@@ -6,7 +6,8 @@ module GeoStatsBase
 
 using CSV: read
 using Random: randperm, shuffle
-using StatsBase: sample, weights
+using StatsBase: Histogram, sample, weights
+using Distributions: median
 using Distributed: pmap, nworkers
 using Distances: Metric, Euclidean, Mahalanobis, pairwise
 using LinearAlgebra: Diagonal, normalize, norm, ⋅
@@ -18,7 +19,7 @@ using RecipesBase: @recipe, @series, plot, RecipesBase
 using Parameters
 
 import MLJBase
-import StatsBase: sample
+import StatsBase: fit, sample
 import Distances: evaluate
 import Distributions: quantile, cdf
 
@@ -222,6 +223,7 @@ export
   SpatialStatistic,
   mean, var,
   quantile,
+  histogram,
 
   # utilities
   readgeotable

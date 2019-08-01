@@ -17,6 +17,9 @@ var(d::WeightedSpatialData) = Dict(v => var(d, v) for (v,V) in variables(d))
 quantile(d::WeightedSpatialData, v::Symbol, p::T) where {T<:RealOrVec} = quantile(d[v], weights(d.weights), p)
 quantile(d::WeightedSpatialData, p::T) where {T<:RealOrVec} = Dict(v => quantile(d, v, p) for (v,V) in variables(d))
 
+histogram(d::WeightedSpatialData, v::Symbol) = fit(Histogram, d[v], weights(d.weights))
+histogram(d::WeightedSpatialData) = Dict(v => histogram(d, v) for (v,V) in variables(d))
+
 #---------------
 # SPATIAL DATA
 #---------------
@@ -40,6 +43,13 @@ quantile(d::AbstractData, v::Symbol, p::T) where {T<:RealOrVec} = quantile(d, v,
 quantile(d::AbstractData, p::T, w::AbstractWeighter) where {T<:RealOrVec} = quantile(weight(d, w), p)
 quantile(d::AbstractData, p::T, blockside::Real) where {T<:RealOrVec} = quantile(d, p, BlockWeighter(blockside))
 quantile(d::AbstractData, p::T) where {T<:RealOrVec} = quantile(d, p, median_distance(d))
+
+histogram(d::AbstractData, v::Symbol, w::AbstractWeighter) = histogram(weight(d, w), v)
+histogram(d::AbstractData, v::Symbol, blockside::Real) = histogram(d, v, BlockWeighter(blockside))
+histogram(d::AbstractData, v::Symbol) = histogram(d, v, median_distance(d))
+histogram(d::AbstractData, w::AbstractWeighter) = histogram(weight(d, w))
+histogram(d::AbstractData, blockside::Real) = histogram(d, BlockWeighter(blockside))
+histogram(d::AbstractData) = histogram(d, median_distance(d))
 
 function median_distance(d::AbstractData)
   # select at most 100 points at random

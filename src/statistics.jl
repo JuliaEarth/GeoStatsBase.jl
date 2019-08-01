@@ -29,5 +29,5 @@ function Base.show(io::IO, ::MIME"text/plain", statistic::SpatialStatistic)
   print(  io, "  variables: ", join(keys(variables(statistic)), ", ", " and "))
 end
 
+include("statistics/data.jl")
 include("statistics/solutions.jl")
-include("statistics/spatialdata.jl")
