@@ -6,7 +6,7 @@ module GeoStatsBase
 
 using CSV: read
 using Random: randperm, shuffle
-using StatsBase: Histogram, sample, weights
+using StatsBase: Histogram, sample, weights, midpoints
 using Distributions: median
 using Distributed: pmap, nworkers
 using Distances: Metric, Euclidean, Mahalanobis, pairwise
@@ -15,7 +15,7 @@ using Distributions: ContinuousUnivariateDistribution
 using DataFrames: AbstractDataFrame, eltypes, nrow
 using NearestNeighbors: KDTree, knn, inrange
 using StaticArrays: SVector, MVector
-using RecipesBase: @recipe, @series, plot, RecipesBase
+using RecipesBase
 using Parameters
 
 import MLJBase

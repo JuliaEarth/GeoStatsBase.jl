@@ -24,3 +24,6 @@ include("plotrecipes/solutions/simulation.jl")
 # partitions and weights
 include("plotrecipes/partitions.jl")
 include("plotrecipes/weighting.jl")
+
+# miscellaneous
+include("plotrecipes/histplot.jl")
