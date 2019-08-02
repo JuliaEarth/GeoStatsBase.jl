@@ -25,5 +25,6 @@ include("plotrecipes/solutions/simulation.jl")
 include("plotrecipes/partitions.jl")
 include("plotrecipes/weighting.jl")
 
-# miscellaneous
-include("plotrecipes/histplot.jl")
+# distribution plots
+include("plotrecipes/distplot1D.jl")
+include("plotrecipes/distplot2D.jl")

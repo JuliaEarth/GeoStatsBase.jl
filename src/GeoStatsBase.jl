@@ -15,6 +15,7 @@ using Distributions: ContinuousUnivariateDistribution
 using DataFrames: AbstractDataFrame, eltypes, nrow
 using NearestNeighbors: KDTree, knn, inrange
 using StaticArrays: SVector, MVector
+using AverageShiftedHistograms: ash
 using RecipesBase
 using Parameters
 
