@@ -58,6 +58,7 @@
   aspect_ratio --> :equal
   legend --> false
   grid --> false
+  frame --> :box
   color --> :black
   levels --> ls
   xguide --> var₁

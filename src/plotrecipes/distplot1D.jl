@@ -21,6 +21,7 @@
 
   legend --> false
   grid --> false
+  frame --> :box
   xguide --> var
 
   @series begin
@@ -38,6 +39,7 @@
     xe, ye
   end
 
+  # plot quantiles
   @series begin
     seriestype --> :vline
     primary --> false
@@ -46,6 +48,7 @@
     q
   end
 
+  # plot mean
   @series begin
     seriestype --> :vline
     primary --> false
