@@ -4,7 +4,7 @@
 
 @userplot DistPlot2D
 
-@recipe function f(dp::DistPlot2D; quantiles=[0.25,0.50,0.75], showmean=true,
+@recipe function f(dp::DistPlot2D; quantiles=[0.25,0.50,0.75],
                                    bandwidthx=100, bandwidthy=100)
   # retrieve inputs
   sdata = dp.args[1]
@@ -14,10 +14,13 @@
   x = vec(sdata[var₁])
   y = vec(sdata[var₂])
 
-  # fit average shift histogram
+  # fit average shifted histogram
   h = ash(x, y, mx=bandwidthx, my=bandwidthy)
   hx, hy, hz = h.rngx, h.rngy, h.z
   ls = quantile(vec(hz), quantiles)
+
+  # 2D mean vector
+  μ = mean([x y], dims=1)
 
   # plot scatter of points
   @series begin
@@ -30,28 +33,25 @@
   end
 
   # plot 2D mean
-  if showmean
-    μ = mean([x y], dims=1)
-    @series begin
-      seriestype --> :vline
-      primary --> false
-      color --> :green
-      [μ[1]]
-    end
-    @series begin
-      seriestype --> :hline
-      primary --> false
-      color --> :green
-      [μ[2]]
-    end
-    @series begin
-      seriestype --> :scatter
-      primary --> false
-      color --> :green
-      marker --> :square
-      markersize --> 4
-      [μ[1]], [μ[2]]
-    end
+  @series begin
+    seriestype --> :vline
+    primary --> false
+    color --> :green
+    [μ[1]]
+  end
+  @series begin
+    seriestype --> :hline
+    primary --> false
+    color --> :green
+    [μ[2]]
+  end
+  @series begin
+    seriestype --> :scatter
+    primary --> false
+    color --> :green
+    marker --> :square
+    markersize --> 4
+    [μ[1]], [μ[2]]
   end
 
   seriestype --> :contour

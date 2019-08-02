@@ -4,15 +4,17 @@
 
 @userplot DistPlot1D
 
-@recipe function f(dp::DistPlot1D; quantiles=[0.25,0.50,0.75], showmean=true,
-                                   cdf=false)
+@recipe function f(dp::DistPlot1D; quantiles=[0.25,0.50,0.75], cdf=false)
   # retrieve inputs
   sdata = dp.args[1]
   var   = dp.args[2]
 
-  # fit spatial histogram and quantile
+  # fit spatial statistics
   h = normalize(histogram(sdata, var))
   q = quantile(sdata, var, quantiles)
+  μ = mean(sdata, var)
+
+  # plot coordinates
   x = midpoints(h.edges[1])
   y = h.weights
   s = x[2] - x[1]
@@ -44,13 +46,10 @@
     q
   end
 
-  if showmean
-    μ = mean(sdata, var)
-    @series begin
-      seriestype --> :vline
-      primary --> false
-      color --> :green
-      [μ]
-    end
+  @series begin
+    seriestype --> :vline
+    primary --> false
+    color --> :green
+    [μ]
   end
 end
