@@ -13,13 +13,14 @@ function cornerplot(sdata::AbstractData, vars=nothing;
   plts = []
   for i in 1:n, j in 1:n
     if i == j
-      push!(plts, distplot1d(sdata, vars[i], quantiles=quantiles, cdf=cdf))
+      p = distplot1d(sdata, vars[i], quantiles=quantiles, cdf=cdf)
     elseif i > j
-      push!(plts, distplot2d(sdata, vars[i], vars[j], quantiles=quantiles,
-                             bandwidthx=bandwidthx, bandwidthy=bandwidthy))
+      p = distplot2d(sdata, vars[j], vars[i], quantiles=quantiles,
+                     bandwidthx=bandwidthx, bandwidthy=bandwidthy)
     else
-      push!(plts, RecipesBase.plot(framestyle=:none))
+      p = RecipesBase.plot(framestyle=:none)
     end
+    push!(plts, p)
   end
 
   RecipesBase.plot(plts...; layout=(n,n), kwargs...)
