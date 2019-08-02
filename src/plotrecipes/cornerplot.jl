@@ -12,11 +12,17 @@ function cornerplot(sdata::AbstractData, vars=nothing;
 
   plts = []
   for i in 1:n, j in 1:n
+    xticks = i == n
+    xguide = i == n ? vars[j] : ""
+    yticks = i > 1 && j == 1
+    yguide = i > 1 && j == 1 ? vars[i] : ""
     if i == j
-      p = distplot1d(sdata, vars[i], quantiles=quantiles, cdf=cdf)
+      p = distplot1d(sdata, vars[i], quantiles=quantiles, cdf=cdf,
+                     xticks=xticks, yticks=yticks, xguide=xguide, yguide=yguide)
     elseif i > j
       p = distplot2d(sdata, vars[j], vars[i], quantiles=quantiles,
-                     bandwidthx=bandwidthx, bandwidthy=bandwidthy)
+                     bandwidthx=bandwidthx, bandwidthy=bandwidthy,
+                     xticks=xticks, yticks=yticks, xguide=xguide, yguide=yguide)
     else
       p = RecipesBase.plot(framestyle=:none)
     end
