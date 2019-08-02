@@ -226,6 +226,9 @@ export
   quantile,
   histogram,
 
+  # plot recipes
+  cornerplot,
+
   # utilities
   readgeotable
 
