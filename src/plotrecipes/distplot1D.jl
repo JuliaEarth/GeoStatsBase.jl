@@ -4,7 +4,8 @@
 
 @userplot DistPlot1D
 
-@recipe function f(dp::DistPlot1D; quantiles=[0.25,0.50,0.75], cdf=false)
+@recipe function f(dp::DistPlot1D; quantiles=[0.25,0.50,0.75], showmean=true,
+                                   cdf=false)
   # retrieve inputs
   sdata = dp.args[1]
   var   = dp.args[2]
@@ -18,11 +19,11 @@
 
   legend --> false
   grid --> false
-  color --> :black
   xguide --> var
 
   @series begin
     seriestype --> :step
+    color --> :black
     if cdf
       ysum = cumsum(y)
       ycdf = ysum ./ ysum[end]
@@ -38,7 +39,18 @@
   @series begin
     seriestype --> :vline
     primary --> false
+    color --> :black
     linestyle --> :dash
     q
+  end
+
+  if showmean
+    μ = mean(sdata, var)
+    @series begin
+      seriestype --> :vline
+      primary --> false
+      color --> :green
+      [μ]
+    end
   end
 end

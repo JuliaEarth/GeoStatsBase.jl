@@ -4,7 +4,7 @@
 
 @userplot DistPlot2D
 
-@recipe function f(dp::DistPlot2D; quantiles=[0.25,0.50,0.75],
+@recipe function f(dp::DistPlot2D; quantiles=[0.25,0.50,0.75], showmean=true,
                                    bandwidthx=100, bandwidthy=100)
   # retrieve inputs
   sdata = dp.args[1]
@@ -27,6 +27,31 @@
     alpha --> 0.5
     markersize --> 1
     x, y
+  end
+
+  # plot 2D mean
+  if showmean
+    μ = mean([x y], dims=1)
+    @series begin
+      seriestype --> :vline
+      primary --> false
+      color --> :green
+      [μ[1]]
+    end
+    @series begin
+      seriestype --> :hline
+      primary --> false
+      color --> :green
+      [μ[2]]
+    end
+    @series begin
+      seriestype --> :scatter
+      primary --> false
+      color --> :green
+      marker --> :square
+      markersize --> 4
+      [μ[1]], [μ[2]]
+    end
   end
 
   seriestype --> :contour
