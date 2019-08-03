@@ -108,7 +108,7 @@ export
   domain,
   sourcedata,
   targetdata,
-  task,
+  tasks,
   mapper,
   variables,
   coordinates,

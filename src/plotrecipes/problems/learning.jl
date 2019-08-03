@@ -3,13 +3,12 @@
 # ------------------------------------------------------------------
 
 @recipe function f(problem::LearningProblem)
-  ptask   = task(problem)
   sdata   = sourcedata(problem)
   tdata   = targetdata(problem)
-  svars   = join(keys(variables(sdata)), ", ")
-  tvars   = join(keys(variables(tdata)), ", ")
+  svars   = join(sort([var for (var,V) in variables(sdata)]), ", ")
+  tvars   = join(sort([var for (var,V) in variables(tdata)]), ", ")
 
-  title --> string(ptask)
+  title --> "Learning Problem"
   legend --> true
 
   @series begin

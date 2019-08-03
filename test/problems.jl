@@ -81,6 +81,32 @@
   end
 
   @testset "Learning" begin
-    # TODO:
+    Random.seed!(123)
+    sdata = PointSetData(Dict(:x=>rand(10), :y=>rand(10), :z=>rand(10)), 10rand(2,10))
+    tdata = RegularGridData{Float64}(Dict(:x=>rand(10,10)))
+    rtask = RegressionTask((:x,), :y)
+    ctask = ClusteringTask((:x,))
+
+    # test basic problem interface
+    problem = LearningProblem(sdata, tdata, rtask)
+    @test sourcedata(problem) == sdata
+    @test targetdata(problem) == tdata
+    @test tasks(problem) == [rtask]
+    problem = LearningProblem(sdata, tdata, [rtask, ctask])
+    @test tasks(problem) == [rtask, ctask]
+
+    # dimension mismatch
+    tdata3D = RegularGridData{Float64}(Dict(:x=>rand(10,10,10)))
+    @test_throws AssertionError LearningProblem(sdata, tdata3D, rtask)
+
+    # show methods
+    problem = LearningProblem(sdata, tdata, [rtask, ctask])
+    @test sprint(show, problem) == "2D LearningProblem"
+    @test sprint(show, MIME"text/plain"(), problem) == "2D LearningProblem\n  source\n    └─data: 10 PointSetData{Float64,2}\n  target\n    └─data: 10×10 RegularGridData{Float64,2}\n  tasks\n    └─Regression x → y\n    └─Clustering (x)\n"
+
+    if visualtests
+      gr(size=(800,800))
+      @plottest plot(problem,ms=2) joinpath(datadir,"LearningProblem2D.png") !istravis
+    end
   end
 end
