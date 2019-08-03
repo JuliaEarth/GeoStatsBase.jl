@@ -57,6 +57,7 @@ function median_distance(d::AbstractData)
   inds = unique(rand(1:N, min(N, 100)))
   X = coordinates(d, inds)
   D = pairwise(Euclidean(), X, dims=2)
+  n = size(D, 1)
 
-  median(D)
+  median(D[i,j] for i in 1:n for j in 1:n if i > j)
 end
