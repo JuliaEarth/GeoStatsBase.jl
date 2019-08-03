@@ -33,7 +33,8 @@ struct LearningProblem{DΩₛ<:AbstractData,DΩₜ<:AbstractData} <: AbstractPro
 
     # assert that tasks are valid for the data
     for task in tasks
-      @assert features(task) ⊆ sourcevars ⊆ targetvars "features must be present in data"
+      @assert features(task) ⊆ sourcevars "features must be present in source data"
+      @assert features(task) ⊆ targetvars "features must be present in target data"
       if issupervised(task)
         @assert label(task) ∈ sourcevars "label must be present in source data"
       end
@@ -85,9 +86,9 @@ end
 function Base.show(io::IO, ::MIME"text/plain", problem::LearningProblem)
   println(io, problem)
   println(io, "  source")
-  println(io, "    └─data:   ", problem.sourcedata)
+  println(io, "    └─data: ", problem.sourcedata)
   println(io, "  target")
-  println(io, "    └─data:   ", problem.targetdata)
+  println(io, "    └─data: ", problem.targetdata)
   println(io, "  tasks")
   for task in problem.tasks
     println(io, "    └─", task)
