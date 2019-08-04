@@ -34,7 +34,8 @@ function solve(problem::LearningProblem, solver::PointwiseLearn)
   results = []
 
   for (task, model) in zip(ptasks, models)
-    # TODO: assert model is compatible with task
+    # assert model is compatible with task
+    @assert iscompatible(model, task) "$model is not compatible with $task"
 
     # learn model on source data
     lmodel = learn(task, sourcedata(problem), model)
@@ -59,6 +60,10 @@ end
 
 function Base.show(io::IO, ::MIME"text/plain", solver::PointwiseLearn)
   println(io, solver)
-  print(io, "  └─model ⇨ ")
-  show(IOContext(io, :compact => true), solver.model)
+  println(io, "  models")
+  for model in solver.models
+    print(io, "    └─")
+    show(IOContext(io, :compact => true), model)
+    println(io, "")
+  end
 end
