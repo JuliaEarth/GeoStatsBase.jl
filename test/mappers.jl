@@ -26,10 +26,10 @@
 
     # copy data to last locations in domain
     mappings = map(d, g, (:z,), CopyMapper(91:100))
-    @test mappings[:z] == Dict(i=>j for (i,j) in enumerate(91:100))
+    @test mappings[:z] == Dict(j=>i for (i,j) in enumerate(91:100))
 
     # copy first 3 data points to last 3 domain locations
     mappings = map(d, g, (:z,), CopyMapper(1:3, 98:100))
-    @test mappings[:z] == Dict(i=>j for (i,j) in enumerate(98:100))
+    @test mappings[:z] == Dict(j=>i for (i,j) in enumerate(98:100))
   end
 end
