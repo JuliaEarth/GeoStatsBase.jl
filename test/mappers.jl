@@ -17,6 +17,19 @@
   end
 
   @testset "CopyMapper" begin
-    # TODO
+    d = PointSetData(Dict(:z => rand(10)), rand(2,10))
+    g = RegularGrid{Float64}(10,10)
+
+    # copy data to first locations in domain
+    mappings = map(d, g, (:z,), CopyMapper())
+    @test mappings[:z] == Dict(i=>i for i in 1:10)
+
+    # copy data to last locations in domain
+    mappings = map(d, g, (:z,), CopyMapper(91:100))
+    @test mappings[:z] == Dict(i=>j for (i,j) in enumerate(91:100))
+
+    # copy first 3 data points to last 3 domain locations
+    mappings = map(d, g, (:z,), CopyMapper(1:3, 98:100))
+    @test mappings[:z] == Dict(i=>j for (i,j) in enumerate(98:100))
   end
 end
