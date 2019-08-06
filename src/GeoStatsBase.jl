@@ -198,6 +198,7 @@ export
   FractionPartitioner,
   SLICPartitioner,
   BlockPartitioner,
+  BisectPartitioner,
   BallPartitioner,
   PlanePartitioner,
   DirectionPartitioner,
