@@ -44,6 +44,14 @@ Return the number of subsets in `partition`.
 Base.length(partition::SpatialPartition) = length(partition.subsets)
 
 """
+    Base.getindex(partition, ind)
+
+Return `ind`-th object in the `partition` as a view.
+"""
+Base.getindex(partition::SpatialPartition, ind::Int) =
+  view(partition.object, partition.subsets[ind])
+
+"""
     AbstractPartitioner
 
 A method for partitioning spatial objects.
