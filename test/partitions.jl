@@ -54,10 +54,30 @@
   end
 
   @testset "FractionPartitioner" begin
+    grid = RegularGrid{Float64}(10,10)
+
+    p = partition(grid, FractionPartitioner(0.5))
+    @test npoints(p[1]) == npoints(p[2]) == 50
+    @test length(p) == 2
+
+    p = partition(grid, FractionPartitioner(0.7))
+    @test npoints(p[1]) == 70
+    @test npoints(p[2]) == 30
+
+    p = partition(grid, FractionPartitioner(0.3))
+    @test npoints(p[1]) == 30
+    @test npoints(p[2]) == 70
+  end
+
+  @testset "SLICPartitioner" begin
     # TODO
   end
 
   @testset "BlockPartitioner" begin
+    # TODO
+  end
+
+  @testset "BisectPartitioner" begin
     # TODO
   end
 
