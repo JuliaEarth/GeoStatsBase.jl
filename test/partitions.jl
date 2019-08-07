@@ -74,7 +74,11 @@
   end
 
   @testset "BlockPartitioner" begin
-    # TODO
+    grid = RegularGrid{Float64}(10,10)
+
+    p = partition(grid, BlockPartitioner(5.))
+    @test length(p) == 4
+    @test all(npoints.(p) .== 25)
   end
 
   @testset "BisectPartitioner" begin
