@@ -3,22 +3,22 @@
 # ------------------------------------------------------------------
 
 """
-    BisectPartitioner(normal, point)
+    NormalPointPartitioner(normal, point)
 
 A method for partitioning spatial data into two half spaces
 defined by a `normal` direction and a reference `point`.
 """
-struct BisectPartitioner{T,N} <: AbstractPartitioner
+struct NormalPointPartitioner{T,N} <: AbstractPartitioner
   normal::SVector{N,T}
   point::SVector{N,T}
 end
 
-BisectPartitioner(normal::NTuple{N,T},
+NormalPointPartitioner(normal::NTuple{N,T},
                   point::NTuple{N,T}=ntuple(i->zero(T), N)) where {T,N} =
-  BisectPartitioner{T,N}(normalize(SVector(normal)), SVector(point))
+  NormalPointPartitioner{T,N}(normalize(SVector(normal)), SVector(point))
 
 function partition(object::AbstractSpatialObject{T,N},
-                   partitioner::BisectPartitioner{T,N}) where {T,N}
+                   partitioner::NormalPointPartitioner{T,N}) where {T,N}
   n = partitioner.normal
   p = partitioner.point
 
