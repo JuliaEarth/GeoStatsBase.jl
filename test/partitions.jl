@@ -103,6 +103,10 @@
     @test npoints(p₁[2]) == npoints(p₂[1]) == 60
   end
 
+  @testset "NormalFractionPartitioner" begin
+    # TODO
+  end
+
   @testset "BallPartitioner" begin
     # TODO
   end

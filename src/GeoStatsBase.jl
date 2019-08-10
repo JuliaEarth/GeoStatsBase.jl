@@ -201,6 +201,7 @@ export
   SLICPartitioner,
   BlockPartitioner,
   NormalPointPartitioner,
+  NormalFractionPartitioner,
   BallPartitioner,
   PlanePartitioner,
   DirectionPartitioner,
