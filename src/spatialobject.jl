@@ -103,6 +103,13 @@ Return the bounds (i.e. ranges of bounding box) of the `object`.
 bounds(object::AbstractSpatialObject) = bounds(domain(object))
 
 """
+    bounddiag(object)
+
+Return the the diagonal of the bounding box of the `object`.
+"""
+bounddiag(object::AbstractSpatialObject) = norm(u-l for (l,u) in bounds(object))
+
+"""
     boundvolume(object)
 
 Return the volume of the bounding box of the `object`.

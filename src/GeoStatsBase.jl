@@ -55,6 +55,7 @@ export
   AbstractSpatialObject,
   domain,
   bounds,
+  bounddiag,
   boundvolume,
   npoints,
   coordtype,
