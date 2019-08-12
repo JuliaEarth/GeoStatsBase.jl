@@ -32,6 +32,7 @@ include("dataview.jl")
 include("collections.jl")
 include("macros.jl")
 include("paths.jl")
+include("shapes.jl")
 include("distances.jl")
 include("neighborhoods.jl")
 include("neighborsearch.jl")
@@ -153,6 +154,13 @@ export
   RandomPath,
   SourcePath,
   ShiftedPath,
+
+  # shapes
+  AbstractShape,
+  Rectangle,
+  center,
+  diagonal,
+  volume,
 
   # distances
   Ellipsoidal,
