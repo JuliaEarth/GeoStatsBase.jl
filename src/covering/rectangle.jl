@@ -32,3 +32,14 @@ function cover(grid::RegularGrid, coverer::RectangleCoverer)
 
   Rectangle(lowerleft, upperright)
 end
+
+"""
+    boundbox(object)
+
+Return the minimum axis-aligned bounding rectangle of the spatial `object`.
+
+### Notes
+
+Equivalent to `cover(object, RectangleCoverer())`
+"""
+boundbox(object::AbstractSpatialObject) = cover(object, RectangleCoverer())

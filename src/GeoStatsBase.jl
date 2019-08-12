@@ -230,7 +230,7 @@ export
   # covering
   AbstractCoverer,
   RectangleCoverer,
-  cover,
+  cover, boundbox,
 
   # sampling
   AbstractSampler,
