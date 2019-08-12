@@ -101,25 +101,3 @@ coordinates!(buff::AbstractVector, object::AbstractSpatialObject, location::Int)
 Return the bounds (i.e. ranges of bounding box) of the `object`.
 """
 bounds(object::AbstractSpatialObject) = bounds(domain(object))
-
-"""
-    boundcenter(object)
-
-Return the center of the bounding box of the `object`.
-"""
-boundcenter(object::AbstractSpatialObject{T,N}) where {N,T} =
-  SVector{N,T}([(l+u)/2 for (l,u) in bounds(object)])
-
-"""
-    bounddiag(object)
-
-Return the the diagonal of the bounding box of the `object`.
-"""
-bounddiag(object::AbstractSpatialObject) = norm(u-l for (l,u) in bounds(object))
-
-"""
-    boundvolume(object)
-
-Return the volume of the bounding box of the `object`.
-"""
-boundvolume(object::AbstractSpatialObject) = prod(u-l for (l,u) in bounds(object))

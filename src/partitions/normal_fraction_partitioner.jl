@@ -22,10 +22,11 @@ NormalFractionPartitioner(normal::NTuple{N,T},
 
 function partition(object::AbstractSpatialObject{T,N},
                    partitioner::NormalFractionPartitioner{T,N}) where {T,N}
+  bbox = boundbox(object)
   n = partitioner.normal
   f = partitioner.fraction
-  c = boundcenter(object)
-  d = bounddiag(object)
+  c = center(bbox)
+  d = diagonal(bbox)
 
   # maximum number of bisections
   maxiter = partitioner.maxiter
