@@ -40,6 +40,7 @@ include("distributions.jl")
 include("estimators.jl")
 include("partitions.jl")
 include("weighting.jl")
+include("covering.jl")
 include("sampling.jl")
 include("learning.jl")
 include("mappers.jl")
@@ -225,6 +226,11 @@ export
   AbstractWeighter,
   BlockWeighter,
   weight,
+
+  # covering
+  AbstractCoverer,
+  RectangleCoverer,
+  cover,
 
   # sampling
   AbstractSampler,
