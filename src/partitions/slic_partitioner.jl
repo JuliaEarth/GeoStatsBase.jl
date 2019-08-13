@@ -93,10 +93,15 @@ function slic_initialization(sdata::AbstractData, s::Real)
   # efficient neighbor search
   searcher = NearestNeighborSearcher(sdata, 1)
 
+  # bounding box properties
+  bbox = boundbox(sdata)
+  lo = lowerleft(bbox)
+  up = upperright(bbox)
+
   # cluster centers
   clusters = Vector{Int}()
   neighbor = Vector{Int}(undef, 1)
-  ranges = [lo:s:up for (lo,up) in bounds(sdata)]
+  ranges = [l:s:u for (l, u) in zip(lo, up)]
   for x in Iterators.product(ranges...)
     search!(neighbor, SVector(x), searcher)
     push!(clusters, neighbor[1])
