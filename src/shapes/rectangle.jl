@@ -21,6 +21,20 @@ center(r::Rectangle{T,N}) where {N,T} =
   SVector{N,T}([(l+u)/2 for (l,u) in zip(r.lowerleft, r.upperright)])
 
 """
+    lowerleft(rectangle)
+
+Return the lower left corner of the `rectangle`.
+"""
+lowerleft(r::Rectangle{T,N}) where {N,T} = SVector{N,T}(r.lowerleft)
+
+"""
+    upperright(rectangle)
+
+Return the upper right corner of the `rectangle`.
+"""
+upperright(r::Rectangle{T,N}) where {N,T} = SVector{N,T}(r.upperright)
+
+"""
     side(rectangle, i)
 
 Return the `i`-th side of the `rectangle`.
