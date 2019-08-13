@@ -4,12 +4,11 @@
 
 """
     RegularGridData(data)
-    RegularGridData(data, bounds)
     RegularGridData(data, origin, spacing)
 
-Regularly spaced `data` georeferenced with `origin` and `spacing`,
-or an `bounds`. The `data` argument is a dictionary mapping variable
-names to Julia arrays with the actual data.
+Regularly spaced `data` georeferenced with `origin` and `spacing`.
+The `data` argument is a dictionary mapping variable names to Julia
+arrays with the actual data.
 
 `NaN` or `missing` values in the Julia arrays are interpreted as
 non-valid. They can be used to mask the variables on the grid.
@@ -55,16 +54,6 @@ end
 
 RegularGridData{T}(data::Dict{Symbol,<:AbstractArray{<:Any,N}}) where {N,T} =
   RegularGridData(data, ntuple(i->zero(T), N), ntuple(i->one(T), N))
-
-function RegularGridData(data::Dict{Symbol,<:AbstractArray{<:Any,N}},
-                         bounds::NTuple{N,A}) where {N,T,A<:Tuple{T,T}}
-  array, _ = iterate(values(data))
-  dims     = size(array)
-  start    = first.(bounds)
-  finish   = last.(bounds)
-  spacing = @. (finish - start) / (dims - 1)
-  RegularGridData(data, start, spacing)
-end
 
 Base.size(geodata::RegularGridData) = size(geodata.domain)
 origin(geodata::RegularGridData) = origin(geodata.domain)

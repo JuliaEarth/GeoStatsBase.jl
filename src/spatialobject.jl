@@ -94,10 +94,3 @@ Non-allocating version of [`coordinates`](@ref).
 """
 coordinates!(buff::AbstractVector, object::AbstractSpatialObject, location::Int) =
   coordinates!(buff, domain(object), location)
-
-"""
-    bounds(object)
-
-Return the bounds (i.e. ranges of bounding box) of the `object`.
-"""
-bounds(object::AbstractSpatialObject) = bounds(domain(object))
