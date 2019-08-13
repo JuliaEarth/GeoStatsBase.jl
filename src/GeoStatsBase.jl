@@ -157,6 +157,8 @@ export
   AbstractShape,
   Rectangle,
   center,
+  side,
+  sides,
   diagonal,
   volume,
 

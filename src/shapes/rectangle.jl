@@ -21,6 +21,20 @@ center(r::Rectangle{T,N}) where {N,T} =
   SVector{N,T}([(l+u)/2 for (l,u) in zip(r.lowerleft, r.upperright)])
 
 """
+    side(rectangle, i)
+
+Return the `i`-th side of the `rectangle`.
+"""
+side(r::Rectangle, i::Int) = r.upperright[i] - r.lowerleft[i]
+
+"""
+    sides(rectangle)
+
+Return all the sides of the `rectangle` as a tuple.
+"""
+sides(r::Rectangle{T,N}) where {N,T} = ntuple(i->side(r, i), N)
+
+"""
     diagonal(rectangle)
 
 Return the diagonal of the `rectangle`.
