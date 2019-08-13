@@ -63,10 +63,7 @@ function median_heuristic(d::AbstractData)
   m = median(D[i,j] for i in 1:n for j in 1:n if i > j)
 
   # bounding box constraint
-  bs = bounds(d)
-  lo = first.(bs)
-  up = last.(bs)
-  l  = minimum(up .- lo)
+  l = minimum(sides(boundbox(d)))
 
   min(m, l)
 end
