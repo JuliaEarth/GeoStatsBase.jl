@@ -3,25 +3,25 @@
 # ------------------------------------------------------------------
 
 """
-    NormalFractionPartitioner(normal, fraction=0.5, maxiter=10)
+    BisectFractionPartitioner(normal, fraction=0.5, maxiter=10)
 
 A method for partitioning spatial data into two half spaces
 defined by a `normal` direction and a `fraction` of points.
 The partition is returned within `maxiter` bisection iterations.
 """
-struct NormalFractionPartitioner{T,N} <: AbstractPartitioner
+struct BisectFractionPartitioner{T,N} <: AbstractPartitioner
   normal::SVector{N,T}
   fraction::Float64
   maxiter::Int
 end
 
-NormalFractionPartitioner(normal::NTuple{N,T},
+BisectFractionPartitioner(normal::NTuple{N,T},
                           fraction::Real=0.5,
                           maxiter::Integer=10) where {T,N} =
-  NormalFractionPartitioner{T,N}(normalize(SVector(normal)), fraction, maxiter)
+  BisectFractionPartitioner{T,N}(normalize(SVector(normal)), fraction, maxiter)
 
 function partition(object::AbstractSpatialObject{T,N},
-                   partitioner::NormalFractionPartitioner{T,N}) where {T,N}
+                   partitioner::BisectFractionPartitioner{T,N}) where {T,N}
   bbox = boundbox(object)
   n = partitioner.normal
   f = partitioner.fraction
