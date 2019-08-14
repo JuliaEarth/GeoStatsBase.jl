@@ -1,4 +1,4 @@
-@testset "Partitions" begin
+@testset "Partitioning" begin
   setify(lists) = Set(Set.(lists))
   @testset "UniformPartitioner" begin
     grid = RegularGrid{Float64}(3,3)
@@ -81,10 +81,10 @@
     @test all(npoints.(p) .== 25)
   end
 
-  @testset "NormalPointPartitioner" begin
+  @testset "BisectPointPartitioner" begin
     grid = RegularGrid{Float64}(10,10)
 
-    p = partition(grid, NormalPointPartitioner((0.,1.), (5.,5.1)))
+    p = partition(grid, BisectPointPartitioner((0.,1.), (5.,5.1)))
     @test npoints(p[1]) == 40
     @test npoints(p[2]) == 60
 
@@ -97,13 +97,13 @@
     @test all(X₂[2,j] < m₁[2] for j in 1:size(X₂,2))
 
     # flipping normal direction is equivalent to swapping subsets
-    p₁ = partition(grid, NormalPointPartitioner(( 1.,0.), (5.1,5.)))
-    p₂ = partition(grid, NormalPointPartitioner((-1.,0.), (5.1,5.)))
+    p₁ = partition(grid, BisectPointPartitioner(( 1.,0.), (5.1,5.)))
+    p₂ = partition(grid, BisectPointPartitioner((-1.,0.), (5.1,5.)))
     @test npoints(p₁[1]) == npoints(p₂[2]) == 40
     @test npoints(p₁[2]) == npoints(p₂[1]) == 60
   end
 
-  @testset "NormalFractionPartitioner" begin
+  @testset "BisectFractionPartitioner" begin
     # TODO
   end
 

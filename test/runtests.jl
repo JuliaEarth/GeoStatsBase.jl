@@ -29,7 +29,7 @@ testfiles = [
   "data.jl",
   "domains.jl",
   "collections.jl",
-  "partitions.jl",
+  "partitioning.jl",
   "paths.jl",
   "neighborhoods.jl",
   "mappers.jl",
