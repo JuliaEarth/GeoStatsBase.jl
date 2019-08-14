@@ -13,6 +13,8 @@ struct ClassificationTask{N} <: SupervisedLearningTask
   label::Symbol
 end
 
+ClassificationTask(f::Symbol, l::Symbol) = ClassificationTask{1}((f,), l)
+
 # ------------
 # IO methods
 # ------------

@@ -98,6 +98,7 @@ export
   RegressionTask,
   ClassificationTask,
   ClusteringTask,
+  CompositeTask,
   features, label,
 
   # problems

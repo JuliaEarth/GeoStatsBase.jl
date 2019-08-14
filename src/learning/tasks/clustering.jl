@@ -11,6 +11,8 @@ struct ClusteringTask{N} <: UnsupervisedLearningTask
   features::NTuple{N,Symbol}
 end
 
+ClusteringTask(f::Symbol) = ClusteringTask{1}((f,))
+
 # ------------
 # IO methods
 # ------------

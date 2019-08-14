@@ -13,6 +13,8 @@ struct RegressionTask{N} <: SupervisedLearningTask
   label::Symbol
 end
 
+RegressionTask(f::Symbol, l::Symbol) = RegressionTask{1}((f,), l)
+
 # ------------
 # IO methods
 # ------------
