@@ -50,10 +50,13 @@ Check whether or not the `adjacency` matrix is acyclic
 using Kahn's topological sort.
 """
 function isacyclic(adjacency::AbstractMatrix{Int})
+  # copy input to avoid side effects
+  A = copy(adjacency)
+
   # find root nodes
   roots = Vector{Int}()
-  for j in 1:size(adjacency, 2)
-    if all(adjacency[:,j] .== 0)
+  for j in 1:size(A, 2)
+    if all(A[:,j] .== 0)
       push!(roots, j)
     end
   end
@@ -65,16 +68,16 @@ function isacyclic(adjacency::AbstractMatrix{Int})
     push!(sorted, i)
 
     # for all edges i → j
-    for j in findall(adjacency[i,:] .== 1)
+    for j in findall(A[i,:] .== 1)
       # remove edge i → j
-      adjacency[i,j] = 0
+      A[i,j] = 0
 
       # if j has no other incoming edge
-      if all(adjacency[:,j] .== 0)
+      if all(A[:,j] .== 0)
         push!(sorted, j)
       end
     end
   end
 
-  any(adjacency .== 1) ? false : true
+  any(A .== 1) ? false : true
 end
