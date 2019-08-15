@@ -37,7 +37,7 @@ function partition(object::AbstractSpatialObject{T,N},
   while iter < maxiter
     m = (a + b) / 2
 
-    p = partition(object, NormalPointPartitioner(n, m))
+    p = partition(object, BisectPointPartitioner(n, m))
     g = npoints(p[1]) / npoints(object)
 
     g ≈ f && break
