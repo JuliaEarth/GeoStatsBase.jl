@@ -91,18 +91,16 @@
     problem = LearningProblem(sdata, tdata, rtask)
     @test sourcedata(problem) == sdata
     @test targetdata(problem) == tdata
-    @test tasks(problem) == [rtask]
-    problem = LearningProblem(sdata, tdata, [rtask, ctask])
-    @test tasks(problem) == [rtask, ctask]
+    @test task(problem) == rtask
 
     # dimension mismatch
     tdata3D = RegularGridData{Float64}(Dict(:x=>rand(10,10,10)))
     @test_throws AssertionError LearningProblem(sdata, tdata3D, rtask)
 
     # show methods
-    problem = LearningProblem(sdata, tdata, [rtask, ctask])
+    problem = LearningProblem(sdata, tdata, ctask)
     @test sprint(show, problem) == "2D LearningProblem"
-    @test sprint(show, MIME"text/plain"(), problem) == "2D LearningProblem\n  source\n    └─data: 10 PointSetData{Float64,2}\n  target\n    └─data: 10×10 RegularGridData{Float64,2}\n  tasks\n    └─Regression x → y\n    └─Clustering (x)\n"
+    @test sprint(show, MIME"text/plain"(), problem) == "2D LearningProblem\n  source\n    └─data: 10 PointSetData{Float64,2}\n  target\n    └─data: 10×10 RegularGridData{Float64,2}\n  tasks: Clustering (x)\n"
 
     if visualtests
       gr(size=(800,800))

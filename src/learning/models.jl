@@ -42,7 +42,8 @@ Perform the `task` with `geodata` using a *learned* `lmodel`.
 function perform(task::AbstractLearningTask, geodata::AbstractData, lmodel::LearnedModel)
   X = geodata[1:npoints(geodata),collect(features(task))]
   if issupervised(task)
-    ŷ = MLJBase.predict(lmodel.model, lmodel.θ, X)
+    r = MLJBase.predict(lmodel.model, lmodel.θ, X)
+    ŷ = isprobabilistic(lmodel.model) ? mode.(r) : r
   else
     @error "not implemented"
   end
