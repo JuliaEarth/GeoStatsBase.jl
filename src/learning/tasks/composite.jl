@@ -43,6 +43,8 @@ end
 CompositeTask(tasks::AbstractVector) =
   CompositeTask(tasks, zeros(Int, length(tasks), length(tasks)))
 
+iscomposite(task::CompositeTask) = true
+
 """
     isacyclic(adjacency)
 

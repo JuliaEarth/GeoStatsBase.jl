@@ -10,33 +10,32 @@ A statistical learning task (e.g. regression, clustering)
 abstract type AbstractLearningTask end
 
 """
-    features(task)
+    inputvars(task)
 
-Return features of learning `task`.
+Return the input variables of learning `task`.
 """
-features(task::AbstractLearningTask) = task.features
-
-"""
-    SupervisedLearningTask
-
-A supervised learning task, i.e. training examples are pairs `(x,y)`
-with `x ∈ Rⁿ` the features, and `y ∈ R` the labels.
-"""
-abstract type SupervisedLearningTask <: AbstractLearningTask end
+inputvars(task::AbstractLearningTask) = features(task)
 
 """
-    label(task)
+    outputvars(task)
 
-Return label of supervised learning `task`.
+Return the output variables of learning `task`.
 """
-label(task::SupervisedLearningTask) = task.label
+outputvars(task::AbstractLearningTask) = (label(task),)
 
 """
-    UnsupervisedLearningTask
+    issupervised(task)
 
-An unsupervised learning task, i.e. training examples are features `x ∈ Rⁿ`.
+Check whether or not `task` is supervised.
 """
-abstract type UnsupervisedLearningTask <: AbstractLearningTask end
+issupervised(task::AbstractLearningTask) = false
+
+"""
+    iscomposite(task)
+
+Check whether or not `task` is composite.
+"""
+iscomposite(task::AbstractLearningTask) = false
 
 #------------------
 # IMPLEMENTATIONS

@@ -30,6 +30,10 @@ function learn(task::AbstractLearningTask, geodata::AbstractData, model::MLJBase
   LearnedModel(model, θ)
 end
 
+function learn(task::CompositeTask, geodata::AbstractData, model::MLJBase.Model)
+  @error "not implemented"
+end
+
 """
     perform(task, geodata, lmodel)
 
@@ -44,4 +48,8 @@ function perform(task::AbstractLearningTask, geodata::AbstractData, lmodel::Lear
   end
 
   Dict(label(task) => ŷ)
+end
+
+function perform(task::CompositeTask, geodata::AbstractData, lmodel::LearnedModel)
+  @error "not implemented"
 end

@@ -100,6 +100,8 @@ export
   ClusteringTask,
   CompositeTask,
   features, label,
+  issupervised,
+  iscomposite,
 
   # problems
   AbstractProblem,
