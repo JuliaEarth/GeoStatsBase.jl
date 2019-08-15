@@ -3,15 +3,15 @@
 # ------------------------------------------------------------------
 
 """
-    PointwiseLearn(models)
+    PointwiseLearn(model)
 
 A learning solver that converts spatial data to a tabular format
 with features (and possibly labels) for each point, and then solves
-the problem with statistical learning `models`.
+the problem with statistical learning `model`.
 
 ## Parameters
 
-* `models` - Learning models (e.g. SVM, Logistic Regression, K-means)
+* `model` - Learning model (e.g. SVM, Logistic Regression, K-means)
 
 ## Notes
 
@@ -20,35 +20,23 @@ pointwise learning. Please refer to the `MLJ` documentation for
 a list of available models.
 """
 struct PointwiseLearn
-  models::Vector{MLJBase.Model}
+  model::MLJBase.Model
 end
 
-PointwiseLearn(model::MLJBase.Model) = PointwiseLearn([model])
-
 function solve(problem::LearningProblem, solver::PointwiseLearn)
-  ptasks = tasks(problem)
-  models = solver.models
+  ptask = task(problem)
+  model = solver.model
 
-  @assert length(ptasks) == length(models) "please specify a learning model for each task"
+  # assert model is compatible with task
+  @assert iscompatible(model, ptask) "$model is not compatible with $ptask"
 
-  results = []
+  # learn model on source data
+  lmodel = learn(ptask, sourcedata(problem), model)
 
-  for (task, model) in zip(ptasks, models)
-    # assert model is compatible with task
-    @assert iscompatible(model, task) "$model is not compatible with $task"
+  # apply model to target data
+  result = perform(ptask, targetdata(problem), lmodel)
 
-    # learn model on source data
-    lmodel = learn(task, sourcedata(problem), model)
-
-    # apply model to target data
-    result = perform(task, targetdata(problem), lmodel)
-
-    push!(results, result)
-  end
-
-  dict = reduce(merge, results)
-
-  LearningSolution(domain(targetdata(problem)), dict)
+  LearningSolution(domain(targetdata(problem)), result)
 end
 
 # ------------
@@ -60,10 +48,7 @@ end
 
 function Base.show(io::IO, ::MIME"text/plain", solver::PointwiseLearn)
   println(io, solver)
-  println(io, "  models")
-  for model in solver.models
-    print(io, "    └─")
-    show(IOContext(io, :compact => true), model)
-    println(io, "")
-  end
+  print(io, "  └─model ⇨ ")
+  show(IOContext(io, :compact => true), solver.model)
+  println(io, "")
 end
