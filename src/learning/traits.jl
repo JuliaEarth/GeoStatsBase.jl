@@ -13,3 +13,11 @@ iscompatible(model::MLJBase.Model, task::RegressionTask) =
   MLJBase.target_scitype_union(model) == MLJBase.Continuous
 iscompatible(model::MLJBase.Model, task::ClassificationTask) =
   MLJBase.target_scitype_union(model) == MLJBase.Finite
+
+"""
+    isprobabilistic(model)
+
+Check whether or not `model` is probabilistic.
+"""
+isprobabilistic(model::MLJBase.Model) = false
+isprobabilistic(model::MLJBase.Probabilistic) = true

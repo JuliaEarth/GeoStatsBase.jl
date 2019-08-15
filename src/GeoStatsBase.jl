@@ -103,6 +103,9 @@ export
   issupervised,
   iscomposite,
 
+  # models
+  isprobabilistic,
+
   # problems
   AbstractProblem,
   EstimationProblem,
