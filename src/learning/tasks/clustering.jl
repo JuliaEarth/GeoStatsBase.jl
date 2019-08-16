@@ -16,6 +16,9 @@ end
 
 ClusteringTask(x::Symbol, out::Symbol) = ClusteringTask{1}((x,), out)
 
+ClusteringTask(x::AbstractVector{Symbol}, out::Symbol) =
+  ClusteringTask{length(x)}(Tuple(x), out)
+
 """
     features(task)
 

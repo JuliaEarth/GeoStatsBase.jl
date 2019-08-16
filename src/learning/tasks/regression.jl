@@ -15,6 +15,9 @@ end
 
 RegressionTask(x::Symbol, y::Symbol) = RegressionTask{1}((x,), y)
 
+RegressionTask(x::AbstractVector{Symbol}, y::Symbol) =
+  RegressionTask{length(x)}(Tuple(x), y)
+
 """
     features(task)
 
