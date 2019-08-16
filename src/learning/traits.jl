@@ -10,9 +10,10 @@ learning `task`.
 """
 iscompatible(model::MLJBase.Model, task::AbstractLearningTask) = false
 iscompatible(model::MLJBase.Model, task::RegressionTask) =
-  MLJBase.target_scitype_union(model) == MLJBase.Continuous
+  issupervised(model) && (MLJBase.target_scitype_union(model) == MLJBase.Continuous)
 iscompatible(model::MLJBase.Model, task::ClassificationTask) =
-  MLJBase.target_scitype_union(model) == MLJBase.Finite
+  issupervised(model) && (MLJBase.target_scitype_union(model) == MLJBase.Finite)
+iscompatible(model::MLJBase.Model, task::ClusteringTask) = !issupervised(model)
 
 """
     isprobabilistic(model)
@@ -21,3 +22,11 @@ Check whether or not `model` is probabilistic.
 """
 isprobabilistic(model::MLJBase.Model) = false
 isprobabilistic(model::MLJBase.Probabilistic) = true
+
+"""
+    issupervised(model)
+
+Check whether or not `model` is supervised.
+"""
+issupervised(model::MLJBase.Model) = false
+issupervised(model::MLJBase.Supervised) = true

@@ -104,6 +104,7 @@ export
   iscomposite,
 
   # models
+  issupervised,
   isprobabilistic,
 
   # problems
