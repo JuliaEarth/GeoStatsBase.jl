@@ -19,7 +19,7 @@ Any model implementing the `MLJBase` interface can be used in
 pointwise learning. Please refer to the `MLJ` documentation for
 a list of available models.
 """
-struct PointwiseLearn
+struct PointwiseLearn <: AbstractLearningSolver
   model::MLJBase.Model
 end
 
