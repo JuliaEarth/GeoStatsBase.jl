@@ -47,6 +47,7 @@ include("mappers.jl")
 include("problems.jl")
 include("solvers.jl")
 include("solutions.jl")
+include("errors.jl")
 include("statistics.jl")
 include("comparisons.jl")
 include("plotrecipes.jl")
@@ -140,6 +141,11 @@ export
   PointwiseLearn,
   solve, solve_single,
   preprocess,
+
+  # errors
+  AbstractErrorEstimator,
+  LeaveBallOut,
+  estimate_error,
 
   # comparisons
   AbstractSolverComparison,

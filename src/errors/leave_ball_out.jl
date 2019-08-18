@@ -1,0 +1,63 @@
+# ------------------------------------------------------------------
+# Licensed under the ISC License. See LICENCE in the project root.
+# ------------------------------------------------------------------
+
+"""
+    LeaveBallOut(ball)
+
+Leave-`ball`-out (a.k.a. spatial leave-one-out) validation.
+
+    LeaveBallOut(radius)
+
+By default, use Euclidean ball of given `radius`.
+
+## References
+
+* Le Rest et al. 2014. Spatial leave-one-out
+  cross-validation for variable selection in
+  the presence of spatial autocorrelation.
+"""
+struct LeaveBallOut{B<:BallNeighborhood} <: AbstractErrorEstimator
+  ball::B
+end
+
+LeaveBallOut(radius::Real) = LeaveBallOut(BallNeighborhood(radius))
+
+function estimate_error(solver::AbstractLearningSolver,
+                        problem::LearningProblem,
+                        eestimator::LeaveBallOut)
+  sdata = sourcedata(problem)
+  ovars = outputvars(task(problem))
+  ball  = eestimator.ball
+
+  # efficient neighborhood search
+  searcher = NeighborhoodSearcher(sdata, ball)
+
+  # pre-allocate memory for coordinates
+  coords = MVector{ndims(sdata),coordtype(sdata)}(undef)
+
+  solutions = pmap(1:npoints(sdata)) do i
+    coordinates!(coords, sdata, i)
+
+    # points inside and outside ball
+    inside  = search(coords, searcher)
+    outside = [j for j in 1:npoints(sdata) if j ∉ inside]
+
+    # setup and solve learning sub-problem
+    subproblem = LearningProblem(view(sdata, outside),
+                                 view(sdata, [i]),
+                                 task(problem))
+    solve(subproblem, solver)
+  end
+
+  result = pmap(ovars) do var
+    losses = map(1:npoints(sdata)) do i
+      ŷ = solutions[i][1,var]
+      y = sdata[i,var]
+      (ŷ - y)^2
+    end
+    var => mean(losses)
+  end
+
+  Dict(result)
+end
