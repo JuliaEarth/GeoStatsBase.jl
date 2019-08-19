@@ -31,9 +31,17 @@ function partition(object::AbstractSpatialObject{T,N},
   nblocks = @. nleft + nright
 
   subsets = [Vector{Int}() for i in 1:prod(nblocks)]
+  neighbors = [Vector{Int}() for i in 1:prod(nblocks)]
 
-  coords  = MVector{N,T}(undef)
+  # grid of blocks
+  bstart  = CartesianIndex(ntuple(i -> 1, N))
+  bfinish = CartesianIndex(Dims(nblocks))
+  boffset = CartesianIndex(ntuple(i -> 1, N))
+
+  # Cartesian to linear indices
   linear = LinearIndices(Dims(nblocks))
+
+  coords = MVector{N,T}(undef)
   for j in 1:npoints(object)
     coordinates!(coords, object, j)
 
@@ -42,14 +50,35 @@ function partition(object::AbstractSpatialObject{T,N},
     @inbounds for i in 1:N
       c[i] = clamp(c[i], 1, nblocks[i])
     end
+    bcoords = CartesianIndex(Tuple(c))
 
     # block index
-    i = linear[c...]
+    i = linear[bcoords]
 
     append!(subsets[i], j)
   end
 
-  filter!(!isempty, subsets)
+  # neighboring blocks indices
+  for (i, bcoords) in enumerate(bstart:bfinish)
+    for b in (bcoords - boffset):(bcoords + boffset)
+      if all(Tuple(bstart) .≤ Tuple(b) .≤ Tuple(bfinish)) && b ≠ bcoords
+        push!(neighbors[i], linear[b])
+      end
+    end
+  end
 
-  SpatialPartition(object, subsets)
+  # filter out empty blocks
+  empty = isempty.(subsets)
+  subsets = subsets[.!empty]
+  neighbors = neighbors[.!empty]
+  for i in findall(empty)
+    for n in neighbors
+      setdiff!(n, i)
+    end
+  end
+
+  # save block neighbors in metadata
+  metadata = Dict(:neighbors => neighbors)
+
+  SpatialPartition(object, subsets, metadata)
 end
