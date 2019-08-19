@@ -3,17 +3,20 @@
 # ------------------------------------------------------------------
 
 """
-    SpatialPartition
+    SpatialPartition(object, subsets, metadata=Dict())
 
-A partition of spatial data.
+A partition of a spatial `object` into `subsets`.
+Optionally, save `metadata` in the partitioning
+algorithm.
 """
 struct SpatialPartition{O<:AbstractSpatialObject}
   object::O
   subsets::Vector{Vector{Int}}
+  metadata::Dict
 end
 
-SpatialPartition(object, subsets) =
-  SpatialPartition{typeof(object)}(object, subsets)
+SpatialPartition(object, subsets, metadata=Dict()) =
+  SpatialPartition{typeof(object)}(object, subsets, metadata)
 
 """
     subsets(partition)
@@ -22,6 +25,13 @@ Return the subsets of indices in spatial object
 that make up the `partition`.
 """
 subsets(partition::SpatialPartition) = partition.subsets
+
+"""
+    metadata(partition)
+
+Return the metadata dictionary saved in the partition.
+"""
+metadata(partition::SpatialPartition) = partition.metadata
 
 """
     Base.iterate(partition)
@@ -50,6 +60,15 @@ Return `ind`-th object in the `partition` as a view.
 """
 Base.getindex(partition::SpatialPartition, ind::Int) =
   view(partition.object, partition.subsets[ind])
+
+"""
+    Base.getindex(partition, inds)
+
+Return the ind-th object in the `partition` for
+each ind in `inds`.
+"""
+Base.getindex(partition::SpatialPartition, inds::AbstractVector{Int}) =
+  [getindex(partition, ind) for ind in inds]
 
 """
     AbstractPartitioner
