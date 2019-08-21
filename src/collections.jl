@@ -13,10 +13,14 @@ struct DomainCollection{T,N} <: AbstractDomain{T,N}
   offsets::Vector{Int}
 end
 
-DomainCollection(domains::AbstractVector{AbstractDomain{T,N}}) where {N,T} =
-  DomainCollection{T,N}(domains, cumsum([npoints(d) for d in domains]))
+function DomainCollection(domains::AbstractVector)
+  T = coordtype(domains[1])
+  N = ndims(domains[1])
+  offsets = cumsum([npoints(d) for d in domains])
+  DomainCollection{T,N}(domains, offsets)
+end
 
-DomainCollection(domains::Vararg{AbstractDomain{T,N}}) where {N,T} =
+DomainCollection(domains::Vararg) where {N,T} =
   DomainCollection([d for d in domains])
 
 npoints(collection::DomainCollection) = collection.offsets[end]
@@ -25,7 +29,7 @@ function coordinates!(buff::AbstractVector{T},
                       collection::DomainCollection{T,N},
                       location::Int) where {N,T}
   k = findfirst(location .≤ collection.offsets)
-  l = k > 1 ? (@inbounds return location - collection.offsets[k-1]) : location
+  l = k > 1 ? location - collection.offsets[k-1] : location
   coordinates!(buff, collection.domains[k], l)
 end
 
@@ -56,13 +60,15 @@ struct DataCollection{T,N} <: AbstractData{T,N}
   offsets::Vector{Int}
 end
 
-function DataCollection(data::AbstractVector{AbstractData{T,N}}) where {N,T}
+function DataCollection(data::AbstractVector)
   cdomain = DomainCollection(domain.(data))
+  T = coordtype(cdomain)
+  N = ndims(cdomain)
   offsets = cumsum([npoints(d) for d in data])
   DataCollection{T,N}(data, cdomain, offsets)
 end
 
-DataCollection(data::Vararg{AbstractData{T,N}}) where {N,T} =
+DataCollection(data::Vararg) =
   DataCollection([d for d in data])
 
 variables(collection::DataCollection) = merge([variables(d) for d in collection.data]...)
@@ -71,8 +77,8 @@ function Base.getindex(collection::DataCollection, ind::Int, var::Symbol)
   k = findfirst(ind .≤ collection.offsets)
   d = collection.data[k]
   if var ∈ keys(variables(d))
-    i = k > 1 ? (@inbounds return ind - collection.offsets[k-1]) : ind
-    getindex(collection.data[k], i, var)
+    i = k > 1 ? ind - collection.offsets[k-1] : ind
+    getindex(d, i, var)
   else
     missing
   end
