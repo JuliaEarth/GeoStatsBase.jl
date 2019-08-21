@@ -24,6 +24,13 @@ A method for comparing simulation solvers.
 abstract type AbstractSimSolverComparison <: AbstractSolverComparison end
 
 """
+    AbstractLearnSolverComparison
+
+A method for comparing learning solvers.
+"""
+abstract type AbstractLearnSolverComparison <: AbstractSolverComparison end
+
+"""
     compare(solvers, problem, method)
 
 Compare `solvers` on a given `problem` using a comparison `method`.
@@ -34,5 +41,5 @@ compare(::AbstractVector{S}, ::AbstractProblem,
 #------------------
 # IMPLEMENTATIONS
 #------------------
-include("comparisons/visual_comparison.jl")
+include("comparisons/visual.jl")
 include("comparisons/cross_validation.jl")

@@ -152,6 +152,7 @@ export
   AbstractSolverComparison,
   AbstractEstimSolverComparison,
   AbstractSimSolverComparison,
+  AbstractLearnSolverComparison,
   VisualComparison,
   CrossValidation,
   compare,
