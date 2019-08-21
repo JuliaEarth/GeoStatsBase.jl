@@ -33,11 +33,6 @@ function partition(object::AbstractSpatialObject{T,N},
   subsets = [Vector{Int}() for i in 1:prod(nblocks)]
   neighbors = [Vector{Int}() for i in 1:prod(nblocks)]
 
-  # grid of blocks
-  bstart  = CartesianIndex(ntuple(i -> 1, N))
-  bfinish = CartesianIndex(Dims(nblocks))
-  boffset = CartesianIndex(ntuple(i -> 1, N))
-
   # Cartesian to linear indices
   linear = LinearIndices(Dims(nblocks))
 
@@ -58,7 +53,10 @@ function partition(object::AbstractSpatialObject{T,N},
     append!(subsets[i], j)
   end
 
-  # neighboring blocks indices
+  # neighboring blocks metadata
+  bstart  = CartesianIndex(ntuple(i -> 1, N))
+  boffset = CartesianIndex(ntuple(i -> 1, N))
+  bfinish = CartesianIndex(Dims(nblocks))
   for (i, bcoords) in enumerate(bstart:bfinish)
     for b in (bcoords - boffset):(bcoords + boffset)
       if all(Tuple(bstart) .≤ Tuple(b) .≤ Tuple(bfinish)) && b ≠ bcoords
@@ -77,7 +75,7 @@ function partition(object::AbstractSpatialObject{T,N},
     end
   end
 
-  # save block neighbors in metadata
+  # save metadata
   metadata = Dict(:neighbors => neighbors)
 
   SpatialPartition(object, subsets, metadata)
