@@ -12,8 +12,8 @@ Cross-validation with blocks of given `side`.
 * Roberts et al. 2017. Cross-validation strategies for data with
   temporal, spatial, hierarchical, or phylogenetic structure.
 """
-struct BlockCrossValidation <: AbstractErrorEstimator
-  side::Float64
+struct BlockCrossValidation{T<:Real} <: AbstractErrorEstimator
+  side::T
 end
 
 function estimate_error(solver::AbstractLearningSolver,
