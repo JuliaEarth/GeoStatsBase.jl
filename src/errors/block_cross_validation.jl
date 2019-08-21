@@ -20,8 +20,8 @@ function estimate_error(solver::AbstractLearningSolver,
                         problem::LearningProblem,
                         eestimator::BlockCrossValidation)
   sdata = sourcedata(problem)
-  side  = eestimator.side
   ovars = outputvars(task(problem))
+  side  = eestimator.side
 
   blocks    = partition(sdata, BlockPartitioner(side))
   bsubsets  = subsets(blocks)
