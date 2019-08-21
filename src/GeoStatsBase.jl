@@ -147,6 +147,7 @@ export
   LeaveBallOut,
   BlockCrossValidation,
   estimate_error,
+  compare,
 
   # comparisons
   AbstractSolverComparison,
