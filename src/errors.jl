@@ -22,3 +22,4 @@ estimate_error(::AbstractSolver, ::AbstractProblem,
 # IMPLEMENTATIONS
 #------------------
 include("errors/leave_ball_out.jl")
+include("errors/block_cross_validation.jl")

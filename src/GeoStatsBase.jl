@@ -145,6 +145,7 @@ export
   # errors
   AbstractErrorEstimator,
   LeaveBallOut,
+  BlockCrossValidation,
   estimate_error,
 
   # comparisons
@@ -233,6 +234,7 @@ export
   HierarchicalPartitioner,
   partition,
   subsets,
+  metadata,
   →,
 
   # weighting
