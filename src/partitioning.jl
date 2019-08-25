@@ -70,6 +70,14 @@ each ind in `inds`.
 Base.getindex(partition::SpatialPartition, inds::AbstractVector{Int}) =
   [getindex(partition, ind) for ind in inds]
 
+# ------------
+# IO methods
+# ------------
+function Base.show(io::IO, partition::SpatialPartition)
+  nsubsets = length(partition.subsets)
+  print(io, "$nsubsets SpatialPartition")
+end
+
 """
     AbstractPartitioner
 
