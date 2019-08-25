@@ -25,17 +25,10 @@ function compare(solvers::AbstractVector{S}, problem::AbstractProblem,
   # check if Plots.jl is loaded
   isdefined(Main, :Plots) || @error "please load Plots.jl for visual comparison"
 
-  if nworkers() > 1
-    # run solvers in parallel
-    λ = solver -> solve(problem, solver)
-    solutions = pmap(λ, solvers)
-  else
-    # fallback to serial execution
-    solutions = [solve(problem, solver) for solver in solvers]
+  plts = pmap(solvers) do solver
+    solution = solve(problem, solver)
+    RecipesBase.plot(solution)
   end
 
-  # TODO: pass plot specs to recipe
-  plts = [plot(solution) for solution in solutions]
-
-  plot(plts..., layout=(length(solvers),1))
+  RecipesBase.plot(plts..., layout=(length(solvers),1))
 end
