@@ -49,7 +49,6 @@ include("solvers.jl")
 include("solutions.jl")
 include("errors.jl")
 include("statistics.jl")
-include("comparisons.jl")
 include("plotrecipes.jl")
 include("utils.jl")
 
@@ -145,17 +144,9 @@ export
   # errors
   AbstractErrorEstimator,
   LeaveBallOut,
+  CrossValidation,
   BlockCrossValidation,
   estimate_error,
-  compare,
-
-  # comparisons
-  AbstractSolverComparison,
-  AbstractEstimSolverComparison,
-  AbstractSimSolverComparison,
-  AbstractLearnSolverComparison,
-  VisualComparison,
-  CrossValidation,
   compare,
 
   # helper macros

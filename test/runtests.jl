@@ -35,7 +35,6 @@ testfiles = [
   "mappers.jl",
   "problems.jl",
   "solvers.jl",
-  "comparisons.jl",
   "utils.jl",
   "statistics.jl"
 ]
