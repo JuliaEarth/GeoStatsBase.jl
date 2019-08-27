@@ -27,4 +27,5 @@ compare(solvers::AbstractVector{S}, problem::P,
 # IMPLEMENTATIONS
 #------------------
 include("errors/leave_ball_out.jl")
+include("errors/cross_validation.jl")
 include("errors/block_cross_validation.jl")
