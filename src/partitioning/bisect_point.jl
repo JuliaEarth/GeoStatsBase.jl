@@ -28,7 +28,7 @@ function partition(object::AbstractSpatialObject{T,N},
   right = Vector{Int}()
   for location in 1:npoints(object)
     coordinates!(x, object, location)
-    if (x - p) ⋅ n > zero(T)
+    if (x - p) ⋅ n < zero(T)
       push!(left, location)
     else
       push!(right, location)

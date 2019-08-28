@@ -41,8 +41,8 @@ function partition(object::AbstractSpatialObject{T,N},
     g = npoints(p[1]) / npoints(object)
 
     g ≈ f && break
-    g > f && (a = m)
-    g < f && (b = m)
+    g > f && (b = m)
+    g < f && (a = m)
 
     iter += 1
   end
