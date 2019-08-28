@@ -223,6 +223,7 @@ export
   PlanePartitioner,
   DirectionPartitioner,
   FunctionPartitioner,
+  VariablePartitioner,
   ProductPartitioner,
   HierarchicalPartitioner,
   partition,
