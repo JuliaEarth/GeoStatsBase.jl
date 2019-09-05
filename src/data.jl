@@ -49,8 +49,26 @@ Base.getindex(spatialdata::AbstractData, var::Symbol) =
 
 Return a view of `spatialdata` with all points in `inds`.
 """
-Base.view(spatialdata::AbstractData, inds::AbstractVector{Int}) =
-  SpatialDataView(spatialdata, inds)
+Base.view(sdata::AbstractData, inds::AbstractVector{Int}) =
+  DataView(sdata, inds, collect(keys(variables(sdata))))
+
+"""
+    view(spatialdata, vars)
+
+Return a view of `spatialdata` with all variables in `vars`.
+"""
+Base.view(sdata::AbstractData, vars::AbstractVector{Symbol}) =
+  DataView(sdata, 1:npoints(sdata), vars)
+
+"""
+    view(spatialdata, inds, vars)
+
+Return a view of `spatialdata` with all points in `inds` and
+all variables in `vars`.
+"""
+Base.view(sdata::AbstractData, inds::AbstractVector{Int},
+                               vars::AbstractVector{Symbol}) =
+  DataView(sdata, inds, vars)
 
 #------------------
 # TABLES.JL API

@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------
 
 """
-    SpatialDataView(spatialdata, inds)
+    DataView(spatialdata, inds)
 
 Return a view of `spatialdata` at `inds`.
 
@@ -11,33 +11,36 @@ Return a view of `spatialdata` at `inds`.
 
 This type implements the `AbstractData` interface.
 """
-struct SpatialDataView{T,N,
-                       S<:AbstractData{T,N},
-                       I<:AbstractVector{Int}} <: AbstractData{T,N}
+struct DataView{T,N,
+                S<:AbstractData{T,N},
+                I<:AbstractVector{Int},
+                V<:AbstractVector{Symbol}} <: AbstractData{T,N}
   data::S
   inds::I
+  vars::V
 end
 
-domain(dv::SpatialDataView) = view(domain(dv.data), dv.inds)
+domain(dv::DataView) = view(domain(dv.data), dv.inds)
 
-variables(view::SpatialDataView) = variables(view.data)
+variables(dv::DataView) =
+  Dict(var => V for (var,V) in variables(dv.data) if var ∈ dv.vars)
 
-Base.getindex(view::SpatialDataView, ind::Int, var::Symbol) =
-  getindex(view.data, view.inds[ind], var)
+Base.getindex(dv::DataView, ind::Int, var::Symbol) =
+  getindex(dv.data, dv.inds[ind], var)
 
 # ------------
 # IO methods
 # ------------
-function Base.show(io::IO, view::SpatialDataView{T,N,S,I}) where {T,N,
-                                                                  S<:AbstractData{T,N},
-                                                                  I<:AbstractVector{Int}}
-  npts = npoints(view)
-  print(io, "$npts SpatialDataView{$T,$N}")
+function Base.show(io::IO, dv::DataView)
+  N = ndims(dv)
+  T = coordtype(dv)
+  npts = npoints(dv)
+  print(io, "$npts DataView{$T,$N}")
 end
 
-function Base.show(io::IO, ::MIME"text/plain", view::SpatialDataView)
-  println(io, view)
+function Base.show(io::IO, ::MIME"text/plain", dv::DataView)
+  println(io, dv)
   println(io, "  variables")
-  varlines = ["    └─$var ($V)" for (var,V) in variables(view)]
+  varlines = ["    └─$var ($V)" for (var,V) in variables(dv)]
   print(io, join(varlines, "\n"))
 end
