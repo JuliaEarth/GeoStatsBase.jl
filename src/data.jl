@@ -46,26 +46,18 @@ Base.getindex(spatialdata::AbstractData, var::Symbol) =
 
 """
     view(spatialdata, inds)
-
-Return a view of `spatialdata` with all points in `inds`.
-"""
-Base.view(sdata::AbstractData, inds::AbstractVector{Int}) =
-  DataView(sdata, inds, collect(keys(variables(sdata))))
-
-"""
     view(spatialdata, vars)
-
-Return a view of `spatialdata` with all variables in `vars`.
-"""
-Base.view(sdata::AbstractData, vars::AbstractVector{Symbol}) =
-  DataView(sdata, 1:npoints(sdata), vars)
-
-"""
     view(spatialdata, inds, vars)
 
 Return a view of `spatialdata` with all points in `inds` and
 all variables in `vars`.
 """
+Base.view(sdata::AbstractData, inds::AbstractVector{Int}) =
+  DataView(sdata, inds, collect(keys(variables(sdata))))
+
+Base.view(sdata::AbstractData, vars::AbstractVector{Symbol}) =
+  DataView(sdata, 1:npoints(sdata), vars)
+
 Base.view(sdata::AbstractData, inds::AbstractVector{Int},
                                vars::AbstractVector{Symbol}) =
   DataView(sdata, inds, vars)
@@ -74,7 +66,9 @@ Base.view(sdata::AbstractData, inds::AbstractVector{Int},
 # TABLES.JL API
 #------------------
 Tables.istable(::Type{<:AbstractData}) = true
+
 Tables.columnaccess(::Type{<:AbstractData}) = true
+
 function Tables.columns(spatialdata::AbstractData)
   vars = keys(variables(spatialdata))
   vals = [getindex(spatialdata, 1:npoints(spatialdata), var) for var in vars]
