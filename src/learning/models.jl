@@ -7,8 +7,8 @@
 
 An object that stores `model` together with learned parameters `θ`.
 """
-struct LearnedModel{M<:MLJBase.Model}
-  model::M
+struct LearnedModel
+  model
   θ
 end
 
@@ -18,11 +18,12 @@ end
 Learn the `task` with `geodata` using a learning `model`.
 """
 function learn(task::AbstractLearningTask, geodata::AbstractData, model::MLJBase.Model)
-  X = view(geodata, collect(features(task)))
   if issupervised(task)
+    X = view(geodata, collect(features(task)))
     y = geodata[1:npoints(geodata),label(task)]
     θ, _, __ = MLJBase.fit(model, 0, X, y)
   else
+    X = view(geodata, collect(features(task)))
     θ, _, __ = MLJBase.fit(model, 0, X)
   end
 
