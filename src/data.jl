@@ -67,11 +67,6 @@ function Tables.columns(spatialdata::AbstractData)
   vals = [getindex(spatialdata, 1:npoints(spatialdata), var) for var in vars]
   NamedTuple{tuple(vars...)}(vals)
 end
-function Tables.schema(spatialdata::AbstractData)
-  names = collect(keys(variables(spatialdata)))
-  types = collect(values(variables(spatialdata)))
-  Tables.Schema(names, types)
-end
 
 # TODO: redesign isvalid/valid interface
 """
