@@ -80,7 +80,6 @@ export
   RegularGridData,
   StructuredGridData,
   variables,
-  valuetype,
   valid,
 
   # collections

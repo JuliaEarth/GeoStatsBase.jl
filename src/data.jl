@@ -10,13 +10,6 @@ Spatial data in a `N`-dimensional space with coordinates of type `T`.
 abstract type AbstractData{T,N} <: AbstractSpatialObject{T,N} end
 
 """
-    valuetype(spatialdata, var)
-
-Return the value type of `var` in `spatialdata`.
-"""
-valuetype(spatialdata::AbstractData, var::Symbol) = variables(spatialdata)[var]
-
-"""
     variables(spatialdata)
 
 Return the variable names in `spatialdata` and their types.
@@ -87,7 +80,7 @@ is a tuple with the matrix of coordinates as the first item and the vector
 of values as the second item.
 """
 function valid(spatialdata::AbstractData{T,N}, var::Symbol) where {N,T}
-  V = valuetype(spatialdata, var)
+  V = variables(spatialdata)[var]
   npts = npoints(spatialdata)
 
   # pre-allocate memory for result
