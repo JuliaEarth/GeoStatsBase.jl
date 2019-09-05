@@ -3,9 +3,9 @@
 # ------------------------------------------------------------------
 
 """
-    DataView(spatialdata, inds)
+    DataView(spatialdata, inds, vars)
 
-Return a view of `spatialdata` at `inds`.
+Return a view of `spatialdata` at `inds` and `vars`.
 
 ### Notes
 
