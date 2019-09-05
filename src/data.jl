@@ -50,13 +50,30 @@ Base.getindex(spatialdata::AbstractData, var::Symbol) =
   [getindex(spatialdata, ind, var) for ind in 1:npoints(spatialdata)]
 
 """
-    values(spatialdata)
+    view(spatialdata, inds)
 
-Return the values of all variables in `spatialdata`.
+Return a view of `spatialdata` with all points in `inds`.
 """
-Base.values(spatialdata::AbstractData) =
-  Dict(var => getindex(spatialdata, var) for (var,V) in variables(spatialdata))
+Base.view(spatialdata::AbstractData, inds::AbstractVector{Int}) =
+  SpatialDataView(spatialdata, inds)
 
+#------------------
+# TABLES.JL API
+#------------------
+Tables.istable(::Type{<:AbstractData}) = true
+Tables.columnaccess(::Type{<:AbstractData}) = true
+function Tables.columns(spatialdata::AbstractData)
+  vars = keys(variables(spatialdata))
+  vals = [getindex(spatialdata, 1:npoints(spatialdata), var) for var in vars]
+  NamedTuple{tuple(vars...)}(vals)
+end
+function Tables.schema(spatialdata::AbstractData)
+  names = collect(keys(variables(spatialdata)))
+  types = collect(values(variables(spatialdata)))
+  Tables.Schema(names, types)
+end
+
+# TODO: redesign isvalid/valid interface
 """
     isvalid(spatialdata, ind, var)
 
@@ -93,13 +110,6 @@ function valid(spatialdata::AbstractData{T,N}, var::Symbol) where {N,T}
 
   X[:,1:nvalid], z[1:nvalid]
 end
-
-"""
-    view(spatialdata, inds)
-
-Return a view of `spatialdata` with all points in `inds`.
-"""
-Base.view(spatialdata::AbstractData, inds::AbstractVector{Int}) = SpatialDataView(spatialdata, inds)
 
 # ------------
 # IO methods
