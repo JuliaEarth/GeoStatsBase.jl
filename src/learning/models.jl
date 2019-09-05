@@ -18,12 +18,11 @@ end
 Learn the `task` with `geodata` using a learning `model`.
 """
 function learn(task::AbstractLearningTask, geodata::AbstractData, model::MLJBase.Model)
+  X = view(geodata, collect(features(task)))
   if issupervised(task)
-    X = geodata[1:npoints(geodata),collect(features(task))]
     y = geodata[1:npoints(geodata),label(task)]
     θ, _, __ = MLJBase.fit(model, 0, X, y)
   else
-    X = geodata[1:npoints(geodata),collect(features(task))]
     θ, _, __ = MLJBase.fit(model, 0, X)
   end
 
@@ -44,7 +43,7 @@ function perform(task::AbstractLearningTask, geodata::AbstractData, lmodel::Lear
   model, θ = lmodel.model, lmodel.θ
 
   # apply model to the data
-  X = geodata[1:npoints(geodata),collect(features(task))]
+  X = view(geodata, collect(features(task)))
   ŷ = MLJBase.predict(model, θ, X)
 
   # post-process result
