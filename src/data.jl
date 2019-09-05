@@ -14,7 +14,8 @@ abstract type AbstractData{T,N} <: AbstractSpatialObject{T,N} end
 
 Return the variable names in `spatialdata` and their types.
 """
-variables(spatialdata::AbstractData) = Dict(var => eltype(array) for (var,array) in spatialdata.data)
+variables(spatialdata::AbstractData) =
+  Dict(var => eltype(array) for (var,array) in spatialdata.data)
 
 """
     spatialdata[ind,var]
@@ -22,7 +23,8 @@ variables(spatialdata::AbstractData) = Dict(var => eltype(array) for (var,array)
 
 Return the value of `var` for the `ind`-th point in `spatialdata`.
 """
-Base.getindex(spatialdata::AbstractData, ind::Int, var::Symbol) = spatialdata.data[var][ind]
+Base.getindex(spatialdata::AbstractData, ind::Int, var::Symbol) =
+  spatialdata.data[var][ind]
 
 Base.getindex(spatialdata::AbstractData, inds::AbstractVector{Int}, var::Symbol) =
   [getindex(spatialdata, ind, var) for ind in inds]
