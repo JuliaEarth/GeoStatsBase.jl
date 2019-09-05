@@ -62,9 +62,9 @@ Base.view(sdata::AbstractData, inds::AbstractVector{Int},
                                vars::AbstractVector{Symbol}) =
   DataView(sdata, inds, vars)
 
-#------------------
+#----------------
 # TABLES.JL API
-#------------------
+#----------------
 Tables.istable(::Type{<:AbstractData}) = true
 
 Tables.columnaccess(::Type{<:AbstractData}) = true
@@ -75,7 +75,9 @@ function Tables.columns(spatialdata::AbstractData)
   NamedTuple{tuple(vars...)}(vals)
 end
 
-# TODO: redesign isvalid/valid interface
+#-----------------
+# MISSING VALUES
+#-----------------
 """
     isvalid(spatialdata, ind, var)
 
