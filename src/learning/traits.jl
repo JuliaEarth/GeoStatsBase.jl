@@ -9,10 +9,10 @@ Check whether or not `model` can be used for
 learning `task`.
 """
 iscompatible(model::MLJBase.Model, task::AbstractLearningTask) = false
-iscompatible(model::MLJBase.Model, task::RegressionTask) =
-  issupervised(model) && (MLJBase.target_scitype_union(model) == MLJBase.Continuous)
-iscompatible(model::MLJBase.Model, task::ClassificationTask) =
-  issupervised(model) && (MLJBase.target_scitype_union(model) == MLJBase.Finite)
+iscompatible(model::MLJBase.Model, task::RegressionTask) = issupervised(model) &&
+  (MLJBase.target_scitype(model) == AbstractVector{<:MLJBase.Continuous})
+iscompatible(model::MLJBase.Model, task::ClassificationTask) = issupervised(model) &&
+  (MLJBase.target_scitype(model) == AbstractVector{<:MLJBase.Finite})
 iscompatible(model::MLJBase.Model, task::ClusteringTask) = !issupervised(model)
 
 """
