@@ -85,22 +85,22 @@
     grid = RegularGrid{Float64}(10,10)
 
     p = partition(grid, BisectPointPartitioner((0.,1.), (5.,5.1)))
-    @test npoints(p[1]) == 40
-    @test npoints(p[2]) == 60
+    @test npoints(p[1]) == 60
+    @test npoints(p[2]) == 40
 
-    # all points in X₁ are above those in X₂
+    # all points in X₁ are below those in X₂
     X₁ = coordinates(p[1])
     X₂ = coordinates(p[2])
-    m₁ = minimum(X₁, dims=2)
-    M₂ = maximum(X₂, dims=2)
-    @test all(X₁[2,j] > M₂[2] for j in 1:size(X₁,2))
-    @test all(X₂[2,j] < m₁[2] for j in 1:size(X₂,2))
+    M₁ = maximum(X₁, dims=2)
+    m₂ = minimum(X₂, dims=2)
+    @test all(X₁[2,j] < m₂[2] for j in 1:size(X₁,2))
+    @test all(X₂[2,j] > M₁[2] for j in 1:size(X₂,2))
 
     # flipping normal direction is equivalent to swapping subsets
     p₁ = partition(grid, BisectPointPartitioner(( 1.,0.), (5.1,5.)))
     p₂ = partition(grid, BisectPointPartitioner((-1.,0.), (5.1,5.)))
-    @test npoints(p₁[1]) == npoints(p₂[2]) == 40
-    @test npoints(p₁[2]) == npoints(p₂[1]) == 60
+    @test npoints(p₁[1]) == npoints(p₂[2]) == 60
+    @test npoints(p₁[2]) == npoints(p₂[1]) == 40
   end
 
   @testset "BisectFractionPartitioner" begin
