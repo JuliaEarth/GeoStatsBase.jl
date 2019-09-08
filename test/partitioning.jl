@@ -126,7 +126,22 @@
   end
 
   @testset "BallPartitioner" begin
-    # TODO
+    pset = PointSet([
+      0 1 1 0 0.2
+      0 0 1 1 0.2
+    ])
+
+    # 3 balls with 1 point, and 1 ball with 2 points
+    p = partition(pset, BallPartitioner(0.5))
+    n = npoints.(p)
+    @test length(p) == 4
+    @test count(i->i==1, n) == 3
+    @test count(i->i==2, n) == 1
+
+    # 5 balls with 1 point each
+    p = partition(pset, BallPartitioner(0.2))
+    @test length(p) == 5
+    @test all(npoints.(p) .== 1)
   end
 
   @testset "PlanePartitioner" begin
