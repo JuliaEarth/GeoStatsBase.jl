@@ -104,7 +104,25 @@
   end
 
   @testset "BisectFractionPartitioner" begin
-    # TODO
+    grid = RegularGrid{Float64}(10,10)
+
+    p = partition(grid, BisectFractionPartitioner((1.,0.), 0.2))
+    @test npoints(p[1]) == 20
+    @test npoints(p[2]) == 80
+
+    # all points in X₁ are to the left of X₂
+    X₁ = coordinates(p[1])
+    X₂ = coordinates(p[2])
+    M₁ = maximum(X₁, dims=2)
+    m₂ = minimum(X₂, dims=2)
+    @test all(X₁[1,j] < m₂[1] for j in 1:size(X₁,2))
+    @test all(X₂[1,j] > M₁[1] for j in 1:size(X₂,2))
+
+    # flipping normal direction is equivalent to swapping subsets
+    p₁ = partition(grid, BisectFractionPartitioner(( 1.,0.), 0.2))
+    p₂ = partition(grid, BisectFractionPartitioner((-1.,0.), 0.8))
+    @test npoints(p₁[1]) == npoints(p₂[2]) == 20
+    @test npoints(p₁[2]) == npoints(p₂[1]) == 80
   end
 
   @testset "BallPartitioner" begin
