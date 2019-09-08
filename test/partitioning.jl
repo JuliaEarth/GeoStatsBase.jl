@@ -137,11 +137,13 @@
     @test length(p) == 4
     @test count(i->i==1, n) == 3
     @test count(i->i==2, n) == 1
+    @test setify(subsets(p)) == setify([[1,5],[2],[3],[4]])
 
     # 5 balls with 1 point each
     p = partition(pset, BallPartitioner(0.2))
     @test length(p) == 5
     @test all(npoints.(p) .== 1)
+    @test setify(subsets(p)) == setify([[1],[2],[3],[4],[5]])
   end
 
   @testset "PlanePartitioner" begin
