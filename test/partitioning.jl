@@ -147,7 +147,13 @@
   end
 
   @testset "PlanePartitioner" begin
-    # TODO
+    grid = RegularGrid{Float64}(3,3)
+    p = partition(grid, PlanePartitioner((0.,1.)))
+    @test setify(subsets(p)) == setify([[1,2,3],[4,5,6],[7,8,9]])
+
+    grid = RegularGrid{Float64}(4,4)
+    p = partition(grid, PlanePartitioner((0.,1.), tol=1.01))
+    @test setify(subsets(p)) == setify([1:8,9:16])
   end
 
   @testset "FunctionPartitioner" begin
