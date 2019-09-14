@@ -21,6 +21,10 @@
         @test isneighbor(n, [0.,0.], [i,j])
       end
     end
+
+    n = BallNeighborhood(1.0)
+    @test sprint(show, n) == "BallNeighborhood(1.0, Euclidean(0.0))"
+    @test sprint(show, MIME"text/plain"(), n) == "BallNeighborhood\n  radius: 1.0\n  metric: Euclidean(0.0)"
   end
 
   @testset "CylinderNeighborhood" begin
