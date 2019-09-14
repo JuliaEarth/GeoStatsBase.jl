@@ -12,7 +12,12 @@
 
     if visualtests
       gr(size=(800,800))
-      @plottest plot(c,ms=4) joinpath(datadir,"Curve.png") !istravis
+      c1 = Curve([j for i in 1:1, j in 1:5])
+      c2 = Curve([j for i in 1:2, j in 1:5])
+      c3 = Curve([j for i in 1:3, j in 1:5])
+      @plottest plot(c1,ms=4) joinpath(datadir,"Curve1D.png") !istravis
+      @plottest plot(c2,ms=4) joinpath(datadir,"Curve2D.png") !istravis
+      @plottest plot(c3,ms=4) joinpath(datadir,"Curve3D.png") !istravis
     end
   end
 

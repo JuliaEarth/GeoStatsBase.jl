@@ -7,7 +7,12 @@
 
     if visualtests
       gr(size=(800,800))
-      @plottest plot(c,ms=4) joinpath(datadir,"CurveData.png") !istravis
+      c1 = CurveData(Dict(:z => 1:10), [j for i in 1:1, j in 1:10])
+      c2 = CurveData(Dict(:z => 1:10), [j for i in 1:2, j in 1:10])
+      c3 = CurveData(Dict(:z => 1:10), [j for i in 1:3, j in 1:10])
+      @plottest plot(c1,ms=4) joinpath(datadir,"CurveData1D.png") !istravis
+      @plottest plot(c2,ms=4) joinpath(datadir,"CurveData2D.png") !istravis
+      @plottest plot(c3,ms=4) joinpath(datadir,"CurveData3D.png") !istravis
     end
   end
 
