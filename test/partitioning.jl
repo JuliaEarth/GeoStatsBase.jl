@@ -1,5 +1,6 @@
 @testset "Partitioning" begin
   setify(lists) = Set(Set.(lists))
+
   @testset "UniformPartitioner" begin
     grid = RegularGrid{Float64}(3,3)
 
@@ -154,6 +155,12 @@
     grid = RegularGrid{Float64}(4,4)
     p = partition(grid, PlanePartitioner((0.,1.)))
     @test setify(subsets(p)) == setify([1:4,5:8,9:12,13:16])
+  end
+
+  @testset "VariablePartitioner" begin
+    sdata = RegularGridData{Float64}(Dict(:z => [1 1 1; 2 2 2; 3 3 3]))
+    p = partition(sdata, VariablePartitioner(:z))
+    @test setify(subsets(p)) == setify([[1,4,7],[2,5,8],[3,6,9]])
   end
 
   @testset "FunctionPartitioner" begin
