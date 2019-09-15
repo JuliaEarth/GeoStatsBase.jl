@@ -155,7 +155,7 @@ export
 
   # paths
   AbstractPath,
-  SimplePath,
+  LinearPath,
   RandomPath,
   SourcePath,
   ShiftedPath,

@@ -33,7 +33,7 @@ Base.eltype(::Type{P}) where {P<:AbstractPath} = Int
 #------------------
 # IMPLEMENTATIONS
 #------------------
-include("paths/simple.jl")
+include("paths/linear.jl")
 include("paths/random.jl")
 include("paths/source.jl")
 include("paths/shifted.jl")
