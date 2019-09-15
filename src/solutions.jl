@@ -5,6 +5,6 @@
 #------------------
 # IMPLEMENTATIONS
 #------------------
-include("solutions/estimation_solution.jl")
-include("solutions/simulation_solution.jl")
-include("solutions/learning_solution.jl")
+include("solutions/estimation.jl")
+include("solutions/simulation.jl")
+include("solutions/learning.jl")
