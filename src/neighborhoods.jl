@@ -21,5 +21,5 @@ isneighbor(neigh::AbstractNeighborhood,
 #------------------
 # IMPLEMENTATIONS
 #------------------
-include("neighborhoods/ball_neighborhood.jl")
-include("neighborhoods/cylinder_neighborhood.jl")
+include("neighborhoods/ball.jl")
+include("neighborhoods/cylinder.jl")
