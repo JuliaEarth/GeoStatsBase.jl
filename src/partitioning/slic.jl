@@ -101,7 +101,7 @@ function slic_initialization(sdata::AbstractData, s::Real)
   # cluster centers
   clusters = Vector{Int}()
   neighbor = Vector{Int}(undef, 1)
-  ranges = [l:s:u for (l, u) in zip(lo, up)]
+  ranges = [(l+s/2):s:u for (l, u) in zip(lo, up)]
   for x in Iterators.product(ranges...)
     search!(neighbor, SVector(x), searcher)
     push!(clusters, neighbor[1])
@@ -150,6 +150,6 @@ function slic_update!(sdata::AbstractData,
     X  = coordinates(sdata, inds)
     μ  = mean(X, dims=2)
     dₛ = pairwise(Euclidean(), X, μ, dims=2)
-    @inbounds c[k] = argmin(vec(dₛ))
+    @inbounds c[k] = inds[argmin(vec(dₛ))]
   end
 end
