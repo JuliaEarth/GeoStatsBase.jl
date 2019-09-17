@@ -71,7 +71,16 @@
   end
 
   @testset "SLICPartitioner" begin
-    # TODO
+    img   = [ones(10,10) 2ones(10,10); 3ones(10,10) 4ones(10,10)]
+    sdata = RegularGridData{Float64}(Dict(:z => img))
+
+    p = partition(sdata, SLICPartitioner(4, 1.0))
+    @test length(p) == 4
+    @test all(npoints.(p) .== 100)
+    @test mean(coordinates(p[1]), dims=2) == [ 4.5, 4.5][:,:]
+    @test mean(coordinates(p[2]), dims=2) == [14.5, 4.5][:,:]
+    @test mean(coordinates(p[3]), dims=2) == [ 4.5,14.5][:,:]
+    @test mean(coordinates(p[4]), dims=2) == [14.5,14.5][:,:]
   end
 
   @testset "BlockPartitioner" begin
