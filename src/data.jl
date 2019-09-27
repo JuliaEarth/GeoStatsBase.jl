@@ -127,7 +127,7 @@ function Base.show(io::IO, ::MIME"text/plain", spatialdata::AbstractData{T,N}) w
   println(io, spatialdata)
   println(io, "  variables")
   varlines = ["    └─$var ($V)" for (var,V) in variables(spatialdata)]
-  print(io, join(varlines, "\n"))
+  print(io, join(sort(varlines), "\n"))
 end
 
 #------------------
