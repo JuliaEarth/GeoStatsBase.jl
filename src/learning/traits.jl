@@ -30,3 +30,15 @@ Check whether or not `model` is supervised.
 """
 issupervised(model::MLJBase.Model) = false
 issupervised(model::MLJBase.Supervised) = true
+
+"""
+    defaultloss(val)
+    defaultloss(scitype)
+
+Default loss for value `val` or its scientific type `scitype`.
+"""
+defaultloss(val) = defaultloss(MLJBase.scitype(val))
+defaultloss(::Type{<:MLJBase.Finite}) =
+  MLJBase.misclassification_rate
+defaultloss(::Type{<:MLJBase.Infinite}) =
+  MLJBase.rms
