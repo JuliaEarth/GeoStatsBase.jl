@@ -62,11 +62,12 @@ function estimate_error(solver::AbstractLearningSolver,
   end
 
   result = pmap(ovars) do var
+    𝔏 = defaultloss(sdata[1,var])
     losses = map(1:nfolds) do k
       dview = view(sdata, folds[k])
       ŷ = solutions[k][var]
       y = dview[var]
-      mean((ŷ .- y).^2)
+      𝔏(ŷ, y)
     end
     var => mean(losses)
   end

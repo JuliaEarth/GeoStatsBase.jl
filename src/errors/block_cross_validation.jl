@@ -45,11 +45,12 @@ function estimate_error(solver::AbstractLearningSolver,
   end
 
   result = pmap(ovars) do var
+    𝔏 = defaultloss(sdata[1,var])
     losses = map(allblocks) do b
       dview = view(sdata, bsubsets[b])
       ŷ = solutions[b][var]
       y = dview[var]
-      mean((ŷ .- y).^2)
+      𝔏(ŷ, y)
     end
     var => mean(losses)
   end

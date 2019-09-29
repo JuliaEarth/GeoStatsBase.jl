@@ -51,12 +51,10 @@ function estimate_error(solver::AbstractLearningSolver,
   end
 
   result = pmap(ovars) do var
-    losses = map(1:npoints(sdata)) do i
-      ŷ = solutions[i][1,var]
-      y = sdata[i,var]
-      (ŷ - y)^2
-    end
-    var => mean(losses)
+    𝔏 = defaultloss(sdata[1,var])
+    ŷ = [solutions[i][1,var] for i in 1:npoints(sdata)]
+    y = [sdata[i,var] for i in 1:npoints(sdata)]
+    var => 𝔏(ŷ, y)
   end
 
   Dict(result)
