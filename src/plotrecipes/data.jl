@@ -7,8 +7,7 @@
   sdomain = domain(sdata)
 
   # valid variables
-  vars = GeoStatsBase.variables(sdata)
-  validvars = sort([var for (var, V) in vars if V <: Number])
+  validvars = sort([var for (var, V) in GeoStatsBase.variables(sdata)])
 
   # plot all variables by default
   variables == nothing && (variables = validvars)
