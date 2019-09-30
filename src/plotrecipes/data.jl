@@ -20,7 +20,8 @@
     # retrieve valid values
     vals = map(1:npoints(sdata)) do ind
       if isvalid(sdata, ind, var)
-        sdata[ind,var]
+        v = sdata[ind,var]
+        v isa Number ? v : get(v)
       else
         NaN
       end
