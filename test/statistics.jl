@@ -31,6 +31,9 @@
   end
 
   @testset "Data" begin
-    # TODO
+    geodf = readgeotable(joinpath(datadir,"clustered.csv"), coordnames=[:x,:y])
+    μn = mean(geodf[:Au])
+    μs = mean(geodf, :Au)
+    @test abs(μn - 0.5) > abs(μs - 0.5)
   end
 end
