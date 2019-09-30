@@ -6,7 +6,7 @@ module GeoStatsBase
 
 using CSV: read
 using Random: randperm, shuffle
-using StatsBase: Histogram, sample, weights, midpoints
+using StatsBase: Histogram, AbstractWeights, sample, midpoints
 using Distributions: median, mode
 using Distributed: pmap, nworkers
 using Distances: Metric, Euclidean, Mahalanobis, pairwise
@@ -21,7 +21,7 @@ using Parameters
 
 import Tables
 import MLJBase
-import StatsBase: fit, sample
+import StatsBase: fit, sample, varcorrection
 import Distances: evaluate
 import Distributions: quantile, cdf
 
@@ -232,7 +232,7 @@ export
   →,
 
   # weighting
-  WeightedSpatialData,
+  SpatialWeights,
   AbstractWeighter,
   BlockWeighter,
   weight,

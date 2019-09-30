@@ -3,21 +3,32 @@
 # ------------------------------------------------------------------
 
 """
-    WeightedSpatialData(spatialdata, weights)
+    SpatialWeights(domain, weights)
 
-Assign `weights` for each point in `spatialdata`.
+Assign `weights` to each point in spatial `domain`.
+
+### Notes
+
+Implement AbstractWeights interface from StatsBase.jl.
 """
-struct WeightedSpatialData{T,N,S<:AbstractData{T,N},V} <: AbstractData{T,N}
-  spatialdata::S
-  weights::Vector{V}
+mutable struct SpatialWeights{S<:Real,T<:Real,
+                              V<:AbstractVector{T},
+                              D<:AbstractDomain} <: AbstractWeights{S,T,V}
+  domain::D
+  values::V
+  sum::S
 end
 
-domain(d::WeightedSpatialData) = domain(d.spatialdata)
+SpatialWeights(domain::D, values::V) where {D<:AbstractDomain,
+                                            V<:AbstractVector} =
+  SpatialWeights(domain, values, sum(values))
 
-variables(d::WeightedSpatialData) = variables(d.spatialdata)
+domain(w::SpatialWeights) = w.domain
 
-Base.getindex(d::WeightedSpatialData, ind::Int, var::Symbol) =
-  getindex(d.spatialdata, ind, var)
+@inline function varcorrection(w::SpatialWeights, corrected::Bool=false)
+    corrected && throw(ArgumentError("SpatialWeights type does not support bias correction."))
+    1 / w.sum
+end
 
 """
     AbstractWeighter
@@ -27,11 +38,12 @@ A method to weight spatial data.
 abstract type AbstractWeighter end
 
 """
-    weight(spatialdata, weighter)
+    weight(object, weighter)
 
-Weight `spatialdata` with `weighter` method.
+Weight spatial `object` with `weighter` method.
 """
-weight(spatialdata::AbstractData, weighter::AbstractWeighter) = @error "not implemented"
+weight(object::AbstractSpatialObject, weighter::AbstractWeighter) =
+  @error "not implemented"
 
 #------------------
 # IMPLEMENTATIONS
