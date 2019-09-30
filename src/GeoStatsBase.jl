@@ -6,7 +6,7 @@ module GeoStatsBase
 
 using CSV: read
 using Random: randperm, shuffle
-using StatsBase: Histogram, AbstractWeights, sample, midpoints
+using StatsBase: Histogram, AbstractWeights
 using Distributions: median, mode
 using Distributed: pmap, nworkers
 using Distances: Metric, Euclidean, Mahalanobis, pairwise
