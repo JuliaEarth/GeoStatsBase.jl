@@ -15,13 +15,8 @@ abstract type AbstractErrorEstimator end
 Estimate error of `solver` in a given `problem` with
 `eestimator` error estimation method.
 """
-estimate_error(::AbstractSolver, ::AbstractProblem,
-               ::AbstractErrorEstimator) = @error "not implemented"
-
-compare(solvers::AbstractVector{S}, problem::P,
-        eestimator::AbstractErrorEstimator) where {S<:AbstractSolver,
-                                                   P<:AbstractProblem} =
-  [estimate_error(solver, problem, eestimator) for solver in solvers]
+Base.error(::AbstractSolver, ::AbstractProblem,
+           ::AbstractErrorEstimator) = @error "not implemented"
 
 #------------------
 # IMPLEMENTATIONS

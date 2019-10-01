@@ -16,9 +16,9 @@ struct BlockCrossValidation{T<:Real} <: AbstractErrorEstimator
   side::T
 end
 
-function estimate_error(solver::AbstractLearningSolver,
-                        problem::LearningProblem,
-                        eestimator::BlockCrossValidation)
+function Base.error(solver::AbstractLearningSolver,
+                    problem::LearningProblem,
+                    eestimator::BlockCrossValidation)
   sdata = sourcedata(problem)
   ovars = outputvars(task(problem))
   side  = eestimator.side

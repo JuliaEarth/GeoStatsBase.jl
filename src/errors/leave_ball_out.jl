@@ -23,9 +23,9 @@ end
 
 LeaveBallOut(radius::Real) = LeaveBallOut(BallNeighborhood(radius))
 
-function estimate_error(solver::AbstractLearningSolver,
-                        problem::LearningProblem,
-                        eestimator::LeaveBallOut)
+function Base.error(solver::AbstractLearningSolver,
+                    problem::LearningProblem,
+                    eestimator::LeaveBallOut)
   sdata = sourcedata(problem)
   ovars = outputvars(task(problem))
   ball  = eestimator.ball

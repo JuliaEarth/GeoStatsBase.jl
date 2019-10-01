@@ -37,9 +37,9 @@ CrossValidation(k::Int, shuffle::Bool) =
 CrossValidation(k::Int) = CrossValidation(k, true)
 CrossValidation() = CrossValidation(10)
 
-function estimate_error(solver::AbstractLearningSolver,
-                        problem::LearningProblem,
-                        eestimator::CrossValidation)
+function Base.error(solver::AbstractLearningSolver,
+                    problem::LearningProblem,
+                    eestimator::CrossValidation)
   # retrieve problem info
   sdata = sourcedata(problem)
   ovars = outputvars(task(problem))
@@ -75,9 +75,9 @@ function estimate_error(solver::AbstractLearningSolver,
   Dict(result)
 end
 
-function estimate_error(solver::AbstractEstimationSolver,
-                        problem::EstimationProblem,
-                        eestimator::CrossValidation)
+function Base.error(solver::AbstractEstimationSolver,
+                    problem::EstimationProblem,
+                    eestimator::CrossValidation)
   # retrieve problem info
   pdata = data(problem)
   pdomain = domain(problem)
