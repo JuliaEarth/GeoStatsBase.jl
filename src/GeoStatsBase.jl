@@ -146,8 +146,6 @@ export
   LeaveBallOut,
   CrossValidation,
   BlockCrossValidation,
-  estimate_error,
-  compare,
 
   # helper macros
   @estimsolver,
