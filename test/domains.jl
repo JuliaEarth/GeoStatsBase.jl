@@ -81,6 +81,7 @@
       @plottest plot(RegularGrid{Float64}(10,20,30)) joinpath(datadir,"grid3D.png") !istravis
       @plottest plot(RegularGrid{Float64}(10),[1,2,3,4,5,5,4,3,2,1]) joinpath(datadir,"grid1D-data.png") !istravis
       @plottest plot(RegularGrid{Float64}(10,10),1:100) joinpath(datadir,"grid2D-data.png") !istravis
+      @plottest plot(RegularGrid{Float64}(10,10,10),zeros(1000)) joinpath(datadir,"grid3D-data.png") !istravis
     end
   end
 
@@ -119,6 +120,9 @@
       @plottest plot(g1) joinpath(datadir,"sgrid1D.png") !istravis
       @plottest plot(g2) joinpath(datadir,"sgrid2D.png") !istravis
       @plottest plot(g3,camera=(30,60)) joinpath(datadir,"sgrid3D.png") !istravis
+      @plottest plot(g1,[1.,2.,2.,1]) joinpath(datadir,"sgrid1D-data.png") !istravis
+      @plottest plot(g2,zeros(nx*ny)) joinpath(datadir,"sgrid2D-data.png") !istravis
+      @plottest plot(g3,zeros(nx*ny*nz)) joinpath(datadir,"sgrid3D-data.png") !istravis
     end
   end
 end
