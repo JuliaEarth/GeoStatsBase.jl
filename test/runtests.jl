@@ -37,7 +37,8 @@ testfiles = [
   "solvers.jl",
   "solutions.jl",
   "utils.jl",
-  "statistics.jl"
+  "statistics.jl",
+  "learning.jl"
 ]
 
 @testset "GeoStatsBase.jl" begin

@@ -99,9 +99,12 @@ export
   ClassificationTask,
   ClusteringTask,
   CompositeTask,
-  features, label,
   issupervised,
   iscomposite,
+  inputvars,
+  outputvars,
+  features,
+  label,
 
   # models
   issupervised,
