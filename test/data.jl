@@ -1,4 +1,4 @@
-@testset "Spatial data" begin
+@testset "Data" begin
   @testset "CurveData" begin
     c = CurveData(Dict(:z => 1:10), [j for i in 1:3, j in 1:10])
     @test coordnames(c) == (:x1, :x2, :x3)

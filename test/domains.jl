@@ -1,4 +1,4 @@
-@testset "Spatial domain" begin
+@testset "Domains" begin
   @testset "Curve" begin
     c = Curve([j for i in 1:3, j in 1:5])
     @test ndims(c) == 3

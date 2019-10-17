@@ -1,4 +1,4 @@
-@testset "Spatial collections" begin
+@testset "Collections" begin
   @testset "DomainCollection" begin
     # TODO
   end
