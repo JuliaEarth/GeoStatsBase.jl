@@ -44,7 +44,7 @@ function GeoDataFrame(data::DF, coordnames::AbstractVector{Symbol}) where {DF<:A
   T  = promote_type(Ts...)
   N  = length(coordnames)
 
-  @assert !(T <: Union{Missing,U} where U) "coordinates cannot be missing"
+  @assert !(Missing <: T) "coordinates cannot be missing"
 
   GeoDataFrame{T,N,DF}(data, coordnames)
 end
