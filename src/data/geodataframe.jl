@@ -38,11 +38,13 @@ struct GeoDataFrame{T,N,DF<:AbstractDataFrame} <: AbstractData{T,N}
 end
 
 function GeoDataFrame(data::DF, coordnames::AbstractVector{Symbol}) where {DF<:AbstractDataFrame}
-  @assert coordnames ⊆ names(data) "coordnames must contain valid column names"
+  @assert coordnames ⊆ names(data) "invalid column names"
 
-  Ts = Base.nonmissingtype.(eltypes(data[coordnames]))
+  Ts = eltypes(data[coordnames])
   T  = promote_type(Ts...)
   N  = length(coordnames)
+
+  @assert !(T <: Union{Missing,U} where U) "coordinates cannot be missing"
 
   GeoDataFrame{T,N,DF}(data, coordnames)
 end
