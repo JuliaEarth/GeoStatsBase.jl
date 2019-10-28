@@ -4,6 +4,7 @@
 
 module GeoStatsBase
 
+using Optim
 using CSV: read
 using Random: randperm, shuffle
 using StatsBase: Histogram, AbstractWeights
@@ -236,6 +237,7 @@ export
   SpatialWeights,
   AbstractWeighter,
   BlockWeighter,
+  KLIEPWeighter,
   weight,
 
   # covering

@@ -49,3 +49,4 @@ weight(object::AbstractSpatialObject, weighter::AbstractWeighter) =
 # IMPLEMENTATIONS
 #------------------
 include("weighting/block_weighter.jl")
+include("weighting/kliep_weighter.jl")
