@@ -22,6 +22,8 @@ end
 
 domain(dv::DataView) = view(domain(dv.data), dv.inds)
 
+npoints(dv::DataView) = length(dv.inds)
+
 coordinates!(buff::AbstractVector, dv::DataView, ind::Int) =
   coordinates!(buff, dv.data, dv.inds[ind])
 
