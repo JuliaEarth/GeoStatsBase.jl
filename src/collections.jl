@@ -28,7 +28,7 @@ npoints(collection::DomainCollection) = collection.offsets[end]
 function coordinates!(buff::AbstractVector{T},
                       collection::DomainCollection{T,N},
                       location::Int) where {N,T}
-  k = findfirst(location .≤ collection.offsets)
+  k = findfirst(off -> location ≤ off, collection.offsets)
   l = k > 1 ? location - collection.offsets[k-1] : location
   coordinates!(buff, collection.domains[k], l)
 end
@@ -58,6 +58,8 @@ struct DataCollection{T,N} <: AbstractData{T,N}
   data::Vector{AbstractData{T,N}}
   domain::DomainCollection{T,N}
   offsets::Vector{Int}
+  variables::Dict{Symbol,DataType}
+  varnames::Vector{Symbol}
 end
 
 function DataCollection(data::AbstractVector)
@@ -65,18 +67,20 @@ function DataCollection(data::AbstractVector)
   T = coordtype(cdomain)
   N = ndims(cdomain)
   offsets = cumsum([npoints(d) for d in data])
-  DataCollection{T,N}(data, cdomain, offsets)
+  vars    = reduce(merge, [variables(d) for d in data])
+  vnames  = collect(keys(vars))
+  DataCollection{T,N}(data, cdomain, offsets, vars, vnames)
 end
 
 DataCollection(data::Vararg) =
   DataCollection([d for d in data])
 
-variables(collection::DataCollection) = merge([variables(d) for d in collection.data]...)
+variables(collection::DataCollection) = collection.variables
 
 function Base.getindex(collection::DataCollection, ind::Int, var::Symbol)
-  k = findfirst(ind .≤ collection.offsets)
+  k = findfirst(off -> ind ≤ off, collection.offsets)
   d = collection.data[k]
-  if var ∈ keys(variables(d))
+  if var ∈ collection.varnames
     i = k > 1 ? ind - collection.offsets[k-1] : ind
     getindex(d, i, var)
   else
