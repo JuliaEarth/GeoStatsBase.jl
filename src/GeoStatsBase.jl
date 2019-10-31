@@ -253,9 +253,9 @@ export
 
   # statistics
   SpatialStatistic,
+  EmpiricalHistogram,
   mean, var,
   quantile,
-  histogram,
 
   # plot recipes
   cornerplot,
