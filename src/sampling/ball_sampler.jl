@@ -14,10 +14,10 @@ struct BallSampler{B<:BallNeighborhood} <: AbstractSampler
   maxsize::Union{Int,Nothing}
 end
 
-function BallSampler(radius::Real, maxsize=nothing)
-  ball = BallNeighborhood(radius)
-  BallSampler{typeof(ball)}(ball, maxsize)
-end
+BallSampler(ball::BallNeighborhood) = BallSampler(ball, nothing)
+
+BallSampler(radius::Real, maxsize=nothing) =
+  BallSampler(BallNeighborhood(radius), maxsize)
 
 function sample(object::AbstractSpatialObject{T,N}, sampler::BallSampler) where {T,N}
   npts = npoints(object)
