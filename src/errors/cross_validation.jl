@@ -54,19 +54,21 @@ function Base.error(solver::AbstractLearningSolver,
     sinds = [ind for i in vcat(1:k-1, k+1:nfolds) for ind in folds[i]]
     tinds = folds[k]
 
+    # source and target data
+    train = view(sdata, sinds)
+    hold  = view(sdata, tinds)
+
     # setup and solve sub-problem
-    subproblem = LearningProblem(view(sdata, sinds),
-                                 view(sdata, tinds),
-                                 task(problem))
+    subproblem = LearningProblem(train, hold, task(problem))
     solve(subproblem, solver)
   end
 
   result = pmap(ovars) do var
     𝔏 = defaultloss(sdata[1,var])
     losses = map(1:nfolds) do k
-      dview = view(sdata, folds[k])
+      hold = view(sdata, folds[k])
       ŷ = solutions[k][var]
-      y = dview[var]
+      y = hold[var]
       𝔏(ŷ, y)
     end
     var => mean(losses)
@@ -94,15 +96,13 @@ function Base.error(solver::AbstractEstimationSolver,
 
     # k-fold validation loop
     losses = pmap(1:nfolds) do k
-      # holdout set
-      hold = folds[k]
-
-      # training set
+      # training and holdout set
       train = [ind for i in vcat(1:k-1, k+1:nfolds) for ind in folds[i]]
+      hold  = folds[k]
 
       # discard indices that were filtered out by mapping strategy (e.g. missing values)
-      hold  = filter(in(keys(varmap)), hold)
       train = filter(in(keys(varmap)), train)
+      hold  = filter(in(keys(varmap)), hold)
 
       if isempty(train)
         missing
