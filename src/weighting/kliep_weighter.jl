@@ -4,14 +4,12 @@
 
 """
     KLIEPWeighter(tdata, vars=nothing;
-                  bwidth=1.0, nbasis=100,
-                  step=1e-6, tol=1e-4, maxiter=100)
+                  bwidth=1.0, nbasis=100)
 
 Kullback-Leibler importance estimation procedure based on empirical
 target distribution of variables `vars` in spatial data `tdata`. The
-procedure depends on the kernel bandwidth `bwidth`, the number of
-basis functions `nbasis`, and optional convergence parameters `step`,
-`tol` and `maxiter`.
+procedure depends on the kernel bandwidth `bwidth` and the number of
+basis functions `nbasis`.
 """
 struct KLIEPWeighter{DΩ<:AbstractData} <: AbstractWeighter
   tdata::DΩ
