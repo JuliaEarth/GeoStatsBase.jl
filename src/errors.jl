@@ -24,3 +24,4 @@ Base.error(::AbstractSolver, ::AbstractProblem,
 include("errors/leave_ball_out.jl")
 include("errors/cross_validation.jl")
 include("errors/block_cross_validation.jl")
+include("errors/ball_sample_validation.jl")
