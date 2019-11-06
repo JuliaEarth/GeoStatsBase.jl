@@ -150,6 +150,7 @@ export
   LeaveBallOut,
   CrossValidation,
   BlockCrossValidation,
+  BallSampleValidation,
 
   # helper macros
   @estimsolver,
@@ -195,6 +196,9 @@ export
   search!, search,
   maxneighbors,
   object,
+
+  # learning models
+  learn, perform,
 
   # learning example
   AbstractLearningExample,
