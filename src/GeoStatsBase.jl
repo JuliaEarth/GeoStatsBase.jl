@@ -25,6 +25,7 @@ import MLJBase
 import StatsBase: fit, sample, varcorrection
 import Distances: evaluate
 import Distributions: quantile, cdf
+import DataFrames: groupby
 
 include("spatialobject.jl")
 include("domains.jl")
@@ -265,6 +266,7 @@ export
   cornerplot,
 
   # utilities
-  readgeotable
+  readgeotable,
+  groupby
 
 end

@@ -18,7 +18,7 @@ readgeotable(args...; coordnames=[:x,:y,:z], kwargs...) =
   GeoDataFrame(read(args...; kwargs...), coordnames)
 
 """
-      split(object, fraction, [direction])
+    split(object, fraction, [direction])
 
 Split spatial `object` into two parts where the first
 part has a `fraction` of the total volume. The split
@@ -28,3 +28,16 @@ is aligned with the first spatial dimension of the object.
 Base.split(object::AbstractSpatialObject{T,N}, fraction::Real,
            normal=ntuple(i -> i == 1 ? one(T) : zero(T), N)) where {N,T} =
   partition(object, BisectFractionPartitioner(normal, fraction))
+
+"""
+    groupby(sdata, var)
+
+Partition spatial data `sdata` into groups of constant value
+for spatial variable `var`.
+
+### Notes
+
+Missing values are grouped into a separate group.
+"""
+groupby(sdata::AbstractData, var::Symbol) =
+  partition(sdata, VariablePartitioner(var))
