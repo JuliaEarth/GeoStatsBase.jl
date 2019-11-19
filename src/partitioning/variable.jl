@@ -19,6 +19,8 @@ function partition(sdata::AbstractData,
 
   @assert var ∈ keys(svars) "invalid variable name"
 
+  V = svars[var]
+
   # partition function with missings
   function f(i, j)
     vi, vj = sdata[i,var], sdata[j,var]
@@ -30,7 +32,7 @@ function partition(sdata::AbstractData,
   g(i, j) = sdata[i,var] == sdata[j,var]
 
   # select the appropriate function
-  h = Missing <: svars[var] ? f : g
+  h = Missing <: V ? f : g
 
   partition(sdata, FunctionPartitioner(h))
 end
