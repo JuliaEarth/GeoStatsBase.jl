@@ -15,6 +15,22 @@ end
 function partition(sdata::AbstractData,
                    partitioner::VariablePartitioner)
   var = partitioner.var
-  f(i, j) = sdata[i,var] == sdata[j,var]
-  partition(sdata, FunctionPartitioner(f))
+  svars = variables(sdata)
+
+  @assert var ∈ keys(svars) "invalid variable name"
+
+  # partition function with missings
+  function f(i, j)
+    vi, vj = sdata[i,var], sdata[j,var]
+    mi, mj = ismissing(vi), ismissing(vj)
+    (mi && mj) || ((!mi && !mj) && (vi == vj))
+  end
+
+  # partition function without missings
+  g(i, j) = sdata[i,var] == sdata[j,var]
+
+  # select the appropriate function
+  h = Missing <: svars[var] ? f : g
+
+  partition(sdata, FunctionPartitioner(h))
 end
