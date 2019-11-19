@@ -179,6 +179,11 @@
     sdata = RegularGridData{Float64}(Dict(:z => [1 1 1; 2 2 2; 3 3 3]))
     p = partition(sdata, VariablePartitioner(:z))
     @test setify(subsets(p)) == setify([[1,4,7],[2,5,8],[3,6,9]])
+
+    # partition with missing values
+    sdata = RegularGridData{Float64}(Dict(:z => [missing 1 1; 2 missing 2; 3 3 missing]))
+    p = partition(sdata, VariablePartitioner(:z))
+    @test setify(subsets(p)) == setify([[4,7],[2,8],[3,6],[1,5,9]])
   end
 
   @testset "FunctionPartitioner" begin
