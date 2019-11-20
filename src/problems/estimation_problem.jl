@@ -3,89 +3,86 @@
 # ------------------------------------------------------------------
 
 """
-    EstimationProblem(spatialdata, domain, targetvars)
+    EstimationProblem(sdata, sdomain, targetvars)
 
-A spatial estimation problem on a given `domain` in which the
-variables to be estimated are listed in `targetvars`. The
-data of the problem is stored in `spatialdata`.
+A spatial estimation problem on a given spatial domain `sdomain`
+in which the variables to be estimated are listed in `targetvars`.
+The data of the problem is stored in spatial data `sdata`.
 
 ## Examples
 
 Create an estimation problem for rainfall precipitation measurements:
 
 ```julia
-julia> EstimationProblem(spatialdata, domain, :precipitation)
+julia> EstimationProblem(sdata, sdomain, :precipitation)
 ```
 
 Create an estimation problem for precipitation and CO₂:
 
 ```julia
-julia> EstimationProblem(spatialdata, domain, (:precipitation,:CO₂))
+julia> EstimationProblem(sdata, sdomain, (:precipitation,:CO₂))
 ```
 """
 struct EstimationProblem{S<:AbstractData,
                          D<:AbstractDomain,
                          M<:AbstractMapper} <: AbstractProblem
   # input fields
-  spatialdata::S
-  domain::D
+  sdata::S
+  sdomain::D
   mapper::M
   targetvars::Dict{Symbol,DataType}
 
   # state fields
   mappings::Dict{Symbol,Dict{Int,Int}}
 
-  function EstimationProblem{S,D,M}(spatialdata, domain, targetvars,
+  function EstimationProblem{S,D,M}(sdata, sdomain, targetvars,
                                     mapper) where {S<:AbstractData,
                                                    D<:AbstractDomain,
                                                    M<:AbstractMapper}
     probvnames = Tuple(keys(targetvars))
-    datavnames = Tuple(keys(variables(spatialdata)))
-    datacnames = coordnames(spatialdata)
+    datavnames = Tuple(keys(variables(sdata)))
+    datacnames = coordnames(sdata)
 
     @assert !isempty(probvnames) && probvnames ⊆ datavnames "target variables must be present in spatial data"
     @assert isempty(probvnames ∩ datacnames) "target variables can't be coordinates"
-    @assert ndims(domain) == length(datacnames) "data and domain must have the same number of dimensions"
-    @assert coordtype(spatialdata) == coordtype(domain) "data and domain must have the same coordinate type"
+    @assert ndims(sdomain) == length(datacnames) "data and domain must have the same number of dimensions"
+    @assert coordtype(sdata) == coordtype(sdomain) "data and domain must have the same coordinate type"
 
-    mappings = map(spatialdata, domain, probvnames, mapper)
+    mappings = map(sdata, sdomain, probvnames, mapper)
 
-    new(spatialdata, domain, mapper, targetvars, mappings)
+    new(sdata, sdomain, mapper, targetvars, mappings)
   end
 end
 
-function EstimationProblem(spatialdata::S, domain::D, targetvarnames::NTuple{N,Symbol};
+function EstimationProblem(sdata::S, sdomain::D, targetvarnames::NTuple{N,Symbol};
                            mapper::M=NearestMapper()) where {S<:AbstractData,
                                                             D<:AbstractDomain,
                                                             M<:AbstractMapper,
                                                             N}
   # build dictionary of target variables
-  datavars = variables(spatialdata)
+  datavars   = variables(sdata)
   targetvars = Dict(var => Base.nonmissingtype(T) for (var,T) in datavars if var ∈ targetvarnames)
 
-  EstimationProblem{S,D,M}(spatialdata, domain, targetvars, mapper)
+  EstimationProblem{S,D,M}(sdata, sdomain, targetvars, mapper)
 end
 
-function EstimationProblem(spatialdata::S, domain::D, targetvarname::Symbol;
-                           mapper::M=NearestMapper()) where {S<:AbstractData,
-                                                            D<:AbstractDomain,
-                                                            M<:AbstractMapper}
-  EstimationProblem(spatialdata, domain, (targetvarname,); mapper=mapper)
-end
+EstimationProblem(sdata::AbstractData, sdomain::AbstractDomain,
+                  targetvarname::Symbol; mapper=NearestMapper()) =
+  EstimationProblem(sdata, sdomain, (targetvarname,); mapper=mapper)
 
 """
     data(problem)
 
 Return the spatial data of the estimation `problem`.
 """
-data(problem::EstimationProblem) = problem.spatialdata
+data(problem::EstimationProblem) = problem.sdata
 
 """
     domain(problem)
 
 Return the spatial domain of the estimation `problem`.
 """
-domain(problem::EstimationProblem) = problem.domain
+domain(problem::EstimationProblem) = problem.sdomain
 
 """
     mapper(problem)
@@ -121,14 +118,14 @@ datamap(problem::EstimationProblem) = problem.mappings
 # IO methods
 # ------------
 function Base.show(io::IO, problem::EstimationProblem)
-  dim = ndims(problem.domain)
+  dim = ndims(problem.sdomain)
   print(io, "$(dim)D EstimationProblem")
 end
 
 function Base.show(io::IO, ::MIME"text/plain", problem::EstimationProblem)
   vars = ["$var ($T)" for (var,T) in problem.targetvars]
   println(io, problem)
-  println(io, "  data:      ", problem.spatialdata)
-  println(io, "  domain:    ", problem.domain)
+  println(io, "  data:      ", problem.sdata)
+  println(io, "  domain:    ", problem.sdomain)
   print(  io, "  variables: ", join(vars, ", ", " and "))
 end

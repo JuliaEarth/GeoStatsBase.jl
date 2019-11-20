@@ -3,37 +3,36 @@
 # ------------------------------------------------------------------
 
 """
-    LearningProblem(sourcedata, targetdata, task)
+    LearningProblem(sdata, tdata, task)
 
-A spatial learning problem with `sourcedata`, `targetdata`,
-and learning `task`.
+A spatial learning problem with source data `sdata`,
+target data `tdata`, and learning `task`.
 
 ## Examples
 
 Create a clustering problem based on a set of soil features:
 
 ```julia
-julia> LearningProblem(sourcedata, targetdata,
+julia> LearningProblem(sdata, tdata,
                        ClusteringTask((:moisture,:mineral)))
 ```
 """
 struct LearningProblem{DΩₛ<:AbstractData,
                        DΩₜ<:AbstractData,
                        T<:AbstractLearningTask} <: AbstractProblem
-  sourcedata::DΩₛ
-  targetdata::DΩₜ
+  sdata::DΩₛ
+  tdata::DΩₜ
   task::T
 
-  function LearningProblem{DΩₛ,DΩₜ,T}(sourcedata, targetdata,
-                                      task) where {DΩₛ<:AbstractData,
-                                                   DΩₜ<:AbstractData,
-                                                   T<:AbstractLearningTask}
-    sourcevars = keys(variables(sourcedata))
-    targetvars = keys(variables(targetdata))
+  function LearningProblem{DΩₛ,DΩₜ,T}(sdata, tdata, task) where {DΩₛ<:AbstractData,
+                                                                 DΩₜ<:AbstractData,
+                                                                 T<:AbstractLearningTask}
+    sourcevars = keys(variables(sdata))
+    targetvars = keys(variables(tdata))
 
     # assert spatial configuration
-    @assert ndims(sourcedata) == ndims(targetdata) "source and target data must have the same number of dimensions"
-    @assert coordtype(sourcedata) == coordtype(targetdata) "source and target data must have the same coordinate type"
+    @assert ndims(sdata) == ndims(tdata) "source and target data must have the same number of dimensions"
+    @assert coordtype(sdata) == coordtype(tdata) "source and target data must have the same coordinate type"
 
     # assert task is compatible with the data
     if iscomposite(task)
@@ -46,7 +45,7 @@ struct LearningProblem{DΩₛ<:AbstractData,
       end
     end
 
-    new(sourcedata, targetdata, task)
+    new(sdata, tdata, task)
   end
 end
 
@@ -60,14 +59,14 @@ LearningProblem(sdata::DΩₛ, tdata::DΩₜ, task::T) where {DΩₛ<:AbstractDa
 
 Return the source data of the learning `problem`.
 """
-sourcedata(problem::LearningProblem) = problem.sourcedata
+sourcedata(problem::LearningProblem) = problem.sdata
 
 """
     targetdata(problem)
 
 Return the target data of the learning `problem`.
 """
-targetdata(problem::LearningProblem) = problem.targetdata
+targetdata(problem::LearningProblem) = problem.tdata
 
 """
     task(problem)
@@ -80,15 +79,13 @@ task(problem::LearningProblem) = problem.task
 # IO methods
 # ------------
 function Base.show(io::IO, problem::LearningProblem)
-  dim = ndims(problem.sourcedata)
+  dim = ndims(problem.sdata)
   print(io, "$(dim)D LearningProblem")
 end
 
 function Base.show(io::IO, ::MIME"text/plain", problem::LearningProblem)
   println(io, problem)
-  println(io, "  source")
-  println(io, "    └─data: ", problem.sourcedata)
-  println(io, "  target")
-  println(io, "    └─data: ", problem.targetdata)
-  println(io, "  task: ", problem.task)
+  println(io, "  source: ", problem.sdata)
+  println(io, "  target: ", problem.tdata)
+  print(  io, "  task:   ", problem.task)
 end
