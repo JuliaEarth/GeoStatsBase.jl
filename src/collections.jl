@@ -58,7 +58,7 @@ struct DataCollection{T,N} <: AbstractData{T,N}
   data::Vector{AbstractData{T,N}}
   domain::DomainCollection{T,N}
   offsets::Vector{Int}
-  variables::Dict{Symbol,DataType}
+  variables::Dict{Symbol,Type}
   varnames::Vector{Symbol}
 end
 
