@@ -16,4 +16,6 @@ end
 
 (p::ProductPartitioner)(i, j) = p.p₁(i, j) * p.p₂(i, j)
 
-Base.:*(p₁, p₂) = ProductPartitioner(p₁, p₂)
+Base.:*(p₁::AbstractFunctionPartitioner,
+        p₂::AbstractFunctionPartitioner) =
+  ProductPartitioner(p₁, p₂)
