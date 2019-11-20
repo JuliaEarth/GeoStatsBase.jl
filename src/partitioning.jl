@@ -78,6 +78,13 @@ function Base.show(io::IO, partition::SpatialPartition)
   print(io, "$nsubsets SpatialPartition")
 end
 
+function Base.show(io::IO, ::MIME"text/plain", partition::SpatialPartition)
+  println(io, partition)
+  println(io, "  N° points")
+  setlines = ["    └─$(length(subset))" for subset in partition.subsets]
+  print(io, join(setlines, "\n"))
+end
+
 """
     AbstractPartitioner
 
