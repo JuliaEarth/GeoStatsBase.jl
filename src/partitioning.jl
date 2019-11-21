@@ -70,6 +70,14 @@ each ind in `inds`.
 Base.getindex(partition::SpatialPartition, inds::AbstractVector{Int}) =
   [getindex(partition, ind) for ind in inds]
 
+"""
+    Base.getindex(partition, prop)
+
+Return the metadata `prop` for each subset in the partition.
+"""
+Base.getindex(partition::SpatialPartition, prop::Symbol) =
+  partition.metadata[prop]
+
 # ------------
 # IO methods
 # ------------
