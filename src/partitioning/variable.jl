@@ -34,5 +34,14 @@ function partition(sdata::AbstractData,
   # select the appropriate function
   h = Missing <: V ? f : g
 
-  partition(sdata, FunctionPartitioner(h))
+  # perform partition
+  p = partition(sdata, FunctionPartitioner(h))
+
+  # retrieve value from each subset
+  vals = [sdata[s[1],var] for s in subsets(p)]
+
+  # save metadata
+  metadata = Dict(:values => vals)
+
+  SpatialPartition(sdata, subsets(p), metadata)
 end
