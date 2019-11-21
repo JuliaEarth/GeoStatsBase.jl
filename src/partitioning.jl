@@ -79,10 +79,14 @@ function Base.show(io::IO, partition::SpatialPartition)
 end
 
 function Base.show(io::IO, ::MIME"text/plain", partition::SpatialPartition)
+  meta = metadata(partition)
   println(io, partition)
   println(io, "  N° points")
   setlines = ["    └─$(length(subset))" for subset in partition.subsets]
   print(io, join(setlines, "\n"))
+  if !isempty(meta)
+    print(io, "\n  metadata: ", join(keys(meta), ", "))
+  end
 end
 
 """
