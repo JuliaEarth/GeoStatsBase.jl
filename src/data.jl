@@ -10,46 +10,46 @@ Spatial data in a `N`-dimensional space with coordinates of type `T`.
 abstract type AbstractData{T,N} <: AbstractSpatialObject{T,N} end
 
 """
-    variables(spatialdata)
+    variables(sdata)
 
-Return the variable names in `spatialdata` and their types.
+Return the variable names in spatial data `sdata` and their types.
 """
-variables(spatialdata::AbstractData) =
-  Dict(var => eltype(array) for (var,array) in spatialdata.data)
-
-"""
-    spatialdata[ind,var]
-    spatialdata[inds,vars]
-
-Return the value of `var` for the `ind`-th point in `spatialdata`.
-"""
-Base.getindex(spatialdata::AbstractData, ind::Int, var::Symbol) =
-  spatialdata.data[var][ind]
-
-Base.getindex(spatialdata::AbstractData, inds::AbstractVector{Int}, var::Symbol) =
-  [getindex(spatialdata, ind, var) for ind in inds]
-
-Base.getindex(spatialdata::AbstractData, ind::Int, vars::AbstractVector{Symbol}) =
-  [getindex(spatialdata, ind, var) for var in vars]
-
-Base.getindex(spatialdata::AbstractData, inds::AbstractVector{Int}, vars::AbstractVector{Symbol}) =
-  [getindex(spatialdata, ind, var) for ind in inds, var in vars]
+variables(sdata::AbstractData) =
+  Dict(var => eltype(array) for (var,array) in sdata.data)
 
 """
-    spatialdata[var]
+    sdata[ind,var]
+    sdata[inds,vars]
 
-Return the values of `var` for all points in `spatialdata` with the shape
+Return the value of `var` for the `ind`-th point in `sdata`.
+"""
+Base.getindex(sdata::AbstractData, ind::Int, var::Symbol) =
+  sdata.data[var][ind]
+
+Base.getindex(sdata::AbstractData, inds::AbstractVector{Int}, var::Symbol) =
+  [getindex(sdata, ind, var) for ind in inds]
+
+Base.getindex(sdata::AbstractData, ind::Int, vars::AbstractVector{Symbol}) =
+  [getindex(sdata, ind, var) for var in vars]
+
+Base.getindex(sdata::AbstractData, inds::AbstractVector{Int}, vars::AbstractVector{Symbol}) =
+  [getindex(sdata, ind, var) for ind in inds, var in vars]
+
+"""
+    sdata[var]
+
+Return the values of `var` for all points in `sdata` with the shape
 of the underlying domain.
 """
-Base.getindex(spatialdata::AbstractData, var::Symbol) =
-  [getindex(spatialdata, ind, var) for ind in 1:npoints(spatialdata)]
+Base.getindex(sdata::AbstractData, var::Symbol) =
+  [getindex(sdata, ind, var) for ind in 1:npoints(sdata)]
 
 """
-    view(spatialdata, inds)
-    view(spatialdata, vars)
-    view(spatialdata, inds, vars)
+    view(sdata, inds)
+    view(sdata, vars)
+    view(sdata, inds, vars)
 
-Return a view of `spatialdata` with all points in `inds` and
+Return a view of `sdata` with all points in `inds` and
 all variables in `vars`.
 """
 Base.view(sdata::AbstractData, inds::AbstractVector{Int}) =
@@ -69,9 +69,9 @@ Tables.istable(::Type{<:AbstractData}) = true
 
 Tables.columnaccess(::Type{<:AbstractData}) = true
 
-function Tables.columns(spatialdata::AbstractData)
-  vars = keys(variables(spatialdata))
-  vals = [getindex(spatialdata, 1:npoints(spatialdata), var) for var in vars]
+function Tables.columns(sdata::AbstractData)
+  vars = keys(variables(sdata))
+  vals = [getindex(sdata, 1:npoints(sdata), var) for var in vars]
   NamedTuple{tuple(vars...)}(vals)
 end
 
@@ -79,36 +79,36 @@ end
 # MISSING VALUES
 #-----------------
 """
-    isvalid(spatialdata, ind, var)
+    isvalid(sdata, ind, var)
 
-Return `true` if the `ind`-th point in `spatialdata` has a valid value for `var`.
+Return `true` if the `ind`-th point in `sdata` has a valid value for `var`.
 """
-function Base.isvalid(spatialdata::AbstractData, ind::Int, var::Symbol)
-  val = getindex(spatialdata, ind, var)
-  !(val ≡ missing || (val isa Number && isnan(val)))
+function Base.isvalid(sdata::AbstractData, ind::Int, var::Symbol)
+  val = getindex(sdata, ind, var)
+  !(ismissing(val) || (val isa Number && isnan(val)))
 end
 
 """
-    valid(spatialdata, var)
+    valid(sdata, var)
 
-Return all points in `spatialdata` with a valid value for `var`. The output
-is a tuple with the matrix of coordinates as the first item and the vector
+Return all points in `sdata` with a valid value for `var`. The output is
+a tuple with the matrix of coordinates as the first item and the vector
 of values as the second item.
 """
-function valid(spatialdata::AbstractData{T,N}, var::Symbol) where {N,T}
-  V = variables(spatialdata)[var]
-  npts = npoints(spatialdata)
+function valid(sdata::AbstractData{T,N}, var::Symbol) where {N,T}
+  V = variables(sdata)[var]
+  npts = npoints(sdata)
 
   # pre-allocate memory for result
   X = Matrix{T}(undef, N, npts)
   z = Vector{V}(undef, npts)
 
   nvalid = 0
-  for ind in 1:npoints(spatialdata)
-    if isvalid(spatialdata, ind, var)
+  for ind in 1:npoints(sdata)
+    if isvalid(sdata, ind, var)
       nvalid += 1
-      coordinates!(view(X,:,nvalid), spatialdata, ind)
-      z[nvalid] = getindex(spatialdata, ind, var)
+      coordinates!(view(X,:,nvalid), sdata, ind)
+      z[nvalid] = getindex(sdata, ind, var)
     end
   end
 
@@ -118,15 +118,15 @@ end
 # ------------
 # IO methods
 # ------------
-function Base.show(io::IO, spatialdata::AbstractData{T,N}) where {N,T}
-  npts = npoints(spatialdata)
+function Base.show(io::IO, sdata::AbstractData{T,N}) where {N,T}
+  npts = npoints(sdata)
   print(io, "$npts SpatialData{$T,$N}")
 end
 
-function Base.show(io::IO, ::MIME"text/plain", spatialdata::AbstractData{T,N}) where {N,T}
-  println(io, spatialdata)
+function Base.show(io::IO, ::MIME"text/plain", sdata::AbstractData{T,N}) where {N,T}
+  println(io, sdata)
   println(io, "  variables")
-  varlines = ["    └─$var ($V)" for (var,V) in variables(spatialdata)]
+  varlines = ["    └─$var ($V)" for (var,V) in variables(sdata)]
   print(io, join(sort(varlines), "\n"))
 end
 
