@@ -30,6 +30,7 @@ testfiles = [
   "domains.jl",
   "collections.jl",
   "partitioning.jl",
+  "weighting.jl",
   "paths.jl",
   "neighborhoods.jl",
   "mappers.jl",
