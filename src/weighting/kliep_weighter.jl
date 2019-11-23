@@ -77,7 +77,7 @@ function weight(sdata::AbstractData, weighter::KLIEPWeighter)
   function ∇f!(g, α)
     p = Φ*α
     for l in 1:b
-      g[l] = -sum(Φ[j,l] / p[j] for j in 1:nₛ)
+      g[l] = -sum(Φ[j,l] / p[j] for j in 1:nₜ)
     end
   end
   function ∇²f!(h, α)
