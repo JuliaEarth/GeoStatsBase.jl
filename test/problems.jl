@@ -100,7 +100,7 @@
     # show methods
     problem = LearningProblem(sdata, tdata, ctask)
     @test sprint(show, problem) == "2D LearningProblem"
-    @test sprint(show, MIME"text/plain"(), problem) == "2D LearningProblem\n  source\n    └─data: 10 PointSetData{Float64,2}\n  target\n    └─data: 10×10 RegularGridData{Float64,2}\n  task: Clustering x → c\n"
+    @test sprint(show, MIME"text/plain"(), problem) == "2D LearningProblem\n  source: 10 PointSetData{Float64,2}\n  target: 10×10 RegularGridData{Float64,2}\n  task:   Clustering x → c"
 
     if visualtests
       gr(size=(800,800))
