@@ -17,6 +17,7 @@ using DataFrames: AbstractDataFrame, eltypes, nrow
 using NearestNeighbors: KDTree, knn, inrange
 using StaticArrays: SVector, MVector
 using AverageShiftedHistograms: ash
+using SpecialFunctions: gamma
 using RecipesBase
 using Parameters
 
@@ -184,7 +185,9 @@ export
   AbstractNeighborhood,
   BallNeighborhood,
   CylinderNeighborhood,
+  coordtype,
   isneighbor,
+  volume,
   radius,
   height,
   metric,

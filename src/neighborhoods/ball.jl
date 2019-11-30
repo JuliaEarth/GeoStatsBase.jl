@@ -35,6 +35,12 @@ metric(ball::BallNeighborhood) = ball.metric
 isneighbor(ball::BallNeighborhood, xₒ::AbstractVector, x::AbstractVector) =
   evaluate(ball.metric, xₒ, x) ≤ ball.radius
 
+function volume(ball::BallNeighborhood{T,N,Euclidean}) where {N,T}
+  # https://en.wikipedia.org/wiki/Volume_of_an_n-ball
+  R = ball.radius
+  (π^(N/2) / gamma(N/2 + 1)) * R^N
+end
+
 # ------------
 # IO methods
 # ------------
