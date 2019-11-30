@@ -16,8 +16,8 @@ end
 
 BallSampler(ball::BallNeighborhood) = BallSampler(ball, nothing)
 
-BallSampler(radius::Real, maxsize=nothing) =
-  BallSampler(BallNeighborhood(radius), maxsize)
+BallSampler(radius::Real; maxsize=nothing, ndims=3) =
+  BallSampler(BallNeighborhood{ndims}(radius), maxsize)
 
 function sample(object::AbstractSpatialObject{T,N}, sampler::BallSampler) where {T,N}
   npts = npoints(object)

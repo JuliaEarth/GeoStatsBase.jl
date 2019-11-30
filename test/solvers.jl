@@ -17,7 +17,7 @@
     sdomain = RegularGrid{Float64}(100, 100)
     problem = SimulationProblem(sdomain, :var => Float64, 3)
     solver = SeqSim(:var => (estimator=DummyEstimator(),
-                             neighborhood=BallNeighborhood(10.),
+                             neighborhood=BallNeighborhood{2}(10.),
                              minneighbors=1, maxneighbors=10,
                              marginal=Normal(), path=LinearPath(sdomain)))
 

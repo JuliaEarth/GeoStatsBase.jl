@@ -32,11 +32,11 @@ BallSampleValidation(eestimator::AbstractErrorEstimator,
   BallSampleValidation(eestimator, sball, tball, tol, maxiter)
 
 BallSampleValidation(eestimator::AbstractErrorEstimator,
-                     sradius::Real, tradius::Real;
+                     sradius::Real, tradius::Real; ndims=3,
                      tol=1e-4, maxiter=10) =
   BallSampleValidation(eestimator,
-                       BallNeighborhood(sradius),
-                       BallNeighborhood(tradius);
+                       BallNeighborhood{ndims}(sradius),
+                       BallNeighborhood{ndims}(tradius);
                        tol=tol, maxiter=maxiter)
 
 function Base.error(solver::AbstractLearningSolver,

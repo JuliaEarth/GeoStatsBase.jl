@@ -21,7 +21,8 @@ struct LeaveBallOut{B<:BallNeighborhood} <: AbstractErrorEstimator
   ball::B
 end
 
-LeaveBallOut(radius::Real) = LeaveBallOut(BallNeighborhood(radius))
+LeaveBallOut(radius::Real; ndims=3) =
+  LeaveBallOut(BallNeighborhood{ndims}(radius))
 
 function Base.error(solver::AbstractLearningSolver,
                     problem::LearningProblem,
