@@ -28,6 +28,7 @@ testfiles = [
   "collections.jl",
   "partitioning.jl",
   "weighting.jl",
+  "covering.jl",
   "paths.jl",
   "regions.jl",
   "neighborhoods.jl",

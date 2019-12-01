@@ -252,7 +252,7 @@ export
   # covering
   AbstractCoverer,
   RectangleCoverer,
-  cover, boundbox,
+  cover,
 
   # sampling
   AbstractSampler,
@@ -271,6 +271,7 @@ export
 
   # utilities
   readgeotable,
-  groupby
+  groupby,
+  boundbox
 
 end
