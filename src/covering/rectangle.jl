@@ -23,23 +23,12 @@ function cover(domain::AbstractDomain{T,N}, coverer::RectangleCoverer) where {N,
     end
   end
 
-  Rectangle(Tuple(lowerleft), Tuple(upperright))
+  RectangleRegion(Tuple(lowerleft), Tuple(upperright))
 end
 
 function cover(grid::RegularGrid, coverer::RectangleCoverer)
   lowerleft  = origin(grid)
   upperright = origin(grid) .+ (size(grid) .- 1) .* spacing(grid)
 
-  Rectangle(lowerleft, upperright)
+  RectangleRegion(lowerleft, upperright)
 end
-
-"""
-    boundbox(object)
-
-Return the minimum axis-aligned bounding rectangle of the spatial `object`.
-
-### Notes
-
-Equivalent to `cover(object, RectangleCoverer())`
-"""
-boundbox(object::AbstractSpatialObject) = cover(object, RectangleCoverer())

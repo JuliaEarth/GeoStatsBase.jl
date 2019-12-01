@@ -36,7 +36,7 @@ include("dataview.jl")
 include("collections.jl")
 include("macros.jl")
 include("paths.jl")
-include("shapes.jl")
+include("regions.jl")
 include("distances.jl")
 include("neighborhoods.jl")
 include("neighborsearch.jl")
@@ -166,9 +166,9 @@ export
   SourcePath,
   ShiftedPath,
 
-  # shapes
-  AbstractShape,
-  Rectangle,
+  # regions
+  AbstractRegion,
+  RectangleRegion,
   center,
   lowerleft,
   upperright,

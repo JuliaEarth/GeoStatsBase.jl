@@ -3,13 +3,13 @@
 # ------------------------------------------------------------------
 
 """
-    AbstractShape
+    AbstractRegion
 
-A geometrical shape in a `N`-dimensional space with coordinates of type `T`.
+A region in a `N`-dimensional space with coordinates of type `T`.
 """
-abstract type AbstractShape{T,N} end
+abstract type AbstractRegion{T,N} end
 
 #------------------
 # IMPLEMENTATIONS
 #------------------
-include("shapes/rectangle.jl")
+include("regions/rectangle.jl")

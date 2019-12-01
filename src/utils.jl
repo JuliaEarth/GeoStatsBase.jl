@@ -41,3 +41,14 @@ Missing values are grouped into a separate group.
 """
 groupby(sdata::AbstractData, var::Symbol) =
   partition(sdata, VariablePartitioner(var))
+
+"""
+    boundbox(object)
+
+Return the minimum axis-aligned bounding rectangle of the spatial `object`.
+
+### Notes
+
+Equivalent to `cover(object, RectangleCoverer())`
+"""
+boundbox(object::AbstractSpatialObject) = cover(object, RectangleCoverer())
