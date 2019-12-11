@@ -14,7 +14,10 @@ islinux = Sys.islinux()
 istravis = "TRAVIS" ∈ keys(ENV)
 datadir = joinpath(@__DIR__,"data")
 visualtests = !istravis || (istravis && islinux)
-!istravis && Pkg.add("Gtk")
+if !istravis
+  Pkg.add("Gtk")
+  using Gtk
+end
 
 # dummy variables for testing
 include("dummy.jl")
