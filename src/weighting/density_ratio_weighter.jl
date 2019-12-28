@@ -11,7 +11,7 @@ with density ratio estimator `dre`.
 
 ### Notes
 
-All estimators from DensityRatioEstimation.jl are supported.
+Estimators from `DensityRatioEstimation.jl` are supported.
 """
 struct DensityRatioWeighter{DΩ<:AbstractData,
                             DRE<:DensityRatioEstimator} <: AbstractWeighter
