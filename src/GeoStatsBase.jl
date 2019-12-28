@@ -18,6 +18,7 @@ using NearestNeighbors: KDTree, knn, inrange
 using StaticArrays: SVector, MVector
 using AverageShiftedHistograms: ash
 using SpecialFunctions: gamma
+using DensityRatioEstimation
 using RecipesBase
 using Parameters
 
@@ -246,7 +247,7 @@ export
   SpatialWeights,
   AbstractWeighter,
   BlockWeighter,
-  KLIEPWeighter,
+  DensityRatioWeighter,
   weight,
 
   # covering

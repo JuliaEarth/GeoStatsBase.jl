@@ -3,6 +3,7 @@ using DelimitedFiles
 using Distances
 using Distributions
 using DataFrames
+using DensityRatioEstimation
 using Plots, VisualRegressionTests
 using Test, Pkg, Random
 

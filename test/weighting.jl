@@ -3,7 +3,7 @@
     # TODO
   end
 
-  @testset "KLIEPWeighter" begin
+  @testset "DensityRatioWeighter" begin
     n = 1000; Random.seed!(123)
 
     r1 = Normal(0, 2)
@@ -15,7 +15,7 @@
     d1 = PointSetData(Dict(:z => z1), reshape(1:n,1,:))
     d2 = PointSetData(Dict(:z => z2), reshape(1:n,1,:))
 
-    weighter = KLIEPWeighter(d2, bwidth=1.0)
+    weighter = DensityRatioWeighter(d2, KLIEP())
     w = weight(d1, weighter)
 
     if visualtests
@@ -24,7 +24,7 @@
         plot( z1, pdf.(r1, z1), label="source")
         plot!(z1, pdf.(r2, z1), label="target")
         plot!(z1, w .* pdf.(r1, z1), label="approx")
-      end joinpath(datadir,"KLIEPWeighter.png") !istravis
+      end joinpath(datadir,"DensityRatioWeighter.png") !istravis
     end
   end
 end
