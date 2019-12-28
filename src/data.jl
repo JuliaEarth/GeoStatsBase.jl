@@ -17,8 +17,11 @@ Return the variable names in spatial data `sdata` and their types.
 variables(sdata::AbstractData) =
   Dict(var => eltype(array) for (var,array) in sdata.data)
 
+#--------------------------------------------
+# GETINDEX (DOES *NOT* PRESERVE COORDINATES)
+#--------------------------------------------
+
 """
-    sdata[ind,var]
     sdata[inds,vars]
 
 Return the value of `var` for the `ind`-th point in `sdata`.
@@ -36,6 +39,20 @@ Base.getindex(sdata::AbstractData, inds::AbstractVector{Int}, vars::AbstractVect
   [getindex(sdata, ind, var) for ind in inds, var in vars]
 
 """
+    sdata[ind]
+
+Return the values for all variables in `sdata` as a named tuple.
+"""
+function Base.getindex(sdata::AbstractData, ind::Int)
+  vars = [var for (var,V) in variables(sdata)]
+  vals = [getindex(sdata, ind, var) for var in vars]
+  NamedTuple{tuple(vars...)}(vals)
+end
+
+Base.getindex(sdata::AbstractData, inds::AbstractVector{Int}) =
+  [getindex(sdata, ind) for ind in inds]
+
+"""
     sdata[var]
 
 Return the values of `var` for all points in `sdata` with the shape
@@ -43,6 +60,13 @@ of the underlying domain.
 """
 Base.getindex(sdata::AbstractData, var::Symbol) =
   [getindex(sdata, ind, var) for ind in 1:npoints(sdata)]
+
+Base.getindex(sdata::AbstractData, vars::AbstractVector{Symbol}) =
+  [getindex(sdata, var) for var in vars]
+
+#----------------------------------
+# VIEW (DOES PRESERVE COORDINATES)
+#----------------------------------
 
 """
     view(sdata, inds)
