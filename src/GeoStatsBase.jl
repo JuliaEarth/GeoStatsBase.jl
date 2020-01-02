@@ -46,6 +46,7 @@ include("estimators.jl")
 include("partitioning.jl")
 include("weighting.jl")
 include("covering.jl")
+include("discretizing.jl")
 include("sampling.jl")
 include("learning.jl")
 include("mappers.jl")
@@ -95,7 +96,7 @@ export
   NearestMapper,
   CopyMapper,
 
-  # tasks
+  # learning tasks
   AbstractLearningTask,
   SupervisedLearningTask,
   UnsupervisedLearningTask,
@@ -110,9 +111,17 @@ export
   features,
   label,
 
-  # models
+  # learning models
   issupervised,
   isprobabilistic,
+  learn, perform,
+
+  # learning examples
+  AbstractLearningExample,
+  AbstractLabeledExample,
+  AbstractUnlabeledExample,
+  LabeledPointExample,
+  UnlabeledPointExample,
 
   # problems
   AbstractProblem,
@@ -203,16 +212,6 @@ export
   maxneighbors,
   object,
 
-  # learning models
-  learn, perform,
-
-  # learning example
-  AbstractLearningExample,
-  AbstractLabeledExample,
-  AbstractUnlabeledExample,
-  LabeledPointExample,
-  UnlabeledPointExample,
-
   # distributions
   EmpiricalDistribution,
   transform!, quantile, cdf,
@@ -254,6 +253,11 @@ export
   AbstractCoverer,
   RectangleCoverer,
   cover,
+
+  # discretizing
+  AbstractDiscretizer,
+  RegularGridDiscretizer,
+  discretize,
 
   # sampling
   AbstractSampler,
