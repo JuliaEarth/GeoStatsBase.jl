@@ -55,8 +55,13 @@ end
 RegularGrid(dims::Dims{N}, origin::NTuple{N,T}, spacing::NTuple{N,T}) where {N,T} =
   RegularGrid{T,N}(dims, origin, spacing)
 
-RegularGrid(start::NTuple{N,T}, finish::NTuple{N,T}; dims::Dims{N}=ntuple(i->100, N)) where {N,T} =
-  RegularGrid{T,N}(dims, start, ntuple(i->(finish[i]-start[i])/(dims[i]-1), N))
+RegularGrid(start::SVector{N,T}, finish::SVector{N,T};
+            dims::Dims{N}=ntuple(i->100, N)) where {N,T} =
+  RegularGrid{T,N}(dims, start, @. (finish - start) / (dims - 1))
+
+RegularGrid(start::NTuple{N,T}, finish::NTuple{N,T};
+            dims::Dims{N}=ntuple(i->100, N)) where {N,T} =
+  RegularGrid(SVector{N,T}(start), SVector{N,T}(finish); dims=dims)
 
 RegularGrid{T}(dims::Dims{N}) where {N,T} =
   RegularGrid{T,N}(dims, ntuple(i->zero(T), N), ntuple(i->one(T), N))
