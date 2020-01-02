@@ -17,9 +17,9 @@ Return the variable names in spatial data `sdata` and their types.
 variables(sdata::AbstractData) =
   Dict(var => eltype(array) for (var,array) in sdata.data)
 
-#--------------------------------------------
-# GETINDEX (DOES *NOT* PRESERVE COORDINATES)
-#--------------------------------------------
+#----------------
+# DATAFRAME API
+#----------------
 
 """
     sdata[inds,vars]
@@ -39,20 +39,6 @@ Base.getindex(sdata::AbstractData, inds::AbstractVector{Int}, vars::AbstractVect
   [getindex(sdata, ind, var) for ind in inds, var in vars]
 
 """
-    sdata[ind]
-
-Return the values for all variables in `sdata` as a named tuple.
-"""
-function Base.getindex(sdata::AbstractData, ind::Int)
-  vars = [var for (var,V) in variables(sdata)]
-  vals = [getindex(sdata, ind, var) for var in vars]
-  NamedTuple{tuple(vars...)}(vals)
-end
-
-Base.getindex(sdata::AbstractData, inds::AbstractVector{Int}) =
-  [getindex(sdata, ind) for ind in inds]
-
-"""
     sdata[var]
 
 Return the values of `var` for all points in `sdata` with the shape
@@ -64,9 +50,9 @@ Base.getindex(sdata::AbstractData, var::Symbol) =
 Base.getindex(sdata::AbstractData, vars::AbstractVector{Symbol}) =
   [getindex(sdata, var) for var in vars]
 
-#----------------------------------
-# VIEW (DOES PRESERVE COORDINATES)
-#----------------------------------
+#-----------
+# VIEW API
+#-----------
 
 """
     view(sdata, inds)
@@ -86,9 +72,60 @@ Base.view(sdata::AbstractData, inds::AbstractVector{Int},
                                vars::AbstractVector{Symbol}) =
   DataView(sdata, inds, vars)
 
+#---------------
+# ITERATOR API
+#---------------
+
+"""
+    iterate(sdata, state=1)
+
+Iterate over samples in `sdata`.
+"""
+Base.iterate(sdata::AbstractData, state=1) =
+  state > npoints(sdata) ? nothing : (sdata[state], state + 1)
+
+"""
+    length(sdata)
+
+Return the number of samples in `sdata`.
+"""
+Base.length(sdata::AbstractData) = npoints(sdata)
+
 #----------------
-# TABLES.JL API
+# INDEXABLE API
 #----------------
+
+"""
+    getindex(sdata, ind)
+
+Return `ind`-th sample in `sdata`.
+"""
+function Base.getindex(sdata::AbstractData, ind::Int)
+  vars = [var for (var,V) in variables(sdata)]
+  vals = [getindex(sdata, ind, var) for var in vars]
+  NamedTuple{tuple(vars...)}(vals)
+end
+
+Base.getindex(sdata::AbstractData, inds::AbstractVector{Int}) =
+  [getindex(sdata, ind) for ind in inds]
+
+"""
+    firstindex(sdata)
+
+Return the first index of `sdata`.
+"""
+Base.firstindex(sdata::AbstractData) = 1
+
+"""
+    lastindex(sdata)
+
+Return the last index of `sdata`.
+"""
+Base.lastindex(sdata::AbstractData) = npoints(sdata)
+
+#-------------
+# TABLES API
+#-------------
 Tables.istable(::Type{<:AbstractData}) = true
 
 Tables.columnaccess(::Type{<:AbstractData}) = true
