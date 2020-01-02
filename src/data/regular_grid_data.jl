@@ -81,8 +81,8 @@ end
 
 function Base.show(io::IO, ::MIME"text/plain", geodata::RegularGridData{T,N}) where {N,T}
   println(io, geodata)
-  println(io, "  origin:  ", origin(geodata))
-  println(io, "  spacing: ", spacing(geodata))
+  println(io, "  origin:  ", Tuple(origin(geodata)))
+  println(io, "  spacing: ", Tuple(spacing(geodata)))
   println(io, "  variables")
   varlines = ["    └─$var ($(eltype(array)))" for (var, array) in geodata.data]
   print(io, join(varlines, "\n"))

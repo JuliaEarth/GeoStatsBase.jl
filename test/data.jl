@@ -76,8 +76,8 @@
     g = RegularGridData{Float64}(Dict(:value => rand(100,100)))
     X, z = valid(g, :value)
     @test size(g) == (100, 100)
-    @test origin(g) == (0., 0.)
-    @test spacing(g) == (1., 1.)
+    @test origin(g) == [0., 0.]
+    @test spacing(g) == [1., 1.]
     @test coordnames(g) == (:x1, :x2)
     @test variables(g) == Dict(:value => Float64)
     @test npoints(g) == 10000

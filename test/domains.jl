@@ -49,8 +49,8 @@
     @test size(grid) == (200,100)
     @test npoints(grid) == 200*100
     @test coordinates(grid, 1) == [0.,0.]
-    @test origin(grid) == (0f0, 0f0)
-    @test spacing(grid) == (1f0, 1f0)
+    @test origin(grid) == [0f0, 0f0]
+    @test spacing(grid) == [1f0, 1f0]
 
     grid = RegularGrid((200,100,50), (0.,0.,0.), (1.,1.,1.))
     @test ndims(grid) == 3
@@ -58,8 +58,8 @@
     @test size(grid) == (200,100,50)
     @test npoints(grid) == 200*100*50
     @test coordinates(grid, 1) == [0.,0.,0.]
-    @test origin(grid) == (0.,0.,0.)
-    @test spacing(grid) == (1.,1.,1.)
+    @test origin(grid) == [0.,0.,0.]
+    @test spacing(grid) == [1.,1.,1.]
 
     grid = RegularGrid((-1.,-1.), (1.,1.), dims=(200,100))
     @test ndims(grid) == 2
@@ -68,7 +68,7 @@
     @test npoints(grid) == 200*100
     @test coordinates(grid, 1) == [-1.,-1.]
     @test coordinates(grid, 200*100) == [1.,1.]
-    @test origin(grid) == (-1.,-1.)
+    @test origin(grid) == [-1.,-1.]
 
     grid = RegularGrid{Float64}(100,200)
     @test sprint(show, grid) == "100×200 RegularGrid{Float64,2}"

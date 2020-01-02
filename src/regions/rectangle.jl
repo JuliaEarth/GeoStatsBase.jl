@@ -8,31 +8,33 @@
 A rectangle region in `N`-dimensional space with coordinates of type `T`.
 """
 struct RectangleRegion{T,N} <: AbstractRegion{T,N}
-  lowerleft::NTuple{N,T}
-  upperright::NTuple{N,T}
+  lowerleft::SVector{N,T}
+  upperright::SVector{N,T}
 end
+
+RectangleRegion(lowerleft::NTuple{N,T}, upperright::NTuple{N,T}) where {N,T} =
+  RectangleRegion{T,N}(lowerleft, upperright)
 
 """
     center(rectangle)
 
 Return the center of the `rectangle`.
 """
-center(r::RectangleRegion{T,N}) where {N,T} =
-  SVector{N,T}([(l+u)/2 for (l,u) in zip(r.lowerleft, r.upperright)])
+center(r::RectangleRegion{T,N}) where {N,T} = @. (r.lowerleft + r.upperright) / 2
 
 """
     lowerleft(rectangle)
 
 Return the lower left corner of the `rectangle`.
 """
-lowerleft(r::RectangleRegion{T,N}) where {N,T} = SVector{N,T}(r.lowerleft)
+lowerleft(r::RectangleRegion) = r.lowerleft
 
 """
     upperright(rectangle)
 
 Return the upper right corner of the `rectangle`.
 """
-upperright(r::RectangleRegion{T,N}) where {N,T} = SVector{N,T}(r.upperright)
+upperright(r::RectangleRegion) = r.upperright
 
 """
     side(rectangle, i)

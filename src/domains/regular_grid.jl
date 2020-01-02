@@ -42,8 +42,8 @@ julia> RegularGrid((-1.,),(1.,), dims=(100,))
 """
 struct RegularGrid{T,N} <: AbstractDomain{T,N}
   dims::Dims{N}
-  origin::NTuple{N,T}
-  spacing::NTuple{N,T}
+  origin::SVector{N,T}
+  spacing::SVector{N,T}
 
   function RegularGrid{T,N}(dims, origin, spacing) where {N,T}
     @assert all(dims .> 0) "dimensions must be positive"
@@ -64,8 +64,8 @@ RegularGrid{T}(dims::Dims{N}) where {N,T} =
 RegularGrid{T}(dims::Vararg{Int,N}) where {N,T} = RegularGrid{T}(dims)
 
 Base.size(grid::RegularGrid) = grid.dims
-origin(grid::RegularGrid) = grid.origin
-spacing(grid::RegularGrid) = grid.spacing
+origin(grid::RegularGrid)    = grid.origin
+spacing(grid::RegularGrid)   = grid.spacing
 
 npoints(grid::RegularGrid) = prod(grid.dims)
 
@@ -88,6 +88,6 @@ end
 function Base.show(io::IO, ::MIME"text/plain", grid::RegularGrid{T,N}) where {N,T}
   println(io, "RegularGrid{$T,$N}")
   println(io, "  dimensions: ", grid.dims)
-  println(io, "  origin:     ", grid.origin)
-  print(  io, "  spacing:    ", grid.spacing)
+  println(io, "  origin:     ", Tuple(grid.origin))
+  print(  io, "  spacing:    ", Tuple(grid.spacing))
 end
