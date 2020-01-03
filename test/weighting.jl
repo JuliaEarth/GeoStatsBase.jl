@@ -15,8 +15,7 @@
     d1 = PointSetData(Dict(:z => z1), reshape(1:n,1,:))
     d2 = PointSetData(Dict(:z => z2), reshape(1:n,1,:))
 
-    weighter = DensityRatioWeighter(d2, KLIEP())
-    w = weight(d1, weighter)
+    w = weight(d1, DensityRatioWeighter(d2))
 
     if visualtests
       @plottest begin
