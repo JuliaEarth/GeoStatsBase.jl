@@ -36,10 +36,10 @@ function Base.error(solver::AbstractLearningSolver,
   @assert ndims(sdata) == ndims(tdata) "source and target domain must have same dimension"
 
   # source and target balls
+  bdims   = ndims(sdata)
   sradius = eestimator.sradius
   tradius = eestimator.tradius
   metric  = eestimator.metric
-  bdims   = ndims(sdata)
   sball   = BallNeighborhood{bdims}(sradius, metric=metric)
   tball   = BallNeighborhood{bdims}(tradius, metric=metric)
 
