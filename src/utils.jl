@@ -62,3 +62,11 @@ option.
 """
 sample(object::AbstractSpatialObject, n::Int; replace=false) =
   sample(object, UniformSampler(n, replace))
+
+"""
+    join(sdata₁, sdata₂)
+
+Join variables in spatial data `sdata₁` and `sdata₂`.
+"""
+join(sdata₁::AbstractData, sdata₂::AbstractData) =
+  join(sdata₁, sdata₂, VariableJoiner())
