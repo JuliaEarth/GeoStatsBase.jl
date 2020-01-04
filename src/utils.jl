@@ -68,5 +68,5 @@ sample(object::AbstractSpatialObject, n::Int; replace=false) =
 
 Join variables in spatial data `sdata₁` and `sdata₂`.
 """
-join(sdata₁::AbstractData, sdata₂::AbstractData) =
+Base.join(sdata₁::AbstractData, sdata₂::AbstractData) =
   join(sdata₁, sdata₂, VariableJoiner())
