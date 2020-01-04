@@ -48,6 +48,7 @@ include("weighting.jl")
 include("covering.jl")
 include("discretizing.jl")
 include("sampling.jl")
+include("joining.jl")
 include("learning.jl")
 include("mappers.jl")
 include("problems.jl")
@@ -220,7 +221,7 @@ export
   # estimators
   fit, predict, status,
 
-  # partitions
+  # partitioning
   SpatialPartition,
   AbstractPartitioner,
   AbstractFunctionPartitioner,
@@ -265,6 +266,10 @@ export
   UniformSampler,
   BallSampler,
   sample,
+
+  # joining
+  AbstractJoiner,
+  VariableJoiner,
 
   # statistics
   SpatialStatistic,
