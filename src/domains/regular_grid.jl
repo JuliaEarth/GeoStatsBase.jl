@@ -82,6 +82,9 @@ function coordinates!(buff::AbstractVector{T}, grid::RegularGrid{T,N},
   end
 end
 
+georeference(data::Dict{Symbol,<:AbstractVector}, grid::RegularGrid{T,N}) where {N,T} =
+  RegularGridData{T,N}(data, grid)
+
 # ------------
 # IO methods
 # ------------
