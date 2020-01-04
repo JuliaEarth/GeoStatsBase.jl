@@ -3,41 +3,27 @@
 # ------------------------------------------------------------------
 
 """
-    BallSampleValidation(eestimator, sourceball, targetball;
-                         tol=1e-4, maxiter=10)
+    BallSampleValidation(eestimator, sourceradius, targetradius;
+                         metric=Euclidean(), tol=1e-4, maxiter=10)
 
 Ball sample validation with error estimator `eestimator`, based on
-samples collected from source and target data. `sourceball` is the
-ball for the source and `targetball` is the ball for the target.
-
-    BallSampleValidation(eestimator, sourceradius, targetradius;
-                         tol=1e-4, maxiter=10)
-
-Alternatively, specify the radii for Euclidean balls.
+samples collected from source and target data. `sourceradius` is
+the radius of the ball for the source data and `targetradius` is
+the radius of the ball for the target data.
 """
 struct BallSampleValidation{E<:AbstractErrorEstimator,
-                            Bₛ<:BallNeighborhood,
-                            Bₜ<:BallNeighborhood} <: AbstractErrorEstimator
+                            Rₛ,Rₜ,M<:Metric} <: AbstractErrorEstimator
   eestimator::E
-  sourceball::Bₛ
-  targetball::Bₜ
+  sradius::Rₛ
+  tradius::Rₜ
+  metric::M
   tol::Float64
   maxiter::Int
 end
 
-BallSampleValidation(eestimator::AbstractErrorEstimator,
-                     sball::BallNeighborhood,
-                     tball::BallNeighborhood;
-                     tol=1e-4, maxiter=10) =
-  BallSampleValidation(eestimator, sball, tball, tol, maxiter)
-
-BallSampleValidation(eestimator::AbstractErrorEstimator,
-                     sradius::Real, tradius::Real; ndims=3,
-                     tol=1e-4, maxiter=10) =
-  BallSampleValidation(eestimator,
-                       BallNeighborhood{ndims}(sradius),
-                       BallNeighborhood{ndims}(tradius);
-                       tol=tol, maxiter=maxiter)
+BallSampleValidation(eestimator::AbstractErrorEstimator, sradius::Rₛ, tradius::Rₜ;
+                     metric=Euclidean(), tol=1e-4, maxiter=10) where {Rₛ,Rₜ} =
+  BallSampleValidation(eestimator, sradius, tradius, metric, tol, maxiter)
 
 function Base.error(solver::AbstractLearningSolver,
                     problem::LearningProblem,
@@ -47,9 +33,15 @@ function Base.error(solver::AbstractLearningSolver,
   tdata = targetdata(problem)
   ovars = outputvars(task(problem))
 
+  @assert ndims(sdata) == ndims(tdata) "source and target domain must have same dimension"
+
   # source and target balls
-  sball = eestimator.sourceball
-  tball = eestimator.targetball
+  sradius = eestimator.sradius
+  tradius = eestimator.tradius
+  metric  = eestimator.metric
+  bdims   = ndims(sdata)
+  sball   = BallNeighborhood{bdims}(sradius, metric=metric)
+  tball   = BallNeighborhood{bdims}(tradius, metric=metric)
 
   # source and target samplers
   ssampler = BallSampler(sball)
