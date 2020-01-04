@@ -52,3 +52,13 @@ Return the minimum axis-aligned bounding rectangle of the spatial `object`.
 Equivalent to `cover(object, RectangleCoverer())`
 """
 boundbox(object::AbstractSpatialObject) = cover(object, RectangleCoverer())
+
+"""
+    sample(object, n, replace=false)
+
+Generate `n` samples from spatial `object` uniformly
+with or without replacement depending on `replace`
+option.
+"""
+sample(object::AbstractSpatialObject, n::Int; replace=false) =
+  sample(object, UniformSampler(n, replace))
