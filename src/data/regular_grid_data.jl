@@ -38,18 +38,16 @@ struct RegularGridData{T,N} <: AbstractData{T,N}
   domain::RegularGrid{T,N}
 
   function RegularGridData{T,N}(data, domain) where {N,T}
-    sizes = [size(array) for array in values(data)]
-    @assert length(unique(sizes)) == 1 "data dimensions must be the same for all variables"
-    @assert length(sizes[1]) == N "inconsistent number of dimensions for given origin/spacing"
     new(data, domain)
   end
 end
 
 function RegularGridData(data::Dict{Symbol,<:AbstractArray},
                          origin::NTuple{N,T}, spacing::NTuple{N,T}) where {N,T}
-  array, _ = iterate(values(data))
-  dims     = size(array)
-  RegularGridData{T,length(origin)}(data, RegularGrid(dims, origin, spacing))
+  sizes = [size(array) for array in values(data)]
+  @assert length(unique(sizes)) == 1 "data dimensions must be the same for all variables"
+  @assert length(sizes[1]) == N "inconsistent number of dimensions for given origin/spacing"
+  RegularGridData{T,length(origin)}(data, RegularGrid(sizes[1], origin, spacing))
 end
 
 RegularGridData{T}(data::Dict{Symbol,<:AbstractArray{<:Any,N}}) where {N,T} =
@@ -66,8 +64,10 @@ end
 
 function Base.getindex(geodata::RegularGridData,
                        icoords::Vararg{Int,N}) where {N}
+  lin  = LinearIndices(size(geodata.domain))
+  ind  = lin[icoords...]
   vars = [var for (var,V) in variables(geodata)]
-  vals = [geodata.data[var][icoords...] for var in vars]
+  vals = [geodata.data[var][ind] for var in vars]
   NamedTuple{tuple(vars...)}(vals)
 end
 
