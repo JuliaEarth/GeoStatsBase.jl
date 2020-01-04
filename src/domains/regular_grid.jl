@@ -94,8 +94,7 @@ function Base.show(io::IO, grid::RegularGrid{T,N}) where {N,T}
 end
 
 function Base.show(io::IO, ::MIME"text/plain", grid::RegularGrid{T,N}) where {N,T}
-  println(io, "RegularGrid{$T,$N}")
-  println(io, "  dimensions: ", grid.dims)
+  println(io, grid)
   println(io, "  origin:     ", Tuple(grid.origin))
   print(  io, "  spacing:    ", Tuple(grid.spacing))
 end

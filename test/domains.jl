@@ -72,7 +72,7 @@
 
     grid = RegularGrid{Float64}(100,200)
     @test sprint(show, grid) == "100×200 RegularGrid{Float64,2}"
-    @test sprint(show, MIME"text/plain"(), grid) == "RegularGrid{Float64,2}\n  dimensions: (100, 200)\n  origin:     (0.0, 0.0)\n  spacing:    (1.0, 1.0)"
+    @test sprint(show, MIME"text/plain"(), grid) == "100×200 RegularGrid{Float64,2}\n  origin:     (0.0, 0.0)\n  spacing:    (1.0, 1.0)"
 
     if visualtests
       gr(size=(800,800))
