@@ -34,7 +34,7 @@ function coordinates!(buff::AbstractVector{T}, ps::PointSet{T,N},
   end
 end
 
-georeference(data::Dict{Symbol,<:AbstractVector}, pset::PointSet{T,N}) where {N,T} =
+georeference(data::Dict{Symbol,<:AbstractArray}, pset::PointSet{T,N}) where {N,T} =
   PointSetData{T,N}(data, pset)
 
 # ------------

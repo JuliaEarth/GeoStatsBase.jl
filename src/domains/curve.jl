@@ -50,7 +50,7 @@ function coordinates!(buff::AbstractVector{T}, curve::Curve{T,N},
   end
 end
 
-georeference(data::Dict{Symbol,<:AbstractVector}, curve::Curve{T,N}) where {N,T} =
+georeference(data::Dict{Symbol,<:AbstractArray}, curve::Curve{T,N}) where {N,T} =
   CurveData{T,N}(data, curve)
 
 # ------------
