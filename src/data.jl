@@ -39,7 +39,7 @@ Base.getindex(sdata::AbstractData, inds::AbstractVector{Int}, vars::AbstractVect
   [getindex(sdata, ind, var) for ind in inds, var in vars]
 
 """
-    sdata[var]
+    getindex(sdata, var)
 
 Return the values of `var` for all points in `sdata` with the shape
 of the underlying domain.
@@ -49,6 +49,15 @@ Base.getindex(sdata::AbstractData, var::Symbol) =
 
 Base.getindex(sdata::AbstractData, vars::AbstractVector{Symbol}) =
   [getindex(sdata, var) for var in vars]
+
+"""
+    setindex!(sdata, vals, var)
+
+Set the values `vals` of variable `var` for all points in spatial
+data `sdata`.
+"""
+Base.setindex!(sdata::AbstractData, vals::AbstractArray, var::Symbol) =
+  sdata.data[var] = vals
 
 #-----------
 # VIEW API
