@@ -52,5 +52,5 @@ function Base.join(sdata₁::AbstractData, sdata₂::AbstractData, joiner::Varia
     end
   end
 
-  georeference(Dict(pairs), domain(sdata₁))
+  georef(Dict(pairs), domain(sdata₁))
 end

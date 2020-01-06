@@ -69,7 +69,7 @@ function Base.getindex(solution::SimulationSolution, ind::Int)
   sdomain = solution.domain
   sreals  = solution.realizations
   idata   = Dict(var => reals[ind] for (var, reals) in sreals)
-  georeference(idata, sdomain)
+  georef(idata, sdomain)
 end
 
 Base.getindex(solution::SimulationSolution, inds::AbstractVector{Int}) =

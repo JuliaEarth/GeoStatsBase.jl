@@ -77,7 +77,7 @@ export
   RegularGrid,
   StructuredGrid,
   origin, spacing,
-  georeference,
+  georef,
 
   # spatial data
   AbstractData,
