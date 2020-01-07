@@ -40,8 +40,8 @@ function Base.error(solver::AbstractLearningSolver,
   sradius = eestimator.sradius
   tradius = eestimator.tradius
   metric  = eestimator.metric
-  sball   = BallNeighborhood{bdims}(sradius, metric=metric)
-  tball   = BallNeighborhood{bdims}(tradius, metric=metric)
+  sball   = BallNeighborhood{bdims}(sradius, metric)
+  tball   = BallNeighborhood{bdims}(tradius, metric)
 
   # source and target samplers
   ssampler = BallSampler(sball)
