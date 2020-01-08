@@ -125,6 +125,9 @@ export
   LabeledPointExample,
   UnlabeledPointExample,
 
+  # learning losses
+  defaultloss,
+
   # problems
   AbstractProblem,
   EstimationProblem,
