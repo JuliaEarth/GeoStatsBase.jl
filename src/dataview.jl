@@ -28,7 +28,7 @@ coordinates!(buff::AbstractVector, dv::DataView, ind::Int) =
   coordinates!(buff, dv.data, dv.inds[ind])
 
 variables(dv::DataView) =
-  Dict(var => V for (var,V) in variables(dv.data) if var ∈ dv.vars)
+  OrderedDict([var => V for (var,V) in variables(dv.data) if var ∈ dv.vars])
 
 Base.getindex(dv::DataView, ind::Int, var::Symbol) =
   getindex(dv.data, dv.inds[ind], var)

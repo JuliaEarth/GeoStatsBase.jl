@@ -16,7 +16,7 @@
 
     # problems with missing data have types inferred correctly
     img = Array{Union{Float64,Missing}}(rand(10,10))
-    mdata = RegularGridData{Float64}(Dict(:var => img))
+    mdata = RegularGridData{Float64}(OrderedDict(:var => img))
     problem = EstimationProblem(mdata, grid2D, :var)
     @test variables(problem) == Dict(:var => Float64)
 
@@ -45,7 +45,7 @@
 
     # problems with missing data have types inferred correctly
     img = Array{Union{Float64,Missing}}(rand(10,10))
-    mdata = RegularGridData{Float64}(Dict(:var => img))
+    mdata = RegularGridData{Float64}(OrderedDict(:var => img))
     problem = SimulationProblem(mdata, grid2D, :var, 3)
     @test variables(problem) == Dict(:var => Float64)
 
@@ -82,8 +82,8 @@
 
   @testset "Learning" begin
     Random.seed!(123)
-    sdata = PointSetData(Dict(:x=>rand(10), :y=>rand(10), :z=>rand(10)), 10rand(2,10))
-    tdata = RegularGridData{Float64}(Dict(:x=>rand(10,10)))
+    sdata = PointSetData(OrderedDict(:x=>rand(10), :y=>rand(10), :z=>rand(10)), 10rand(2,10))
+    tdata = RegularGridData{Float64}(OrderedDict(:x=>rand(10,10)))
     rtask = RegressionTask(:x, :y)
     ctask = ClusteringTask(:x, :c)
 
@@ -94,7 +94,7 @@
     @test task(problem) == rtask
 
     # dimension mismatch
-    tdata3D = RegularGridData{Float64}(Dict(:x=>rand(10,10,10)))
+    tdata3D = RegularGridData{Float64}(OrderedDict(:x=>rand(10,10,10)))
     @test_throws AssertionError LearningProblem(sdata, tdata3D, rtask)
 
     # show methods

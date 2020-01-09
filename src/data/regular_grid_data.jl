@@ -20,7 +20,7 @@ values of porosity and permeability, the following code can be used
 to georeference the data:
 
 ```julia
-julia> data = Dict(:porosity => poro, :permeability => perm)
+julia> data = OrderedDict(:porosity => poro, :permeability => perm)
 julia> RegularGridData(data, (0.,0.,0.), (1.,1.,1.))
 ```
 
@@ -34,7 +34,7 @@ julia> RegularGridData{Float64}(data)
 See also: [`RegularGrid`](@ref)
 """
 struct RegularGridData{T,N} <: AbstractData{T,N}
-  data::Dict{Symbol,<:AbstractArray}
+  data::OrderedDict{Symbol,<:AbstractArray}
   domain::RegularGrid{T,N}
 
   function RegularGridData{T,N}(data, domain) where {N,T}
@@ -42,7 +42,7 @@ struct RegularGridData{T,N} <: AbstractData{T,N}
   end
 end
 
-function RegularGridData(data::Dict{Symbol,<:AbstractArray},
+function RegularGridData(data::OrderedDict{Symbol,<:AbstractArray},
                          origin::NTuple{N,T}, spacing::NTuple{N,T}) where {N,T}
   sizes = [size(array) for array in values(data)]
   @assert length(unique(sizes)) == 1 "data dimensions must be the same for all variables"
@@ -50,7 +50,7 @@ function RegularGridData(data::Dict{Symbol,<:AbstractArray},
   RegularGridData{T,length(origin)}(data, RegularGrid(sizes[1], origin, spacing))
 end
 
-RegularGridData{T}(data::Dict{Symbol,<:AbstractArray{<:Any,N}}) where {N,T} =
+RegularGridData{T}(data::OrderedDict{Symbol,<:AbstractArray{<:Any,N}}) where {N,T} =
   RegularGridData(data, ntuple(i->zero(T), N), ntuple(i->one(T), N))
 
 Base.size(geodata::RegularGridData) = size(geodata.domain)

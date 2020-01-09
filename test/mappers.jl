@@ -17,7 +17,7 @@
   end
 
   @testset "CopyMapper" begin
-    d = PointSetData(Dict(:z => rand(10)), rand(2,10))
+    d = PointSetData(OrderedDict(:z => rand(10)), rand(2,10))
     g = RegularGrid{Float64}(10,10)
 
     # copy data to first locations in domain

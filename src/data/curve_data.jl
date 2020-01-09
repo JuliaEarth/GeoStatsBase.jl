@@ -12,7 +12,7 @@ with the actual data.
 See also: [`Curve`](@ref)
 """
 struct CurveData{T,N} <: AbstractData{T,N}
-  data::Dict{Symbol,<:AbstractArray}
+  data::OrderedDict{Symbol,<:AbstractArray}
   domain::Curve{T,N}
 
   function CurveData{T,N}(data, domain) where {N,T}
@@ -22,11 +22,11 @@ struct CurveData{T,N} <: AbstractData{T,N}
   end
 end
 
-CurveData(data::Dict{Symbol,<:AbstractArray},
+CurveData(data::OrderedDict{Symbol,<:AbstractArray},
           coords::AbstractMatrix{T}) where {T} =
   CurveData{T,size(coords,1)}(data, Curve(coords))
 
-CurveData(data::Dict{Symbol,<:AbstractArray},
+CurveData(data::OrderedDict{Symbol,<:AbstractArray},
           coordarrays::Vararg{<:AbstractVector{T},N}) where {N,T} =
   CurveData{T,N}(data, Curve(coordarrays...))
 

@@ -12,8 +12,8 @@
     z1 = sort(rand(r1, n))
     z2 = sort(rand(r2, n))
 
-    d1 = PointSetData(Dict(:z => z1), reshape(1:n,1,:))
-    d2 = PointSetData(Dict(:z => z2), reshape(1:n,1,:))
+    d1 = PointSetData(OrderedDict(:z => z1), reshape(1:n,1,:))
+    d2 = PointSetData(OrderedDict(:z => z2), reshape(1:n,1,:))
 
     w = weight(d1, DensityRatioWeighter(d2))
 

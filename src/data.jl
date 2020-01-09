@@ -15,7 +15,7 @@ abstract type AbstractData{T,N} <: AbstractSpatialObject{T,N} end
 Return the variable names in spatial data `sdata` and their types.
 """
 variables(sdata::AbstractData) =
-  Dict(var => eltype(array) for (var,array) in sdata.data)
+  OrderedDict([var => eltype(array) for (var,array) in sdata.data])
 
 #----------------
 # DATAFRAME API

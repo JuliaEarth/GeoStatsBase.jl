@@ -12,7 +12,7 @@ names to Julia arrays with the actual data.
 See also: [`PointSet`](@ref)
 """
 struct PointSetData{T,N} <: AbstractData{T,N}
-  data::Dict{Symbol,<:AbstractArray}
+  data::OrderedDict{Symbol,<:AbstractArray}
   domain::PointSet{T,N}
 
   function PointSetData{T,N}(data, domain) where {N,T}
@@ -22,11 +22,11 @@ struct PointSetData{T,N} <: AbstractData{T,N}
   end
 end
 
-PointSetData(data::Dict{Symbol,<:AbstractArray},
+PointSetData(data::OrderedDict{Symbol,<:AbstractArray},
              coords::AbstractMatrix{T}) where {T} =
   PointSetData{T,size(coords,1)}(data, PointSet(coords))
 
-PointSetData(data::Dict{Symbol,<:AbstractArray},
+PointSetData(data::OrderedDict{Symbol,<:AbstractArray},
              coords::AbstractVector{NTuple{N,T}}) where {N,T} =
   PointSetData(data, [c[i] for i in 1:N, c in coords])
 

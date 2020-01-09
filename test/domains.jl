@@ -121,8 +121,8 @@
       @plottest plot(g2) joinpath(datadir,"sgrid2D.png") !istravis
       @plottest plot(g3,camera=(30,60)) joinpath(datadir,"sgrid3D.png") !istravis
       @plottest plot(g1,[1.,2.,2.,1]) joinpath(datadir,"sgrid1D-data.png") !istravis
-      @plottest plot(g2,zeros(nx*ny)) joinpath(datadir,"sgrid2D-data.png") !istravis
-      @plottest plot(g3,zeros(nx*ny*nz)) joinpath(datadir,"sgrid3D-data.png") !istravis
+      @plottest plot(g2,1:nx*ny) joinpath(datadir,"sgrid2D-data.png") !istravis
+      @plottest plot(g3,1:nx*ny*nz) joinpath(datadir,"sgrid3D-data.png") !istravis
     end
   end
 end

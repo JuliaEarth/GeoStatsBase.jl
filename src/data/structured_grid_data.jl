@@ -18,14 +18,14 @@ A very popular structured grid data format is NetCDF. Given 2D arrays
 `temperature`, the following code can be used to construct a structured grid:
 
 ```julia
-julia> data = Dict(:precipitation => precipitation, :temperature => temperature)
+julia> data = OrderedDict(:precipitation => precipitation, :temperature => temperature)
 julia> StructuredGridData(data, LAT, LON)
 ```
 
 See also: [`StructuredGrid`](@ref)
 """
 struct StructuredGridData{T,N} <: AbstractData{T,N}
-  data::Dict{Symbol,<:AbstractArray}
+  data::OrderedDict{Symbol,<:AbstractArray}
   domain::StructuredGrid{T,N}
 
   function StructuredGridData{T,N}(data, domain) where {N,T}
@@ -36,7 +36,7 @@ struct StructuredGridData{T,N} <: AbstractData{T,N}
   end
 end
 
-StructuredGridData(data::Dict{Symbol,<:AbstractArray},
+StructuredGridData(data::OrderedDict{Symbol,<:AbstractArray},
                    coordarrays::Vararg{<:AbstractArray{T},N}) where {N,T} =
   StructuredGridData{T,N}(data, StructuredGrid(coordarrays...))
 

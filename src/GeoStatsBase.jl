@@ -8,11 +8,11 @@ using Optim
 using CSV: read
 using Random: randperm, shuffle
 using StatsBase: Histogram, AbstractWeights
-using Distributions: median, mode
+using OrderedCollections: OrderedDict
 using Distributed: pmap, nworkers
 using Distances: Metric, Euclidean, Mahalanobis, pairwise
 using LinearAlgebra: Diagonal, normalize, norm, ⋅
-using Distributions: ContinuousUnivariateDistribution
+using Distributions: ContinuousUnivariateDistribution, median, mode
 using DataFrames: AbstractDataFrame, eltypes, nrow
 using NearestNeighbors: KDTree, knn, inrange
 using StaticArrays: SVector, MVector
@@ -60,6 +60,9 @@ include("plotrecipes.jl")
 include("utils.jl")
 
 export
+  # ordered dicts
+  OrderedDict,
+  
   # spatial object
   AbstractSpatialObject,
   domain,
