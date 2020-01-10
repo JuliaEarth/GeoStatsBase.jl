@@ -18,13 +18,16 @@ function Base.join(sdata₁::AbstractData, sdata₂::AbstractData, joiner::Varia
   vars₁ = variables(sdata₁)
   vars₂ = variables(sdata₂)
 
+  # variable names as vectors
+  vnames₁ = collect(keys(vars₁))
+  vnames₂ = collect(keys(vars₂))
+
   # find common variable names
-  allvars = keys(vars₁) ∪ keys(vars₂)
-  comvars = keys(vars₁) ∩ keys(vars₂)
+  allvars = vnames₁ ∪ vnames₂
+  comvars = vnames₁ ∩ vnames₂
 
   # find common names with same type
-  stvars = Set{Symbol}()
-  dtvars = Set{Symbol}()
+  stvars, dtvars = [], []
   for v in comvars
     if nonmissingtype(vars₁[v]) == nonmissingtype(vars₂[v])
       push!(stvars, v)
@@ -38,17 +41,18 @@ function Base.join(sdata₁::AbstractData, sdata₂::AbstractData, joiner::Varia
 
   # create single dictionary with all variables
   pairs = []
-  for v in allvars
+  for v in vnames₁
     if v ∈ comvars
-      # append numbers to variable names
       push!(pairs, Symbol(v, 1) => sdata₁[v])
+    else
+      push!(pairs, v => sdata₁[v])
+    end
+  end
+  for v in vnames₂
+    if v ∈ comvars
       push!(pairs, Symbol(v, 2) => sdata₂[v])
     else
-      if v ∈ keys(vars₁)
-        push!(pairs, v => sdata₁[v])
-      else
-        push!(pairs, v => sdata₂[v])
-      end
+      push!(pairs, v => sdata₂[v])
     end
   end
 
