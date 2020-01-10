@@ -14,7 +14,7 @@ abstract type AbstractDomain{T,N} <: AbstractSpatialObject{T,N} end
 
 Georeference a dictionary with raw `data` on a spatial `domain`.
 """
-georef(data::Dict{Symbol,<:AbstractArray}, domain::AbstractDomain) =
+georef(data::OrderedDict{Symbol,<:AbstractArray}, domain::AbstractDomain) =
   PointSetData(data, coordinates(domain))
 
 """

@@ -43,7 +43,7 @@ function coordinates!(buff::AbstractVector{T}, grid::StructuredGrid{T,N},
   buff .= grid.coords[:,location]
 end
 
-georef(data::Dict{Symbol,<:AbstractArray}, grid::StructuredGrid{T,N}) where {N,T} =
+georef(data::OrderedDict{Symbol,<:AbstractArray}, grid::StructuredGrid{T,N}) where {N,T} =
   StructuredGridData{T,N}(data, grid)
 
 # ------------

@@ -68,7 +68,7 @@ Return the `ind`-th realization of simulation `solution`.
 function Base.getindex(solution::SimulationSolution, ind::Int)
   sdomain = solution.domain
   sreals  = solution.realizations
-  idata   = Dict(var => reals[ind] for (var, reals) in sreals)
+  idata   = OrderedDict([(var, reals[ind]) for (var, reals) in sreals])
   georef(idata, sdomain)
 end
 

@@ -52,5 +52,7 @@ function Base.join(sdata₁::AbstractData, sdata₂::AbstractData, joiner::Varia
     end
   end
 
-  georef(Dict(pairs), domain(sdata₁))
+  dict = OrderedDict([(k, v) for (k, v) in pairs])
+
+  georef(dict, domain(sdata₁))
 end
