@@ -9,7 +9,7 @@ A solution to a spatial estimation problem.
 """
 struct LearningSolution{T,N,D<:AbstractDomain{T,N}} <: AbstractData{T,N}
   domain::D
-  data::Dict{Symbol,<:AbstractVector}
+  data::OrderedDict{Symbol,<:AbstractVector}
 end
 
 LearningSolution(domain, data) = LearningSolution{typeof(domain)}(domain, data)
