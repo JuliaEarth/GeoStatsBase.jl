@@ -3,36 +3,40 @@
 # ------------------------------------------------------------------
 
 """
-    BallSampler(radius, [maxsize])
+    BallSampler(radius; [options])
 
 A method for sampling isolated points from spatial objects using
-a ball neighborhood of given `radius`. The maximum size `maxsize`
-of the sample can be specified, but is not required.
+a ball neighborhood of given `radius`.
+
+## Options
+
+* `metric`  - Metric for the ball (default to `Euclidean()`)
+* `maxsize` - Maximum size of the resulting sample (default to none)
 """
-struct BallSampler{B<:BallNeighborhood} <: AbstractSampler
-  ball::B
+struct BallSampler{T,M<:Metric} <: AbstractSampler
+  radius::T
+  metric::M
   maxsize::Union{Int,Nothing}
 end
 
-BallSampler(ball::BallNeighborhood) = BallSampler(ball, nothing)
-
-BallSampler(radius::Real; maxsize=nothing, ndims=3) =
-  BallSampler(BallNeighborhood{ndims}(radius), maxsize)
+BallSampler(radius::Real; metric=Euclidean(), maxsize=nothing) =
+  BallSampler(radius, metric, maxsize)
 
 function sample(object::AbstractSpatialObject{T,N}, sampler::BallSampler) where {T,N}
-  npts = npoints(object)
-  ball = sampler.ball
-  size = sampler.maxsize ≠ nothing ? sampler.maxsize : Inf
+  radius = sampler.radius
+  metric = sampler.metric
+  msize  = sampler.maxsize ≠ nothing ? sampler.maxsize : Inf
 
   # neighborhood search method with ball
+  ball = BallNeighborhood{N}(radius, metric)
   searcher = NeighborhoodSearcher(object, ball)
 
   # pre-allocate memory for coordinates
   coords = MVector{N,T}(undef)
 
   locations = Vector{Int}()
-  notviewed = trues(npts)
-  while length(locations) < size && any(notviewed)
+  notviewed = trues(npoints(object))
+  while length(locations) < msize && any(notviewed)
     location = rand(findall(notviewed))
     coordinates!(coords, object, location)
 

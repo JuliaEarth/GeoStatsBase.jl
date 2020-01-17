@@ -35,17 +35,12 @@ function Base.error(solver::AbstractLearningSolver,
 
   @assert ndims(sdata) == ndims(tdata) "source and target domain must have same dimension"
 
-  # source and target balls
-  bdims   = ndims(sdata)
+  # source and target samplers
   sradius = eestimator.sradius
   tradius = eestimator.tradius
   metric  = eestimator.metric
-  sball   = BallNeighborhood{bdims}(sradius, metric)
-  tball   = BallNeighborhood{bdims}(tradius, metric)
-
-  # source and target samplers
-  ssampler = BallSampler(sball)
-  tsampler = BallSampler(tball)
+  ssampler = BallSampler(sradius, metric)
+  tsampler = BallSampler(tradius, metric)
 
   # helper function
   function iid_estimate(ssamples, tsamples)
