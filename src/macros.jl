@@ -83,6 +83,10 @@ macro metasolver(solver, solvertype, body)
       function $solver(vparams::Dict{$vtype,$solvervparam},
                        jparams::Dict{$jtype,$solverjparam},
                        $(gkeys...))
+        jvars = collect(keys(jparams))
+        ms = length.(jvars)
+        ns = length.(unique.(jvars))
+        @assert all(ms .== ns .> 1) "invalid joint variable specification"
         new(vparams, jparams, $(gkeys...))
       end
     end)
