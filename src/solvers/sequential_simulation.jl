@@ -37,11 +37,7 @@ function preprocess(problem::SimulationProblem, solver::SeqSim)
 
   for (var, V) in variables(problem)
     # get user parameters
-    if var ∈ keys(solver.params)
-      varparams = solver.params[var]
-    else
-      varparams = SeqSimParam()
-    end
+    varparams = parameters(solver, var)
 
     # determine maximum number of neighbors
     maxneighbors = varparams.maxneighbors
@@ -63,8 +59,8 @@ function preprocess(problem::SimulationProblem, solver::SeqSim)
   preproc
 end
 
-function solve_single(problem::SimulationProblem, var::Symbol,
-                      solver::SeqSim, preproc)
+function singlesolve(problem::SimulationProblem, var::Symbol,
+                     solver::SeqSim, preproc)
   # retrieve problem info
   pdata = data(problem)
   pdomain = domain(problem)

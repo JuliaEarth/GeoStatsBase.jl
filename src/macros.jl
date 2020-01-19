@@ -16,8 +16,9 @@ to use the GPU:
 
 ```julia
 julia> @metasolver MySolver AbstractSimulationSolver begin
-  @param mean = 0.
+  @param mean = 0.0
   @param variogram = GaussianVariogram()
+  @jparam rho = 0.7
   @global gpu = false
 end
 ```
@@ -31,9 +32,13 @@ macro metasolver(solver, solvertype, body)
   # discard any content that doesn't start with @param or @global
   content = filter(arg -> arg isa Expr, body.args)
 
-  # lines starting with @param refer to variable parameters
+  # lines starting with @param refer to single variable parameters
   vparams = filter(p -> p.args[1] == Symbol("@param"), content)
   vparams = map(p -> p.args[3], vparams)
+
+  # lines starting with @jparam refer to joint variable parameters
+  jparams = filter(p -> p.args[1] == Symbol("@jparam"), content)
+  jparams = map(p -> p.args[3], jparams)
 
   # lines starting with @global refer to global solver parameters
   gparams = filter(p -> p.args[1] == Symbol("@global"), content)
@@ -48,40 +53,76 @@ macro metasolver(solver, solvertype, body)
   # keyword names
   gkeys = map(p -> p.args[1], gparams)
 
-  # solver parameter type
-  solverparam = Symbol(solver,"Param")
+  # solver parameter type for single variable
+  solvervparam = Symbol(solver,"Param")
+
+  # solver parameter type for joint variables
+  solverjparam = Symbol(solver,"JointParam")
 
   # variables are symbols or tuples of symbols
-  varstype = Union{Symbol,NTuple{N,Symbol}} where N
+  vtype = Symbol
+  jtype = NTuple{<:Any,Symbol}
 
   esc(quote
-    $Parameters.@with_kw_noshow struct $solverparam
+    $Parameters.@with_kw_noshow struct $solvervparam
       __dummy__ = nothing
       $(vparams...)
     end
 
-    @doc (@doc $solverparam) (
-    struct $solver <: $solvertype
-      params::Dict{$varstype,$solverparam}
+    $Parameters.@with_kw_noshow struct $solverjparam
+      __dummy__ = nothing
+      $(jparams...)
+    end
 
+    @doc (@doc $solvervparam) (
+    struct $solver <: $solvertype
+      vparams::Dict{$vtype,$solvervparam}
+      jparams::Dict{$jtype,$solverjparam}
       $(gkeys...)
 
-      function $solver(params::Dict{$varstype,$solverparam}, $(gkeys...))
-        new(params, $(gkeys...))
+      function $solver(vparams::Dict{$vtype,$solvervparam},
+                       jparams::Dict{$jtype,$solverjparam},
+                       $(gkeys...))
+        new(vparams, jparams, $(gkeys...))
       end
     end)
 
     function $solver(params...; $(gparams...))
-      # build dictionary for inner constructor
-      dict = Dict{$varstype,$solverparam}()
+      # build dictionaries for inner constructor
+      vdict = Dict{$vtype,$solvervparam}()
+      jdict = Dict{$jtype,$solverjparam}()
 
       # convert named tuples to solver parameters
       for (varname, varparams) in params
         kwargs = [k => v for (k,v) in zip(keys(varparams), varparams)]
-        push!(dict, varname => $solverparam(; kwargs...))
+        if varname isa Symbol
+          push!(vdict, varname => $solvervparam(; kwargs...))
+        else
+          push!(jdict, varname => $solverjparam(; kwargs...))
+        end
       end
 
-      $solver(dict, $(gkeys...))
+      $solver(vdict, jdict, $(gkeys...))
+    end
+
+    GeoStatsBase.separablevars(solver::$solver) = collect(keys(solver.vparams))
+
+    GeoStatsBase.nonseparablevars(solver::$solver) = collect(keys(solver.jparams))
+
+    function GeoStatsBase.parameters(solver::$solver, var::$vtype)
+      if var ∈ keys(solver.vparams)
+        solver.vparams[var]
+      else
+        $solvervparam()
+      end
+    end
+
+    function GeoStatsBase.parameters(solver::$solver, var::$jtype)
+      if var ∈ keys(solver.jparams)
+        solver.jparams[var]
+      else
+        $solverjparam()
+      end
     end
 
     # ------------
@@ -93,11 +134,11 @@ macro metasolver(solver, solvertype, body)
 
     function Base.show(io::IO, ::MIME"text/plain", solver::$solver)
       println(io, solver)
-      for (var, varparams) in solver.params
+      for (var, varparams) in merge(solver.vparams, solver.jparams)
         if var isa Symbol
           println(io, "  └─", var)
         else
-          println(io, "  └─", "(", join(var, ", "), ")")
+          println(io, "  └─", join(var, "—"))
         end
         pnames = setdiff(fieldnames(typeof(varparams)), [:__dummy__])
         for pname in pnames

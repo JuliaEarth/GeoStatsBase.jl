@@ -1,11 +1,11 @@
 ################
 # DUMMY SOLVER
 ################
-import GeoStatsBase: solve_single
+import GeoStatsBase: singlesolve
 
 @simsolver DummySimSolver begin end
-function solve_single(problem::SimulationProblem,
-                      var::Symbol, solver::DummySimSolver, preproc)
+function singlesolve(problem::SimulationProblem,
+                     var::Symbol, solver::DummySimSolver, preproc)
   npts = npoints(domain(problem))
   V = variables(problem)[var]
   vcat(fill(zero(V), npts÷2), fill(one(V), npts÷2))

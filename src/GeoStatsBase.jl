@@ -62,7 +62,7 @@ include("utils.jl")
 export
   # ordered dicts
   OrderedDict,
-  
+
   # spatial object
   AbstractSpatialObject,
   domain,
@@ -162,8 +162,12 @@ export
   CookieCutter,
   CookieCutterParam,
   PointwiseLearn,
-  solve, solve_single,
+  separablevars,
+  nonseparablevars,
+  parameters,
   preprocess,
+  solve,
+  singlesolve,
 
   # errors
   AbstractErrorEstimator,

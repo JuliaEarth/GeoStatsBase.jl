@@ -44,26 +44,20 @@ Solve the simulation `problem` with the simulation `solver`.
 
 ### Notes
 
-Default implementation calls `solve_single` in parallel.
+Default implementation calls `singlesolve` in parallel.
 """
 function solve(problem::SimulationProblem, solver::AbstractSimulationSolver)
   # sanity checks
-  @assert keys(solver.params) ⊆ keys(variables(problem)) "invalid variable names in solver parameters"
+  @assert keys(parameters(solver)) ⊆ keys(variables(problem)) "invalid variable names in solver parameters"
 
   # optional preprocessing step
   preproc = preprocess(problem, solver)
 
   realizations = []
   for (var,V) in variables(problem)
-    if nworkers() > 1
-      # generate realizations in parallel
-      λ = _ -> solve_single(problem, var, solver, preproc)
-      varreals = pmap(λ, 1:nreals(problem))
-    else
-      # fallback to serial execution
-      varreals = [solve_single(problem, var, solver, preproc) for i=1:nreals(problem)]
+    varreals = pmap(1:nreals(problem)) do _
+      singlesolve(problem, var, solver, preproc)
     end
-
     push!(realizations, var => varreals)
   end
 
@@ -84,7 +78,7 @@ Default implementation returns nothing.
 preprocess(::SimulationProblem, ::AbstractSimulationSolver) = nothing
 
 """
-    solve_single(problem, var, solver, preproc)
+    singlesolve(problem, var, solver, preproc)
 
 Solve a single realization of `var` in the simulation `problem`
 with the simulation `solver`, optionally using preprocessed
@@ -97,8 +91,49 @@ informing the framework that realizations generated with his/her
 solver are indenpendent one from another. GeoStats.jl will trigger
 the algorithm in parallel (if enough processes are available).
 """
-solve_single(::SimulationProblem, ::Symbol, ::AbstractSimulationSolver,
-             ::Any) = @error "not implemented"
+singlesolve(::SimulationProblem, ::Symbol, ::AbstractSimulationSolver,
+            ::Any) = @error "not implemented"
+
+"""
+    separablevars(solver)
+
+Return the list of variables that were specified in the `solver` separately.
+"""
+separablevars(::AbstractSolver) = @error "not implemented"
+
+"""
+    nonseparablevars(solver)
+
+Return the list of variables that were specified in the `solver` along
+with other variables. For example `(:var₁, :var₂)` specifies that the
+two variables `var₁` and `var₂` have shared parameters, hence results.
+"""
+nonseparablevars(::AbstractSolver) = @error "not implemented"
+
+"""
+    parameters(solver, var)
+
+Return the parameters of the separable variable `var` in the `solver`.
+"""
+parameters(::AbstractSolver, ::Symbol) = @error "not implemented"
+
+"""
+    parameters(solver, vars)
+
+Return the parameters of the nonseparable variables `vars` in the `solver`.
+"""
+parameters(::AbstractSolver, ::NTuple) = @error "not implemented"
+
+"""
+    parameters(solver)
+
+Return the parameters of the `solver` for all specified variables.
+"""
+function parameters(solver::AbstractSolver)
+  sdict = Dict(var => parameters(solver, var) for var in separablevars(solver))
+  jdict = Dict(var => parameters(solver, var) for var in nonseparablevars(solver))
+  merge(sdict, jdict)
+end
 
 #------------------
 # IMPLEMENTATIONS
