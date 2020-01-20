@@ -35,101 +35,107 @@ function preprocess(problem::SimulationProblem, solver::SeqSim)
   # result of preprocessing
   preproc = Dict{Symbol,NamedTuple}()
 
-  for (var, V) in variables(problem)
-    # get user parameters
-    varparams = parameters(solver, var)
+  for covars in covariables(problem, solver)
+    for var in covars.names
+      # get user parameters
+      varparams = covars.params[(var,)]
 
-    # determine maximum number of neighbors
-    maxneighbors = varparams.maxneighbors
+      # determine maximum number of neighbors
+      maxneighbors = varparams.maxneighbors
 
-    # determine neighbor search method
-    neigh     = varparams.neighborhood
-    searcher  = NeighborhoodSearcher(pdomain, neigh)
-    bsearcher = BoundedSearcher(searcher, maxneighbors)
+      # determine neighbor search method
+      neigh     = varparams.neighborhood
+      searcher  = NeighborhoodSearcher(pdomain, neigh)
+      bsearcher = BoundedSearcher(searcher, maxneighbors)
 
-    # save preprocessed input
-    preproc[var] = (estimator=varparams.estimator,
-                    minneighbors=varparams.minneighbors,
-                    maxneighbors=varparams.maxneighbors,
-                    marginal=varparams.marginal,
-                    path=varparams.path,
-                    bsearcher=bsearcher)
+      # save preprocessed input
+      preproc[var] = (estimator=varparams.estimator,
+                      minneighbors=varparams.minneighbors,
+                      maxneighbors=varparams.maxneighbors,
+                      marginal=varparams.marginal,
+                      path=varparams.path,
+                      bsearcher=bsearcher)
+    end
   end
 
   preproc
 end
 
-function singlesolve(problem::SimulationProblem, var::Symbol,
+function solvesingle(problem::SimulationProblem, covars::NamedTuple,
                      solver::SeqSim, preproc)
   # retrieve problem info
   pdata = data(problem)
   pdomain = domain(problem)
 
-  # unpack preprocessed parameters
-  estimator, minneighbors, maxneighbors, marginal, path, bsearcher = preproc[var]
+  varreals = map(covars.names) do var
+    # unpack preprocessed parameters
+    estimator, minneighbors, maxneighbors, marginal, path, bsearcher = preproc[var]
 
-  # determine value type
-  V = variables(problem)[var]
+    # determine value type
+    V = variables(problem)[var]
 
-  # pre-allocate memory for result
-  realization = Vector{V}(undef, npoints(pdomain))
+    # pre-allocate memory for result
+    realization = Vector{V}(undef, npoints(pdomain))
 
-  # pre-allocate memory for coordinates
-  xₒ = MVector{ndims(pdomain),coordtype(pdomain)}(undef)
+    # pre-allocate memory for coordinates
+    xₒ = MVector{ndims(pdomain),coordtype(pdomain)}(undef)
 
-  # pre-allocate memory for neighbors coordinates
-  neighbors = Vector{Int}(undef, maxneighbors)
-  X = Matrix{coordtype(pdomain)}(undef, ndims(pdomain), maxneighbors)
+    # pre-allocate memory for neighbors coordinates
+    neighbors = Vector{Int}(undef, maxneighbors)
+    X = Matrix{coordtype(pdomain)}(undef, ndims(pdomain), maxneighbors)
 
-  # keep track of simulated locations
-  simulated = falses(npoints(pdomain))
-  for (loc, datloc) in datamap(problem, var)
-    realization[loc] = pdata[datloc,var]
-    simulated[loc] = true
-  end
+    # keep track of simulated locations
+    simulated = falses(npoints(pdomain))
+    for (loc, datloc) in datamap(problem, var)
+      realization[loc] = pdata[datloc,var]
+      simulated[loc] = true
+    end
 
-  # simulation loop
-  for location in path
-    if !simulated[location]
-      # coordinates of neighborhood center
-      coordinates!(xₒ, pdomain, location)
+    # simulation loop
+    for location in path
+      if !simulated[location]
+        # coordinates of neighborhood center
+        coordinates!(xₒ, pdomain, location)
 
-      # find neighbors with previously simulated values
-      nneigh = search!(neighbors, xₒ, bsearcher, mask=simulated)
+        # find neighbors with previously simulated values
+        nneigh = search!(neighbors, xₒ, bsearcher, mask=simulated)
 
-      # choose between marginal and conditional distribution
-      if nneigh < minneighbors
-        # draw from marginal
-        realization[location] = rand(marginal)
-      else
-        # final set of neighbors
-        nview = view(neighbors, 1:nneigh)
-
-        # update neighbors coordinates
-        coordinates!(X, pdomain, nview)
-
-        Xview = view(X,:,1:nneigh)
-        zview = view(realization, nview)
-
-        # fit estimator
-        fitted = fit(estimator, Xview, zview)
-
-        if status(fitted)
-          # estimate mean and variance
-          μ, σ² = predict(fitted, xₒ)
-
-          # draw from conditional
-          realization[location] = μ + √σ²*randn(V)
-        else
+        # choose between marginal and conditional distribution
+        if nneigh < minneighbors
           # draw from marginal
           realization[location] = rand(marginal)
-        end
-      end
+        else
+          # final set of neighbors
+          nview = view(neighbors, 1:nneigh)
 
-      # mark location as simulated and continue
-      simulated[location] = true
+          # update neighbors coordinates
+          coordinates!(X, pdomain, nview)
+
+          Xview = view(X,:,1:nneigh)
+          zview = view(realization, nview)
+
+          # fit estimator
+          fitted = fit(estimator, Xview, zview)
+
+          if status(fitted)
+            # estimate mean and variance
+            μ, σ² = predict(fitted, xₒ)
+
+            # draw from conditional
+            realization[location] = μ + √σ²*randn(V)
+          else
+            # draw from marginal
+            realization[location] = rand(marginal)
+          end
+        end
+
+        # mark location as simulated and continue
+        simulated[location] = true
+      end
     end
+
+    var => realization
   end
 
-  realization
+  Dict(varreals)
 end

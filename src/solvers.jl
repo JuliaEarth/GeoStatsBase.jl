@@ -44,24 +44,41 @@ Solve the simulation `problem` with the simulation `solver`.
 
 ### Notes
 
-Default implementation calls `singlesolve` in parallel.
+Default implementation calls `solvesingle` in parallel.
 """
 function solve(problem::SimulationProblem, solver::AbstractSimulationSolver)
   # sanity checks
-  @assert keys(parameters(solver)) ⊆ keys(variables(problem)) "invalid variable names in solver parameters"
+  @assert variables(solver) ⊆ keys(variables(problem)) "invalid variables in solver"
 
-  # optional preprocessing step
+  # optional preprocessing
   preproc = preprocess(problem, solver)
 
-  realizations = []
-  for (var,V) in variables(problem)
-    varreals = pmap(1:nreals(problem)) do _
-      singlesolve(problem, var, solver, preproc)
+  # simulation loop
+  results = []
+  for covars in covariables(problem, solver)
+    # simulate covariables
+    reals = pmap(1:nreals(problem)) do _
+      solvesingle(problem, covars, solver, preproc)
     end
-    push!(realizations, var => varreals)
+
+    # rearrange realizations
+    vnames = covars.names
+    vtypes = [variables(problem)[var] for var in vnames]
+    rdict  = Dict(vnames .=> [Vector{V}[] for V in vtypes])
+    for real in reals
+      for var in vnames
+        push!(rdict[var], real[var])
+      end
+    end
+
+    push!(results, rdict)
   end
 
-  SimulationSolution(domain(problem), Dict(realizations))
+  # merge results into a single dictionary
+  pdomain = domain(problem)
+  preals  = reduce(merge, results)
+
+  SimulationSolution(pdomain, preals)
 end
 
 """
@@ -78,11 +95,10 @@ Default implementation returns nothing.
 preprocess(::SimulationProblem, ::AbstractSimulationSolver) = nothing
 
 """
-    singlesolve(problem, var, solver, preproc)
+    solvesingle(problem, covariables, solver, preproc)
 
-Solve a single realization of `var` in the simulation `problem`
-with the simulation `solver`, optionally using preprocessed
-data in `preproc`.
+Solve a single realization of `covariables` in the simulation `problem`
+with the simulation `solver`, optionally using preprocessed data in `preproc`.
 
 ### Notes
 
@@ -91,49 +107,52 @@ informing the framework that realizations generated with his/her
 solver are indenpendent one from another. GeoStats.jl will trigger
 the algorithm in parallel (if enough processes are available).
 """
-singlesolve(::SimulationProblem, ::Symbol, ::AbstractSimulationSolver,
+solvesingle(::SimulationProblem, ::NamedTuple, ::AbstractSimulationSolver,
             ::Any) = @error "not implemented"
 
 """
-    separablevars(solver)
+    covariables(var, solver)
 
-Return the list of variables that were specified in the `solver` separately.
+Return covariables associated with the variable `var`
+in the `solver` and their respective parameters.
 """
-separablevars(::AbstractSolver) = @error "not implemented"
-
-"""
-    nonseparablevars(solver)
-
-Return the list of variables that were specified in the `solver` along
-with other variables. For example `(:var₁, :var₂)` specifies that the
-two variables `var₁` and `var₂` have shared parameters, hence results.
-"""
-nonseparablevars(::AbstractSolver) = @error "not implemented"
+covariables(::Symbol, ::AbstractSolver) = @error "not implemented"
 
 """
-    parameters(solver, var)
+    covariables(problem, solver)
 
-Return the parameters of the separable variable `var` in the `solver`.
+Return all covariables in the `solver` based on list of
+variables in the `problem`.
 """
-parameters(::AbstractSolver, ::Symbol) = @error "not implemented"
+function covariables(problem::AbstractProblem, solver::AbstractSolver)
+  vars = Set(keys(variables(problem)))
 
-"""
-    parameters(solver, vars)
+  result = []
+  while !isempty(vars)
+    # choose a variable from the problem
+    var = pop!(vars)
 
-Return the parameters of the nonseparable variables `vars` in the `solver`.
-"""
-parameters(::AbstractSolver, ::NTuple) = @error "not implemented"
+    # find covariables of the variable
+    covars = covariables(var, solver)
 
-"""
-    parameters(solver)
+    # save covariables to result
+    push!(result, covars)
 
-Return the parameters of the `solver` for all specified variables.
-"""
-function parameters(solver::AbstractSolver)
-  sdict = Dict(var => parameters(solver, var) for var in separablevars(solver))
-  jdict = Dict(var => parameters(solver, var) for var in nonseparablevars(solver))
-  merge(sdict, jdict)
+    # update remaining variables
+    for v in setdiff(covars.names, [var])
+      pop!(vars, v)
+    end
+  end
+
+  result
 end
+
+"""
+    variables(solver)
+
+Return flattened list of variable names in the `solver`.
+"""
+variables(::AbstractSolver) = @error "not implemented"
 
 #------------------
 # IMPLEMENTATIONS

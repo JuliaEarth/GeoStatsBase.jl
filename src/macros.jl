@@ -80,14 +80,35 @@ macro metasolver(solver, solvertype, body)
       jparams::Dict{$jtype,$solverjparam}
       $(gkeys...)
 
+      # auxiliary fields
+      varnames::Vector{Symbol}
+      adjacency::Matrix{Int}
+
       function $solver(vparams::Dict{$vtype,$solvervparam},
                        jparams::Dict{$jtype,$solverjparam},
                        $(gkeys...))
+        svars = collect(keys(vparams))
         jvars = collect(keys(jparams))
-        ms = length.(jvars)
-        ns = length.(unique.(jvars))
-        @assert all(ms .== ns .> 1) "invalid joint variable specification"
-        new(vparams, jparams, $(gkeys...))
+        lens₁ = length.(jvars)
+        lens₂ = length.(unique.(jvars))
+
+        @assert all(lens₁ .== lens₂ .> 1) "invalid joint variable specification"
+
+        varnames = svars ∪ Iterators.flatten(jvars)
+
+        adjacency = zeros(Int, length(varnames), length(varnames))
+        for (i, u) in enumerate(varnames)
+          for vtuple in jvars
+            if u ∈ vtuple
+              for v in vtuple
+                j = indexin([v], varnames)[1]
+                i == j || (adjacency[i,j] = 1)
+              end
+            end
+          end
+        end
+
+        new(vparams, jparams, varnames, adjacency, $(gkeys...))
       end
     end)
 
@@ -109,25 +130,34 @@ macro metasolver(solver, solvertype, body)
       $solver(vdict, jdict, $(gkeys...))
     end
 
-    GeoStatsBase.separablevars(solver::$solver) = collect(keys(solver.vparams))
+    function GeoStatsBase.covariables(var::Symbol, solver::$solver)
+      varindex = indexin([var], solver.varnames)[1]
+      if varindex ≠ nothing
+        comp = GeoStatsBase.component(solver.adjacency, varindex)
+        vars = Tuple(solver.varnames[sort(comp)])
 
-    GeoStatsBase.nonseparablevars(solver::$solver) = collect(keys(solver.jparams))
+        params = []
+        if var ∈ keys(solver.vparams)
+          push!(params, (var,) => solver.vparams[var])
+        else
+          push!(params, (var,) => $solvervparam())
+        end
 
-    function GeoStatsBase.parameters(solver::$solver, var::$vtype)
-      if var ∈ keys(solver.vparams)
-        solver.vparams[var]
+        for vtuple in keys(solver.jparams)
+          if any(v ∈ vars for v in vtuple)
+            push!(params, vtuple => solver.jparams[vtuple])
+          end
+        end
       else
-        $solvervparam()
+        # default parameter for single variable
+        vars = (var,)
+        params = [(var,) => $solvervparam()]
       end
+
+      (names=vars, params=Dict(params))
     end
 
-    function GeoStatsBase.parameters(solver::$solver, var::$jtype)
-      if var ∈ keys(solver.jparams)
-        solver.jparams[var]
-      else
-        $solverjparam()
-      end
-    end
+    GeoStatsBase.variables(solver::$solver) = solver.varnames
 
     # ------------
     # IO methods
