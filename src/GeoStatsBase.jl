@@ -29,6 +29,9 @@ import Distances: evaluate
 import Distributions: quantile, cdf
 import DataFrames: groupby
 
+# basic graph utils
+include("graphs.jl")
+
 include("spatialobject.jl")
 include("domains.jl")
 include("domainview.jl")
@@ -162,12 +165,10 @@ export
   CookieCutter,
   CookieCutterParam,
   PointwiseLearn,
-  separablevars,
-  nonseparablevars,
-  parameters,
+  variables,
+  covariables,
   preprocess,
-  solve,
-  singlesolve,
+  solve, solvesingle,
 
   # errors
   AbstractErrorEstimator,
