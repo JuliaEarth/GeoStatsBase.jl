@@ -131,18 +131,14 @@ macro metasolver(solver, solvertype, body)
     end
 
     function GeoStatsBase.covariables(var::Symbol, solver::$solver)
-      varindex = indexin([var], solver.varnames)[1]
-      if varindex ≠ nothing
-        comp = GeoStatsBase.component(solver.adjacency, varindex)
+      vind = indexin([var], solver.varnames)[1]
+      if vind ≠ nothing
+        comp = GeoStatsBase.component(solver.adjacency, vind)
         vars = Tuple(solver.varnames[sort(comp)])
-
         params = []
-        if var ∈ keys(solver.vparams)
-          push!(params, (var,) => solver.vparams[var])
-        else
-          push!(params, (var,) => $solvervparam())
+        for v in vars
+          push!(params, (v,) => solver.vparams[v])
         end
-
         for vtuple in keys(solver.jparams)
           if any(v ∈ vars for v in vtuple)
             push!(params, vtuple => solver.jparams[vtuple])
