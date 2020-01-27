@@ -11,7 +11,7 @@ variables in target data `tdata`.
 ## Optional parameters
 
 * `variables` - Variables to consider (default to all)
-* `estimator` - Density ratio estimator (default to `KLIEP()`)
+* `estimator` - Density ratio estimator (default to `LSIF()`)
 * `optlib`    - Optimization library (default to `default_optlib(estimator)`)
 
 ### Notes
@@ -27,7 +27,7 @@ end
 
 function DensityRatioWeighter(tdata::DΩ;
                               variables=nothing,
-                              estimator=KLIEP(),
+                              estimator=LSIF(),
                               optlib=default_optlib(estimator)) where {DΩ<:AbstractData}
   validvars = collect(keys(GeoStatsBase.variables(tdata)))
   wvars = variables ≠ nothing ? variables : validvars
