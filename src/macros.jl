@@ -108,7 +108,7 @@ macro metasolver(solver, solvertype, body)
           end
         end
 
-        new(vparams, jparams, varnames, adjacency, $(gkeys...))
+        new(vparams, jparams, $(gkeys...), varnames, adjacency)
       end
     end)
 
