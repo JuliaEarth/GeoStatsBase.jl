@@ -7,7 +7,6 @@
 
   seriestype --> :scatterpath
   linecolor  --> :black
-  markersize --> 2
 
   if N == 1
     color --> :bluesreds
@@ -35,7 +34,6 @@ end
   X = coordinates(domain)
 
   seriestype --> :scatterpath
-  markersize --> 2
   color --> :black
   legend --> false
 
