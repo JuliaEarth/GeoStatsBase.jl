@@ -6,7 +6,6 @@
   X = coordinates(domain)
 
   seriestype --> :scatter
-  markersize --> 2
 
   if N == 1
     X[1,:], data
@@ -31,7 +30,6 @@ end
   X = coordinates(domain)
 
   seriestype --> :scatter
-  markersize --> 2
   color --> :black
   legend --> false
 

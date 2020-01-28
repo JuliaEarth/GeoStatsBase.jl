@@ -29,7 +29,6 @@ end
   X  = coordinates(domain)
   sz = size(domain)
 
-  markersize --> 2
   color --> :black
   legend --> false
 
