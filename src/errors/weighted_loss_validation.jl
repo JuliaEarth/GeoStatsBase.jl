@@ -36,7 +36,10 @@ function Base.error(solver::AbstractLearningSolver,
   solution   = solve(subproblem, solver)
 
   # weight hold-out set
-  w = weight(hold, eestimator.weighter)
+  weights = weight(hold, eestimator.weighter)
+
+  # normalize weights
+  w = weights ./ sum(weights)
 
   result = pmap(ovars) do var
     𝔏 = defaultloss(sdata[1,var])
