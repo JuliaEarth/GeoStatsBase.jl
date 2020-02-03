@@ -176,7 +176,8 @@ export
   CrossValidation,
   BlockCrossValidation,
   BallSampleValidation,
-  WeightedLossValidation,
+  WeightedHoldOut,
+  WeightedCrossValidation,
 
   # helper macros
   @estimsolver,

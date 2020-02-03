@@ -3,26 +3,21 @@
 # ------------------------------------------------------------------
 
 """
-    WeightedLossValidation(weighter, fraction)
+    WeightedHoldOut(weighter, fraction)
 
 Weighted loss validation with train / hold-out split.
 The source data of the problem is split with a `fraction`
 into train and hold-out sets, and the samples are weighted
 with a `weighter` method.
-
-## References
-
-* Sugiyama et al. 2012. Density ratio estimation in
-  machine learning.
 """
-struct WeightedLossValidation{W<:AbstractWeighter,T<:Real} <: AbstractErrorEstimator
+struct WeightedHoldOut{W<:AbstractWeighter,T<:Real} <: AbstractErrorEstimator
   weighter::W
   fraction::T
 end
 
 function Base.error(solver::AbstractLearningSolver,
                     problem::LearningProblem,
-                    eestimator::WeightedLossValidation)
+                    eestimator::WeightedHoldOut)
   # retrieve problem info
   sdata = sourcedata(problem)
   ovars = outputvars(task(problem))
@@ -36,10 +31,7 @@ function Base.error(solver::AbstractLearningSolver,
   solution   = solve(subproblem, solver)
 
   # weight hold-out set
-  weights = weight(hold, eestimator.weighter)
-
-  # normalize weights
-  w = weights ./ sum(weights)
+  w = weight(hold, eestimator.weighter)
 
   result = pmap(ovars) do var
     𝔏 = defaultloss(sdata[1,var])
