@@ -178,6 +178,7 @@ export
   BallSampleValidation,
   WeightedHoldOut,
   WeightedCrossValidation,
+  WeightedBootstrap,
 
   # helper macros
   @estimsolver,
