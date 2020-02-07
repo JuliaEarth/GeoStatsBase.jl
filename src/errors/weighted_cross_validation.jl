@@ -1,4 +1,4 @@
-
+# ------------------------------------------------------------------
 # Licensed under the ISC License. See LICENSE in the project root.
 # ------------------------------------------------------------------
 
@@ -21,7 +21,6 @@ end
 WeightedCrossValidation(weighter::W, k::Int;
                         shuffle=true)  where {W<:AbstractWeighter} =
   WeightedCrossValidation(weighter, UniformPartitioner(k, shuffle))
-
 
 function Base.error(solver::AbstractLearningSolver,
                     problem::LearningProblem,
