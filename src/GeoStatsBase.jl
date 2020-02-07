@@ -7,7 +7,7 @@ module GeoStatsBase
 using Optim
 using CSV: read
 using Random: randperm, shuffle
-using StatsBase: Histogram, AbstractWeights
+using StatsBase: Histogram, Weights, AbstractWeights
 using OrderedCollections: OrderedDict
 using Distributed: pmap, nworkers
 using Distances: Metric, Euclidean, Mahalanobis, pairwise
@@ -276,6 +276,7 @@ export
   # sampling
   AbstractSampler,
   UniformSampler,
+  WeightedSampler,
   BallSampler,
   sample,
 
