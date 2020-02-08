@@ -3,15 +3,18 @@
 # ------------------------------------------------------------------
 
 """
-    WeightedBootstrap(weighter, b)
+    WeightedBootstrap(weighter, nsamples)
 
-Weighted bootstrap with `b` samples drawn with replacement
-using the weights produced by `weighter`.
+Weighted bootstrap with `nsamples` samples drawn with
+replacement using the weights produced by `weighter`.
 """
 struct WeightedBootstrap{W<:AbstractWeighter} <: AbstractErrorEstimator
   weighter::W
-  b::Int
+  nsamples::Int
 end
+
+WeightedBootstrap(weighter::AbstractWeighter) =
+  WeightedBootstrap(weighter, 20)
 
 function Base.error(solver::AbstractLearningSolver,
                     problem::LearningProblem,
@@ -21,16 +24,17 @@ function Base.error(solver::AbstractLearningSolver,
   ovars = outputvars(task(problem))
 
   # bootstrap parameters
-  b = eestimator.b
+  b = eestimator.nsamples
   n = npoints(sdata)
 
-  # weights source data
+  # weight source data
   weights = weight(sdata, eestimator.weighter)
 
   results = pmap(1:b) do _
     # create bootstrap sample
     sinds = sample(1:n, weights, n, replace=true)
-    tinds = setdiff(1:n, sinds)
+    binds = sample(1:n, weights, n, replace=true)
+    tinds = setdiff(binds, sinds)
 
     # training and holdout set
     train = view(sdata, sinds)
@@ -40,14 +44,11 @@ function Base.error(solver::AbstractLearningSolver,
     subproblem = LearningProblem(train, hold, task(problem))
     solution   = solve(subproblem, solver)
 
-    # weights for holdout set
-    w = view(weights, tinds)
-
     result = map(ovars) do var
       𝔏 = defaultloss(sdata[1,var])
       ŷ = solution[var]
       y = hold[var]
-      var => 𝔏(ŷ, y, w)
+      var => 𝔏(ŷ, y)
     end
 
     # results for bootstrap sample
