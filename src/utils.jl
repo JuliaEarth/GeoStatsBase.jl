@@ -54,14 +54,20 @@ Equivalent to `cover(object, RectangleCoverer())`
 boundbox(object::AbstractSpatialObject) = cover(object, RectangleCoverer())
 
 """
-    sample(object, n, replace=false)
+    sample(object, nsamples, [weights], replace=false)
 
-Generate `n` samples from spatial `object` uniformly
-with or without replacement depending on `replace`
-option.
+Generate `nsamples` samples from spatial `object`
+uniformly or using `weights`, with or without
+replacement depending on `replace` option.
 """
-sample(object::AbstractSpatialObject, n::Int; replace=false) =
-  sample(object, UniformSampler(n, replace))
+function sample(object::AbstractSpatialObject, nsamples::Int,
+                weights::AbstractVector=[]; replace=false)
+  if isempty(weights)
+    sample(object, UniformSampler(nsamples, replace))
+  else
+    sample(object, WeightedSampler(nsamples, weights, replace))
+  end
+end
 
 """
     join(sdata₁, sdata₂)
