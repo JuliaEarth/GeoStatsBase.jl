@@ -32,7 +32,7 @@ function Base.error(solver::AbstractLearningSolver,
 
   results = pmap(1:b) do _
     # create bootstrap sample
-    sinds = sample(1:n, weights, n, replace=true)
+    sinds = sample(1:n, n, replace=true)
     binds = sample(1:n, weights, n, replace=true)
     tinds = setdiff(binds, sinds)
 
