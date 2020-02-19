@@ -9,7 +9,7 @@ A method for partitioning spatial data into a family of hyperplanes defined
 by a `normal` direction. Two points `x` and `y` belong to the same
 hyperplane when `(x - y) ⋅ normal < tol`.
 """
-struct PlanePartitioner{T,N} <: AbstractSpatialFunctionPartitioner
+struct PlanePartitioner{T,N} <: AbstractSpatialPredicatePartitioner
   normal::SVector{N,T}
   tol::Float64
 end

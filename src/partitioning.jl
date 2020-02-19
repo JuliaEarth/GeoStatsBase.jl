@@ -105,18 +105,18 @@ A method for partitioning spatial objects.
 abstract type AbstractPartitioner end
 
 """
-    AbstractFunctionPartitioner
+    AbstractPredicatePartitioner
 
-A method for partitioning spatial objects with partition functions.
+A method for partitioning spatial objects with predicate functions.
 """
-abstract type AbstractFunctionPartitioner <: AbstractPartitioner end
+abstract type AbstractPredicatePartitioner <: AbstractPartitioner end
 
 """
-    AbstractSpatialFunctionPartitioner
+    AbstractSpatialPredicatePartitioner
 
-A method for partitioning spatial objects with spatial partition functions.
+A method for partitioning spatial objects with spatial predicate functions.
 """
-abstract type AbstractSpatialFunctionPartitioner <: AbstractFunctionPartitioner end
+abstract type AbstractSpatialPredicatePartitioner <: AbstractPredicatePartitioner end
 
 """
     partition(object, partitioner)
@@ -126,7 +126,7 @@ Partition `object` with partition method `partitioner`.
 partition(::AbstractSpatialObject, ::AbstractPartitioner) = @error "not implemented"
 
 function partition(object::AbstractSpatialObject{T,N},
-                   partitioner::AbstractFunctionPartitioner) where {N,T}
+                   partitioner::AbstractPredicatePartitioner) where {N,T}
   subsets = Vector{Vector{Int}}()
   for i in randperm(npoints(object))
     inserted = false
@@ -148,7 +148,7 @@ function partition(object::AbstractSpatialObject{T,N},
 end
 
 function partition(object::AbstractSpatialObject{T,N},
-                   partitioner::AbstractSpatialFunctionPartitioner) where {N,T}
+                   partitioner::AbstractSpatialPredicatePartitioner) where {N,T}
   # pre-allocate memory for coordinates
   x = MVector{N,T}(undef)
   y = MVector{N,T}(undef)
@@ -188,7 +188,8 @@ include("partitioning/bisect_fraction.jl")
 include("partitioning/ball.jl")
 include("partitioning/plane.jl")
 include("partitioning/direction.jl")
-include("partitioning/function.jl")
+include("partitioning/predicate.jl")
+include("partitioning/spatial_predicate.jl")
 include("partitioning/variable.jl")
 include("partitioning/product.jl")
 include("partitioning/hierarchical.jl")

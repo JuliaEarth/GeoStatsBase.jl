@@ -8,7 +8,7 @@
 A method for partitioning spatial objects along a given `direction`
 with bandwidth tolerance `tol`.
 """
-struct DirectionPartitioner{T,N} <: AbstractSpatialFunctionPartitioner
+struct DirectionPartitioner{T,N} <: AbstractSpatialPredicatePartitioner
   direction::SVector{N,T}
   tol::Float64
 end

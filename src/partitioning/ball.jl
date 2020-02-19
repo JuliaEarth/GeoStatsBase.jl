@@ -8,7 +8,7 @@
 A method for partitioning spatial objects into balls of a given
 `radius` using a `metric`.
 """
-struct BallPartitioner{T,M<:Metric} <: AbstractSpatialFunctionPartitioner
+struct BallPartitioner{T,M<:Metric} <: AbstractSpatialPredicatePartitioner
   radius::T
   metric::M
 end

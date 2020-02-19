@@ -31,11 +31,11 @@ function partition(sdata::AbstractData,
   # partition function without missings
   g(i, j) = sdata[i,var] == sdata[j,var]
 
-  # select the appropriate function
-  h = Missing <: V ? f : g
+  # select the appropriate predicate function
+  pred = Missing <: V ? f : g
 
   # perform partition
-  p = partition(sdata, FunctionPartitioner(h))
+  p = partition(sdata, PredicatePartitioner(pred))
 
   # retrieve value from each subset
   vals = [sdata[s[1],var] for s in subsets(p)]

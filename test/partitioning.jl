@@ -186,13 +186,17 @@
     @test setify(subsets(p)) == setify([[4,7],[2,8],[3,6],[1,5,9]])
   end
 
-  @testset "FunctionPartitioner" begin
+  @testset "PredicatePartitioner" begin
     grid = RegularGrid{Float64}(3,3)
 
     # partition even from odd locations
-    f(i,j) = iseven(i+j)
-    p = partition(grid, FunctionPartitioner(f))
+    pred(i,j) = iseven(i+j)
+    p = partition(grid, PredicatePartitioner(pred))
     @test setify(subsets(p)) == setify([1:2:9,2:2:8])
+  end
+
+  @testset "SpatialPredicatePartitioner" begin
+    # TODO
   end
 
   @testset "ProductPartitioner" begin
