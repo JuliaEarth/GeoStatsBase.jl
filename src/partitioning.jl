@@ -116,7 +116,7 @@ abstract type AbstractPredicatePartitioner <: AbstractPartitioner end
 
 A method for partitioning spatial objects with spatial predicate functions.
 """
-abstract type AbstractSpatialPredicatePartitioner <: AbstractPredicatePartitioner end
+abstract type AbstractSpatialPredicatePartitioner <: AbstractPartitioner end
 
 """
     partition(object, partitioner)

@@ -44,25 +44,9 @@ function partition(object::AbstractSpatialObject{T,N},
     l[i] = d[t]
   end
 
-  # subset-based representation
-  ss = Vector{Vector{Int}}()
-  for i in 1:npoints(object)
-    inserted = false
-    for s in ss
-      j = s[1]
-      if l[i] == l[j]
-        push!(s, i)
-        inserted = true
-        break
-      end
-    end
-
-    if !inserted
-      push!(ss, [i])
-    end
-  end
-
-  SpatialPartition(object, ss)
+  # return partition using label predicate
+  pred(i, j) = l[i] == l[j]
+  partition(object, PredicatePartitioner(pred))
 end
 
 Base.:*(p₁::AbstractPartitioner, p₂::AbstractPartitioner) =
