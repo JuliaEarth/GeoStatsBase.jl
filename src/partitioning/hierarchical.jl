@@ -14,12 +14,12 @@ struct HierarchicalPartitioner <: AbstractPartitioner
   second::AbstractPartitioner
 end
 
-function partition(spatialdata::AbstractData,
+function partition(object::AbstractSpatialObject,
                    partitioner::HierarchicalPartitioner)
   result = Vector{Vector{Int}}()
 
   # use first partition method
-  p = partition(spatialdata, partitioner.first)
+  p = partition(object, partitioner.first)
 
   # use second method to partition the first
   s = subsets(p)
@@ -31,7 +31,7 @@ function partition(spatialdata::AbstractData,
     end
   end
 
-  SpatialPartition(spatialdata, result)
+  SpatialPartition(object, result)
 end
 
 →(first, second) = HierarchicalPartitioner(first, second)
