@@ -200,10 +200,43 @@
   end
 
   @testset "ProductPartitioner" begin
-    # TODO
+    g = RegularGrid{Float64}(100,100)
+    bm = BlockPartitioner(10)
+    bn = BlockPartitioner(5)
+
+    # Bm x Bn = Bn with m > n
+    s1 = subsets(partition(g, bm*bn))
+    s2 = subsets(partition(g, bn))
+    @test setify(s1) == setify(s2)
+
+    # pXp=p (for deterministic p)
+    for p in [BlockPartitioner(10),
+              BisectFractionPartitioner((0.1,0.1))]
+      s1 = subsets(partition(g, p*p))
+      s2 = subsets(partition(g, p))
+      @test setify(s1) == setify(s2)
+    end
   end
 
   @testset "HierarchicalPartitioner" begin
-    # TODO
+    g = RegularGrid{Float64}(100,100)
+    bm = BlockPartitioner(10)
+    bn = BlockPartitioner(5)
+
+    # Bn -> Bm = Bm with m > n
+    s1 = subsets(partition(g, bm → bn))
+    s2 = subsets(partition(g, bn))
+    @test setify(s1) == setify(s2)
+  end
+
+  @testset "Mixed Tests" begin
+    g = RegularGrid{Float64}(100,100)
+    bm = BlockPartitioner(10)
+    bn = BlockPartitioner(5)
+
+    # Bm*Bn = Bm->Bn
+    s1 = subsets(partition(g, bm * bn))
+    s2 = subsets(partition(g, bm → bn))
+    @test @show setify(s1) == setify(s2)
   end
 end
