@@ -237,6 +237,6 @@
     # Bm*Bn = Bm->Bn
     s1 = subsets(partition(g, bm * bn))
     s2 = subsets(partition(g, bm → bn))
-    @test @show setify(s1) == setify(s2)
+    @test setify(s1) == setify(s2)
   end
 end
