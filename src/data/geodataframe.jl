@@ -40,7 +40,7 @@ end
 function GeoDataFrame(data::DF, coordnames::AbstractVector{Symbol}) where {DF<:AbstractDataFrame}
   @assert coordnames ⊆ names(data) "invalid column names"
 
-  Ts = eltypes(data[coordnames])
+  Ts = [eltype(data[!,c]) for c in coordnames]
   T  = promote_type(Ts...)
   N  = length(coordnames)
 
@@ -51,18 +51,13 @@ end
 
 domain(geodata::GeoDataFrame) = PointSet(coordinates(geodata))
 
-function coordnames(geodata::GeoDataFrame)
-  rawdata = geodata.data
-  cnames = geodata.coordnames
-
-  Tuple(cnames)
-end
+coordnames(geodata::GeoDataFrame) = Tuple(geodata.coordnames)
 
 function variables(geodata::GeoDataFrame)
-  rawdata = geodata.data
+  data   = geodata.data
   cnames = geodata.coordnames
-  vnames = [var for var in names(rawdata) if var ∉ cnames]
-  vtypes = eltypes(rawdata[vnames])
+  vnames = [var for var in names(data) if var ∉ cnames]
+  vtypes = [eltype(data[!,var]) for var in vnames]
 
   OrderedDict(var => T for (var,T) in zip(vnames,vtypes))
 end
@@ -70,13 +65,17 @@ end
 npoints(geodata::GeoDataFrame) = nrow(geodata.data)
 
 function coordinates!(buff::AbstractVector, geodata::GeoDataFrame, ind::Int)
-  rawdata = geodata.data
+  data   = geodata.data
   cnames = geodata.coordnames
 
   for (i, cname) in enumerate(cnames)
-    @inbounds buff[i] = rawdata[ind,cname]
+    @inbounds buff[i] = data[ind,cname]
   end
 end
+
+# specialize methods from spatial data
+Base.getindex(geodata::GeoDataFrame, ind::Int, var::Symbol) =
+  getindex(geodata.data, ind, var)
 
 # ------------
 # IO methods
