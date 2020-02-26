@@ -197,7 +197,7 @@
 
   @testset "SpatialPredicatePartitioner" begin
     g = RegularGrid{Float64}(10,10)
-
+    
     # check if each partition has only 1 point
     sp = SpatialPredicatePartitioner((x,y) -> norm(x-y) < 1.0)
     s = subsets(partition(g, sp))
