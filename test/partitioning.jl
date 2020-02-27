@@ -197,19 +197,27 @@
 
   @testset "SpatialPredicatePartitioner" begin
     g = RegularGrid{Float64}(10,10)
-    
-    # check if each partition has only 1 point
+
+    # check if there are 100 partitions, each one having only 1 point
     sp = SpatialPredicatePartitioner((x,y) -> norm(x-y) < 1.0)
     s = subsets(partition(g, sp))
     @test length(s) == 100
-
-    # check if points x and y belong to the rectangle [0.,5.]x[0.,5.]
+    for d in partition(g, sp)
+      @test npoints(d) == 1
+    end
+    # defining a predicate to check if points x and y belong to the rectangle [0.,5.]x[0.,5.]
     pred(x, y) = all([0.,0.] .<= x .<=[5.,5.]) && all([0.,0.] .<= y .<= [5.,5.])
     sp = SpatialPredicatePartitioner(pred)
-    s = subsets(partition(g, sp))
+    p = partition(g, sp)
+    s = subsets(p)
+    n = npoints.(p)
 
+    # a square [0.,5.]x[0.,5.] in a 10x10 RegularGrid has to contain 36 points
+    # all other points have to be each in its own partition (64 partitions)
     @test length(s) == 65
     @test maximum(length.(s)) == 36
+    @test count(i->i==1, n) == 64
+    @test count(i->i==36, n) == 1
   end
 
   @testset "ProductPartitioner" begin
