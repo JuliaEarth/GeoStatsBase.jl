@@ -4,6 +4,7 @@ using Distances
 using Distributions
 using DataFrames
 using DensityRatioEstimation
+using LinearAlgebra
 using Plots, VisualRegressionTests
 using Test, Pkg, Random
 
