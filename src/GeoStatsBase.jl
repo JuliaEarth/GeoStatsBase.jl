@@ -179,6 +179,7 @@ export
   WeightedHoldOut,
   WeightedCrossValidation,
   WeightedBootstrap,
+  DensityRatioValidation,
 
   # helper macros
   @estimsolver,
