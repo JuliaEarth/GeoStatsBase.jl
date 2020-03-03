@@ -45,8 +45,13 @@ function weight(sdata::AbstractData, weighter::DensityRatioWeighter)
   @assert vars ⊆ keys(variables(sdata)) "invalid variables ($vars) for spatial data"
 
   # numerator and denominator samples
-  x_nu = view(tdata, vars)
-  x_de = view(sdata, vars)
+  Ω_nu = view(tdata, vars)
+  Ω_de = view(sdata, vars)
+
+  # TODO: eliminate this explicit conversion after
+  # https://github.com/JuliaEarth/GeoStats.jl/projects/2 
+  x_nu = collect(eachrow(Ω_nu[1:npoints(Ω_nu),vars]))
+  x_de = collect(eachrow(Ω_de[1:npoints(Ω_de),vars]))
 
   # perform denstiy ratio estimation
   ratios = densratio(x_nu, x_de, dre, optlib=optlib)
