@@ -59,7 +59,7 @@ function variables(geodata::GeoDataFrame)
   vnames = [var for var in names(data) if var ∉ cnames]
   vtypes = [eltype(data[!,var]) for var in vnames]
 
-  OrderedDict(var => T for (var,T) in zip(vnames,vtypes))
+  OrderedDict([var => T for (var,T) in zip(vnames,vtypes)])
 end
 
 npoints(geodata::GeoDataFrame) = nrow(geodata.data)
