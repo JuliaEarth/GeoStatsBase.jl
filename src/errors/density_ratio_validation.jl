@@ -27,11 +27,11 @@ function Base.error(solver::AbstractLearningSolver,
                     problem::LearningProblem,
                     eestimator::DensityRatioValidation)
   # weight samples based on the features of target data
-  Ωt = targetdata(problem)
+  DΩt  = targetdata(problem)
   vars = collect(features(task(problem)))
-  weighter = DensityRatioWeighter(Ωt, variables=vars,
+  weighter = DensityRatioWeighter(DΩt, variables=vars,
                                   estimator=eestimator.dre,
                                   optlib=eestimator.optlib)
-  wcv = WeightedCrossValidation(weigther, eestimator.k, shuffle=true)
-  error(solve, problem, wcv)
+  wcv = WeightedCrossValidation(weighter, eestimator.k, shuffle=true)
+  error(solver, problem, wcv)
 end
