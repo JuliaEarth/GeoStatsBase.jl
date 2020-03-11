@@ -52,6 +52,7 @@ include("covering.jl")
 include("discretizing.jl")
 include("sampling.jl")
 include("joining.jl")
+include("filtering.jl")
 include("learning.jl")
 include("mappers.jl")
 include("problems.jl")
@@ -287,6 +288,10 @@ export
   AbstractJoiner,
   VariableJoiner,
 
+  # filtering
+  AbstractFilter,
+  UniqueCoordsFilter,
+
   # statistics
   SpatialStatistic,
   EmpiricalHistogram,
@@ -299,6 +304,7 @@ export
   # utilities
   readgeotable,
   groupby,
-  boundbox
+  boundbox,
+  uniquecoords
 
 end

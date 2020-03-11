@@ -35,6 +35,7 @@ testfiles = [
   "partitioning.jl",
   "weighting.jl",
   "covering.jl",
+  "filtering.jl",
   "paths.jl",
   "regions.jl",
   "neighborhoods.jl",
