@@ -36,7 +36,7 @@ function Base.error(solver::AbstractLearningSolver,
   result = pmap(ovars) do var
     𝔏 = defaultloss(sdata[1,var])
     ŷ, y = solution[var], hold[var]
-    var => 𝔏(ŷ, y, w)
+    var => value(𝔏, ŷ, y, AggMode.WeightedSum(w)) /length(y)
   end
 
   Dict(result)

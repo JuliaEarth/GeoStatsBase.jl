@@ -48,7 +48,7 @@ function Base.error(solver::AbstractLearningSolver,
       𝔏 = defaultloss(sdata[1,var])
       ŷ = solution[var]
       y = hold[var]
-      var => 𝔏(ŷ, y)
+      var => value(𝔏, ŷ, y, AggMode.Mean())
     end
 
     # results for bootstrap sample

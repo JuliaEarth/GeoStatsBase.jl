@@ -69,7 +69,7 @@ function Base.error(solver::AbstractLearningSolver,
       hold = view(sdata, folds[k])
       ŷ = solutions[k][var]
       y = hold[var]
-      𝔏(ŷ, y)
+      value(𝔏, ŷ, y, AggMode.Mean())
     end
     var => mean(losses)
   end

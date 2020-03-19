@@ -17,7 +17,7 @@ end
 
 Learn the `task` with `geodata` using a learning `model`.
 """
-function learn(task::AbstractLearningTask, geodata::AbstractData, model::MLJBase.Model)
+function learn(task::AbstractLearningTask, geodata::AbstractData, model)
   if issupervised(task)
     X = view(geodata, collect(features(task)))
     y = vec(geodata[label(task)])
@@ -30,7 +30,7 @@ function learn(task::AbstractLearningTask, geodata::AbstractData, model::MLJBase
   LearnedModel(model, θ)
 end
 
-function learn(task::CompositeTask, geodata::AbstractData, model::MLJBase.Model)
+function learn(task::CompositeTask, geodata::AbstractData, model)
   @error "not implemented"
 end
 

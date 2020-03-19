@@ -9,10 +9,10 @@ Check whether or not `model` can be used for
 learning `task`.
 """
 iscompatible(model::MLJBase.Model, task::AbstractLearningTask) = false
-iscompatible(model::MLJBase.Model, task::RegressionTask) = issupervised(model) &&
-  (MLJBase.target_scitype(model) == AbstractVector{MLJBase.Continuous})
-iscompatible(model::MLJBase.Model, task::ClassificationTask) = issupervised(model) &&
-  (MLJBase.target_scitype(model) == AbstractVector{<:MLJBase.Finite})
+iscompatible(model::MLJBase.Model, task::RegressionTask) =
+  issupervised(model) && (MLJBase.target_scitype(model) == AbstractVector{Continuous})
+iscompatible(model::MLJBase.Model, task::ClassificationTask) =
+  issupervised(model) && (MLJBase.target_scitype(model) == AbstractVector{<:Finite})
 iscompatible(model::MLJBase.Model, task::ClusteringTask) = !issupervised(model)
 
 """
@@ -37,8 +37,6 @@ issupervised(model::MLJBase.Supervised) = true
 
 Default loss for value `val` or its scientific type `scitype`.
 """
-defaultloss(val) = defaultloss(MLJBase.scitype(val))
-defaultloss(::Type{<:MLJBase.Finite}) =
-  MLJBase.misclassification_rate
-defaultloss(::Type{<:MLJBase.Infinite}) =
-  MLJBase.rms
+defaultloss(val) = defaultloss(scitype(val))
+defaultloss(::Type{<:Infinite}) = L2DistLoss()
+defaultloss(::Type{<:Finite{2}}) = ZeroOneLoss()

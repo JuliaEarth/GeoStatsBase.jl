@@ -50,7 +50,7 @@ function Base.error(solver::AbstractLearningSolver,
       dview = view(sdata, bsubsets[b])
       ŷ = solutions[b][var]
       y = dview[var]
-      𝔏(ŷ, y)
+      value(𝔏, ŷ, y, AggMode.Mean())
     end
     var => mean(losses)
   end

@@ -55,7 +55,7 @@ function Base.error(solver::AbstractLearningSolver,
     𝔏 = defaultloss(sdata[1,var])
     ŷ = [solutions[i][1,var] for i in 1:npoints(sdata)]
     y = [sdata[i,var] for i in 1:npoints(sdata)]
-    var => 𝔏(ŷ, y)
+    var => value(𝔏, ŷ, y, AggMode.Mean())
   end
 
   Dict(result)

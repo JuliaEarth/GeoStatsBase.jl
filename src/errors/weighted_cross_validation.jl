@@ -70,7 +70,7 @@ function Base.error(solver::AbstractLearningSolver,
       w = view(weights, folds[k])
       ŷ = solutions[k][var]
       y = hold[var]
-      𝔏(ŷ, y, w)
+      value(𝔏, ŷ, y, AggMode.WeightedSum(w)) / length(y)
     end
     var => mean(losses)
   end

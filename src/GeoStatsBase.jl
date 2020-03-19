@@ -19,6 +19,8 @@ using StaticArrays: SVector, MVector
 using AverageShiftedHistograms: ash
 using SpecialFunctions: gamma
 using DensityRatioEstimation
+using ScientificTypes
+using LossFunctions
 using RecipesBase
 using Parameters
 
