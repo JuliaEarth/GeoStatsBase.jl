@@ -161,6 +161,7 @@ export
   AbstractSolver,
   AbstractEstimationSolver,
   AbstractSimulationSolver,
+  AbstractLearningSolver,
   SeqSim,
   SeqSimParam,
   CookieCutter,
