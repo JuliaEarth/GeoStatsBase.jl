@@ -17,7 +17,7 @@ scitype(::AbstractString, ::GeoStats) = Textual
 # Categorical values
 function scitype(c::CategoricalValue, ::GeoStats)
   L = length(levels(c))
-  ifelse(isordered(c.pool), OrderedFactor{L}, Multiclass{L})
+  ifelse(isordered(pool(c)), OrderedFactor{L}, Multiclass{L})
 end
 function scitype(A::CategoricalArray{T,N}, ::GeoStats) where {T,N}
   L = length(levels(A))

@@ -13,7 +13,8 @@ using Distributed: pmap, nworkers
 using Distances: Metric, Euclidean, Mahalanobis, pairwise
 using LinearAlgebra: Diagonal, normalize, norm, ⋅
 using Distributions: ContinuousUnivariateDistribution, median, mode
-using CategoricalArrays: CategoricalValue, CategoricalArray, levels, isordered
+using CategoricalArrays: CategoricalValue, CategoricalArray
+using CategoricalArrays: levels, isordered, pool
 using DataFrames: AbstractDataFrame, eltypes, nrow
 using NearestNeighbors: KDTree, knn, inrange
 using StaticArrays: SVector, MVector
@@ -28,9 +29,9 @@ using Parameters
 import Tables
 import MLJModelInterface
 import StatsBase: fit, sample, varcorrection
+import Distributions: quantile, cdf
 import ScientificTypes: Scitype, scitype
 import Distances: evaluate
-import Distributions: quantile, cdf
 import DataFrames: groupby
 
 const MI = MLJModelInterface
