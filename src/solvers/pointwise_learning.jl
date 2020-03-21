@@ -15,7 +15,7 @@ the problem with statistical learning `model`.
 
 ## Notes
 
-Any model implementing the `MLJBase` interface can be used in
+Any model implementing the `MLJModelInterface.jl` can be used in
 pointwise learning. Please refer to the `MLJ` documentation for
 a list of available models.
 """

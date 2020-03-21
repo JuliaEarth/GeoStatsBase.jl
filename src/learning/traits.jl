@@ -8,28 +8,28 @@
 Check whether or not `model` can be used for
 learning `task`.
 """
-iscompatible(model::MLJBase.Model, task::AbstractLearningTask) = false
-iscompatible(model::MLJBase.Model, task::RegressionTask) =
-  issupervised(model) && (MLJBase.target_scitype(model) == AbstractVector{Continuous})
-iscompatible(model::MLJBase.Model, task::ClassificationTask) =
-  issupervised(model) && (MLJBase.target_scitype(model) == AbstractVector{<:Finite})
-iscompatible(model::MLJBase.Model, task::ClusteringTask) = !issupervised(model)
+iscompatible(model::MI.Model, task::AbstractLearningTask) = false
+iscompatible(model::MI.Model, task::RegressionTask) =
+  issupervised(model) && (MI.target_scitype(model) == AbstractVector{Continuous})
+iscompatible(model::MI.Model, task::ClassificationTask) =
+  issupervised(model) && (MI.target_scitype(model) == AbstractVector{<:Finite})
+iscompatible(model::MI.Model, task::ClusteringTask) = !issupervised(model)
 
 """
     isprobabilistic(model)
 
 Check whether or not `model` is probabilistic.
 """
-isprobabilistic(model::MLJBase.Model) = false
-isprobabilistic(model::MLJBase.Probabilistic) = true
+isprobabilistic(model::MI.Model) = false
+isprobabilistic(model::MI.Probabilistic) = true
 
 """
     issupervised(model)
 
 Check whether or not `model` is supervised.
 """
-issupervised(model::MLJBase.Model) = false
-issupervised(model::MLJBase.Supervised) = true
+issupervised(model::MI.Model) = false
+issupervised(model::MI.Supervised) = true
 
 """
     defaultloss(val)

@@ -25,11 +25,13 @@ using RecipesBase
 using Parameters
 
 import Tables
-import MLJBase
+import MLJModelInterface
 import StatsBase: fit, sample, varcorrection
 import Distances: evaluate
 import Distributions: quantile, cdf
 import DataFrames: groupby
+
+const MI = MLJModelInterface
 
 # basic graph utils
 include("graphs.jl")
