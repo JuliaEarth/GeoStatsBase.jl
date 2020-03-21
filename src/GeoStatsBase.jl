@@ -13,6 +13,7 @@ using Distributed: pmap, nworkers
 using Distances: Metric, Euclidean, Mahalanobis, pairwise
 using LinearAlgebra: Diagonal, normalize, norm, ⋅
 using Distributions: ContinuousUnivariateDistribution, median, mode
+using CategoricalArrays: CategoricalValue, CategoricalArray, levels, isordered
 using DataFrames: AbstractDataFrame, eltypes, nrow
 using NearestNeighbors: KDTree, knn, inrange
 using StaticArrays: SVector, MVector
@@ -27,11 +28,19 @@ using Parameters
 import Tables
 import MLJModelInterface
 import StatsBase: fit, sample, varcorrection
+import ScientificTypes: Scitype, scitype
 import Distances: evaluate
 import Distributions: quantile, cdf
 import DataFrames: groupby
 
 const MI = MLJModelInterface
+
+# convention of scientific types
+include("convention.jl")
+
+function __init__()
+  ScientificTypes.set_convention(GeoStats())
+end
 
 # basic graph utils
 include("graphs.jl")
