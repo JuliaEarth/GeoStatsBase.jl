@@ -129,13 +129,6 @@ export
   isprobabilistic,
   learn, perform,
 
-  # learning examples
-  AbstractLearningExample,
-  AbstractLabeledExample,
-  AbstractUnlabeledExample,
-  LabeledPointExample,
-  UnlabeledPointExample,
-
   # learning losses
   defaultloss,
 
