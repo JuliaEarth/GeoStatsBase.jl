@@ -3,13 +3,16 @@
 # ------------------------------------------------------------------
 
 """
-    LeaveBallOut(ball)
+    LeaveBallOut(ball; loss=Dict())
 
 Leave-`ball`-out (a.k.a. spatial leave-one-out) validation.
+Optionally, specify `loss` function from `LossFunctions.jl`
+for some of the variables.
 
-    LeaveBallOut(radius)
+    LeaveBallOut(radius; ndims=3, loss=Dict())
 
-By default, use Euclidean ball of given `radius`.
+By default, use Euclidean ball of given `radius` in space
+with `ndims` dimensions.
 
 ## References
 
@@ -19,10 +22,14 @@ By default, use Euclidean ball of given `radius`.
 """
 struct LeaveBallOut{B<:BallNeighborhood} <: AbstractErrorEstimator
   ball::B
+  loss::Dict{Symbol,SupervisedLoss}
 end
 
-LeaveBallOut(radius::Real; ndims=3) =
-  LeaveBallOut(BallNeighborhood{ndims}(radius))
+LeaveBallOut(ball::BallNeighborhood; loss=Dict()) =
+  LeaveBallOut{typeof(ball)}(ball, loss)
+
+LeaveBallOut(radius::Real; ndims=3, loss=Dict()) =
+  LeaveBallOut(BallNeighborhood{ndims}(radius), loss=loss)
 
 function Base.error(solver::AbstractLearningSolver,
                     problem::LearningProblem,
@@ -30,6 +37,12 @@ function Base.error(solver::AbstractLearningSolver,
   sdata = sourcedata(problem)
   ovars = outputvars(task(problem))
   ball  = eestimator.ball
+  loss  = eestimator.loss
+  for var in ovars
+    if var ∉ keys(loss)
+      loss[var] = defaultloss(sdata[1,var])
+    end
+  end
 
   # efficient neighborhood search
   searcher = NeighborhoodSearcher(sdata, ball)
@@ -52,10 +65,9 @@ function Base.error(solver::AbstractLearningSolver,
   end
 
   result = pmap(ovars) do var
-    𝔏 = defaultloss(sdata[1,var])
-    ŷ = [solutions[i][1,var] for i in 1:npoints(sdata)]
     y = [sdata[i,var] for i in 1:npoints(sdata)]
-    var => value(𝔏, ŷ, y, AggMode.Mean())
+    ŷ = [solutions[i][1,var] for i in 1:npoints(sdata)]
+    var => value(loss[var], y, ŷ, AggMode.Mean())
   end
 
   Dict(result)

@@ -3,39 +3,31 @@
 # ------------------------------------------------------------------
 
 """
-    CrossValidation(k, [shuffle])
+    CrossValidation(k; shuffle=true, loss=Dict())
 
-Compare estimation solvers using k-fold cross-validation.
-Optionally shuffle the data (default to true).
+`k`-fold cross-validation. Optionally, `shuffle` the
+data, and specify `loss` function  from `LossFunctions.jl
+for some of the variables.
 
-    CrossValidation(partitioner)
+    CrossValidation(partitioner; loss=Dict())
 
-Compare estimation solvers using cross-validation by
-splitting the data with a `partitioner`. This method
-is a generalization of k-fold cross-validation, which
-uses a [`UniformPartitioner`](@ref) to split the data.
+Generalization of k-fold cross-validation in which
+the data is split using `partitioner`.
 
-The result of the comparison stores the errors for each
-variable of the problem.
+## References
 
-## Examples
-
-Compare `solver₁` and `solver₂` on a `problem` with variable
-`:var` using 10 folds. Plot error distribution:
-
-```julia
-julia> result = compare([solver₁, solver₂], problem, CrossValidation(10))
-julia> plot(result, bins=50)
-```
+* Hastie et al. 2001. The Elements of Statistical Learning.
 """
-struct CrossValidation{P} <: AbstractErrorEstimator
+struct CrossValidation{P<:AbstractPartitioner} <: AbstractErrorEstimator
   partitioner::P
+  loss::Dict{Symbol,SupervisedLoss}
 end
 
-CrossValidation(k::Int, shuffle::Bool) =
-  CrossValidation(UniformPartitioner(k, shuffle))
-CrossValidation(k::Int) = CrossValidation(k, true)
-CrossValidation() = CrossValidation(10)
+CrossValidation(partitioner::AbstractPartitioner; loss=Dict()) =
+  CrossValidation{typeof(partitioner)}(partitioner, loss)
+
+CrossValidation(k::Int; shuffle=true, loss=Dict()) =
+  CrossValidation(UniformPartitioner(k, shuffle), loss=loss)
 
 function Base.error(solver::AbstractLearningSolver,
                     problem::LearningProblem,
@@ -44,6 +36,12 @@ function Base.error(solver::AbstractLearningSolver,
   sdata = sourcedata(problem)
   ovars = outputvars(task(problem))
   partitioner = eestimator.partitioner
+  loss  = eestimator.loss
+  for var in ovars
+    if var ∉ keys(loss)
+      loss[var] = defaultloss(sdata[1,var])
+    end
+  end
 
   # folds for cross-validation
   folds  = subsets(partition(sdata, partitioner))
@@ -64,12 +62,11 @@ function Base.error(solver::AbstractLearningSolver,
   end
 
   result = pmap(ovars) do var
-    𝔏 = defaultloss(sdata[1,var])
     losses = map(1:nfolds) do k
       hold = view(sdata, folds[k])
-      ŷ = solutions[k][var]
       y = hold[var]
-      value(𝔏, ŷ, y, AggMode.Mean())
+      ŷ = solutions[k][var]
+      value(loss[var], y, ŷ, AggMode.Mean())
     end
     var => mean(losses)
   end

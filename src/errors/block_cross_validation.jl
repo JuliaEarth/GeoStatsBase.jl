@@ -3,9 +3,11 @@
 # ------------------------------------------------------------------
 
 """
-    BlockCrossValidation(side)
+    BlockCrossValidation(side; loss=Dict())
 
-Cross-validation with blocks of given `side`.
+Cross-validation with blocks of given `side`. Optionally,
+specify `loss` function from `LossFunctions.jl` for some
+of the variables.
 
 ## References
 
@@ -14,7 +16,11 @@ Cross-validation with blocks of given `side`.
 """
 struct BlockCrossValidation{T<:Real} <: AbstractErrorEstimator
   side::T
+  loss::Dict{Symbol,SupervisedLoss}
 end
+
+BlockCrossValidation(side::Real; loss=Dict()) =
+  BlockCrossValidation{typeof(side)}(side, loss)
 
 function Base.error(solver::AbstractLearningSolver,
                     problem::LearningProblem,
@@ -22,6 +28,12 @@ function Base.error(solver::AbstractLearningSolver,
   sdata = sourcedata(problem)
   ovars = outputvars(task(problem))
   side  = eestimator.side
+  loss  = eestimator.loss
+  for var in ovars
+    if var ∉ keys(loss)
+      loss[var] = defaultloss(sdata[1,var])
+    end
+  end
 
   blocks    = partition(sdata, BlockPartitioner(side))
   bsubsets  = subsets(blocks)
@@ -45,12 +57,11 @@ function Base.error(solver::AbstractLearningSolver,
   end
 
   result = pmap(ovars) do var
-    𝔏 = defaultloss(sdata[1,var])
     losses = map(allblocks) do b
       dview = view(sdata, bsubsets[b])
-      ŷ = solutions[b][var]
       y = dview[var]
-      value(𝔏, ŷ, y, AggMode.Mean())
+      ŷ = solutions[b][var]
+      value(loss[var], y, ŷ, AggMode.Mean())
     end
     var => mean(losses)
   end

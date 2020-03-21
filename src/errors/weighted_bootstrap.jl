@@ -3,18 +3,21 @@
 # ------------------------------------------------------------------
 
 """
-    WeightedBootstrap(weighter, nsamples)
+    WeightedBootstrap(weighter, nsamples; loss=Dict())
 
 Weighted bootstrap with `nsamples` samples drawn with
 replacement using the weights produced by `weighter`.
+Optionally, specify `loss` function from `LossFunctions.jl`
+for some of the variables.
 """
 struct WeightedBootstrap{W<:AbstractWeighter} <: AbstractErrorEstimator
   weighter::W
   nsamples::Int
+  loss::Dict{Symbol,SupervisedLoss}
 end
 
-WeightedBootstrap(weighter::AbstractWeighter) =
-  WeightedBootstrap(weighter, 20)
+WeightedBootstrap(weighter::AbstractWeighter, nsamples::Int; loss=Dict()) =
+  WeightedBootstrap{typeof(weighter)}(weighter, nsamples, loss)
 
 function Base.error(solver::AbstractLearningSolver,
                     problem::LearningProblem,
@@ -22,6 +25,12 @@ function Base.error(solver::AbstractLearningSolver,
   # retrieve problem info
   sdata = sourcedata(problem)
   ovars = outputvars(task(problem))
+  loss  = eestimator.loss
+  for var in ovars
+    if var ∉ keys(loss)
+      loss[var] = defaultloss(sdata[1,var])
+    end
+  end
 
   # bootstrap parameters
   b = eestimator.nsamples
@@ -45,10 +54,9 @@ function Base.error(solver::AbstractLearningSolver,
     solution   = solve(subproblem, solver)
 
     result = map(ovars) do var
-      𝔏 = defaultloss(sdata[1,var])
-      ŷ = solution[var]
       y = hold[var]
-      var => value(𝔏, ŷ, y, AggMode.Mean())
+      ŷ = solution[var]
+      var => value(loss[var], y, ŷ, AggMode.Mean())
     end
 
     # results for bootstrap sample

@@ -3,15 +3,20 @@
 # ------------------------------------------------------------------
 
 """
-    WeightedCrossValidation(weighter, partitioner; lambda=1.0)
-    WeightedCrossValidation(weighter, k; shuffle=true, lambda=1.0)
+    WeightedCrossValidation(weighter, partitioner;
+                            lambda=1.0, loss=Dict())
 
 Weighted cross-validation in which samples are split
 into folds with `partitioner` method and are weighted
-with `weighter` method. Alternatively, specify the
-desired number of folds `k` and `shuffle` options for
-a `UniformPartitioner`. In all cases, weights can be
-raised to `lambda` power.
+with `weighter` method. Weights are raised to `lambda`
+power in `[0,1]`. Optionally, specify `loss` function
+from `LossFunctions.jl` for some of the variables.
+
+    WeightedCrossValidation(weighter, k; shuffle=true,
+                            lambda=1.0, loss=Dict())
+
+Alternatively, specify the desired number of folds `k`
+and `shuffle` options for a `UniformPartitioner`.
 """
 struct WeightedCrossValidation{W<:AbstractWeighter,
                                P<:AbstractPartitioner,
@@ -19,21 +24,22 @@ struct WeightedCrossValidation{W<:AbstractWeighter,
   weighter::W
   partitioner::P
   lambda::T
+  loss::Dict{Symbol,SupervisedLoss}
 
-  function WeightedCrossValidation{W,P,T}(weighter, partitioner, lambda) where {W,P,T}
+  function WeightedCrossValidation{W,P,T}(weighter, partitioner, lambda, loss) where {W,P,T}
     @assert 0 ≤ lambda ≤ 1 "lambda must lie in [0,1] interval"
-    new(weighter, partitioner, lambda)
+    new(weighter, partitioner, lambda, loss)
   end
 end
 
 WeightedCrossValidation(weighter::W, partitioner::P;
-                        lambda=1.0) where {W<:AbstractWeighter,
-                                           P<:AbstractPartitioner} =
-  WeightedCrossValidation{W,P,typeof(lambda)}(weighter, partitioner, lambda)
+                        lambda=1.0, loss=Dict()) where {W<:AbstractWeighter,
+                                                        P<:AbstractPartitioner} =
+  WeightedCrossValidation{W,P,typeof(lambda)}(weighter, partitioner, lambda, loss)
 
-WeightedCrossValidation(weighter::W, k::Int;
-                        shuffle=true, lambda=1.0) where {W<:AbstractWeighter} =
-  WeightedCrossValidation(weighter, UniformPartitioner(k, shuffle), lambda=lambda)
+WeightedCrossValidation(weighter::W, k::Int; shuffle=true,
+                        lambda=1.0, loss=Dict()) where {W<:AbstractWeighter} =
+  WeightedCrossValidation(weighter, UniformPartitioner(k, shuffle), lambda=lambda, loss=loss)
 
 function Base.error(solver::AbstractLearningSolver,
                     problem::LearningProblem,
@@ -41,6 +47,12 @@ function Base.error(solver::AbstractLearningSolver,
   # retrieve problem info
   sdata = sourcedata(problem)
   ovars = outputvars(task(problem))
+  loss  = eestimator.loss
+  for var in ovars
+    if var ∉ keys(loss)
+      loss[var] = defaultloss(sdata[1,var])
+    end
+  end
 
   # folds for cross-validation
   folds  = subsets(partition(sdata, eestimator.partitioner))
@@ -64,13 +76,12 @@ function Base.error(solver::AbstractLearningSolver,
   weights = weight(sdata, eestimator.weighter) .^ eestimator.lambda
 
   result = pmap(ovars) do var
-    𝔏 = defaultloss(sdata[1,var])
     losses = map(1:nfolds) do k
       hold = view(sdata, folds[k])
       w = view(weights, folds[k])
-      ŷ = solutions[k][var]
       y = hold[var]
-      value(𝔏, ŷ, y, AggMode.WeightedSum(w)) / length(y)
+      ŷ = solutions[k][var]
+      value(loss[var], y, ŷ, AggMode.WeightedSum(w)) / length(y)
     end
     var => mean(losses)
   end
