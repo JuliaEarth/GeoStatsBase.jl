@@ -16,7 +16,7 @@ with unique coordinates.
 
 Duplicates of a variable `var` are aggregated with
 aggregation function `aggreg[var]`. Default aggregation
-function is `mean` for numerical variables and `first`
+function is `mean` for continuous variables and `first`
 otherwise.
 
 Coordinates are unique according to `metric` and `tol`.
@@ -32,32 +32,33 @@ UniqueCoordsFilter(; aggreg=Dict{Symbol,Function}(),
   UniqueCoordsFilter{typeof(metric),typeof(tol)}(aggreg, metric, tol)
 
 function Base.filter(sdata::AbstractData, filt::UniqueCoordsFilter)
-  # retrieve info
-  aggreg = filt.aggreg
-  metric = filt.metric
-  tol    = filt.tol
+  # retrieve filtering info
   vars   = variables(sdata)
-
-  # find unique coordinates via ball partitioning
-  partitioner = BallPartitioner(tol, metric=metric)
-  p = partition(sdata, partitioner)
-
-  # auxiliary variables
-  locs = Vector{Int}()
-  dict = OrderedDict([var => Vector{V}() for (var, V) in vars])
-  aggr = Dict{Symbol,Function}()
+  tol    = filt.tol
+  metric = filt.metric
+  aggreg = filt.aggreg
   for (var, V) in vars
-    aggr[var] = get(aggreg, var, V <: Number ? mean : first)
+    if var ∉ keys(aggreg)
+      ST = scitype(sdata[1,var])
+      aggreg[var] = ST <: Continuous ? mean_aggreg : first_aggreg
+    end
   end
 
+  # find unique coordinates via ball partitioning
+  p = partition(sdata, BallPartitioner(tol, metric=metric))
+
   # construct new point set data
+  locs = Vector{Int}()
+  dict = OrderedDict{Symbol,Vector{V} where V}()
+  for (var, V) in vars
+    dict[var] = Vector{V}()
+  end
   for s in subsets(p)
     i = s[1] # select any location
     if length(s) > 1
       # aggregate variables
       for (var, V) in vars
-        aggfun = aggr[var]
-        push!(dict[var], aggfun(sdata[s,var]))
+        push!(dict[var], aggreg[var](sdata[s,var]))
       end
     else
       # copy location
@@ -69,4 +70,14 @@ function Base.filter(sdata::AbstractData, filt::UniqueCoordsFilter)
   end
 
   PointSetData(dict, coordinates(sdata, locs))
+end
+
+function mean_aggreg(xs)
+  vs = skipmissing(xs)
+  isempty(vs) ? missing : mean(vs)
+end
+
+function first_aggreg(xs)
+  vs = skipmissing(xs)
+  isempty(vs) ? missing : first(vs)
 end
