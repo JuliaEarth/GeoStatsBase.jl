@@ -6,10 +6,10 @@ module GeoStatsBase
 
 using Optim
 using CSV: read
+using Distributed: pmap
 using Random: randperm, shuffle
 using StatsBase: Histogram, Weights, AbstractWeights
 using OrderedCollections: OrderedDict
-using Distributed: pmap, nworkers
 using Distances: Metric, Euclidean, Mahalanobis, pairwise
 using LinearAlgebra: Diagonal, normalize, norm, ⋅
 using Distributions: ContinuousUnivariateDistribution, median, mode

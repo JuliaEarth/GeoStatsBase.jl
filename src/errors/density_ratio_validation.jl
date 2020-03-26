@@ -19,16 +19,17 @@ struct DensityRatioValidation{T,E,O} <: AbstractErrorEstimator
   lambda::T
   dre::E
   optlib::O
+  loss::Dict{Symbol,SupervisedLoss}
 end
 
-function DensityRatioValidation(k::Int; lambda=1.0, estimator=LSIF(),
-                                optlib=default_optlib(estimator))
+function DensityRatioValidation(k::Int; lambda=1.0, loss=Dict(),
+                                estimator=LSIF(), optlib=default_optlib(estimator))
   @assert k > 0 "number of folds must be positive"
   @assert 0 ≤ lambda ≤ 1 "lambda must lie in [0,1]"
   T = typeof(lambda)
   E = typeof(estimator)
   O = typeof(optlib)
-  DensityRatioValidation{T,E,O}(k, lambda, estimator, optlib)
+  DensityRatioValidation{T,E,O}(k, lambda, estimator, optlib, loss)
 end
 
 function Base.error(solver::AbstractLearningSolver,
@@ -42,6 +43,7 @@ function Base.error(solver::AbstractLearningSolver,
                                   optlib=eestimator.optlib)
   wcv = WeightedCrossValidation(weighter,
                                 eestimator.k, shuffle=true,
-                                lambda=eestimator.lambda)
+                                lambda=eestimator.lambda,
+                                loss=eestimator.loss)
   error(solver, problem, wcv)
 end

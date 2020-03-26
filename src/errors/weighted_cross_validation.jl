@@ -27,7 +27,7 @@ struct WeightedCrossValidation{W<:AbstractWeighter,
   loss::Dict{Symbol,SupervisedLoss}
 
   function WeightedCrossValidation{W,P,T}(weighter, partitioner, lambda, loss) where {W,P,T}
-    @assert 0 ≤ lambda ≤ 1 "lambda must lie in [0,1] interval"
+    @assert 0 ≤ lambda ≤ 1 "lambda must lie in [0,1]"
     new(weighter, partitioner, lambda, loss)
   end
 end
