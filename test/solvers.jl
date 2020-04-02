@@ -4,6 +4,9 @@
     solver = CookieCutter(DummySimSolver(:facies => NamedTuple()),
                           [0 => DummySimSolver(), 1 => DummySimSolver()])
 
+    @test sprint(show, solver) == "CookieCutter"
+    @test sprint(show, MIME"text/plain"(), solver) == "CookieCutter\n  └─facies ⇨ DummySimSolver\n    └─0 ⇨ DummySimSolver\n    └─1 ⇨ DummySimSolver\n"
+
     Random.seed!(1234)
     solution = solve(problem, solver)
 

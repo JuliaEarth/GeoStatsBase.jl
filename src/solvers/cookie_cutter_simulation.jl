@@ -132,7 +132,7 @@ function Base.show(io::IO, solver::CookieCutter)
 end
 
 function Base.show(io::IO, ::MIME"text/plain", solver::CookieCutter)
-  mvar = collect(keys(solver.master.params))[1]
+  mvar = variables(solver.master)[1]
   println(io, solver)
   println(io, "  └─", mvar, " ⇨ ", solver.master)
   for (val, osolver) in solver.others
