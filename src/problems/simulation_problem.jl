@@ -32,11 +32,6 @@ with 100 realizations:
 ```julia
 julia> SimulationProblem(sdomain, (:porosity => Float64, :facies => Int), 100)
 ```
-
-### Notes
-
-To check if a simulation problem has data (i.e. conditional vs.
-unconditional) use the [`hasdata`](@ref) method.
 """
 struct SimulationProblem{S<:Union{AbstractData,Nothing},
                          D<:AbstractDomain,M<:AbstractMapper} <: AbstractProblem
