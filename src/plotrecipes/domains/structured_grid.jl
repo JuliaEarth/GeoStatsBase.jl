@@ -11,14 +11,12 @@
   elseif N == 2
     seriestype --> :scatter
     aspect_ratio --> :equal
-    seriescolor --> :bluesreds
     zcolor --> data
     colorbar --> true
     X[1,:], X[2,:]
   elseif N == 3
     seriestype --> :scatter
     aspect_ratio --> :equal
-    seriescolor --> :bluesreds
     zcolor --> data
     colorbar --> true
     X[1,:], X[2,:], X[3,:]

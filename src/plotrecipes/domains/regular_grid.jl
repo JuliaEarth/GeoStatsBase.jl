@@ -11,13 +11,11 @@
   elseif N == 2
     seriestype --> :heatmap
     aspect_ratio --> :equal
-    seriescolor --> :bluesreds
     colorbar --> true
     reverse(rotr90(Z), dims=2)
   elseif N == 3
     seriestype --> :volume
     aspect_ratio --> :equal
-    seriescolor --> :bluesreds
     colorbar --> true
     Z
   else

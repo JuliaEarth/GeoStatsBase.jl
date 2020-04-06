@@ -9,19 +9,16 @@
   linecolor  --> :black
 
   if N == 1
-    color --> :bluesreds
     zcolor --> data
     colorbar --> true
     X[1,:], fill(0, npoints(domain))
   elseif N == 2
     aspect_ratio --> :equal
-    color --> :bluesreds
     zcolor --> data
     colorbar --> true
     X[1,:], X[2,:]
   elseif N == 3
     aspect_ratio --> :equal
-    color --> :bluesreds
     zcolor --> data
     colorbar --> true
     X[1,:], X[2,:], X[3,:]
