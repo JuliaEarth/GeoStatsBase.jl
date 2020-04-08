@@ -14,9 +14,10 @@ ENV["GKSwstype"] = "100"
 # environment settings
 islinux = Sys.islinux()
 istravis = "TRAVIS" ∈ keys(ENV)
+isappveyor = "APPVEYOR" ∈ keys(ENV)
 datadir = joinpath(@__DIR__,"data")
-visualtests = !istravis || (istravis && islinux)
-if !istravis
+visualtests = (!istravis || (istravis && islinux)) && !isappveyor
+if (!istravis && !isappveyor)
   Pkg.add("Gtk")
   using Gtk
 end
