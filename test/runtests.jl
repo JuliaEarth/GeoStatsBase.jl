@@ -14,12 +14,15 @@ ENV["GKSwstype"] = "100"
 # environment settings
 islinux = Sys.islinux()
 istravis = "TRAVIS" ∈ keys(ENV)
-datadir = joinpath(@__DIR__,"data")
-visualtests = !istravis || (istravis && islinux)
-if !istravis
+isappveyor = "APPVEYOR" ∈ keys(ENV)
+isCI = istravis || isappveyor
+# Only run visual tests on Travis Linux
+visualtests = !isCI || (istravis && islinux)
+if !isCI
   Pkg.add("Gtk")
   using Gtk
 end
+datadir = joinpath(@__DIR__,"data")
 
 # dummy variables for testing
 include("dummy.jl")
