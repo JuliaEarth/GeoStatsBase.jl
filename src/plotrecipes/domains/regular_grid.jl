@@ -27,7 +27,7 @@ end
   X  = coordinates(domain)
   sz = size(domain)
 
-  color --> :black
+  seriescolor --> :black
   legend --> false
 
   if N == 1

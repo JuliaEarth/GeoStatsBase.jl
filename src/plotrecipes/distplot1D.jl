@@ -22,7 +22,7 @@
   # plot histogram
   @series begin
     seriestype --> :step
-    color --> :black
+    seriescolor --> :black
     h
   end
 
@@ -30,7 +30,7 @@
   @series begin
     seriestype --> :vline
     primary --> false
-    color --> :black
+    seriescolor --> :black
     linestyle --> :dash
     q
   end
@@ -39,7 +39,7 @@
   @series begin
     seriestype --> :vline
     primary --> false
-    color --> :green
+    seriescolor --> :green
     [μ]
   end
 end

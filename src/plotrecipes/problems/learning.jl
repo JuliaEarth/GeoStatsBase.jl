@@ -18,8 +18,8 @@
     domain(sdata)
   end
   @series begin
+    seriescolor --> :blue
     label --> "target data ($tvars)"
-    color --> :blue
     marker --> :xcross
     domain(tdata)
   end

@@ -15,8 +15,8 @@
     pdomain
   end
   @series begin
+    seriescolor --> :blue
     label --> "data ($vars)"
-    color --> :blue
     marker --> :xcross
     domain(pdata)
   end

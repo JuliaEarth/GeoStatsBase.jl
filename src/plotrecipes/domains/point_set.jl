@@ -11,12 +11,12 @@
     X[1,:], data
   elseif N == 2
     aspect_ratio --> :equal
-    zcolor --> data
+    marker_z --> data
     colorbar --> true
     X[1,:], X[2,:]
   elseif N == 3
     aspect_ratio --> :equal
-    zcolor --> data
+    marker_z --> data
     colorbar --> true
     X[1,:], X[2,:], X[3,:]
   else
@@ -28,7 +28,7 @@ end
   X = coordinates(domain)
 
   seriestype --> :scatter
-  color --> :black
+  seriescolor --> :black
   legend --> false
 
   if N == 1

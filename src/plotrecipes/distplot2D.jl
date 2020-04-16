@@ -26,7 +26,7 @@
   @series begin
     seriestype --> :scatter
     primary --> false
-    color --> :black
+    seriescolor --> :black
     alpha --> 0.5
     markersize --> 1
     x, y
@@ -34,32 +34,32 @@
 
   # plot 2D mean
   @series begin
-    seriestype --> :vline
     primary --> false
-    color --> :green
+    seriestype --> :vline
+    seriescolor --> :green
     [μ[1]]
   end
   @series begin
-    seriestype --> :hline
     primary --> false
-    color --> :green
+    seriestype --> :hline
+    seriescolor --> :green
     [μ[2]]
   end
   @series begin
-    seriestype --> :scatter
     primary --> false
-    color --> :green
+    seriestype --> :scatter
+    seriescolor --> :green
     marker --> :square
     markersize --> 4
     [μ[1]], [μ[2]]
   end
 
   seriestype --> :contour
+  seriescolor --> :black
   aspect_ratio --> :equal
   legend --> false
   grid --> false
   frame --> :box
-  color --> :black
   levels --> ls
   xguide --> var₁
   yguide --> var₂
