@@ -10,9 +10,9 @@ A method for joining spatial objects.
 abstract type AbstractJoiner end
 
 """
-    join(data₁, data₂, joiner)
+    join(object₁, object₂, joiner)
 
-Join spatial data `data₁` and ` data₂` with `joiner` method.
+Join spatial object `object₁` and `object₂` with `joiner` method.
 """
 Base.join(object₁::AbstractSpatialObject,
           object₂::AbstractSpatialObject,
