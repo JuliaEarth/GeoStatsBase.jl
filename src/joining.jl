@@ -5,7 +5,7 @@
 """
     AbstractJoiner
 
-A method for joining spatial data.
+A method for joining spatial objects.
 """
 abstract type AbstractJoiner end
 
@@ -14,7 +14,9 @@ abstract type AbstractJoiner end
 
 Join spatial data `data₁` and ` data₂` with `joiner` method.
 """
-Base.join(sdata₁::AbstractData, sdata₂::AbstractData, joiner::AbstractJoiner) =
+Base.join(object₁::AbstractSpatialObject,
+          object₂::AbstractSpatialObject,
+          joiner::AbstractJoiner) =
   @error "not implemented"
 
 #------------------

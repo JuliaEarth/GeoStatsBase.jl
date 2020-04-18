@@ -18,12 +18,13 @@ readgeotable(args...; coordnames=[:x,:y,:z], kwargs...) =
   GeoDataFrame(read(args...; kwargs...), coordnames)
 
 """
-    split(object, fraction, [direction])
+    split(object, fraction, [normal])
 
 Split spatial `object` into two parts where the first
 part has a `fraction` of the total volume. The split
-is performed along a `direction`. The default direction
-is aligned with the first spatial dimension of the object.
+is performed along a `normal` direction. The default
+direction is aligned with the first spatial dimension
+of the object.
 """
 Base.split(object::AbstractSpatialObject{T,N}, fraction::Real,
            normal=ntuple(i -> i == 1 ? one(T) : zero(T), N)) where {N,T} =

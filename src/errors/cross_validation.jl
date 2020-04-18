@@ -6,7 +6,7 @@
     CrossValidation(k; shuffle=true, loss=Dict())
 
 `k`-fold cross-validation. Optionally, `shuffle` the
-data, and specify `loss` function  from `LossFunctions.jl
+data, and specify `loss` function  from `LossFunctions.jl`
 for some of the variables.
 
     CrossValidation(partitioner; loss=Dict())
