@@ -39,4 +39,4 @@ Default loss for value `val` or its scientific type `scitype`.
 """
 defaultloss(val) = defaultloss(scitype(val))
 defaultloss(::Type{<:Infinite}) = L2DistLoss()
-defaultloss(::Type{<:Finite{2}}) = ZeroOneLoss()
+defaultloss(::Type{<:Finite}) = MisclassLoss()
