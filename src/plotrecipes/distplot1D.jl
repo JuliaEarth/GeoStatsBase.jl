@@ -15,8 +15,8 @@
   μ = mean(sdata, var)
 
   legend --> false
+  framestyle --> :box
   grid --> false
-  frame --> :box
   xguide --> var
 
   # plot histogram

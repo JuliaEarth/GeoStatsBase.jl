@@ -27,7 +27,7 @@
     seriestype --> :scatter
     primary --> false
     seriescolor --> :black
-    alpha --> 0.5
+    seriesalpha --> 0.5
     markersize --> 1
     x, y
   end
@@ -57,9 +57,9 @@
   seriestype --> :contour
   seriescolor --> :black
   aspect_ratio --> :equal
+  framestyle --> :box
   legend --> false
   grid --> false
-  frame --> :box
   levels --> ls
   xguide --> var₁
   yguide --> var₂
