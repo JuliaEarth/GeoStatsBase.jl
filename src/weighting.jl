@@ -48,5 +48,5 @@ weight(object::AbstractSpatialObject, weighter::AbstractWeighter) =
 #------------------
 # IMPLEMENTATIONS
 #------------------
-include("weighting/block_weighter.jl")
-include("weighting/density_ratio_weighter.jl")
+include("weighting/block.jl")
+include("weighting/density_ratio.jl")
