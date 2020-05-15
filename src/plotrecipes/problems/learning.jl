@@ -12,8 +12,8 @@
   legend --> true
 
   @series begin
+    seriescolor --> :green
     label --> "source data ($svars)"
-    color --> :green
     marker --> :xcross
     domain(sdata)
   end
