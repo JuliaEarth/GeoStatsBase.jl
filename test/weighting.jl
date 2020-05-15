@@ -1,6 +1,12 @@
 @testset "Weighting" begin
   @testset "BlockWeighter" begin
-    # TODO
+    sdomain = RegularGrid{Float64}(100,100)
+    sdata = RegularGridData{Float64}(OrderedDict(:z=>rand(100,100)))
+    for d in [sdomain, sdata]
+      w = weight(d, BlockWeighter(10,10))
+      @test length(unique(w)) == 1
+      @test w[1] == 1 / 100
+    end
   end
 
   @testset "DensityRatioWeighter" begin
