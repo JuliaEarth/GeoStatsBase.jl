@@ -3,41 +3,43 @@
 # ------------------------------------------------------------------
 
 """
-    BlockCrossValidation(side; loss=Dict())
+    BlockCrossValidation(sides; loss=Dict())
 
-Cross-validation with blocks of given `side`. Optionally,
+Cross-validation with blocks of given `sides`. Optionally,
 specify `loss` function from `LossFunctions.jl` for some
-of the variables.
+of the variables. If only one side is provided, then blocks
+become cubes.
 
 ## References
 
 * Roberts et al. 2017. Cross-validation strategies for data with
   temporal, spatial, hierarchical, or phylogenetic structure.
 """
-struct BlockCrossValidation{T<:Real} <: AbstractErrorEstimator
-  side::T
+struct BlockCrossValidation{S} <: AbstractErrorEstimator
+  sides::S
   loss::Dict{Symbol,SupervisedLoss}
 end
 
-BlockCrossValidation(side::Real; loss=Dict()) =
-  BlockCrossValidation{typeof(side)}(side, loss)
+BlockCrossValidation(sides; loss=Dict()) =
+  BlockCrossValidation{typeof(sides)}(sides, loss)
 
 function Base.error(solver::AbstractLearningSolver,
                     problem::LearningProblem,
                     eestimator::BlockCrossValidation)
   sdata = sourcedata(problem)
   ovars = outputvars(task(problem))
-  side  = eestimator.side
   loss  = eestimator.loss
+  sides = eestimator.sides
   for var in ovars
     if var ∉ keys(loss)
       loss[var] = defaultloss(sdata[1,var])
     end
   end
 
-  blocks    = partition(sdata, BlockPartitioner(side))
+  bsides    = length(sides) > 1 ? sides : ntuple(i->sides, ndims(sdata))
+  blocks    = partition(sdata, BlockPartitioner(bsides))
   bsubsets  = subsets(blocks)
-  neighbors = metadata(blocks)[:neighbors]
+  neighbors = blocks[:neighbors]
   allblocks = 1:length(blocks)
 
   solutions = pmap(allblocks) do b
