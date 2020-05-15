@@ -3,20 +3,27 @@
 # ------------------------------------------------------------------
 
 """
-    BlockPartitioner(side)
+    BlockPartitioner(sides)
+    BlockPartitioner(side₁, side₂, ...)
 
-A method for partitioning spatial objects into blocks of given `side`.
+A method for partitioning spatial objects into blocks of given `sides`.
 """
-struct BlockPartitioner{T} <: AbstractPartitioner
-  side::T
+struct BlockPartitioner{T,N} <: AbstractPartitioner
+  sides::SVector{N,T}
 end
 
+BlockPartitioner(sides::NTuple{N,T}) where {N,T} =
+  BlockPartitioner{T,N}(sides)
+
+BlockPartitioner(sides::Vararg{T,N}) where {N,T} =
+  BlockPartitioner(sides)
+
 function partition(object::AbstractSpatialObject{T,N},
-                   partitioner::BlockPartitioner) where {N,T}
-  side = partitioner.side
+                   partitioner::BlockPartitioner{U,N}) where {N,T,U}
+  psides = partitioner.sides
   bbox = boundbox(object)
 
-  @assert side ≤ minimum(sides(bbox)) "block side is too large"
+  @assert all(psides .≤ sides(bbox)) "invalid block sides"
 
   # bounding box properties
   ce = center(bbox)
@@ -24,10 +31,10 @@ function partition(object::AbstractSpatialObject{T,N},
   up = upperright(bbox)
 
   # find number of blocks to left and right
-  nleft  = @. ceil(Int, (ce - lo) / side)
-  nright = @. ceil(Int, (up - ce) / side)
+  nleft  = @. ceil(Int, (ce - lo) / psides)
+  nright = @. ceil(Int, (up - ce) / psides)
 
-  origin  = @. ce - nleft * side
+  origin  = @. ce - nleft * psides
   nblocks = @. nleft + nright
 
   subsets = [Vector{Int}() for i in 1:prod(nblocks)]
@@ -41,7 +48,7 @@ function partition(object::AbstractSpatialObject{T,N},
     coordinates!(coords, object, j)
 
     # find block coordinates
-    c = @. floor(Int, (coords - origin) / side) + 1
+    c = @. floor(Int, (coords - origin) / psides) + 1
     @inbounds for i in 1:N
       c[i] = clamp(c[i], 1, nblocks[i])
     end

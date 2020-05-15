@@ -95,9 +95,13 @@
   @testset "BlockPartitioner" begin
     grid = RegularGrid{Float64}(10,10)
 
-    p = partition(grid, BlockPartitioner(5.))
+    p = partition(grid, BlockPartitioner(5.,5.))
     @test length(p) == 4
     @test all(npoints.(p) .== 25)
+
+    p = partition(grid, BlockPartitioner(5.,2.))
+    @test length(p) == 12
+    @test Set(npoints.(p)) == Set([5,10])
   end
 
   @testset "BisectPointPartitioner" begin
@@ -223,8 +227,8 @@
 
   @testset "ProductPartitioner" begin
     g = RegularGrid{Float64}(100,100)
-    bm = BlockPartitioner(10)
-    bn = BlockPartitioner(5)
+    bm = BlockPartitioner(10.,10.)
+    bn = BlockPartitioner(5.,5.)
 
     # Bm x Bn = Bn with m > n
     s1 = subsets(partition(g, bm*bn))
@@ -232,7 +236,7 @@
     @test setify(s1) == setify(s2)
 
     # pXp=p (for deterministic p)
-    for p in [BlockPartitioner(10),
+    for p in [BlockPartitioner(10.,10.),
               BisectFractionPartitioner((0.1,0.1))]
       s1 = subsets(partition(g, p*p))
       s2 = subsets(partition(g, p))
@@ -242,8 +246,8 @@
 
   @testset "HierarchicalPartitioner" begin
     g = RegularGrid{Float64}(100,100)
-    bm = BlockPartitioner(10)
-    bn = BlockPartitioner(5)
+    bm = BlockPartitioner(10.,10.)
+    bn = BlockPartitioner(5.,5.)
 
     # Bn -> Bm = Bm with m > n
     s1 = subsets(partition(g, bm → bn))
@@ -253,8 +257,8 @@
 
   @testset "Mixed Tests" begin
     g = RegularGrid{Float64}(100,100)
-    bm = BlockPartitioner(10)
-    bn = BlockPartitioner(5)
+    bm = BlockPartitioner(10.,10.)
+    bn = BlockPartitioner(5.,5.)
 
     # Bm*Bn = Bm->Bn
     s1 = subsets(partition(g, bm * bn))
