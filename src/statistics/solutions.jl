@@ -27,7 +27,7 @@ end
 
 p-quantile of simulation `solution`.
 """
-function quantile(solution::SimulationSolution, p::Real)
+function quantile(solution::SimulationSolution, p::Number)
   data = []
   for (variable, reals) in solution.realizations
     quantiles = map(1:npoints(solution.domain)) do location
