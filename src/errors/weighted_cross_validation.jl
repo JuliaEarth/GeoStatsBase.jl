@@ -6,17 +6,23 @@
     WeightedCrossValidation(weighter, partitioner;
                             lambda=1.0, loss=Dict())
 
-Weighted cross-validation in which samples are split
-into folds with `partitioner` method and are weighted
-with `weighter` method. Weights are raised to `lambda`
-power in `[0,1]`. Optionally, specify `loss` function
-from `LossFunctions.jl` for some of the variables.
+Weighted cross-validation in which samples are split into folds with
+`partitioner` method and are weighted with `weighter` method. Weights
+are raised to `lambda` power in `[0,1]`. Optionally, specify `loss`
+function from `LossFunctions.jl` for some of the variables.
 
     WeightedCrossValidation(weighter, k; shuffle=true,
                             lambda=1.0, loss=Dict())
 
-Alternatively, specify the desired number of folds `k`
-and `shuffle` options for a `UniformPartitioner`.
+Alternatively, specify the desired number of folds `k` and `shuffle`
+options for a `UniformPartitioner`.
+
+## References
+
+* Sugiyama et al. 2006. [Importance-weighted cross-validation for
+  covariate shift](https://link.springer.com/chapter/10.1007/11861898_36)
+* Sugiyama et al. 2007. [Covariate shift adaptation by importance weighted
+  cross validation](http://www.jmlr.org/papers/volume8/sugiyama07a/sugiyama07a.pdf)
 """
 struct WeightedCrossValidation{W<:AbstractWeighter,
                                P<:AbstractPartitioner,

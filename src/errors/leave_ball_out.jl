@@ -16,9 +16,9 @@ with `ndims` dimensions.
 
 ## References
 
-* Le Rest et al. 2014. Spatial leave-one-out
-  cross-validation for variable selection in
-  the presence of spatial autocorrelation.
+* Le Rest et al. 2014. [Spatial leave-one-out cross-validation
+  for variable selection in the presence of spatial autocorrelation]
+  (https://onlinelibrary.wiley.com/doi/full/10.1111/geb.12161)
 """
 struct LeaveBallOut{B<:BallNeighborhood} <: AbstractErrorEstimator
   ball::B

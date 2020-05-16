@@ -16,7 +16,11 @@ the data is split using `partitioner`.
 
 ## References
 
-* Hastie et al. 2001. The Elements of Statistical Learning.
+* Geisser, S. 1975. [The predictive sample reuse method with applications]
+  (https://www.jstor.org/stable/2285815)
+* Burman, P. 1989. [A comparative study of ordinary cross-validation, v-fold
+  cross-validation and the repeated learning-testing methods]
+  (https://www.jstor.org/stable/2336116)
 """
 struct CrossValidation{P<:AbstractPartitioner} <: AbstractErrorEstimator
   partitioner::P

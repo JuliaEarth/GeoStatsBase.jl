@@ -3,16 +3,24 @@
 # ------------------------------------------------------------------
 
 """
-    DensityRatioValidation(k; [options])
+    DensityRatioValidation(k; [parameters])
 
 Desntity ratio validation where weights are first obtained with density
 ratio estimation, and then used in `k`-fold weighted cross-validation.
 
-## Options
+## Parameters
 
 * `estimator` - Density ratio estimator (default to `LSIF()`)
 * `optlib`    - Optimization library (default to `default_optlib(estimator)`)
 * `lambda`    - Power of density ratios (default to `1.0`)
+
+Please see [DensityRatioEstimation.jl]
+(https://github.com/JuliaEarth/DensityRatioEstimation.jl)
+for a list of supported estimators.
+
+## References
+
+* TODO
 """
 struct DensityRatioValidation{T,E,O} <: AbstractErrorEstimator
   k::Int

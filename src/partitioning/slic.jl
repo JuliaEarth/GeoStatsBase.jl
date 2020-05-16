@@ -23,8 +23,8 @@ The tradeoff is controlled with a hyperparameter parameter
 
 ## References
 
-* Achanta et al. 2011. SLIC superpixels compared to
-  state-of-the-art superpixel methods.
+* Achanta et al. 2011. [SLIC superpixels compared to state-of-the-art
+  superpixel methods](https://ieeexplore.ieee.org/document/6205760)
 """
 struct SLICPartitioner <: AbstractPartitioner
   k::Int
