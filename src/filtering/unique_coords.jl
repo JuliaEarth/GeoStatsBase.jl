@@ -3,49 +3,40 @@
 # ------------------------------------------------------------------
 
 """
-    UniqueCoordsFilter([options])
+    UniqueCoordsFilter(aggreg)
 
 A filter method to retain locations in spatial objects
 with unique coordinates.
-
-## Options
-
-* `aggreg` - Dictionary with aggregation function for each variable
-* `metric` - Metric (default to `Euclidean()`)
-* `tol`    - Tolerance for coordinates distance (default to `1e-6`)
 
 Duplicates of a variable `var` are aggregated with
 aggregation function `aggreg[var]`. Default aggregation
 function is `mean` for continuous variables and `first`
 otherwise.
-
-Coordinates are unique according to `metric` and `tol`.
 """
-struct UniqueCoordsFilter{M<:Metric,T<:Real} <: AbstractFilter
+struct UniqueCoordsFilter <: AbstractFilter
   aggreg::Dict{Symbol,Function}
-  metric::M
-  tol::T
 end
 
-UniqueCoordsFilter(; aggreg=Dict{Symbol,Function}(),
-                     metric=Euclidean(), tol=1e-6) =
-  UniqueCoordsFilter{typeof(metric),typeof(tol)}(aggreg, metric, tol)
+UniqueCoordsFilter() = UniqueCoordsFilter(Dict{Symbol,Function}())
 
 function Base.filter(sdata::AbstractData, filt::UniqueCoordsFilter)
   # retrieve filtering info
   vars   = variables(sdata)
-  tol    = filt.tol
-  metric = filt.metric
   aggreg = filt.aggreg
   for (var, V) in vars
     if var ∉ keys(aggreg)
       ST = scitype(sdata[1,var])
-      aggreg[var] = ST <: Continuous ? mean_aggreg : first_aggreg
+      aggreg[var] = ST <: Continuous ? _mean : _first
     end
   end
 
-  # find unique coordinates via ball partitioning
-  p = partition(sdata, BallPartitioner(tol, metric=metric))
+  # group locations with the same coordinates
+  gind = _uniqueinds(coordinates(sdata), 2)
+  gmax = maximum(gind)
+  groups = [Vector{Int}() for ind in 1:gmax]
+  for (i, ind) in enumerate(gind)
+    push!(groups[ind], i)
+  end
 
   # construct new point set data
   locs = Vector{Int}()
@@ -53,12 +44,12 @@ function Base.filter(sdata::AbstractData, filt::UniqueCoordsFilter)
   for (var, V) in vars
     dict[var] = Vector{V}()
   end
-  for s in subsets(p)
-    i = s[1] # select any location
-    if length(s) > 1
+  for g in groups
+    i = g[1] # select any location
+    if length(g) > 1
       # aggregate variables
       for (var, V) in vars
-        push!(dict[var], aggreg[var](sdata[s,var]))
+        push!(dict[var], aggreg[var](sdata[g,var]))
       end
     else
       # copy location
@@ -72,12 +63,105 @@ function Base.filter(sdata::AbstractData, filt::UniqueCoordsFilter)
   PointSetData(dict, coordinates(sdata, locs))
 end
 
-function mean_aggreg(xs)
+function _mean(xs)
   vs = skipmissing(xs)
   isempty(vs) ? missing : mean(vs)
 end
 
-function first_aggreg(xs)
+function _first(xs)
   vs = skipmissing(xs)
   isempty(vs) ? missing : first(vs)
+end
+
+# ---------------------------------------------------------------
+# The code below was copied/modified provisorily from Base.unique
+# See https://github.com/JuliaLang/julia/issues/1845
+# ---------------------------------------------------------------
+using Base.Cartesian: @nref, @nloops
+
+import Base: hash
+struct Prehashed hash::UInt; end
+hash(x::Prehashed) = x.hash
+
+@generated function _uniqueinds(A::AbstractArray{T,N}, dim::Int) where {T,N}
+  quote
+    if !(1 <= dim <= $N)
+      ArgumentError("Input argument dim must be 1 <= dim <= $N, but is currently $dim")
+    end
+    hashes = zeros(UInt, size(A, dim))
+
+    # Compute hash for each row
+    k = 0
+    @nloops $N i A d->(if d == dim; k = i_d; end) begin
+      @inbounds hashes[k] = hash(hashes[k], hash((@nref $N A i)))
+    end
+
+    # Collect index of first row for each hash
+    uniquerow = Array{Int}(undef,size(A, dim))
+    firstrow = Dict{Prehashed,Int}()
+    for k = 1:size(A, dim)
+      uniquerow[k] = get!(firstrow, Prehashed(hashes[k]), k)
+    end
+    uniquerows = collect(values(firstrow))
+
+    # Check for collisions
+    collided = falses(size(A, dim))
+    @inbounds begin
+      @nloops $N i A d->(if d == dim
+                           k = i_d
+                           j_d = uniquerow[k]
+                         else
+                           j_d = i_d
+                         end) begin
+        if (@nref $N A j) != (@nref $N A i)
+          collided[k] = true
+        end
+      end
+    end
+
+    if any(collided)
+      nowcollided = BitArray(undef, size(A, dim))
+      while any(collided)
+        # Collect index of first row for each collided hash
+        empty!(firstrow)
+        for j = 1:size(A, dim)
+          collided[j] || continue
+          uniquerow[j] = get!(firstrow, Prehashed(hashes[j]), j)
+        end
+        for v in values(firstrow)
+          push!(uniquerows, v)
+        end
+
+        # Check for collisions
+        fill!(nowcollided, false)
+        @nloops $N i A d->begin
+          if d == dim
+            k = i_d
+            j_d = uniquerow[k]
+            (!collided[k] || j_d == k) && continue
+          else
+            j_d = i_d
+          end
+        end begin
+          if (@nref $N A j) != (@nref $N A i)
+            nowcollided[k] = true
+          end
+        end
+        (collided, nowcollided) = (nowcollided, collided)
+      end
+    end
+
+    ie = unique(uniquerow)
+    ic_dict = Dict{Int,Int}()
+    for k = 1:length(ie)
+      ic_dict[ie[k]] = k
+    end
+
+    ic = similar(uniquerow)
+    for k = 1:length(ic)
+      ic[k] = ie[ic_dict[uniquerow[k]]]
+    end
+
+    ic
+  end
 end

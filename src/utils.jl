@@ -79,16 +79,12 @@ Base.join(sdata₁::AbstractData, sdata₂::AbstractData) =
   join(sdata₁, sdata₂, VariableJoiner())
 
 """
-    uniquecoords(sdata; aggreg=Dict(),
-                 metric=Euclidean(), tol=1e-6)
+    uniquecoords(sdata; aggreg=Dict())
 
 Filter spatial data `sdata` to produce a new data
 set with unique coordinates.
 
 See [`UniqueCoordsFilter`](@ref) for more details.
 """
-function uniquecoords(sdata::AbstractData; aggreg=Dict(),
-                      metric=Euclidean(), tol=1e-6)
-  filt = UniqueCoordsFilter(aggreg=aggreg, metric=metric, tol=tol)
-  filter(sdata, filt)
-end
+uniquecoords(sdata::AbstractData; aggreg=Dict()) =
+  filter(sdata, UniqueCoordsFilter(aggreg))
