@@ -32,8 +32,7 @@ function Base.filter(sdata::AbstractData, filt::UniqueCoordsFilter)
 
   # group locations with the same coordinates
   gind = _uniqueinds(coordinates(sdata), 2)
-  gmax = maximum(gind)
-  groups = [Vector{Int}() for ind in 1:gmax]
+  groups = Dict(ind => Vector{Int}() for ind in unique(gind))
   for (i, ind) in enumerate(gind)
     push!(groups[ind], i)
   end
@@ -44,7 +43,7 @@ function Base.filter(sdata::AbstractData, filt::UniqueCoordsFilter)
   for (var, V) in vars
     dict[var] = Vector{V}()
   end
-  for g in groups
+  for g in values(groups)
     i = g[1] # select any location
     if length(g) > 1
       # aggregate variables
