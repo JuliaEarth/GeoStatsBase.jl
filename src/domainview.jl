@@ -18,22 +18,22 @@ struct DomainView{T,N,
   locations::I
 end
 
-npoints(view::DomainView) = length(view.locations)
+npoints(dv::DomainView) = length(dv.locations)
 
-coordinates!(buff::AbstractVector, view::DomainView, location::Int) =
-  coordinates!(buff, view.domain, view.locations[location])
+coordinates!(buff::AbstractVector, dv::DomainView, location::Int) =
+  coordinates!(buff, dv.domain, dv.locations[location])
 
 # ------------
 # IO methods
 # ------------
-function Base.show(io::IO, view::DomainView{T,N,D,I}) where {T,N,
-                                                             D<:AbstractDomain{T,N},
-                                                             I<:AbstractVector{Int}}
-  npts = npoints(view)
+function Base.show(io::IO, dv::DomainView{T,N,D,I}) where {T,N,
+                                                           D<:AbstractDomain{T,N},
+                                                           I<:AbstractVector{Int}}
+  npts = npoints(dv)
   print(io, "$npts DomainView{$T,$N}")
 end
 
-function Base.show(io::IO, ::MIME"text/plain", view::DomainView)
-  println(io, view)
-  Base.print_array(io, coordinates(view))
+function Base.show(io::IO, ::MIME"text/plain", dv::DomainView)
+  println(io, dv)
+  Base.print_array(io, coordinates(dv))
 end
