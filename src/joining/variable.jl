@@ -12,7 +12,7 @@ struct VariableJoiner <: AbstractJoiner
 end
 
 function Base.join(sdata₁::AbstractData, sdata₂::AbstractData, joiner::VariableJoiner)
-  @assert domain(sdata₁) == domain(sdata₂) "data must reside on same domain"
+  @assert npoints(sdata₁) == npoints(sdata₂) "cannot join different number of points"
 
   # retrieve variable names and types
   vars₁ = variables(sdata₁)
