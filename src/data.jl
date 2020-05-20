@@ -51,6 +51,15 @@ Base.getindex(sdata::AbstractData, vars::AbstractVector{Symbol}) =
   [getindex(sdata, var) for var in vars]
 
 """
+    setindex!(sdata, val, ind, var)
+
+Set the value `val` of variable `var` for point `ind` in spatial
+data `sdata`.
+"""
+Base.setindex!(sdata::AbstractData, val, ind::Int, var::Symbol) =
+  sdata.data[var][ind] = val
+
+"""
     setindex!(sdata, vals, var)
 
 Set the values `vals` of variable `var` for all points in spatial

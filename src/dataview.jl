@@ -33,6 +33,15 @@ variables(dv::DataView) =
 Base.getindex(dv::DataView, ind::Int, var::Symbol) =
   getindex(dv.data, dv.inds[ind], var)
 
+Base.setindex!(dv::DataView, val, ind::Int, var::Symbol) =
+  setindex!(dv.data, val, dv.inds[ind], var)
+
+function Base.setindex!(dv::DataView, vals::AbstractArray, var::Symbol)
+  for (ind, val) in enumerate(vals)
+    setindex!(dv.data, val, dv.inds[ind], var)
+  end
+end
+
 # ------------
 # IO methods
 # ------------

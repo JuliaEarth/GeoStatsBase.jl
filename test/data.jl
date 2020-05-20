@@ -1,4 +1,18 @@
 @testset "Data" begin
+  @testset "Basics" begin
+    d = PointSetData(OrderedDict(:z=>rand(3)), rand(2,3))
+    v = view(d, [1,3])
+
+    d[1,:z] = 1.
+    d[2,:z] = 2.
+    v[2,:z] = 3.
+    @test d[:z] == [1.,2.,3.]
+    @test v[:z] == [1.,3.]
+    v[:z] = [3.,1.]
+    @test d[:z] == [3.,2.,1.]
+    @test v[:z] == [3.,1.]
+  end
+
   @testset "CurveData" begin
     c = CurveData(OrderedDict(:z => 1:10), [j for i in 1:3, j in 1:10])
     @test coordnames(c) == (:x1, :x2, :x3)
