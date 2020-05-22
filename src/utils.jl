@@ -26,9 +26,14 @@ is performed along a `normal` direction. The default
 direction is aligned with the first spatial dimension
 of the object.
 """
-Base.split(object::AbstractSpatialObject{T,N}, fraction::Real,
-           normal=ntuple(i -> i == 1 ? one(T) : zero(T), N)) where {N,T} =
-  partition(object, BisectFractionPartitioner(normal, fraction))
+function Base.split(object::AbstractSpatialObject,
+                    fraction::Real, normal=nothing)
+  if isnothing(normal)
+    partition(object, FractionPartitioner(fraction))
+  else
+    partition(object, BisectFractionPartitioner(normal, fraction))
+  end
+end
 
 """
     groupby(sdata, var)
