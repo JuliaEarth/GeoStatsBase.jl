@@ -5,30 +5,16 @@
 """
     AbstractPath
 
-A path on a spatial domain of type `D`.
+A path on a spatial object.
 """
-abstract type AbstractPath{D<:AbstractDomain} end
+abstract type AbstractPath end
 
 """
-    Base.iterate(path, state=1)
+    traverse(object, path)
 
-Iterate `path` from a given `state`.
+Traverse spatial `object` with `path`.
 """
-Base.iterate(::AbstractPath, state=1) = @error "not implemented"
-
-"""
-    Base.length(path)
-
-Return the length of a `path`.
-"""
-Base.length(p::AbstractPath) = npoints(p.domain)
-
-"""
-    Base.eltype(::Type{P})
-
-Return element type of path type `P`.
-"""
-Base.eltype(::Type{P}) where {P<:AbstractPath} = Int
+traverse(object, path::AbstractPath) = @error "not implemented"
 
 #------------------
 # IMPLEMENTATIONS

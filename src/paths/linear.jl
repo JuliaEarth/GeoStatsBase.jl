@@ -3,23 +3,10 @@
 # ------------------------------------------------------------------
 
 """
-    LinearPath(domain)
+    LinearPath
 
-A linear path on spatial `domain`.
+Traverse a spatial object with `N` points in order `1:N`.
 """
-struct LinearPath{D<:AbstractDomain} <: AbstractPath{D}
-  domain::D
-end
+struct LinearPath <: AbstractPath end
 
-Base.iterate(p::LinearPath, state=1) = state > npoints(p.domain) ? nothing : (state, state + 1)
-
-# ------------
-# IO methods
-# ------------
-function Base.show(io::IO, path::LinearPath)
-  print(io, "LinearPath")
-end
-
-function Base.show(io::IO, ::MIME"text/plain", path::LinearPath)
-  println(io, path)
-end
+traverse(object, path::LinearPath) = 1:npoints(object)

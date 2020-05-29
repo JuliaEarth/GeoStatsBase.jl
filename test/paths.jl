@@ -1,18 +1,21 @@
 @testset "Paths" begin
   grid = RegularGrid{Float64}(100,100)
 
-  for path in [LinearPath(grid), RandomPath(grid)]
-    @test length(path) == 100*100
+  for path in [LinearPath(), RandomPath(),
+               ShiftedPath(LinearPath(), 0),
+               SourcePath(1:3)]
+    p = traverse(grid, path)
+    @test length(p) == 100*100
   end
 
   @testset "LinearPath" begin
-    path = LinearPath(grid)
-    @test collect(path) == collect(1:100*100)
+    p = traverse(grid, LinearPath())
+    @test p == 1:100*100
   end
 
   @testset "RandomPath" begin
-    path = RandomPath(grid)
-    @test all(1 .≤ collect(path) .≤ 100*100)
+    p = traverse(grid, RandomPath())
+    @test all(1 .≤ collect(p) .≤ 100*100)
   end
 
   @testset "SourcePath" begin
@@ -20,21 +23,23 @@
     pset = PointSet(coordinates(grid))
 
     for sdomain in [grid, pset]
-      path = SourcePath(sdomain, [1,9])
-      @test collect(path) == [1,9,2,4,6,8,5,3,7]
+      p = traverse(sdomain, SourcePath([1,9]))
+      @test collect(p) == [1,9,2,4,6,8,5,3,7]
 
-      path = SourcePath(sdomain, [1])
-      @test collect(path) == [1,2,4,5,3,7,6,8,9]
+      p = traverse(sdomain, SourcePath([1]))
+      @test collect(p) == [1,2,4,5,3,7,6,8,9]
     end
   end
 
   @testset "ShiftedPath" begin
-    path = LinearPath(RegularGrid{Float64}(3,3))
-    @test collect(ShiftedPath(path,  0)) == collect(1:9)
-    @test collect(ShiftedPath(path,  1)) == vcat(collect(2:9), [1])
-    @test collect(ShiftedPath(path, -1)) == vcat([9], collect(1:8))
-    @test length(ShiftedPath(path,  0)) == 9
-    @test length(ShiftedPath(path,  1)) == 9
-    @test length(ShiftedPath(path, -1)) == 9
+    grid = RegularGrid{Float64}(3,3)
+    path = LinearPath()
+    for offset in [0,1,-1]
+      spath = ShiftedPath(path, offset)
+      p  = traverse(grid, path)
+      sp = traverse(grid, spath)
+      @test length(sp) == 9
+      @test collect(sp) == circshift(p, -offset)
+    end
   end
 end

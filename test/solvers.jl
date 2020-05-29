@@ -22,7 +22,7 @@
     solver = SeqSim(:var => (estimator=DummyEstimator(),
                              neighborhood=BallNeighborhood{2}(10.),
                              minneighbors=1, maxneighbors=10,
-                             marginal=Normal(), path=LinearPath(sdomain)))
+                             marginal=Normal(), path=LinearPath()))
 
     Random.seed!(1234)
     solution = solve(problem, solver)

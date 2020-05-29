@@ -200,6 +200,7 @@ export
   RandomPath,
   SourcePath,
   ShiftedPath,
+  traverse,
 
   # regions
   AbstractRegion,

@@ -7,17 +7,18 @@
 
 A sequential simulation solver.
 
+For each location in the simulation `path`, a maximum number
+of neighbors `maxneighbors` is used to fit a distribution.
+The neighbors are searched according to a `neighborhood`,
+and in case there are none, use a `marginal` distribution.
+
 ## Parameters
 
-* `estimator`    - Estimator used to construct conditional distribution
-* `neighborhood` - Neighborhood on which to search neighbors
-* `maxneighbors` - Maximum number of neighbors (default to 10)
-* `marginal`     - Marginal distribution (default to `Normal()`)
-* `path`         - Simulation path (default to `RandomPath`)
-
-For each location in the simulation `path`, a maximum number of
-neighbors `maxneighbors` is used to fit a Gaussian distribution.
-The neighbors are searched according to a `neighborhood`.
+* `estimator`    - CDF estimator
+* `neighborhood` - Spatial neighborhood
+* `maxneighbors` - Maximum number of neighbors
+* `marginal`     - Marginal distribution
+* `path`         - Simulation path
 """
 @simsolver SeqSim begin
   @param estimator
@@ -92,7 +93,7 @@ function solvesingle(problem::SimulationProblem, covars::NamedTuple,
     end
 
     # simulation loop
-    for location in path
+    for location in traverse(pdomain, path)
       if !simulated[location]
         # coordinates of neighborhood center
         coordinates!(xₒ, pdomain, location)

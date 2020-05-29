@@ -5,44 +5,20 @@
 """
     ShiftedPath(path, offset)
 
-Produces the same results of `path` but shifted by an `offset`
+Traverse spatial object with the `path` shifted by an `offset`
 that can be positive or negative.
 """
-struct ShiftedPath{D<:AbstractDomain,P<:AbstractPath{D}} <: AbstractPath{D}
+struct ShiftedPath{P<:AbstractPath} <: AbstractPath
   path::P
   offset::Int
-  start::Int
-  length::Int
 end
 
-function ShiftedPath(path::AbstractPath{D}, offset::Int) where {D<:AbstractDomain}
-  _, s = iterate(path)
-  start = s - 1
-  len = length(path)
-  off = offset ≥ 0 ? offset : len + offset
-
-  ShiftedPath{D,typeof(path)}(path, off, start, len)
-end
-
-function Base.iterate(path::ShiftedPath, state=1)
-  if state > path.length
-    nothing
-  else
-    s = ((state + path.offset - 1) % path.length) + path.start
-    loc, _ = iterate(path.path, s)
-    loc, state + 1
-  end
-end
-
-Base.length(path::ShiftedPath) = path.length
-
-# ------------
-# IO methods
-# ------------
-function Base.show(io::IO, path::ShiftedPath)
-  print(io, "ShiftedPath")
-end
-
-function Base.show(io::IO, ::MIME"text/plain", path::ShiftedPath)
-  println(io, path)
+function traverse(object, path::ShiftedPath)
+  p = traverse(object, path.path)
+  n = length(p)
+  o = path.offset
+  s = o ≥ 0 ? o : abs((n + o) % n)
+  i1 = Iterators.cycle(p)
+  i2 = Iterators.drop(i1, s % n)
+  Iterators.take(i2, n)
 end
