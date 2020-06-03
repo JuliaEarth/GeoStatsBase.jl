@@ -3,16 +3,22 @@
 # ------------------------------------------------------------------
 
 @recipe function f(domain::RegularGrid{T,N}, data::AbstractVector) where {N,T}
-  Z = reshape(data, size(domain))
+  sz = size(domain)
+  or = origin(domain)
+  sp = spacing(domain)
+  Z  = reshape(data, sz)
 
   if N == 1
     seriestype --> :path
-    coordinates(domain)[1,:], Z
+    x = range(or[1], step=sp[1], length=sz[1])
+    x, Z
   elseif N == 2
     seriestype --> :heatmap
     aspect_ratio --> :equal
     colorbar --> true
-    domainaxis(domain,1), domainaxis(domain,2), reverse(rotr90(Z), dims=2)
+    x = range(or[1], step=sp[1], length=sz[1])
+    y = range(or[2], step=sp[2], length=sz[2])
+    x, y, reverse(rotr90(Z), dims=2)
   elseif N == 3
     seriestype --> :volume
     aspect_ratio --> :equal
@@ -22,8 +28,6 @@
     @error "cannot plot in more than 3 dimensions"
   end
 end
-
-domainaxis(g::RegularGrid, dim) = range(g.origin[dim], step=g.spacing[dim], length=size(g)[dim])
 
 @recipe function f(domain::RegularGrid{T,N}) where {N,T}
   X  = coordinates(domain)
