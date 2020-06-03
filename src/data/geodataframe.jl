@@ -38,7 +38,7 @@ struct GeoDataFrame{T,N,DF<:AbstractDataFrame} <: AbstractData{T,N}
 end
 
 function GeoDataFrame(data::DF, coordnames::AbstractVector{Symbol}) where {DF<:AbstractDataFrame}
-  @assert coordnames ⊆ names(data) "invalid column names"
+  @assert coordnames ⊆ propertynames(data) "invalid column names"
 
   Ts = [eltype(data[!,c]) for c in coordnames]
   T  = promote_type(Ts...)
@@ -56,7 +56,7 @@ coordnames(geodata::GeoDataFrame) = Tuple(geodata.coordnames)
 function variables(geodata::GeoDataFrame)
   data   = geodata.data
   cnames = geodata.coordnames
-  vnames = [var for var in names(data) if var ∉ cnames]
+  vnames = [var for var in propertynames(data) if var ∉ cnames]
   vtypes = [eltype(data[!,var]) for var in vnames]
 
   OrderedDict([var => T for (var,T) in zip(vnames,vtypes)])
