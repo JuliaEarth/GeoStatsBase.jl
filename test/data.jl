@@ -24,9 +24,9 @@
       c1 = CurveData(OrderedDict(:z => 1:10), [j for i in 1:1, j in 1:10])
       c2 = CurveData(OrderedDict(:z => 1:10), [j for i in 1:2, j in 1:10])
       c3 = CurveData(OrderedDict(:z => 1:10), [j for i in 1:3, j in 1:10])
-      @plottest plot(c1,ms=4) joinpath(datadir,"CurveData1D.png") !istravis
-      @plottest plot(c2,ms=4) joinpath(datadir,"CurveData2D.png") !istravis
-      @plottest plot(c3,ms=4) joinpath(datadir,"CurveData3D.png") !istravis
+      @plottest plot(c1,ms=4) joinpath(datadir,"curve-data1D.png") !istravis
+      @plottest plot(c2,ms=4) joinpath(datadir,"curve-data2D.png") !istravis
+      @plottest plot(c3,ms=4) joinpath(datadir,"curve-data3D.png") !istravis
     end
   end
 
@@ -57,7 +57,7 @@
       gr(size=(800,800))
       df = DataFrame(x=[25.,50.,75.],y=[25.,75.,50.],z=[1.,0.,1.])
       sdata = GeoDataFrame(df, [:x,:y])
-      @plottest plot(sdata) joinpath(datadir,"GeoDataFrame.png") !istravis
+      @plottest plot(sdata) joinpath(datadir,"geodf.png") !istravis
     end
   end
 
@@ -81,7 +81,7 @@
     if visualtests
       gr(size=(800,800))
       sdata = PointSetData(OrderedDict(:z => [1.,0.,1.]), [25. 50. 75.; 25. 75. 50.])
-      @plottest plot(sdata) joinpath(datadir,"PointSetData.png") !istravis
+      @plottest plot(sdata) joinpath(datadir,"pset-data.png") !istravis
     end
   end
 
@@ -105,8 +105,10 @@
 
     if visualtests
       gr(size=(800,800))
-      sdata = RegularGridData(OrderedDict(:z => [1 2; 3 4]), (0.,0.), (0.1,0.1))
-      @plottest plot(sdata) joinpath(datadir,"RegularGridData.png") !istravis
+      sdata = RegularGridData(OrderedDict(:z => [1 2; 3 4]), (0.,0.), (.1,.1))
+      @plottest plot(sdata) joinpath(datadir,"grid2D-data1.png") !istravis
+      sdata = RegularGridData(OrderedDict(:z => [1 2; 3 4]), (-10.,-10.), (10.,10.))
+      @plottest plot(sdata) joinpath(datadir,"grid2D-data2.png") !istravis
     end
   end
 
