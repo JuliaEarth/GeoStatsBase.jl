@@ -12,7 +12,7 @@
     seriestype --> :heatmap
     aspect_ratio --> :equal
     colorbar --> true
-    reverse(rotr90(Z), dims=2)
+    domainaxis(domain,1), domainaxis(domain,2), reverse(rotr90(Z), dims=2)
   elseif N == 3
     seriestype --> :volume
     aspect_ratio --> :equal
@@ -22,6 +22,8 @@
     @error "cannot plot in more than 3 dimensions"
   end
 end
+
+domainaxis(g::RegularGrid, dim) = range(g.origin[dim], step=g.spacing[dim], length=size(g)[dim])
 
 @recipe function f(domain::RegularGrid{T,N}) where {N,T}
   X  = coordinates(domain)
