@@ -8,10 +8,11 @@ using Optim
 using CSV: read
 using Distributed: pmap
 using Random: randperm, shuffle
-using StatsBase: Histogram, Weights, AbstractWeights
+using Combinatorics: multiexponents
 using OrderedCollections: OrderedDict
-using Distances: Metric, Euclidean, Mahalanobis, pairwise
 using LinearAlgebra: Diagonal, normalize, norm, ⋅
+using StatsBase: Histogram, Weights, AbstractWeights
+using Distances: Metric, Euclidean, Mahalanobis, pairwise
 using Distributions: ContinuousUnivariateDistribution, median, mode
 using CategoricalArrays: CategoricalValue, CategoricalArray
 using CategoricalArrays: levels, isordered, pool
@@ -311,9 +312,10 @@ export
   cornerplot,
 
   # utilities
-  readgeotable,
   groupby,
   boundbox,
-  uniquecoords
+  readgeotable,
+  uniquecoords,
+  polymat
 
 end
