@@ -7,20 +7,16 @@
 
   seriestype --> :scatterpath
   linecolor  --> :black
+  marker_z --> data
+  colorbar --> true
 
   if N == 1
-    marker_z --> data
-    colorbar --> true
     X[1,:], fill(0, npoints(domain))
   elseif N == 2
     aspect_ratio --> :equal
-    marker_z --> data
-    colorbar --> true
     X[1,:], X[2,:]
   elseif N == 3
     aspect_ratio --> :equal
-    marker_z --> data
-    colorbar --> true
     X[1,:], X[2,:], X[3,:]
   else
     @error "cannot plot in more than 3 dimensions"

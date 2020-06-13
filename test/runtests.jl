@@ -40,6 +40,7 @@ testfiles = [
   "covering.jl",
   "filtering.jl",
   "paths.jl",
+  "trends.jl",
   "regions.jl",
   "neighborhoods.jl",
   "mappers.jl",

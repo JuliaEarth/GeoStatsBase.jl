@@ -93,28 +93,3 @@ See [`UniqueCoordsFilter`](@ref) for more details.
 """
 uniquecoords(sdata::AbstractData; aggreg=Dict()) =
   filter(sdata, UniqueCoordsFilter(aggreg))
-
-"""
-    polymat(data, degree)
-
-Return the matrix of monomials for the `data` matrix, i.e.
-for each row `x = (x₁, x₂,…, xₙ)` of the `data`, evaluate
-the monomial terms of the expanstion `(x₁ + x₂ + ⋯ + xₙ)ᵈ`
-for a given `degree` denoted by `d`.
-
-The resulting matrix has the same number of rows of the
-`data` matrix. The number of columns is a function of the
-`degree`. For `degree=0`, a column of ones is returned that
-corresponds to the constant term `x₁⁰⋅x₂⁰⋅⋯⋅xₙ⁰` for all
-rows of the `data`.
-"""
-function polymat(data, degree)
-  nobs, dim = size(data)
-  exps = Iterators.flatten(multiexponents(dim, d) for d in 0:degree)
-  m = map(exps) do e
-    map(eachrow(data)) do x
-      prod(x .^ e)
-    end
-  end
-  reduce(hcat, m)
-end

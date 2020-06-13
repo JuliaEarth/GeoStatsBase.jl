@@ -55,6 +55,7 @@ include("dataview.jl")
 include("collections.jl")
 include("macros.jl")
 include("paths.jl")
+include("trends.jl")
 include("regions.jl")
 include("distances.jl")
 include("neighborhoods.jl")
@@ -302,6 +303,11 @@ export
   AbstractFilter,
   UniqueCoordsFilter,
 
+  # trends
+  polymat,
+  trend,
+  detrend!,
+
   # statistics
   SpatialStatistic,
   EmpiricalHistogram,
@@ -315,7 +321,6 @@ export
   groupby,
   boundbox,
   readgeotable,
-  uniquecoords,
-  polymat
+  uniquecoords
 
 end
