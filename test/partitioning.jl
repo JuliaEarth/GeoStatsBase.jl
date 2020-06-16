@@ -87,8 +87,7 @@
     @test length(p) == 49
 
     if visualtests
-      gr(size=(800,800))
-      @plottest plot(p) joinpath(datadir,"SLICPartitioner.png") !istravis
+      @plottest plot(p) joinpath(datadir,"slic.png") !istravis
     end
   end
 

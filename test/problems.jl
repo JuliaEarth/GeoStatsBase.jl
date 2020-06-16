@@ -26,8 +26,7 @@
     @test sprint(show, MIME"text/plain"(), problem2D) == "2D EstimationProblem\n  data:      3×3 GeoDataFrame (x and y)\n  domain:    100×100 RegularGrid{Float64,2}\n  variables: value (Float64)"
 
     if visualtests
-      gr(size=(800,800))
-      @plottest plot(problem2D,ms=2) joinpath(datadir,"EstimationProblem2D.png") !istravis
+      @plottest plot(problem2D,ms=2) joinpath(datadir,"estimation.png") !istravis
     end
   end
 
@@ -75,8 +74,7 @@
     @test sprint(show, MIME"text/plain"(), problem2D) == "2D SimulationProblem (conditional)\n  data:      3×3 GeoDataFrame (x and y)\n  domain:    100×100 RegularGrid{Float64,2}\n  variables: value (Float64)\n  N° reals:  100"
 
     if visualtests
-      gr(size=(800,800))
-      @plottest plot(problem2D,ms=2) joinpath(datadir,"SimulationProblem2D.png") !istravis
+      @plottest plot(problem2D,ms=2) joinpath(datadir,"simulation.png") !istravis
     end
   end
 
@@ -103,8 +101,7 @@
     @test sprint(show, MIME"text/plain"(), problem) == "2D LearningProblem\n  source: 10 PointSetData{Float64,2}\n  target: 10×10 RegularGridData{Float64,2}\n  task:   Clustering x → c"
 
     if visualtests
-      gr(size=(800,800))
-      @plottest plot(problem,ms=2) joinpath(datadir,"LearningProblem2D.png") !istravis
+      @plottest plot(problem,ms=2) joinpath(datadir,"learning.png") !istravis
     end
   end
 end

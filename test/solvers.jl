@@ -11,8 +11,7 @@
     solution = solve(problem, solver)
 
     if visualtests
-      gr(size=(800,600))
-      @plottest plot(solution) joinpath(datadir,"CookieCutter.png") !istravis
+      @plottest plot(solution,size=(800,600)) joinpath(datadir,"cookiecutter.png") !istravis
     end
   end
 
@@ -28,8 +27,7 @@
     solution = solve(problem, solver)
 
     if visualtests
-      gr(size=(900,300))
-      @plottest plot(solution) joinpath(datadir,"SeqSim.png") !istravis
+      @plottest plot(solution,size=(900,300)) joinpath(datadir,"seqsim.png") !istravis
     end
   end
 end

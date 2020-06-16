@@ -11,13 +11,12 @@
     @test sprint(show, MIME"text/plain"(), c) == "5 Curve{Int64,3}\n 1  2  3  4  5\n 1  2  3  4  5\n 1  2  3  4  5"
 
     if visualtests
-      gr(size=(800,800))
       c1 = Curve([j for i in 1:1, j in 1:5])
       c2 = Curve([j for i in 1:2, j in 1:5])
       c3 = Curve([j for i in 1:3, j in 1:5])
-      @plottest plot(c1,ms=4) joinpath(datadir,"Curve1D.png") !istravis
-      @plottest plot(c2,ms=4) joinpath(datadir,"Curve2D.png") !istravis
-      @plottest plot(c3,ms=4) joinpath(datadir,"Curve3D.png") !istravis
+      @plottest plot(c1,ms=4) joinpath(datadir,"curve1D.png") !istravis
+      @plottest plot(c2,ms=4) joinpath(datadir,"curve2D.png") !istravis
+      @plottest plot(c3,ms=4) joinpath(datadir,"curve3D.png") !istravis
     end
   end
 
@@ -31,7 +30,6 @@
     @test sprint(show, MIME"text/plain"(), ps) == "2 PointSet{Float64,2}\n 1.0  0.0\n 0.0  1.0"
 
     if visualtests
-      gr(size=(800,800))
       Random.seed!(2019)
       @plottest plot(PointSet(rand(1,10))) joinpath(datadir,"pset1D.png") !istravis
       @plottest plot(PointSet(rand(2,10))) joinpath(datadir,"pset2D.png") !istravis
@@ -75,7 +73,6 @@
     @test sprint(show, MIME"text/plain"(), grid) == "100×200 RegularGrid{Float64,2}\n  origin:     (0.0, 0.0)\n  spacing:    (1.0, 1.0)"
 
     if visualtests
-      gr(size=(800,800))
       @plottest plot(RegularGrid{Float64}(10)) joinpath(datadir,"grid1D.png") !istravis
       @plottest plot(RegularGrid{Float64}(10,20)) joinpath(datadir,"grid2D.png") !istravis
       @plottest plot(RegularGrid{Float64}(10,20,30)) joinpath(datadir,"grid3D.png") !istravis
@@ -116,7 +113,6 @@
     @test sprint(show, g3) == "20×10×10 StructuredGrid{Float64,3}"
 
     if visualtests
-      gr(size=(800,800))
       @plottest plot(g1) joinpath(datadir,"sgrid1D.png") !istravis
       @plottest plot(g2) joinpath(datadir,"sgrid2D.png") !istravis
       @plottest plot(g3,camera=(30,60)) joinpath(datadir,"sgrid3D.png") !istravis

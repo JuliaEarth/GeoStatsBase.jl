@@ -1,4 +1,6 @@
 @testset "Trends" begin
+  Random.seed!(123)
+
   # constant trend
   d = RegularGridData{Float64}(OrderedDict(:z=>rand(100)))
   z̄ = detrend!(d, :z)[:z]

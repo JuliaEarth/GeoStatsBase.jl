@@ -25,11 +25,10 @@
 
     if visualtests
       @plottest begin
-        gr(size=(800,400))
-        plot( z1, pdf.(r1, z1), label="source")
+        plot( z1, pdf.(r1, z1), size=(800,400), label="source")
         plot!(z1, pdf.(r2, z1), label="target")
         plot!(z1, w .* pdf.(r1, z1), label="approx")
-      end joinpath(datadir,"DensityRatioWeighter.png") !istravis
+      end joinpath(datadir,"density-ratio.png") !istravis
     end
   end
 end

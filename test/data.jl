@@ -20,7 +20,6 @@
     @test npoints(c) == 10
 
     if visualtests
-      gr(size=(800,800))
       c1 = CurveData(OrderedDict(:z => 1:10), [j for i in 1:1, j in 1:10])
       c2 = CurveData(OrderedDict(:z => 1:10), [j for i in 1:2, j in 1:10])
       c3 = CurveData(OrderedDict(:z => 1:10), [j for i in 1:3, j in 1:10])
@@ -54,7 +53,6 @@
     @test sprint(show, MIME"text/html"(), sdata) == "3×2 GeoDataFrame (x and y)\n<table class=\"data-frame\"><thead><tr><th></th><th>x</th><th>y</th></tr><tr><th></th><th>Int64</th><th>Int64</th></tr></thead><tbody><tr><th>1</th><td>1</td><td>4</td></tr><tr><th>2</th><td>2</td><td>5</td></tr><tr><th>3</th><td>3</td><td>6</td></tr></tbody></table>"
 
     if visualtests
-      gr(size=(800,800))
       df = DataFrame(x=[25.,50.,75.],y=[25.,75.,50.],z=[1.,0.,1.])
       sdata = GeoDataFrame(df, [:x,:y])
       @plottest plot(sdata) joinpath(datadir,"geodf.png") !istravis
@@ -79,7 +77,6 @@
     @test sprint(show, MIME"text/plain"(), ps) == "3 PointSetData{Float64,2}\n  variables\n    └─value (Int64)"
 
     if visualtests
-      gr(size=(800,800))
       sdata = PointSetData(OrderedDict(:z => [1.,0.,1.]), [25. 50. 75.; 25. 75. 50.])
       @plottest plot(sdata) joinpath(datadir,"pset-data.png") !istravis
     end
@@ -104,7 +101,6 @@
     @test sprint(show, MIME"text/plain"(), g) == "2×2 RegularGridData{Float64,2}\n  origin:  (0.0, 0.0)\n  spacing: (1.0, 1.0)\n  variables\n    └─z (Int64)"
 
     if visualtests
-      gr(size=(800,800))
       sdata = RegularGridData(OrderedDict(:z => [1 2; 3 4]), (0.,0.), (.1,.1))
       @plottest plot(sdata) joinpath(datadir,"grid2D-data1.png") !istravis
       sdata = RegularGridData(OrderedDict(:z => [1 2; 3 4]), (-10.,-10.), (10.,10.))
@@ -134,8 +130,7 @@
     @test sprint(show, MIME"text/plain"(), g) == "221×366 StructuredGridData{Float64,2}\n  variables\n    └─precipitation (Float64)"
 
     if visualtests
-      gr(size=(800,800))
-      # @plottest plot(g,ms=0.1) joinpath(datadir,"StructuredGridData.png") !istravis
+      # TODO
     end
   end
 end
