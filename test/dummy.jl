@@ -34,3 +34,20 @@ function predict(fitted::FittedDummyEstimator, xₒ)
   μ, σ²
 end
 status(fitted::FittedDummyEstimator) = true
+
+#########################
+# OTHER EXAMPLE SOLVERS
+#########################
+@estimsolver ESolver begin
+  @param A=1.0
+  @param B=2
+  @jparam J="foo"
+  @global C=true
+end
+
+@simsolver SSolver begin
+  @param A=1.0
+  @param B=2
+  @jparam J="foo"
+  @global C=true
+end
