@@ -1,7 +1,18 @@
-################
-# DUMMY SOLVER
-################
-import GeoStatsBase: solvesingle
+#################
+# DUMMY SOLVERS
+#################
+import GeoStatsBase: solve, solvesingle
+
+@estimsolver DummyEstimSolver begin end
+function solve(problem::EstimationProblem, solver::DummyEstimSolver)
+  sdat = data(problem)
+  sdom = domain(problem)
+  npts = npoints(sdom)
+  vars = [v for (v,V) in variables(problem)]
+  μvar = Dict(v => fill(mean(sdat[v]),npts) for v in vars)
+  σvar = Dict(v => fill(var(sdat[v]),npts) for v in vars)
+  EstimationSolution(sdom, μvar, σvar)
+end
 
 @simsolver DummySimSolver begin end
 function solvesingle(problem::SimulationProblem, covars::NamedTuple,
@@ -12,7 +23,6 @@ function solvesingle(problem::SimulationProblem, covars::NamedTuple,
     real = vcat(fill(zero(V), npts÷2), fill(one(V), npts÷2))
     var => real
   end
-
   Dict(reals)
 end
 
