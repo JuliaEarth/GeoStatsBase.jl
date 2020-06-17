@@ -51,3 +51,15 @@ end
   @jparam J="foo"
   @global C=true
 end
+
+########################
+# DUMMY LEARNING MODEL
+########################
+import GeoStatsBase: issupervised
+import MLJModelInterface
+const MI = MLJModelInterface
+
+struct DummyModel <: MI.Supervised end
+MI.fit(m::DummyModel, v, X, y) = rand(unique(y),length(y)), 0, 0
+MI.predict(m::DummyModel, θ, X) = θ
+MI.target_scitype(m::DummyModel) = AbstractVector{<:MI.Finite}

@@ -43,14 +43,15 @@ testfiles = [
   "trends.jl",
   "regions.jl",
   "neighborhoods.jl",
+  "learning.jl",
   "mappers.jl",
   "problems.jl",
   "solvers.jl",
   "solutions.jl",
-  "utils.jl",
+  "errors.jl",
   "statistics.jl",
-  "learning.jl",
   "plotrecipes.jl",
+  "utils.jl",
   "macros.jl"
 ]
 
