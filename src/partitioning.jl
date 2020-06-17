@@ -88,10 +88,11 @@ end
 
 function Base.show(io::IO, ::MIME"text/plain", partition::SpatialPartition)
   meta = metadata(partition)
+  lines = ["  └─$(length(subset))" for subset in partition.subsets]
+  lines = length(lines) > 11 ? vcat(lines[1:5],["  ⋮"],lines[end-4:end]) : lines
   println(io, partition)
   println(io, "  N° points")
-  setlines = ["  └─$(length(subset))" for subset in partition.subsets]
-  print(io, join(setlines, "\n"))
+  print(io, join(lines, "\n"))
   if !isempty(meta)
     print(io, "\n  metadata: ", join(keys(meta), ", "))
   end

@@ -1,8 +1,13 @@
 @testset "Partitioning" begin
   setify(lists) = Set(Set.(lists))
 
+  d = RegularGrid(10,10)
+  p = partition(d, UniformPartitioner(100))
+  @test sprint(show, p) == "100 SpatialPartition"
+  @test sprint(show, MIME"text/plain"(), p) == "100 SpatialPartition\n  N° points\n  └─1\n  └─1\n  └─1\n  └─1\n  └─1\n  ⋮\n  └─1\n  └─1\n  └─1\n  └─1\n  └─1"
+
   @testset "UniformPartitioner" begin
-    grid = RegularGrid{Float64}(3,3)
+    grid = RegularGrid(3,3)
 
     Random.seed!(123)
     p = partition(grid, UniformPartitioner(3, false))
@@ -10,13 +15,13 @@
     p = partition(grid, UniformPartitioner(3))
     @test setify(subsets(p)) == setify([[8,6,9], [4,1,7], [2,3,5]])
 
-    grid = RegularGrid{Float64}(2,3)
+    grid = RegularGrid(2,3)
     p = partition(grid, UniformPartitioner(3, false))
     @test setify(subsets(p)) == setify([[1,2], [3,4], [5,6]])
   end
 
   @testset "DirectionPartitioner" begin
-    grid = RegularGrid{Float64}(3,3)
+    grid = RegularGrid(3,3)
 
     # basic checks on small regular grid data
     p = partition(grid, DirectionPartitioner((1.,0.)))
@@ -40,7 +45,7 @@
     # partition of arbitrarily large regular grid always
     # returns the "lines" and "columns" of the grid
     for n in [10,100,200]
-      grid = RegularGrid{Float64}(n,n)
+      grid = RegularGrid(n,n)
 
       p = partition(grid, DirectionPartitioner((1.,0.)))
       @test setify(subsets(p)) == setify([collect((i-1)*n+1:i*n) for i in 1:n])
@@ -55,7 +60,7 @@
   end
 
   @testset "FractionPartitioner" begin
-    grid = RegularGrid{Float64}(10,10)
+    grid = RegularGrid(10,10)
 
     p = partition(grid, FractionPartitioner(0.5))
     @test npoints(p[1]) == npoints(p[2]) == 50
@@ -72,7 +77,7 @@
 
   @testset "SLICPartitioner" begin
     img   = [ones(10,10) 2ones(10,10); 3ones(10,10) 4ones(10,10)]
-    sdata = RegularGridData{Float64}(OrderedDict(:z => img))
+    sdata = RegularGridData(OrderedDict(:z => img))
     p = partition(sdata, SLICPartitioner(4, 1.0))
     @test length(p) == 4
     @test all(npoints.(p) .== 100)
@@ -82,7 +87,7 @@
     @test mean(coordinates(p[4]), dims=2) == [14.5,14.5][:,:]
 
     img   = [√(i^2+j^2) for i in 1:100, j in 1:100]
-    sdata = RegularGridData{Float64}(OrderedDict(:z => img))
+    sdata = RegularGridData(OrderedDict(:z => img))
     p = partition(sdata, SLICPartitioner(50, 1.0))
     @test length(p) == 49
 
@@ -92,7 +97,7 @@
   end
 
   @testset "BlockPartitioner" begin
-    grid = RegularGrid{Float64}(10,10)
+    grid = RegularGrid(10,10)
 
     p = partition(grid, BlockPartitioner(5.,5.))
     @test length(p) == 4
@@ -104,7 +109,7 @@
   end
 
   @testset "BisectPointPartitioner" begin
-    grid = RegularGrid{Float64}(10,10)
+    grid = RegularGrid(10,10)
 
     p = partition(grid, BisectPointPartitioner((0.,1.), (5.,5.1)))
     @test npoints(p[1]) == 60
@@ -126,7 +131,7 @@
   end
 
   @testset "BisectFractionPartitioner" begin
-    grid = RegularGrid{Float64}(10,10)
+    grid = RegularGrid(10,10)
 
     p = partition(grid, BisectFractionPartitioner((1.,0.), 0.2))
     @test npoints(p[1]) == 20
@@ -169,28 +174,28 @@
   end
 
   @testset "PlanePartitioner" begin
-    grid = RegularGrid{Float64}(3,3)
+    grid = RegularGrid(3,3)
     p = partition(grid, PlanePartitioner((0.,1.)))
     @test setify(subsets(p)) == setify([[1,2,3],[4,5,6],[7,8,9]])
 
-    grid = RegularGrid{Float64}(4,4)
+    grid = RegularGrid(4,4)
     p = partition(grid, PlanePartitioner((0.,1.)))
     @test setify(subsets(p)) == setify([1:4,5:8,9:12,13:16])
   end
 
   @testset "VariablePartitioner" begin
-    sdata = RegularGridData{Float64}(OrderedDict(:z => [1 1 1; 2 2 2; 3 3 3]))
+    sdata = RegularGridData(OrderedDict(:z => [1 1 1; 2 2 2; 3 3 3]))
     p = partition(sdata, VariablePartitioner(:z))
     @test setify(subsets(p)) == setify([[1,4,7],[2,5,8],[3,6,9]])
 
     # partition with missing values
-    sdata = RegularGridData{Float64}(OrderedDict(:z => [missing 1 1; 2 missing 2; 3 3 missing]))
+    sdata = RegularGridData(OrderedDict(:z => [missing 1 1; 2 missing 2; 3 3 missing]))
     p = partition(sdata, VariablePartitioner(:z))
     @test setify(subsets(p)) == setify([[4,7],[2,8],[3,6],[1,5,9]])
   end
 
   @testset "PredicatePartitioner" begin
-    grid = RegularGrid{Float64}(3,3)
+    grid = RegularGrid(3,3)
 
     # partition even from odd locations
     pred(i,j) = iseven(i+j)
@@ -199,7 +204,7 @@
   end
 
   @testset "SpatialPredicatePartitioner" begin
-    g = RegularGrid{Float64}(10,10)
+    g = RegularGrid(10,10)
 
     # check if there are 100 partitions, each one having only 1 point
     sp = SpatialPredicatePartitioner((x,y) -> norm(x-y) < 1.0)
@@ -225,7 +230,7 @@
   end
 
   @testset "ProductPartitioner" begin
-    g = RegularGrid{Float64}(100,100)
+    g = RegularGrid(100,100)
     bm = BlockPartitioner(10.,10.)
     bn = BlockPartitioner(5.,5.)
 
@@ -244,7 +249,7 @@
   end
 
   @testset "HierarchicalPartitioner" begin
-    g = RegularGrid{Float64}(100,100)
+    g = RegularGrid(100,100)
     bm = BlockPartitioner(10.,10.)
     bn = BlockPartitioner(5.,5.)
 
@@ -255,7 +260,7 @@
   end
 
   @testset "Mixed Tests" begin
-    g = RegularGrid{Float64}(100,100)
+    g = RegularGrid(100,100)
     bm = BlockPartitioner(10.,10.)
     bn = BlockPartitioner(5.,5.)
 
