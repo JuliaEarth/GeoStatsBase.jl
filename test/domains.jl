@@ -68,17 +68,17 @@
     @test coordinates(grid, 200*100) == [1.,1.]
     @test origin(grid) == [-1.,-1.]
 
-    grid = RegularGrid{Float64}(100,200)
+    grid = RegularGrid(100,200)
     @test sprint(show, grid) == "100×200 RegularGrid{Float64,2}"
     @test sprint(show, MIME"text/plain"(), grid) == "100×200 RegularGrid{Float64,2}\n  origin:     (0.0, 0.0)\n  spacing:    (1.0, 1.0)"
 
     if visualtests
-      @plottest plot(RegularGrid{Float64}(10)) joinpath(datadir,"grid1D.png") !istravis
-      @plottest plot(RegularGrid{Float64}(10,20)) joinpath(datadir,"grid2D.png") !istravis
-      @plottest plot(RegularGrid{Float64}(10,20,30)) joinpath(datadir,"grid3D.png") !istravis
-      @plottest plot(RegularGrid{Float64}(10),[1,2,3,4,5,5,4,3,2,1]) joinpath(datadir,"grid1D-data.png") !istravis
-      @plottest plot(RegularGrid{Float64}(10,10),1:100) joinpath(datadir,"grid2D-data.png") !istravis
-      # @plottest plot(RegularGrid{Float64}(10,10,10),zeros(1000)) joinpath(datadir,"grid3D-data.png") !istravis
+      @plottest plot(RegularGrid(10)) joinpath(datadir,"grid1D.png") !istravis
+      @plottest plot(RegularGrid(10,20)) joinpath(datadir,"grid2D.png") !istravis
+      @plottest plot(RegularGrid(10,20,30)) joinpath(datadir,"grid3D.png") !istravis
+      @plottest plot(RegularGrid(10),[1,2,3,4,5,5,4,3,2,1]) joinpath(datadir,"grid1D-data.png") !istravis
+      @plottest plot(RegularGrid(10,10),1:100) joinpath(datadir,"grid2D-data.png") !istravis
+      @plottest plot(RegularGrid(10,10,10),collect(1:1.0:1000)) joinpath(datadir,"grid3D-data.png") !istravis
     end
   end
 

@@ -68,6 +68,10 @@ RegularGrid{T}(dims::Dims{N}) where {N,T} =
 
 RegularGrid{T}(dims::Vararg{Int,N}) where {N,T} = RegularGrid{T}(dims)
 
+RegularGrid(dims::Dims{N}) where {N} = RegularGrid{Float64}(dims)
+
+RegularGrid(dims::Vararg{Int,N}) where {N} = RegularGrid{Float64}(dims)
+
 Base.size(grid::RegularGrid) = grid.dims
 origin(grid::RegularGrid)    = grid.origin
 spacing(grid::RegularGrid)   = grid.spacing

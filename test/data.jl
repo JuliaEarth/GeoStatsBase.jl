@@ -84,7 +84,7 @@
 
   @testset "RegularGridData" begin
     # basic checks
-    g = RegularGridData{Float64}(OrderedDict(:value => rand(100,100)))
+    g = RegularGridData(OrderedDict(:value => rand(100,100)))
     X, z = valid(g, :value)
     @test size(g) == (100, 100)
     @test origin(g) == [0., 0.]

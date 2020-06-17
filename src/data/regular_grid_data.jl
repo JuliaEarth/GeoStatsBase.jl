@@ -53,6 +53,8 @@ end
 RegularGridData{T}(data::OrderedDict{Symbol,<:AbstractArray{<:Any,N}}) where {N,T} =
   RegularGridData(data, ntuple(i->zero(T), N), ntuple(i->one(T), N))
 
+RegularGridData(data) = RegularGridData{Float64}(data)
+
 Base.size(geodata::RegularGridData) = size(geodata.domain)
 origin(geodata::RegularGridData) = origin(geodata.domain)
 spacing(geodata::RegularGridData) = spacing(geodata.domain)
