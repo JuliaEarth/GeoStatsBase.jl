@@ -11,10 +11,17 @@ with bandwidth tolerance `tol`.
 struct DirectionPartitioner{T,N} <: AbstractSpatialPredicatePartitioner
   direction::SVector{N,T}
   tol::Float64
+
+  function DirectionPartitioner{T,N}(direction, tol) where {N,T}
+    new(normalize(direction), tol)
+  end
 end
 
+DirectionPartitioner(direction::SVector{N,T}; tol=1e-6) where {T,N} =
+  DirectionPartitioner{T,N}(direction, tol)
+
 DirectionPartitioner(direction::NTuple{N,T}; tol=1e-6) where {T,N} =
-  DirectionPartitioner{T,N}(normalize(SVector(direction)), tol)
+  DirectionPartitioner(SVector(direction), tol=tol)
 
 (p::DirectionPartitioner)(x, y) = begin
   d = p.direction

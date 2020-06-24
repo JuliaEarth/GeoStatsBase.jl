@@ -13,12 +13,17 @@ struct BisectFractionPartitioner{T,N} <: AbstractPartitioner
   normal::SVector{N,T}
   fraction::Float64
   maxiter::Int
+
+  function BisectFractionPartitioner{T,N}(normal, fraction, maxiter) where {N,T}
+    new(normalize(normal), fraction, maxiter)
+  end
 end
 
-BisectFractionPartitioner(normal::NTuple{N,T},
-                          fraction::Real=0.5,
-                          maxiter::Integer=10) where {T,N} =
-  BisectFractionPartitioner{T,N}(normalize(SVector(normal)), fraction, maxiter)
+BisectFractionPartitioner(normal::SVector{N,T}, fraction=0.5, maxiter=10) where {T,N} =
+  BisectFractionPartitioner{T,N}(normal, fraction, maxiter)
+
+BisectFractionPartitioner(normal::NTuple{N,T}, fraction=0.5, maxiter=10) where {T,N} =
+  BisectFractionPartitioner(SVector(normal), fraction, maxiter)
 
 function partition(object::AbstractSpatialObject{T,N},
                    partitioner::BisectFractionPartitioner{T,N}) where {T,N}

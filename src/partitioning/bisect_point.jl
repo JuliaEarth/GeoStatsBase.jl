@@ -11,11 +11,17 @@ defined by a `normal` direction and a reference `point`.
 struct BisectPointPartitioner{T,N} <: AbstractPartitioner
   normal::SVector{N,T}
   point::SVector{N,T}
+
+  function BisectPointPartitioner{T,N}(normal, point) where {N,T}
+    new(normalize(normal), point)
+  end
 end
 
-BisectPointPartitioner(normal::NTuple{N,T},
-                  point::NTuple{N,T}=ntuple(i->zero(T), N)) where {T,N} =
-  BisectPointPartitioner{T,N}(normalize(SVector(normal)), SVector(point))
+BisectPointPartitioner(normal::SVector{N,T}, point::SVector{N,T}) where {T,N} =
+  BisectPointPartitioner{T,N}(normal, point)
+
+BisectPointPartitioner(normal::NTuple{N,T}, point::NTuple{N,T}) where {T,N} =
+ BisectPointPartitioner(SVector(normal), SVector(point))
 
 function partition(object::AbstractSpatialObject{T,N},
                    partitioner::BisectPointPartitioner{T,N}) where {T,N}
