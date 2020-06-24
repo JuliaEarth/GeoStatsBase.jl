@@ -321,6 +321,7 @@ export
   groupby,
   boundbox,
   readgeotable,
-  uniquecoords
+  uniquecoords,
+  spheredir
 
 end

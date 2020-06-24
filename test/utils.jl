@@ -8,4 +8,10 @@
   # TODO: test join
   # TODO: test sample
   # TODO: test uniquecoords
+
+  @testset "spheredir" begin
+    @test spheredir(90, 0) ≈ [1,0,0]
+    @test spheredir(90,90) ≈ [0,1,0]
+    @test spheredir(0,  0) ≈ [0,0,1]
+  end
 end

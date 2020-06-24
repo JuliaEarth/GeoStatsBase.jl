@@ -93,3 +93,15 @@ See [`UniqueCoordsFilter`](@ref) for more details.
 """
 uniquecoords(sdata::AbstractData; aggreg=Dict()) =
   filter(sdata, UniqueCoordsFilter(aggreg))
+
+"""
+    spheredir(θ, φ)
+
+Returns the 3D direction given polar angle `θ` and
+azimuthal angle `φ` in degrees according to the ISO
+convention.
+"""
+function spheredir(theta, phi)
+  θ, φ = deg2rad(theta), deg2rad(phi)
+  SVector(sin(θ)*cos(φ), sin(θ)*sin(φ), cos(θ))
+end
