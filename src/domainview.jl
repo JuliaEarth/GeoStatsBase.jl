@@ -26,9 +26,9 @@ coordinates!(buff::AbstractVector, dv::DomainView, location::Int) =
 # ------------
 # IO methods
 # ------------
-function Base.show(io::IO, dv::DomainView{T,N,D,I}) where {T,N,
-                                                           D<:AbstractDomain{T,N},
-                                                           I<:AbstractVector{Int}}
+function Base.show(io::IO, dv::DomainView)
+  N = ndims(dv)
+  T = coordtype(dv)
   npts = npoints(dv)
   print(io, "$npts DomainView{$T,$N}")
 end

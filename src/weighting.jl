@@ -30,6 +30,19 @@ domain(w::SpatialWeights) = w.domain
     1 / w.sum
 end
 
+# ------------
+# IO methods
+# ------------
+function Base.show(io::IO, w::SpatialWeights)
+  npts = npoints(w.domain)
+  print(io, "$npts SpatialWeights")
+end
+
+function Base.show(io::IO, ::MIME"text/plain", w::SpatialWeights)
+  println(io, w)
+  Base.print_array(io, w.values)
+end
+
 """
     AbstractWeighter
 
