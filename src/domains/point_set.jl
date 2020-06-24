@@ -29,8 +29,8 @@ npoints(ps::PointSet) = size(ps.coords, 2)
 
 function coordinates!(buff::AbstractVector{T}, ps::PointSet{T,N},
                       location::Int) where {N,T}
-  for i in 1:N
-    @inbounds buff[i] = ps.coords[i,location]
+  @inbounds for i in 1:N
+    buff[i] = ps.coords[i,location]
   end
 end
 

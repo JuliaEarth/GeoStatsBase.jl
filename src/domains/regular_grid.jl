@@ -81,8 +81,8 @@ npoints(grid::RegularGrid) = prod(grid.dims)
 function coordinates!(buff::AbstractVector{T}, grid::RegularGrid{T,N},
                       location::Int) where {N,T}
   intcoords = CartesianIndices(grid.dims)[location]
-  for i in 1:N
-    @inbounds buff[i] = grid.origin[i] + (intcoords[i] - 1)*grid.spacing[i]
+  @inbounds @simd for i in 1:N
+    buff[i] = grid.origin[i] + (intcoords[i] - 1)*grid.spacing[i]
   end
 end
 

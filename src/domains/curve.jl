@@ -45,8 +45,8 @@ npoints(curve::Curve) = size(curve.coords, 2)
 
 function coordinates!(buff::AbstractVector{T}, curve::Curve{T,N},
                       location::Int) where {N,T}
-  for i in 1:N
-    @inbounds buff[i] = curve.coords[i,location]
+  @inbounds for i in 1:N
+    buff[i] = curve.coords[i,location]
   end
 end
 
