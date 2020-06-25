@@ -24,7 +24,7 @@ DirectionPartitioner(direction::NTuple{N,T}; tol=1e-6) where {T,N} =
   DirectionPartitioner(SVector(direction), tol=tol)
 
 (p::DirectionPartitioner)(x, y) = begin
+  δ = x - y
   d = p.direction
-  @. y = x - y
-  norm(y .- (y ⋅ d) .* d) < p.tol
+  norm(δ - (δ⋅d)*d) < p.tol
 end
