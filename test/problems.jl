@@ -1,8 +1,8 @@
 @testset "Problems" begin
   data2D = readgeotable(joinpath(datadir,"data2D.tsv"), delim='\t', coordnames=[:x,:y])
   data3D = readgeotable(joinpath(datadir,"data3D.tsv"), delim='\t')
-  grid2D = RegularGrid{Float64}(100,100)
-  grid3D = RegularGrid{Float64}(100,100,100)
+  grid2D = RegularGrid(100,100)
+  grid3D = RegularGrid(100,100,100)
 
   @testset "Estimation" begin
     # test basic problem interface
@@ -16,7 +16,7 @@
 
     # problems with missing data have types inferred correctly
     img = Array{Union{Float64,Missing}}(rand(10,10))
-    mdata = RegularGridData{Float64}(OrderedDict(:var => img))
+    mdata = georef(DataFrame(var=vec(img)), RegularGrid(size(img)))
     problem = EstimationProblem(mdata, grid2D, :var)
     @test variables(problem) == Dict(:var => Float64)
 
@@ -44,7 +44,7 @@
 
     # problems with missing data have types inferred correctly
     img = Array{Union{Float64,Missing}}(rand(10,10))
-    mdata = RegularGridData{Float64}(OrderedDict(:var => img))
+    mdata = georef(DataFrame(var=vec(img)), RegularGrid(size(img)))
     problem = SimulationProblem(mdata, grid2D, :var, 3)
     @test variables(problem) == Dict(:var => Float64)
 
@@ -80,8 +80,8 @@
 
   @testset "Learning" begin
     Random.seed!(123)
-    sdata = PointSetData(OrderedDict(:x=>rand(10), :y=>rand(10), :z=>rand(10)), 10rand(2,10))
-    tdata = RegularGridData{Float64}(OrderedDict(:x=>rand(10,10)))
+    sdata = georef(DataFrame(x=rand(10),y=rand(10),z=rand(10)), PointSet(10rand(2,10)))
+    tdata = georef(DataFrame(x=rand(100)), RegularGrid(10,10))
     rtask = RegressionTask(:x, :y)
     ctask = ClusteringTask(:x, :c)
 
@@ -91,14 +91,10 @@
     @test targetdata(problem) == tdata
     @test task(problem) == rtask
 
-    # dimension mismatch
-    tdata3D = RegularGridData{Float64}(OrderedDict(:x=>rand(10,10,10)))
-    @test_throws AssertionError LearningProblem(sdata, tdata3D, rtask)
-
     # show methods
     problem = LearningProblem(sdata, tdata, ctask)
     @test sprint(show, problem) == "2D LearningProblem"
-    @test sprint(show, MIME"text/plain"(), problem) == "2D LearningProblem\n  source: 10 PointSetData{Float64,2}\n  target: 10×10 RegularGridData{Float64,2}\n  task:   Clustering x → c"
+    @test sprint(show, MIME"text/plain"(), problem) == "2D LearningProblem\n  source: 10 SpatialData{Float64,2}\n  target: 100 SpatialData{Float64,2}\n  task:   Clustering x → c"
 
     if visualtests
       @plottest plot(problem,ms=2) joinpath(datadir,"learning.png") !istravis

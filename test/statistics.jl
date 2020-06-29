@@ -1,6 +1,6 @@
 @testset "Statistics" begin
   @testset "Solution" begin
-    grid2D = RegularGrid{Float64}(3,3)
+    grid2D = RegularGrid(3,3)
     realizations = Dict(:value => [i*ones(npoints(grid2D)) for i in 1:3])
     solution2D = SimulationSolution(grid2D, realizations)
 

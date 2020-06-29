@@ -1,7 +1,7 @@
 @testset "Weighting" begin
   @testset "BlockWeighter" begin
-    sdomain = RegularGrid{Float64}(100,100)
-    sdata = RegularGridData{Float64}(OrderedDict(:z=>rand(100,100)))
+    sdomain = RegularGrid(100,100)
+    sdata = georef(DataFrame(z=rand(10000)), RegularGrid(100,100))
     for d in [sdomain, sdata]
       w = weight(d, BlockWeighter(10,10))
       @test length(unique(w)) == 1
@@ -18,8 +18,8 @@
     z1 = sort(rand(r1, n))
     z2 = sort(rand(r2, n))
 
-    d1 = PointSetData(OrderedDict(:z => z1), reshape(1:n,1,:))
-    d2 = PointSetData(OrderedDict(:z => z2), reshape(1:n,1,:))
+    d1 = georef(DataFrame(z=z1), PointSet(reshape(1:n,1,:)))
+    d2 = georef(DataFrame(z=z2), PointSet(reshape(1:n,1,:)))
 
     w = weight(d1, DensityRatioWeighter(d2))
 

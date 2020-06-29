@@ -3,7 +3,7 @@
     x = rand(1:2, 1000)
     y = rand(1:2, 1000)
     X = rand(2, 1000)
-    d = PointSetData(OrderedDict(:x=>x,:y=>y),X)
+    d = georef(DataFrame(x=x, y=y), PointSet(X))
     p = LearningProblem(d, d, ClassificationTask(:x, :y))
     s = PointwiseLearn(DummyModel())
 

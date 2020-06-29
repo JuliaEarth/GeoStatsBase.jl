@@ -77,7 +77,7 @@
 
   @testset "SLICPartitioner" begin
     img   = [ones(10,10) 2ones(10,10); 3ones(10,10) 4ones(10,10)]
-    sdata = RegularGridData(OrderedDict(:z => img))
+    sdata = georef(DataFrame(z=vec(img)), RegularGrid(size(img)))
     p = partition(sdata, SLICPartitioner(4, 1.0))
     @test length(p) == 4
     @test all(npoints.(p) .== 100)
@@ -87,7 +87,7 @@
     @test mean(coordinates(p[4]), dims=2) == [14.5,14.5][:,:]
 
     img   = [√(i^2+j^2) for i in 1:100, j in 1:100]
-    sdata = RegularGridData(OrderedDict(:z => img))
+    sdata = georef(DataFrame(z=vec(img)), RegularGrid(size(img)))
     p = partition(sdata, SLICPartitioner(50, 1.0))
     @test length(p) == 49
 
@@ -184,12 +184,14 @@
   end
 
   @testset "VariablePartitioner" begin
-    sdata = RegularGridData(OrderedDict(:z => [1 1 1; 2 2 2; 3 3 3]))
+    z = vec([1 1 1; 2 2 2; 3 3 3])
+    sdata = georef(DataFrame(z=z), RegularGrid(3,3))
     p = partition(sdata, VariablePartitioner(:z))
     @test setify(subsets(p)) == setify([[1,4,7],[2,5,8],[3,6,9]])
 
     # partition with missing values
-    sdata = RegularGridData(OrderedDict(:z => [missing 1 1; 2 missing 2; 3 3 missing]))
+    z = vec([missing 1 1; 2 missing 2; 3 3 missing])
+    sdata = georef(DataFrame(z=z), RegularGrid(3,3))
     p = partition(sdata, VariablePartitioner(:z))
     @test setify(subsets(p)) == setify([[4,7],[2,8],[3,6],[1,5,9]])
   end

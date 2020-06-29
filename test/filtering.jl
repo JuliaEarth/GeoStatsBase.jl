@@ -6,7 +6,7 @@
     Xd = hcat(X, X[:,1:10])
     zd = vcat(z, z[1:10])
     nd = vcat(n, n[1:10])
-    sdata = PointSetData(OrderedDict([:z=>zd, :n=>nd]), Xd)
+    sdata = georef(DataFrame(z=zd, n=nd), PointSet(Xd))
     ndata = filter(sdata, UniqueCoordsFilter())
     @test npoints(ndata) == 100
   end

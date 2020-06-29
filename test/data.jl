@@ -1,6 +1,6 @@
 @testset "Data" begin
   @testset "Basics" begin
-    d = PointSetData(OrderedDict(:z=>rand(3)), rand(2,3))
+    d = georef(DataFrame(z=rand(3)), PointSet(rand(2,3)))
     v = view(d, [1,3])
 
     d[1,:z] = 1.
@@ -13,16 +13,16 @@
     @test v[:z] == [3.,1.]
   end
 
-  @testset "CurveData" begin
-    c = CurveData(OrderedDict(:z => 1:10), [j for i in 1:3, j in 1:10])
+  @testset "Curve" begin
+    c = georef(DataFrame(z=1:10), Curve([j for i in 1:3, j in 1:10]))
     @test coordnames(c) == (:x1, :x2, :x3)
-    @test variables(c) == OrderedDict(:z => Int)
+    @test collect(variables(c)) == [:z => Int]
     @test npoints(c) == 10
 
     if visualtests
-      c1 = CurveData(OrderedDict(:z => 1:10), [j for i in 1:1, j in 1:10])
-      c2 = CurveData(OrderedDict(:z => 1:10), [j for i in 1:2, j in 1:10])
-      c3 = CurveData(OrderedDict(:z => 1:10), [j for i in 1:3, j in 1:10])
+      c1 = georef(DataFrame(z=1:10), Curve([j for i in 1:1, j in 1:10]))
+      c2 = georef(DataFrame(z=1:10), Curve([j for i in 1:2, j in 1:10]))
+      c3 = georef(DataFrame(z=1:10), Curve([j for i in 1:3, j in 1:10]))
       @plottest plot(c1,ms=4) joinpath(datadir,"curve-data1D.png") !istravis
       @plottest plot(c2,ms=4) joinpath(datadir,"curve-data2D.png") !istravis
       @plottest plot(c3,ms=4) joinpath(datadir,"curve-data3D.png") !istravis
@@ -31,10 +31,10 @@
 
   @testset "GeoDataFrame" begin
     # basic checks
-    data3D   = readgeotable(joinpath(datadir,"data3D.tsv"), delim='\t')
+    data3D = readgeotable(joinpath(datadir,"data3D.tsv"), delim='\t')
     X, z = valid(data3D, :value)
     @test coordnames(data3D) == (:x, :y, :z)
-    @test variables(data3D) == OrderedDict(:value => Float64)
+    @test collect(variables(data3D)) == [:value => Float64]
     @test npoints(data3D) == 100
     @test size(X) == (3, 100)
     @test length(z) == 100
@@ -59,75 +59,71 @@
     end
   end
 
-  @testset "PointSetData" begin
+  @testset "PointSet" begin
     # basic checks
     data3D = readgeotable(joinpath(datadir,"data3D.tsv"), delim='\t')
     X, z = valid(data3D, :value)
-    ps = PointSetData(OrderedDict(:value => z), X)
+    ps = georef(DataFrame(value=z), PointSet(X))
     X, z = valid(ps, :value)
     @test coordnames(ps) == (:x1, :x2, :x3)
-    @test variables(ps) == OrderedDict(:value => Float64)
+    @test collect(variables(ps)) == [:value => Float64]
     @test npoints(ps) == 100
     @test size(X,2) == 100
     @test length(z) == 100
 
     # show methods
-    ps = PointSetData(OrderedDict(:value => [1,2,3]), [1. 0. 1.; 0. 1. 1.])
-    @test sprint(show, ps) == "3 PointSetData{Float64,2}"
-    @test sprint(show, MIME"text/plain"(), ps) == "3 PointSetData{Float64,2}\n  variables\n    └─value (Int64)"
+    ps = georef(DataFrame(value=[1,2,3]), PointSet([1. 0. 1.; 0. 1. 1.]))
+    @test sprint(show, ps) == "3 SpatialData{Float64,2}"
+    @test sprint(show, MIME"text/plain"(), ps) == "3 SpatialData{Float64,2}\n  variables\n    └─value (Int64)"
 
     if visualtests
-      sdata = PointSetData(OrderedDict(:z => [1.,0.,1.]), [25. 50. 75.; 25. 75. 50.])
+      sdata = georef(DataFrame(z=[1.,0.,1.]), PointSet([25. 50. 75.; 25. 75. 50.]))
       @plottest plot(sdata) joinpath(datadir,"pset-data.png") !istravis
     end
   end
 
-  @testset "RegularGridData" begin
+  @testset "RegularGrid" begin
     # basic checks
-    g = RegularGridData(OrderedDict(:value => rand(100,100)))
+    g = georef(DataFrame(value=rand(10000)), RegularGrid(100,100))
     X, z = valid(g, :value)
-    @test size(g) == (100, 100)
-    @test origin(g) == [0., 0.]
-    @test spacing(g) == [1., 1.]
     @test coordnames(g) == (:x1, :x2)
-    @test variables(g) == OrderedDict(:value => Float64)
+    @test collect(variables(g)) == [:value => Float64]
     @test npoints(g) == 10000
     @test size(X) == (2, 10000)
     @test length(z) == 10000
 
     # show methods
-    g = RegularGridData(OrderedDict(:z => [1 2; 3 4]), (0.,0.), (1.,1.))
-    @test sprint(show, g) == "2×2 RegularGridData{Float64,2}"
-    @test sprint(show, MIME"text/plain"(), g) == "2×2 RegularGridData{Float64,2}\n  origin:  (0.0, 0.0)\n  spacing: (1.0, 1.0)\n  variables\n    └─z (Int64)"
+    g = georef(DataFrame(z=[1,2,3,4]), RegularGrid(2,2))
+    @test sprint(show, g) == "4 SpatialData{Float64,2}"
+    @test sprint(show, MIME"text/plain"(), g) == "4 SpatialData{Float64,2}\n  variables\n    └─z (Int64)"
 
     if visualtests
-      sdata = RegularGridData(OrderedDict(:z => [1 2; 3 4]), (0.,0.), (.1,.1))
+      sdata = georef(DataFrame(z=vec([1 2; 3 4])), RegularGrid(2,2))
       @plottest plot(sdata) joinpath(datadir,"grid2D-data1.png") !istravis
-      sdata = RegularGridData(OrderedDict(:z => [1 2; 3 4]), (-10.,-10.), (10.,10.))
+      sdata = georef(DataFrame(z=vec([1 2; 3 4])), RegularGrid((2,2), (-10.,-10.), (10.,10.)))
       @plottest plot(sdata) joinpath(datadir,"grid2D-data2.png") !istravis
     end
   end
 
-  @testset "StructuredGridData" begin
+  @testset "StructuredGrid" begin
     X = readdlm(joinpath(datadir,"HurricaneX.dat"))
     Y = readdlm(joinpath(datadir,"HurricaneY.dat"))
     P = readdlm(joinpath(datadir,"HurricaneP.dat"))
-    g = StructuredGridData(OrderedDict(:precipitation => P), X, Y)
+    g = georef(DataFrame(precip=vec(P)), StructuredGrid(X, Y))
 
     # basic checks
-    @test size(g) == (221, 366)
     @test coordnames(g) == (:x1, :x2)
-    @test variables(g) == OrderedDict(:precipitation => Float64)
+    @test collect(variables(g)) == [:precip => Float64]
     @test npoints(g) == 221*366
 
     # missing values
-    X, z = valid(g, :precipitation)
+    X, z = valid(g, :precip)
     @test size(X) == (2, 64416)
     @test length(z) == 64416
 
     # show methods
-    @test sprint(show, g) == "221×366 StructuredGridData{Float64,2}"
-    @test sprint(show, MIME"text/plain"(), g) == "221×366 StructuredGridData{Float64,2}\n  variables\n    └─precipitation (Float64)"
+    @test sprint(show, g) == "80886 SpatialData{Float64,2}"
+    @test sprint(show, MIME"text/plain"(), g) == "80886 SpatialData{Float64,2}\n  variables\n    └─precip (Float64)"
 
     if visualtests
       # TODO

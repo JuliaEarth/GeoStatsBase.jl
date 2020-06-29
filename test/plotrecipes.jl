@@ -1,8 +1,8 @@
-@testset "Protting" begin
+@testset "Plotting" begin
   Random.seed!(123)
-  z₁ = randn(100,100)
-  z₂ = z₁ + randn(100,100)
-  d = RegularGridData{Float64}(OrderedDict(:z₁=>z₁,:z₂=>z₂))
+  z₁ = randn(10000)
+  z₂ = z₁ + randn(10000)
+  d = georef(DataFrame(z₁=z₁,z₂=z₂), RegularGrid(100,100))
 
   @testset "DistPlot1D" begin
     if visualtests
