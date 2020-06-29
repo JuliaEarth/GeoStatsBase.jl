@@ -4,8 +4,8 @@
 
 module GeoStatsBase
 
+using CSV
 using Optim
-using CSV: read
 using Distributed: pmap
 using Random: randperm, shuffle
 using Combinatorics: multiexponents
@@ -16,10 +16,10 @@ using Distributions: ContinuousUnivariateDistribution, median, mode
 using CategoricalArrays: CategoricalValue, CategoricalArray
 using CategoricalArrays: levels, isordered, pool
 using NearestNeighbors: KDTree, knn, inrange
+using DataFrames: DataFrame, DataFrame!
 using StaticArrays: SVector, MVector
 using AverageShiftedHistograms: ash
 using SpecialFunctions: gamma
-using DataFrames: DataFrame
 using DensityRatioEstimation
 using ScientificTypes
 using LossFunctions

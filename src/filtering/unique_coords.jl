@@ -56,10 +56,11 @@ function Base.filter(sdata::AbstractData, filt::UniqueCoordsFilter)
     push!(locs, i)
   end
 
-  # construct table with correct variable order
-  df = DataFrame((; [(var,vals[var]) for var in vars]...))
+  # construct data with correct variable order
+  data = DataFrame([var => vals[var] for var in keys(vars)])
+  pset = PointSet(coordinates(sdata, locs))
 
-  PointSetData(df, coordinates(sdata, locs))
+  georef(data, pset)
 end
 
 function _mean(xs)

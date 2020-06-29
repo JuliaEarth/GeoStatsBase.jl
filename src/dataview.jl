@@ -34,17 +34,21 @@ function variables(dv::DataView)
   Variables{typeof(nt)}(nt)
 end
 
-Base.getindex(dv::DataView, ind::Int, var::Symbol) =
-  getindex(dv.data, dv.inds[ind], var)
+# --------------
+# DATAFRAME API
+# --------------
 
-Base.setindex!(dv::DataView, val, ind::Int, var::Symbol) =
-  setindex!(dv.data, val, dv.inds[ind], var)
+Base.getindex(dv::DataView, inds, vars) = getindex(dv.data, dv.inds[inds], vars)
 
-function Base.setindex!(dv::DataView, vals::AbstractArray, var::Symbol)
-  for (ind, val) in enumerate(vals)
-    setindex!(dv.data, val, dv.inds[ind], var)
-  end
-end
+Base.setindex!(dv::DataView, vals, inds, vars) = setindex!(dv.data, vals, dv.inds[inds], vars)
+
+# -------------
+# VARIABLE API
+# -------------
+
+Base.getindex(dv::DataView, var::Symbol) = getindex(dv.data, dv.inds, var)
+
+Base.setindex!(dv::DataView, vals, var::Symbol) = setindex!(dv.data, vals, dv.inds, var)
 
 # ------------
 # IO methods

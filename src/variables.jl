@@ -22,23 +22,18 @@ struct Variables{NT}
 end
 
 function Variables(table)
-  ns = propertynames(table)
-  ts = eltype.(eachcol(table))
+  s = Tables.schema(table)
+  ns, ts = s.names, s.types
   nt = NamedTuple{Tuple(ns)}(ts)
   Variables{typeof(nt)}(nt)
 end
 
 Base.iterate(vars::Variables) = iterate(pairs(vars.nt))
 Base.iterate(vars::Variables, state) = iterate(pairs(vars.nt), state)
-
 Base.eltype(vars::Variables) = eltype(pairs(vars.nt))
-
 Base.length(vars::Variables) = length(vars.nt)
-
 Base.getindex(vars::Variables, ind) = vars.nt[ind]
-
 Base.keys(vars::Variables) = keys(vars.nt)
-
 Base.values(vars::Variables) = values(vars.nt)
 
 # ------------

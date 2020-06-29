@@ -15,7 +15,7 @@ documentation for more details.
 This function returns a [`GeoDataFrame`](@ref) object.
 """
 readgeotable(args...; coordnames=[:x,:y,:z], kwargs...) =
-  GeoDataFrame(read(args...; kwargs...), coordnames)
+  GeoDataFrame(DataFrame!(CSV.File(args...; kwargs...)), coordnames)
 
 """
     split(object, fraction, [normal])

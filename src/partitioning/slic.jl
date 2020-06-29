@@ -127,8 +127,8 @@ function slic_assignment!(sdata::AbstractData,
     dₛ = pairwise(Euclidean(), X, xₖ, dims=2)
 
     # distance between variables
-    V  = sdata[inds,vars]
-    vₖ = sdata[[cₖ],vars]
+    V  = Matrix(sdata[inds,vars])
+    vₖ = Matrix(sdata[[cₖ],vars])
     dᵥ = pairwise(Euclidean(), V, vₖ, dims=1)
 
     # total distance

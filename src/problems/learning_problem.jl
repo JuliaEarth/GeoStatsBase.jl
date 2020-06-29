@@ -30,10 +30,6 @@ struct LearningProblem{DΩₛ<:AbstractData,
     sourcevars = keys(variables(sdata))
     targetvars = keys(variables(tdata))
 
-    # assert spatial configuration
-    @assert ndims(sdata) == ndims(tdata) "source and target data must have the same number of dimensions"
-    @assert coordtype(sdata) == coordtype(tdata) "source and target data must have the same coordinate type"
-
     # assert task is compatible with the data
     if iscomposite(task)
       # TODO

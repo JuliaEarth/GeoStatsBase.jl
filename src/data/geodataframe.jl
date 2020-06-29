@@ -54,12 +54,11 @@ domain(sdata::GeoDataFrame) = PointSet(coordinates(sdata))
 coordnames(sdata::GeoDataFrame) = Tuple(sdata.coordnames)
 
 function variables(sdata::GeoDataFrame)
-  data   = sdata.data
-  cnames = sdata.coordnames
-  vnames = [var for var in propertynames(data) if var ∉ cnames]
-  vtypes = [eltype(data[!,var]) for var in vnames]
-
-  (; zip(vnames, vtypes)...)
+  c = sdata.coordnames
+  s = Tables.schema(sdata.data)
+  n, t = s.names, s.types
+  nt = (; [(var,V) for (var,V) in zip(n,t) if var ∉ c]...)
+  Variables{typeof(nt)}(nt)
 end
 
 npoints(sdata::GeoDataFrame) = size(sdata.data, 1)
@@ -68,8 +67,8 @@ function coordinates!(buff::AbstractVector, sdata::GeoDataFrame, ind::Int)
   data   = sdata.data
   cnames = sdata.coordnames
 
-  for (i, cname) in enumerate(cnames)
-    @inbounds buff[i] = data[ind,cname]
+  @inbounds for (i, cname) in enumerate(cnames)
+    buff[i] = data[ind,cname]
   end
 end
 

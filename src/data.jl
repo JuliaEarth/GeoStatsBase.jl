@@ -31,7 +31,7 @@ Base.getindex(sdata::AbstractData, inds, vars) =
 """
     setindex!(sdata, vals, inds, vars)
 
-Set the value `vals` of variables `vars` for points `inds` in `sdata`.
+Set the values `vals` of variables `vars` for points `inds` in `sdata`.
 """
 Base.setindex!(sdata::AbstractData, vals, inds, vars) =
   setindex!(sdata.data, vals, inds, vars)
@@ -45,7 +45,15 @@ Base.setindex!(sdata::AbstractData, vals, inds, vars) =
 
 Return the values of variable `var` in `sdata`.
 """
-Base.getindex(sdata::AbstractData, var::Symbol) = sdata.data[!,var]
+Base.getindex(sdata::AbstractData, var::Symbol) = getindex(sdata.data, :, var)
+
+"""
+    setindex!(sdata, vals, var)
+
+Set the values `vals` of variable `var` in `sdata`.
+"""
+Base.setindex!(sdata::AbstractData, vals, var::Symbol) =
+  setindex!(sdata.data, vals, :, var)
 
 # ---------
 # VIEW API
