@@ -34,9 +34,6 @@ function coordinates!(buff::AbstractVector{T}, ps::PointSet{T,N},
   end
 end
 
-georef(data::OrderedDict{Symbol,<:AbstractArray}, pset::PointSet{T,N}) where {N,T} =
-  PointSetData{T,N}(data, pset)
-
 # ------------
 # IO methods
 # ------------

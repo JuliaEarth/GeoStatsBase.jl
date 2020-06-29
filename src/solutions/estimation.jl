@@ -7,8 +7,8 @@
 
 A solution to a spatial estimation problem.
 """
-struct EstimationSolution{D<:AbstractDomain}
-  domain::D
+struct EstimationSolution{𝒟<:AbstractDomain}
+  domain::𝒟
   mean::Dict{Symbol,<:AbstractVector}
   variance::Dict{Symbol,<:AbstractVector}
 end

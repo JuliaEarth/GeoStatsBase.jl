@@ -28,16 +28,16 @@ No additional storage is required other than a vector of symbols
 with the columns names representing spatial coordinates.
 
 """
-struct GeoDataFrame{T,N,DF<:AbstractDataFrame} <: AbstractData{T,N}
-  data::DF
+struct GeoDataFrame{T,N,𝒯} <: AbstractData{T,N}
+  data::𝒯
   coordnames::Vector{Symbol}
 
-  function GeoDataFrame{T,N,DF}(data, coordnames) where {T,N,DF<:AbstractDataFrame}
+  function GeoDataFrame{T,N,𝒯}(data, coordnames) where {T,N,𝒯}
     new(data, coordnames)
   end
 end
 
-function GeoDataFrame(data::DF, coordnames::AbstractVector{Symbol}) where {DF<:AbstractDataFrame}
+function GeoDataFrame(data::𝒯, coordnames::AbstractVector{Symbol}) where {𝒯}
   @assert coordnames ⊆ propertynames(data) "invalid column names"
 
   Ts = [eltype(data[!,c]) for c in coordnames]
@@ -46,52 +46,48 @@ function GeoDataFrame(data::DF, coordnames::AbstractVector{Symbol}) where {DF<:A
 
   @assert !(Missing <: T) "coordinates cannot be missing"
 
-  GeoDataFrame{T,N,DF}(data, coordnames)
+  GeoDataFrame{T,N,𝒯}(data, coordnames)
 end
 
-domain(geodata::GeoDataFrame) = PointSet(coordinates(geodata))
+domain(sdata::GeoDataFrame) = PointSet(coordinates(sdata))
 
-coordnames(geodata::GeoDataFrame) = Tuple(geodata.coordnames)
+coordnames(sdata::GeoDataFrame) = Tuple(sdata.coordnames)
 
-function variables(geodata::GeoDataFrame)
-  data   = geodata.data
-  cnames = geodata.coordnames
+function variables(sdata::GeoDataFrame)
+  data   = sdata.data
+  cnames = sdata.coordnames
   vnames = [var for var in propertynames(data) if var ∉ cnames]
   vtypes = [eltype(data[!,var]) for var in vnames]
 
-  OrderedDict([var => T for (var,T) in zip(vnames,vtypes)])
+  (; zip(vnames, vtypes)...)
 end
 
-npoints(geodata::GeoDataFrame) = nrow(geodata.data)
+npoints(sdata::GeoDataFrame) = size(sdata.data, 1)
 
-function coordinates!(buff::AbstractVector, geodata::GeoDataFrame, ind::Int)
-  data   = geodata.data
-  cnames = geodata.coordnames
+function coordinates!(buff::AbstractVector, sdata::GeoDataFrame, ind::Int)
+  data   = sdata.data
+  cnames = sdata.coordnames
 
   for (i, cname) in enumerate(cnames)
     @inbounds buff[i] = data[ind,cname]
   end
 end
 
-# specialize methods from spatial data
-Base.getindex(geodata::GeoDataFrame, ind::Int, var::Symbol) =
-  getindex(geodata.data, ind, var)
-
 # ------------
 # IO methods
 # ------------
-function Base.show(io::IO, geodata::GeoDataFrame)
-  dims = join(size(geodata.data), "×")
-  cnames = join(geodata.coordnames, ", ", " and ")
+function Base.show(io::IO, sdata::GeoDataFrame)
+  dims = join(size(sdata.data), "×")
+  cnames = join(sdata.coordnames, ", ", " and ")
   print(io, "$dims GeoDataFrame ($cnames)")
 end
 
-function Base.show(io::IO, ::MIME"text/plain", geodata::GeoDataFrame)
-  println(io, geodata)
-  show(io, geodata.data, allcols=true, summary=false)
+function Base.show(io::IO, ::MIME"text/plain", sdata::GeoDataFrame)
+  println(io, sdata)
+  show(io, sdata.data, allcols=true, summary=false)
 end
 
-function Base.show(io::IO, ::MIME"text/html", geodata::GeoDataFrame)
-  println(io, geodata)
-  show(io, MIME"text/html"(), geodata.data, summary=false)
+function Base.show(io::IO, ::MIME"text/html", sdata::GeoDataFrame)
+  println(io, sdata)
+  show(io, MIME"text/html"(), sdata.data, summary=false)
 end

@@ -86,9 +86,6 @@ function coordinates!(buff::AbstractVector{T}, grid::RegularGrid{T,N},
   end
 end
 
-georef(data::OrderedDict{Symbol,<:AbstractArray}, grid::RegularGrid{T,N}) where {N,T} =
-  RegularGridData{T,N}(data, grid)
-
 # ------------
 # IO methods
 # ------------

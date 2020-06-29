@@ -47,8 +47,9 @@ function trend(sdata, vars::AbstractVector{Symbol}; degree=1)
     ŷ  = X*θ
   end
 
-  data = OrderedDict(vars .=> ŷs)
-  georef(data, domain(sdata))
+  df = DataFrame(ŷs, vars)
+
+  georef(df, domain(sdata))
 end
 
 trend(sdata, var::Symbol; kwargs...) = trend(sdata, [var]; kwargs...)

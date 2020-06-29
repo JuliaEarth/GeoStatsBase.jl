@@ -27,8 +27,12 @@ npoints(dv::DataView) = length(dv.inds)
 coordinates!(buff::AbstractVector, dv::DataView, ind::Int) =
   coordinates!(buff, dv.data, dv.inds[ind])
 
-variables(dv::DataView) =
-  OrderedDict([var => V for (var,V) in variables(dv.data) if var ∈ dv.vars])
+function variables(dv::DataView)
+  vars = [(var,V) for (var,V) in variables(dv.data) if var ∈ dv.vars]
+  ns, ts = first.(vars), last.(vars)
+  nt = NamedTuple{Tuple(ns)}(ts)
+  Variables{typeof(nt)}(nt)
+end
 
 Base.getindex(dv::DataView, ind::Int, var::Symbol) =
   getindex(dv.data, dv.inds[ind], var)

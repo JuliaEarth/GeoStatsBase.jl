@@ -55,7 +55,7 @@ function perform(task::AbstractLearningTask, geodata::AbstractData, lmodel::Lear
     result = ŷ
   end
 
-  OrderedDict(var => result)
+  DataFrame(var=result)
 end
 
 function perform(task::CompositeTask, geodata::AbstractData, lmodel::LearnedModel)

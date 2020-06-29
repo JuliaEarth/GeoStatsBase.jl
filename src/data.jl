@@ -14,63 +14,42 @@ abstract type AbstractData{T,N} <: AbstractSpatialObject{T,N} end
 
 Return the variable names in spatial data `sdata` and their types.
 """
-variables(sdata::AbstractData) =
-  OrderedDict([var => eltype(array) for (var,array) in sdata.data])
+variables(sdata::AbstractData) = Variables(sdata.data)
 
-#----------------
+# --------------
 # DATAFRAME API
-#----------------
+# --------------
 
 """
-    sdata[inds,vars]
+    getindex(sdata, inds, vars)
 
-Return the value of `var` for the `ind`-th point in `sdata`.
+Return the value of `vars` for the `inds` points in `sdata`.
 """
-Base.getindex(sdata::AbstractData, ind::Int, var::Symbol) =
-  sdata.data[var][ind]
+Base.getindex(sdata::AbstractData, inds, vars) =
+  getindex(sdata.data, inds, vars)
 
-Base.getindex(sdata::AbstractData, inds::AbstractVector{Int}, var::Symbol) =
-  [getindex(sdata, ind, var) for ind in inds]
+"""
+    setindex!(sdata, vals, inds, vars)
 
-Base.getindex(sdata::AbstractData, ind::Int, vars::AbstractVector{Symbol}) =
-  [getindex(sdata, ind, var) for var in vars]
+Set the value `vals` of variables `vars` for points `inds` in `sdata`.
+"""
+Base.setindex!(sdata::AbstractData, vals, inds, vars) =
+  setindex!(sdata.data, vals, inds, vars)
 
-Base.getindex(sdata::AbstractData, inds::AbstractVector{Int}, vars::AbstractVector{Symbol}) =
-  [getindex(sdata, ind, var) for ind in inds, var in vars]
+# -------------
+# VARIABLE API
+# -------------
 
 """
     getindex(sdata, var)
 
-Return the values of `var` for all points in `sdata` with the shape
-of the underlying domain.
+Return the values of variable `var` in `sdata`.
 """
-Base.getindex(sdata::AbstractData, var::Symbol) =
-  [getindex(sdata, ind, var) for ind in 1:npoints(sdata)]
+Base.getindex(sdata::AbstractData, var::Symbol) = sdata.data[!,var]
 
-Base.getindex(sdata::AbstractData, vars::AbstractVector{Symbol}) =
-  [getindex(sdata, var) for var in vars]
-
-"""
-    setindex!(sdata, val, ind, var)
-
-Set the value `val` of variable `var` for point `ind` in spatial
-data `sdata`.
-"""
-Base.setindex!(sdata::AbstractData, val, ind::Int, var::Symbol) =
-  sdata.data[var][ind] = val
-
-"""
-    setindex!(sdata, vals, var)
-
-Set the values `vals` of variable `var` for all points in spatial
-data `sdata`.
-"""
-Base.setindex!(sdata::AbstractData, vals::AbstractArray, var::Symbol) =
-  sdata.data[var] = vals
-
-#-----------
+# ---------
 # VIEW API
-#-----------
+# ---------
 
 """
     view(sdata, inds)
@@ -90,9 +69,9 @@ Base.view(sdata::AbstractData, inds::AbstractVector{Int},
                                vars::AbstractVector{Symbol}) =
   DataView(sdata, inds, vars)
 
-#---------------
+# -------------
 # ITERATOR API
-#---------------
+# -------------
 
 """
     iterate(sdata, state=1)
@@ -109,6 +88,14 @@ Return the number of samples in `sdata`.
 """
 Base.length(sdata::AbstractData) = npoints(sdata)
 
+"""
+    eltype(sdata)
+
+Return the element type of `sdata`.
+"""
+Base.eltype(sdata::AbstractData) = eltype(eachrow(sdata.data))
+
+
 #----------------
 # INDEXABLE API
 #----------------
@@ -118,14 +105,11 @@ Base.length(sdata::AbstractData) = npoints(sdata)
 
 Return `ind`-th sample in `sdata`.
 """
-function Base.getindex(sdata::AbstractData, ind::Int)
-  vars = [var for (var,V) in variables(sdata)]
-  vals = [getindex(sdata, ind, var) for var in vars]
-  NamedTuple{tuple(vars...)}(vals)
-end
+Base.getindex(sdata::AbstractData, ind::Int) =
+  eachrow(sdata.data)[ind]
 
 Base.getindex(sdata::AbstractData, inds::AbstractVector{Int}) =
-  [getindex(sdata, ind) for ind in inds]
+  eachrow(sdata.data)[inds]
 
 """
     firstindex(sdata)
@@ -146,13 +130,11 @@ Base.lastindex(sdata::AbstractData) = npoints(sdata)
 #-------------
 Tables.istable(::Type{<:AbstractData}) = true
 
+Tables.rowaccess(::Type{<:AbstractData}) = true
 Tables.columnaccess(::Type{<:AbstractData}) = true
 
-function Tables.columns(sdata::AbstractData)
-  vars = keys(variables(sdata))
-  vals = [getindex(sdata, 1:npoints(sdata), var) for var in vars]
-  NamedTuple{tuple(vars...)}(vals)
-end
+Tables.rows(sdata::AbstractData) = Tables.rows(sdata.data)
+Tables.columns(sdata::AbstractData) = Tables.columns(sdata.data)
 
 #-----------------
 # MISSING VALUES
@@ -212,8 +194,5 @@ end
 #------------------
 # IMPLEMENTATIONS
 #------------------
-include("data/curve_data.jl")
+include("data/simple_data.jl")
 include("data/geodataframe.jl")
-include("data/point_set_data.jl")
-include("data/regular_grid_data.jl")
-include("data/structured_grid_data.jl")

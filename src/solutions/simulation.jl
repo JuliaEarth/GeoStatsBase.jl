@@ -7,12 +7,12 @@
 
 A solution to a spatial simulation problem.
 """
-struct SimulationSolution{D<:AbstractDomain}
-  domain::D
+struct SimulationSolution{𝒟<:AbstractDomain}
+  domain::𝒟
   realizations::Dict{Symbol,Vector{<:AbstractVector}}
   nreals::Int
 
-  function SimulationSolution{D}(domain, realizations) where {D}
+  function SimulationSolution{𝒟}(domain, realizations) where {𝒟}
     n = [length(r) for (var, r) in realizations]
     @assert length(unique(n)) == 1 "number of realizations must be unique"
     new(domain, realizations, n[1])
@@ -68,7 +68,7 @@ Return the `ind`-th realization of simulation `solution`.
 function Base.getindex(solution::SimulationSolution, ind::Int)
   sdomain = solution.domain
   sreals  = solution.realizations
-  idata   = OrderedDict([(var, reals[ind]) for (var, reals) in sreals])
+  idata   = DataFrame([var => reals[ind] for (var, reals) in sreals])
   georef(idata, sdomain)
 end
 

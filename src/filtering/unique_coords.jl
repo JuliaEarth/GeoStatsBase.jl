@@ -39,27 +39,27 @@ function Base.filter(sdata::AbstractData, filt::UniqueCoordsFilter)
 
   # construct new point set data
   locs = Vector{Int}()
-  dict = OrderedDict{Symbol,Vector{V} where V}()
-  for (var, V) in vars
-    dict[var] = Vector{V}()
-  end
+  vals = Dict(var => Vector{V}() for (var, V) in vars)
   for g in values(groups)
     i = g[1] # select any location
     if length(g) > 1
       # aggregate variables
       for (var, V) in vars
-        push!(dict[var], aggreg[var](sdata[g,var]))
+        push!(vals[var], aggreg[var](sdata[g,var]))
       end
     else
       # copy location
       for (var, V) in vars
-        push!(dict[var], sdata[i,var])
+        push!(vals[var], sdata[i,var])
       end
     end
     push!(locs, i)
   end
 
-  PointSetData(dict, coordinates(sdata, locs))
+  # construct table with correct variable order
+  df = DataFrame((; [(var,vals[var]) for var in vars]...))
+
+  PointSetData(df, coordinates(sdata, locs))
 end
 
 function _mean(xs)

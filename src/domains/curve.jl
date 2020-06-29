@@ -50,9 +50,6 @@ function coordinates!(buff::AbstractVector{T}, curve::Curve{T,N},
   end
 end
 
-georef(data::OrderedDict{Symbol,<:AbstractArray}, curve::Curve{T,N}) where {N,T} =
-  CurveData{T,N}(data, curve)
-
 # ------------
 # IO methods
 # ------------

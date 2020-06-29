@@ -5,14 +5,12 @@
 """
     LearningSolution
 
-A solution to a spatial estimation problem.
+A solution to a spatial learning problem.
 """
-struct LearningSolution{T,N,D<:AbstractDomain{T,N}} <: AbstractData{T,N}
-  domain::D
-  data::OrderedDict{Symbol,<:AbstractVector}
+struct LearningSolution{T,N,𝒟<:AbstractDomain{T,N},𝒯} <: AbstractData{T,N}
+  domain::𝒟
+  data::𝒯
 end
-
-LearningSolution(domain, data) = LearningSolution{typeof(domain)}(domain, data)
 
 # ------------
 # IO methods

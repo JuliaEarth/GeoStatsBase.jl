@@ -10,14 +10,6 @@ Spatial domain in a `N`-dimensional space with coordinates of type `T`.
 abstract type AbstractDomain{T,N} <: AbstractSpatialObject{T,N} end
 
 """
-    georef(domain, data)
-
-Georeference a dictionary with raw `data` on a spatial `domain`.
-"""
-georef(data::OrderedDict{Symbol,<:AbstractArray}, domain::AbstractDomain) =
-  PointSetData(data, coordinates(domain))
-
-"""
     view(domain, locations)
 
 Return a view of `domain` with all points in `locations`.

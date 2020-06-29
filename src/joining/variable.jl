@@ -56,7 +56,7 @@ function Base.join(sdata₁::AbstractData, sdata₂::AbstractData, joiner::Varia
     end
   end
 
-  dict = OrderedDict([(k, v) for (k, v) in pairs])
+  df = DataFrame(pairs)
 
-  georef(dict, domain(sdata₁))
+  georef(df, domain(sdata₁))
 end

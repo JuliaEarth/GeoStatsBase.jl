@@ -9,18 +9,17 @@ using CSV: read
 using Distributed: pmap
 using Random: randperm, shuffle
 using Combinatorics: multiexponents
-using OrderedCollections: OrderedDict
 using LinearAlgebra: Diagonal, normalize, norm, ⋅
 using StatsBase: Histogram, Weights, AbstractWeights
 using Distances: Metric, Euclidean, Mahalanobis, pairwise
 using Distributions: ContinuousUnivariateDistribution, median, mode
 using CategoricalArrays: CategoricalValue, CategoricalArray
 using CategoricalArrays: levels, isordered, pool
-using DataFrames: AbstractDataFrame, eltypes, nrow
 using NearestNeighbors: KDTree, knn, inrange
 using StaticArrays: SVector, MVector
 using AverageShiftedHistograms: ash
 using SpecialFunctions: gamma
+using DataFrames: DataFrame
 using DensityRatioEstimation
 using ScientificTypes
 using LossFunctions
@@ -50,6 +49,7 @@ include("graphs.jl")
 include("spatialobject.jl")
 include("domains.jl")
 include("domainview.jl")
+include("variables.jl")
 include("data.jl")
 include("dataview.jl")
 include("collections.jl")
@@ -80,8 +80,8 @@ include("plotrecipes.jl")
 include("utils.jl")
 
 export
-  # ordered dicts
-  OrderedDict,
+  # default table
+  DataFrame,
 
   # spatial object
   AbstractSpatialObject,
@@ -104,11 +104,8 @@ export
 
   # spatial data
   AbstractData,
-  CurveData,
+  SpatialData,
   GeoDataFrame,
-  PointSetData,
-  RegularGridData,
-  StructuredGridData,
   variables,
   valid,
 
