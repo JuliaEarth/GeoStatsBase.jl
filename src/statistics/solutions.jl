@@ -8,7 +8,7 @@
 Mean of simulation `solution`.
 """
 function mean(solution::SimulationSolution)
-  data = DataFrame(variable => mean(reals) for (variable, reals) in solution.realizations)
+  data = DataFrame([variable => mean(reals) for (variable, reals) in solution.realizations])
   SpatialStatistic(solution.domain, data)
 end
 
@@ -18,7 +18,7 @@ end
 Variance of simulation `solution`.
 """
 function var(solution::SimulationSolution)
-  data = DataFrame(variable => var(reals) for (variable, reals) in solution.realizations)
+  data = DataFrame([variable => var(reals) for (variable, reals) in solution.realizations])
   SpatialStatistic(solution.domain, data)
 end
 

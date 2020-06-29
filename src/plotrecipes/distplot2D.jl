@@ -11,8 +11,8 @@
   var₁  = dp.args[2]
   var₂  = dp.args[3]
 
-  x = vec(sdata[var₁])
-  y = vec(sdata[var₂])
+  x = sdata[var₁]
+  y = sdata[var₂]
 
   # fit average shifted histogram
   h = ash(x, y, mx=bandwidthx, my=bandwidthy)

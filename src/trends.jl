@@ -42,14 +42,14 @@ function trend(sdata, vars::AbstractVector{Symbol}; degree=1)
 
   # solve for each variable
   ŷs = map(vars) do var
-    y  = vec(sdata[var])
+    y  = sdata[var]
     θ  = X'*X \ X'*y
     ŷ  = X*θ
   end
 
-  df = DataFrame(ŷs, vars)
+  data = DataFrame(ŷs, vars)
 
-  georef(df, domain(sdata))
+  georef(data, domain(sdata))
 end
 
 trend(sdata, var::Symbol; kwargs...) = trend(sdata, [var]; kwargs...)

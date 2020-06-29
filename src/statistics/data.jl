@@ -4,7 +4,7 @@
 
 const NumberOrVec = Union{Number,AbstractVector}
 
-mean(d::AbstractData, v::Symbol, w::AbstractWeighter) = mean(vec(d[v]), weight(d, w))
+mean(d::AbstractData, v::Symbol, w::AbstractWeighter) = mean(d[v], weight(d, w))
 mean(d::AbstractData, v::Symbol, s::Number) = mean(d, v, BlockWeighter(ntuple(i->s,ndims(d))))
 mean(d::AbstractData, v::Symbol) = mean(d, v, median_heuristic(d))
 mean(d::AbstractData, w::AbstractWeighter) = Dict(v => mean(d, v, w) for (v,V) in variables(d))
@@ -20,7 +20,7 @@ specify the variable `v` and the block side `s`.
 """
 mean(d::AbstractData) = mean(d, median_heuristic(d))
 
-var(d::AbstractData, v::Symbol, w::AbstractWeighter) = var(vec(d[v]), weight(d, w), mean=mean(d, v, w), corrected=false)
+var(d::AbstractData, v::Symbol, w::AbstractWeighter) = var(d[v], weight(d, w), mean=mean(d, v, w), corrected=false)
 var(d::AbstractData, v::Symbol, s::Number) = var(d, v, BlockWeighter(ntuple(i->s,ndims(d))))
 var(d::AbstractData, v::Symbol) = var(d, v, median_heuristic(d))
 var(d::AbstractData, w::AbstractWeighter) = Dict(v => var(d, v, w) for (v,V) in variables(d))
@@ -36,7 +36,7 @@ specify the variable `v` and the block side `s`.
 """
 var(d::AbstractData) = var(d, median_heuristic(d))
 
-quantile(d::AbstractData, v::Symbol, p::T, w::AbstractWeighter) where {T<:NumberOrVec} = quantile(vec(d[v]), weight(d, w), p)
+quantile(d::AbstractData, v::Symbol, p::T, w::AbstractWeighter) where {T<:NumberOrVec} = quantile(d[v], weight(d, w), p)
 quantile(d::AbstractData, v::Symbol, p::T, s::Number) where {T<:NumberOrVec} = quantile(d, v, p, BlockWeighter(ntuple(i->s,ndims(d))))
 quantile(d::AbstractData, v::Symbol, p::T) where {T<:NumberOrVec} = quantile(d, v, p, median_heuristic(d))
 quantile(d::AbstractData, p::T, w::AbstractWeighter) where {T<:NumberOrVec} = Dict(v => quantile(d, v, p, w) for (v,V) in variables(d))
@@ -57,7 +57,7 @@ quantile(d::AbstractData, p::T) where {T<:NumberOrVec} = quantile(d, p, median_h
 
 Spatial histogram of spatial data `sdata`.
 """
-EmpiricalHistogram(d::AbstractData, v::Symbol, w::AbstractWeighter) = fit(Histogram, vec(d[v]), weight(d, w))
+EmpiricalHistogram(d::AbstractData, v::Symbol, w::AbstractWeighter) = fit(Histogram, d[v], weight(d, w))
 EmpiricalHistogram(d::AbstractData, v::Symbol, s::Number) = EmpiricalHistogram(d, v, BlockWeighter(ntuple(i->s,ndims(d))))
 EmpiricalHistogram(d::AbstractData, v::Symbol) = EmpiricalHistogram(d, v, median_heuristic(d))
 EmpiricalHistogram(d::AbstractData, w::AbstractWeighter) = Dict(v => EmpiricalHistogram(d, v, w) for (v,V) in variables(d))
