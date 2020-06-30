@@ -13,38 +13,34 @@ struct LearnedModel
 end
 
 """
-    learn(task, geodata, model)
+    learn(task, sdata, model)
 
-Learn the `task` with `geodata` using a learning `model`.
+Learn the `task` with `sdata` using a learning `model`.
 """
-function learn(task::AbstractLearningTask, geodata::AbstractData, model)
+function learn(task::AbstractLearningTask, sdata::AbstractData, model)
   if issupervised(task)
-    X = view(geodata, collect(features(task)))
-    y = vec(geodata[label(task)])
+    X = view(sdata, collect(features(task)))
+    y = sdata[label(task)]
     θ, _, __ = MI.fit(model, 0, X, y)
   else
-    X = view(geodata, collect(features(task)))
+    X = view(sdata, collect(features(task)))
     θ, _, __ = MI.fit(model, 0, X)
   end
 
   LearnedModel(model, θ)
 end
 
-function learn(task::CompositeTask, geodata::AbstractData, model)
-  @error "not implemented"
-end
-
 """
-    perform(task, geodata, lmodel)
+    perform(task, sdata, lmodel)
 
-Perform the `task` with `geodata` using a *learned* `lmodel`.
+Perform the `task` with `sdata` using a *learned* `lmodel`.
 """
-function perform(task::AbstractLearningTask, geodata::AbstractData, lmodel::LearnedModel)
+function perform(task::AbstractLearningTask, sdata::AbstractData, lmodel::LearnedModel)
   # unpack model and learned parameters
   model, θ = lmodel.model, lmodel.θ
 
   # apply model to the data
-  X = view(geodata, collect(features(task)))
+  X = view(sdata, collect(features(task)))
   ŷ = MI.predict(model, θ, X)
 
   # post-process result
@@ -55,9 +51,5 @@ function perform(task::AbstractLearningTask, geodata::AbstractData, lmodel::Lear
     result = ŷ
   end
 
-  DataFrame(var=result)
-end
-
-function perform(task::CompositeTask, geodata::AbstractData, lmodel::LearnedModel)
-  @error "not implemented"
+  DataFrame([var=>result])
 end
