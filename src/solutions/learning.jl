@@ -23,5 +23,5 @@ end
 function Base.show(io::IO, ::MIME"text/plain", solution::LearningSolution)
   println(io, solution)
   println(io, "  domain: ", solution.domain)
-  print(  io, "  variables: ", join(keys(solution.data), ", ", " and "))
+  print(  io, "  variables: ", join(keys(variables(solution)), ", ", " and "))
 end

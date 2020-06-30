@@ -101,12 +101,11 @@ Base.length(sdata::AbstractData) = npoints(sdata)
 
 Return the element type of `sdata`.
 """
-Base.eltype(sdata::AbstractData) = eltype(eachrow(sdata.data))
+Base.eltype(sdata::AbstractData) = typeof(sdata[1])
 
-
-#----------------
+# --------------
 # INDEXABLE API
-#----------------
+# --------------
 
 """
     getindex(sdata, ind)
@@ -114,10 +113,10 @@ Base.eltype(sdata::AbstractData) = eltype(eachrow(sdata.data))
 Return `ind`-th sample in `sdata`.
 """
 Base.getindex(sdata::AbstractData, ind::Int) =
-  eachrow(sdata.data)[ind]
+  getindex(sdata.data, ind, :)
 
 Base.getindex(sdata::AbstractData, inds::AbstractVector{Int}) =
-  eachrow(sdata.data)[inds]
+  getindex(sdata.data, inds, :)
 
 """
     firstindex(sdata)

@@ -38,17 +38,31 @@ end
 # DATAFRAME API
 # --------------
 
-Base.getindex(dv::DataView, inds, vars) = getindex(dv.data, dv.inds[inds], vars)
+Base.getindex(dv::DataView, inds, vars) =
+  getindex(dv.data, dv.inds[inds], vars)
 
-Base.setindex!(dv::DataView, vals, inds, vars) = setindex!(dv.data, vals, dv.inds[inds], vars)
+Base.setindex!(dv::DataView, vals, inds, vars) =
+  setindex!(dv.data, vals, dv.inds[inds], vars)
 
 # -------------
 # VARIABLE API
 # -------------
 
-Base.getindex(dv::DataView, var::Symbol) = getindex(dv.data, dv.inds, var)
+Base.getindex(dv::DataView, var::Symbol) =
+  getindex(dv.data, dv.inds, var)
 
-Base.setindex!(dv::DataView, vals, var::Symbol) = setindex!(dv.data, vals, dv.inds, var)
+Base.setindex!(dv::DataView, vals, var::Symbol) =
+  setindex!(dv.data, vals, dv.inds, var)
+
+# --------------
+# INDEXABLE API
+# --------------
+
+Base.getindex(dv::DataView, ind::Int) =
+  getindex(dv.data, dv.inds[ind], dv.vars)
+
+Base.getindex(dv::DataView, inds::AbstractVector{Int}) =
+  getindex(dv.data, dv.inds[inds], dv.vars)
 
 # ------------
 # IO methods
