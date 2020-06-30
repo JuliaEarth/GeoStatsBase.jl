@@ -5,11 +5,11 @@
 """
     readgeotable(args; coordnames=[:x,:y,:z], kwargs)
 
-Read data from disk using `CSV.read`, optionally specifying
+Read data from disk using `CSV.File`, optionally specifying
 the columns `coordnames` with spatial coordinates.
 
 The arguments `args` and keyword arguments `kwargs` are
-forwarded to the `CSV.read` function, please check their
+forwarded to the `CSV.File` function, please check their
 documentation for more details.
 
 This function returns a [`GeoDataFrame`](@ref) object.
