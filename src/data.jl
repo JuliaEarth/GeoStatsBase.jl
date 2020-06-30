@@ -132,9 +132,9 @@ Return the last index of `sdata`.
 """
 Base.lastindex(sdata::AbstractData) = npoints(sdata)
 
-#-------------
+# -----------
 # TABLES API
-#-------------
+# -----------
 Tables.istable(::Type{<:AbstractData}) = true
 
 Tables.rowaccess(::Type{<:AbstractData}) = true
@@ -143,9 +143,9 @@ Tables.columnaccess(::Type{<:AbstractData}) = true
 Tables.rows(sdata::AbstractData) = Tables.rows(sdata.data)
 Tables.columns(sdata::AbstractData) = Tables.columns(sdata.data)
 
-#-----------------
+# ---------------
 # MISSING VALUES
-#-----------------
+# ---------------
 """
     isvalid(sdata, ind, var)
 
@@ -198,8 +198,8 @@ function Base.show(io::IO, ::MIME"text/plain", sdata::AbstractData{T,N}) where {
   print(io, join(sort(varlines), "\n"))
 end
 
-#------------------
+# ----------------
 # IMPLEMENTATIONS
-#------------------
-include("data/simple_data.jl")
+# ----------------
+include("data/spatialdata.jl")
 include("data/geodataframe.jl")
