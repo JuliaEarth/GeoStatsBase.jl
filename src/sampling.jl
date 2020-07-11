@@ -14,7 +14,7 @@ abstract type AbstractSampler end
 
 Sample elements from `object` with `sampler`.
 """
-sample(object::AbstractSpatialObject, sampler::AbstractSampler) = @error "not implemented"
+function sample end
 
 #------------------
 # IMPLEMENTATIONS

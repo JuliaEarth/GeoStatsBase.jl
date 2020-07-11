@@ -14,10 +14,9 @@ abstract type AbstractDiscretizer end
 
 Discretize spatial `region` with `discretizer` method.
 """
-discretize(region::AbstractRegion, discretizer::AbstractDiscretizer) =
-  @error "not implemented"
+function discretize end
 
-#------------------
+# ----------------
 # IMPLEMENTATIONS
-#------------------
+# ----------------
 include("discretizing/regular_grid.jl")

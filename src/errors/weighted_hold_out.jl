@@ -20,9 +20,9 @@ end
 WeightedHoldOut(weighter::AbstractWeighter, fraction::Real; loss=Dict()) =
   WeightedHoldOut{typeof(weighter),typeof(fraction)}(weighter, fraction, loss)
 
-function Base.error(solver::AbstractLearningSolver,
-                    problem::LearningProblem,
-                    eestimator::WeightedHoldOut)
+function error(solver::AbstractLearningSolver,
+               problem::LearningProblem,
+               eestimator::WeightedHoldOut)
   # retrieve problem info
   sdata = sourcedata(problem)
   ovars = outputvars(task(problem))

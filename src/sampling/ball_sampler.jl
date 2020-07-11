@@ -22,7 +22,9 @@ end
 BallSampler(radius::Real; metric=Euclidean(), maxsize=nothing) =
   BallSampler(radius, metric, maxsize)
 
-function sample(object::AbstractSpatialObject{T,N}, sampler::BallSampler) where {T,N}
+function sample(object, sampler::BallSampler)
+  N = ndims(object)
+  T = coordtype(object)
   radius = sampler.radius
   metric = sampler.metric
   msize  = sampler.maxsize ≠ nothing ? sampler.maxsize : Inf

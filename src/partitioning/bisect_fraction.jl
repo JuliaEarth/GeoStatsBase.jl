@@ -25,8 +25,7 @@ BisectFractionPartitioner(normal::SVector{N,T}, fraction=0.5, maxiter=10) where 
 BisectFractionPartitioner(normal::NTuple{N,T}, fraction=0.5, maxiter=10) where {T,N} =
   BisectFractionPartitioner(SVector(normal), fraction, maxiter)
 
-function partition(object::AbstractSpatialObject{T,N},
-                   partitioner::BisectFractionPartitioner{T,N}) where {T,N}
+function partition(object, partitioner::BisectFractionPartitioner)
   bbox = boundbox(object)
   n = partitioner.normal
   f = partitioner.fraction

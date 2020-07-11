@@ -22,7 +22,7 @@ WeightedSampler(size::Int, weights::W=nothing;
 WeightedSampler(size::Int, weights::AbstractWeights; replace=false) =
   WeightedSampler(size, collect(weights), replace)
 
-function sample(object::AbstractSpatialObject, sampler::WeightedSampler)
+function sample(object, sampler::WeightedSampler)
   n = npoints(object)
   s = sampler.size
   r = sampler.replace

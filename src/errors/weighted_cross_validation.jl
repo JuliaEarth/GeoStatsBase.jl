@@ -47,9 +47,9 @@ WeightedCrossValidation(weighter::W, k::Int; shuffle=true,
                         lambda=1.0, loss=Dict()) where {W<:AbstractWeighter} =
   WeightedCrossValidation(weighter, UniformPartitioner(k, shuffle), lambda=lambda, loss=loss)
 
-function Base.error(solver::AbstractLearningSolver,
-                    problem::LearningProblem,
-                    eestimator::WeightedCrossValidation)
+function error(solver::AbstractLearningSolver,
+               problem::LearningProblem,
+               eestimator::WeightedCrossValidation)
   # retrieve problem info
   sdata = sourcedata(problem)
   ovars = outputvars(task(problem))

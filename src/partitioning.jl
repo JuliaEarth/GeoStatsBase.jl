@@ -9,7 +9,7 @@ A partition of a spatial `object` into `subsets`.
 Optionally, save `metadata` in the partitioning
 algorithm.
 """
-struct SpatialPartition{O<:AbstractSpatialObject}
+struct SpatialPartition{O}
   object::O
   subsets::Vector{Vector{Int}}
   metadata::Dict
@@ -124,10 +124,9 @@ abstract type AbstractSpatialPredicatePartitioner <: AbstractPartitioner end
 
 Partition `object` with partition method `partitioner`.
 """
-partition(::AbstractSpatialObject, ::AbstractPartitioner) = @error "not implemented"
+function partition end
 
-function partition(object::AbstractSpatialObject{T,N},
-                   partitioner::AbstractPredicatePartitioner) where {N,T}
+function partition(object, partitioner::AbstractPredicatePartitioner)
   subsets = Vector{Vector{Int}}()
   for i in randperm(npoints(object))
     inserted = false
@@ -148,8 +147,10 @@ function partition(object::AbstractSpatialObject{T,N},
   SpatialPartition(object, subsets)
 end
 
-function partition(object::AbstractSpatialObject{T,N},
-                   partitioner::AbstractSpatialPredicatePartitioner) where {N,T}
+function partition(object, partitioner::AbstractSpatialPredicatePartitioner)
+  N = ndims(object)
+  T = coordtype(object)
+
   # pre-allocate memory for coordinates
   x = MVector{N,T}(undef)
   y = MVector{N,T}(undef)

@@ -18,8 +18,10 @@ BlockPartitioner(sides::NTuple{N,T}) where {N,T} =
 BlockPartitioner(sides::Vararg{T,N}) where {N,T} =
   BlockPartitioner(sides)
 
-function partition(object::AbstractSpatialObject{T,N},
-                   partitioner::BlockPartitioner{U,N}) where {N,T,U}
+function partition(object, partitioner::BlockPartitioner)
+  N = ndims(object)
+  T = coordtype(object)
+
   psides = partitioner.sides
   bbox = boundbox(object)
 

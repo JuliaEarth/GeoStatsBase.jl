@@ -33,9 +33,9 @@ CrossValidation(partitioner::AbstractPartitioner; loss=Dict()) =
 CrossValidation(k::Int; shuffle=true, loss=Dict()) =
   CrossValidation(UniformPartitioner(k, shuffle), loss=loss)
 
-function Base.error(solver::AbstractLearningSolver,
-                    problem::LearningProblem,
-                    eestimator::CrossValidation)
+function error(solver::AbstractLearningSolver,
+               problem::LearningProblem,
+               eestimator::CrossValidation)
   # retrieve problem info
   sdata = sourcedata(problem)
   ovars = outputvars(task(problem))

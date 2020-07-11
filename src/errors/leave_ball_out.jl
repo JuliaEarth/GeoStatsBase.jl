@@ -31,9 +31,9 @@ LeaveBallOut(ball::BallNeighborhood; loss=Dict()) =
 LeaveBallOut(radius::Real; ndims=3, loss=Dict()) =
   LeaveBallOut(BallNeighborhood{ndims}(radius), loss=loss)
 
-function Base.error(solver::AbstractLearningSolver,
-                    problem::LearningProblem,
-                    eestimator::LeaveBallOut)
+function error(solver::AbstractLearningSolver,
+               problem::LearningProblem,
+               eestimator::LeaveBallOut)
   sdata = sourcedata(problem)
   ovars = outputvars(task(problem))
   ball  = eestimator.ball

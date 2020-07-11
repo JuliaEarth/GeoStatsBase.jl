@@ -40,9 +40,9 @@ function DensityRatioValidation(k::Int; lambda=1.0, loss=Dict(),
   DensityRatioValidation{T,E,O}(k, lambda, estimator, optlib, loss)
 end
 
-function Base.error(solver::AbstractLearningSolver,
-                    problem::LearningProblem,
-                    eestimator::DensityRatioValidation)
+function error(solver::AbstractLearningSolver,
+               problem::LearningProblem,
+               eestimator::DensityRatioValidation)
   # weight samples based on the features of target data
   tdata = targetdata(problem)
   vars = collect(features(task(problem)))

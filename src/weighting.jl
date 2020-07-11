@@ -55,11 +55,10 @@ abstract type AbstractWeighter end
 
 Weight spatial `object` with `weighter` method.
 """
-weight(object::AbstractSpatialObject, weighter::AbstractWeighter) =
-  @error "not implemented"
+function weight end
 
-#------------------
+# ----------------
 # IMPLEMENTATIONS
-#------------------
+# ----------------
 include("weighting/block.jl")
 include("weighting/density_ratio.jl")

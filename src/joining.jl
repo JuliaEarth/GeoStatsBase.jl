@@ -14,12 +14,9 @@ abstract type AbstractJoiner end
 
 Join spatial object `object₁` and `object₂` with `joiner` method.
 """
-Base.join(object₁::AbstractSpatialObject,
-          object₂::AbstractSpatialObject,
-          joiner::AbstractJoiner) =
-  @error "not implemented"
+function join end
 
-#------------------
+# ----------------
 # IMPLEMENTATIONS
-#------------------
+# ----------------
 include("joining/variable.jl")

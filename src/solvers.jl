@@ -35,7 +35,7 @@ abstract type AbstractLearningSolver <: AbstractSolver end
 
 Solve the `problem` with the `solver`.
 """
-solve(::AbstractProblem, ::AbstractSolver) = @error "not implemented"
+function solve end
 
 """
     solve(problem, solver)
@@ -107,8 +107,7 @@ informing the framework that realizations generated with his/her
 solver are indenpendent one from another. GeoStats.jl will trigger
 the algorithm in parallel (if enough processes are available).
 """
-solvesingle(::SimulationProblem, ::NamedTuple, ::AbstractSimulationSolver,
-            ::Any) = @error "not implemented"
+function solvesingle end
 
 """
     covariables(var, solver)
@@ -116,7 +115,7 @@ solvesingle(::SimulationProblem, ::NamedTuple, ::AbstractSimulationSolver,
 Return covariables associated with the variable `var`
 in the `solver` and their respective parameters.
 """
-covariables(::Symbol, ::AbstractSolver) = @error "not implemented"
+function covariables end
 
 """
     covariables(problem, solver)
@@ -152,11 +151,11 @@ end
 
 Return flattened list of variable names in the `solver`.
 """
-variables(::AbstractSolver) = @error "not implemented"
+function variables end
 
-#------------------
+# ----------------
 # IMPLEMENTATIONS
-#------------------
+# ----------------
 include("solvers/sequential_simulation.jl")
 include("solvers/cookie_cutter_simulation.jl")
 include("solvers/pointwise_learning.jl")

@@ -14,10 +14,9 @@ abstract type AbstractFilter end
 
 Filter spatial `object` with filtering method `filt`.
 """
-Base.filter(object::AbstractSpatialObject, filt::AbstractFilter) =
-  @error "not implemented"
+function filter end
 
-#------------------
+# ----------------
 # IMPLEMENTATIONS
-#------------------
+# ----------------
 include("filtering/unique_coords.jl")

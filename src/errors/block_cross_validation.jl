@@ -27,9 +27,9 @@ end
 BlockCrossValidation(sides; loss=Dict()) =
   BlockCrossValidation{typeof(sides)}(sides, loss)
 
-function Base.error(solver::AbstractLearningSolver,
-                    problem::LearningProblem,
-                    eestimator::BlockCrossValidation)
+function error(solver::AbstractLearningSolver,
+               problem::LearningProblem,
+               eestimator::BlockCrossValidation)
   sdata = sourcedata(problem)
   ovars = outputvars(task(problem))
   loss  = eestimator.loss

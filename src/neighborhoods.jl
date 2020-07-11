@@ -30,18 +30,17 @@ coordtype(::AbstractNeighborhood{T,N}) where {N,T} = T
 Tells whether or not the coordinates `x` are in the neighborhood
 `neigh` centered at coordinates `xₒ`.
 """
-isneighbor(neigh::AbstractNeighborhood,
-           xₒ::AbstractVector, x::AbstractVector) = @error "not implemented"
+function isneighbor end
 
 """
     volume(neigh)
 
 Return the volume of neighborhood `neigh`.
 """
-volume(neigh::AbstractNeighborhood) = @error "not implemented"
+function volume end
 
-#------------------
+# ----------------
 # IMPLEMENTATIONS
-#------------------
+# ----------------
 include("neighborhoods/ball.jl")
 include("neighborhoods/cylinder.jl")

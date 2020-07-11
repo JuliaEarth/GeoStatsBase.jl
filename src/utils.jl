@@ -26,8 +26,7 @@ is performed along a `normal` direction. The default
 direction is aligned with the first spatial dimension
 of the object.
 """
-function Base.split(object::AbstractSpatialObject,
-                    fraction::Real, normal=nothing)
+function Base.split(object, fraction::Real, normal=nothing)
   if isnothing(normal)
     partition(object, FractionPartitioner(fraction))
   else
@@ -57,7 +56,7 @@ Return the minimum axis-aligned bounding rectangle of the spatial `object`.
 
 Equivalent to `cover(object, RectangleCoverer())`
 """
-boundbox(object::AbstractSpatialObject) = cover(object, RectangleCoverer())
+boundbox(object) = cover(object, RectangleCoverer())
 
 """
     sample(object, nsamples, [weights], replace=false)
@@ -66,7 +65,7 @@ Generate `nsamples` samples from spatial `object`
 uniformly or using `weights`, with or without
 replacement depending on `replace` option.
 """
-function sample(object::AbstractSpatialObject, nsamples::Int,
+function sample(object::Union{AbstractDomain,AbstractData}, nsamples::Int,
                 weights::AbstractVector=[]; replace=false)
   if isempty(weights)
     sample(object, UniformSampler(nsamples, replace))
@@ -80,19 +79,19 @@ end
 
 Join variables in spatial data `sdata₁` and `sdata₂`.
 """
-Base.join(sdata₁::AbstractData, sdata₂::AbstractData) =
+join(sdata₁::AbstractData, sdata₂::AbstractData) =
   join(sdata₁, sdata₂, VariableJoiner())
 
 """
-    uniquecoords(sdata; aggreg=Dict())
+    uniquecoords(sdata; agg=Dict())
 
 Filter spatial data `sdata` to produce a new data
 set with unique coordinates.
 
 See [`UniqueCoordsFilter`](@ref) for more details.
 """
-uniquecoords(sdata::AbstractData; aggreg=Dict()) =
-  filter(sdata, UniqueCoordsFilter(aggreg))
+uniquecoords(sdata::AbstractData; agg=Dict()) =
+  filter(sdata, UniqueCoordsFilter(agg))
 
 """
     spheredir(θ, φ)

@@ -14,15 +14,14 @@ abstract type AbstractCoverer end
 
 Cover spatial `object` with `coverer` method.
 """
-cover(object::AbstractSpatialObject, coverer::AbstractCoverer) =
-  cover(domain(object), coverer)
+cover(object, coverer::AbstractCoverer) = cover(domain(object), coverer)
 
 """
     cover(domain, coverer)
 
 Cover spatial `domain` with `coverer` method.
 """
-cover(domain::AbstractDomain, coverer::AbstractCoverer) = @error "not implemented"
+function cover end
 
 #------------------
 # IMPLEMENTATIONS

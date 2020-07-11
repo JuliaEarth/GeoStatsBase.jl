@@ -19,9 +19,9 @@ end
 WeightedBootstrap(weighter::AbstractWeighter, nsamples::Int; loss=Dict()) =
   WeightedBootstrap{typeof(weighter)}(weighter, nsamples, loss)
 
-function Base.error(solver::AbstractLearningSolver,
-                    problem::LearningProblem,
-                    eestimator::WeightedBootstrap)
+function error(solver::AbstractLearningSolver,
+               problem::LearningProblem,
+               eestimator::WeightedBootstrap)
   # retrieve problem info
   sdata = sourcedata(problem)
   ovars = outputvars(task(problem))

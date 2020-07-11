@@ -25,9 +25,9 @@ BallSampleValidation(eestimator::AbstractErrorEstimator, sradius::Rₛ, tradius:
                      metric=Euclidean(), tol=1e-4, maxiter=10) where {Rₛ,Rₜ} =
   BallSampleValidation(eestimator, sradius, tradius, metric, tol, maxiter)
 
-function Base.error(solver::AbstractLearningSolver,
-                    problem::LearningProblem,
-                    eestimator::BallSampleValidation)
+function error(solver::AbstractLearningSolver,
+               problem::LearningProblem,
+               eestimator::BallSampleValidation)
   # source and target data
   sdata = sourcedata(problem)
   tdata = targetdata(problem)

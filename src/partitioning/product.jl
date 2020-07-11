@@ -15,8 +15,7 @@ struct ProductPartitioner{P1<:AbstractPartitioner,
 end
 
 # general case
-function partition(object::AbstractSpatialObject,
-                   partitioner::ProductPartitioner)
+function partition(object, partitioner::ProductPartitioner)
   # individual partition results
   s₁ = subsets(partition(object, partitioner.p₁))
   s₂ = subsets(partition(object, partitioner.p₂))
@@ -50,17 +49,15 @@ function partition(object::AbstractSpatialObject,
 end
 
 # predicate partitioner
-function partition(object::AbstractSpatialObject,
-                   partitioner::ProductPartitioner{P1,P2}) where {P1<:AbstractPredicatePartitioner,
-                                                                  P2<:AbstractPredicatePartitioner}
+function partition(object, partitioner::ProductPartitioner{P1,P2}) where {P1<:AbstractPredicatePartitioner,
+                                                                          P2<:AbstractPredicatePartitioner}
   pred(i, j) = partitioner.p₁(i, j) * partitioner.p₂(i, j)
   partition(object, PredicatePartitioner(pred))
 end
 
 # spatial predicate partitioner
-function partition(object::AbstractSpatialObject,
-                   partitioner::ProductPartitioner{P1,P2}) where {P1<:AbstractSpatialPredicatePartitioner,
-                                                                  P2<:AbstractSpatialPredicatePartitioner}
+function partition(object, partitioner::ProductPartitioner{P1,P2}) where {P1<:AbstractSpatialPredicatePartitioner,
+                                                                          P2<:AbstractSpatialPredicatePartitioner}
   pred(x, y) = partitioner.p₁(x, y) * partitioner.p₂(x, y)
   partition(object, SpatialPredicatePartitioner(pred))
 end

@@ -28,6 +28,7 @@ using Parameters
 
 import Tables
 import MLJModelInterface
+import Base: join, filter, map, error
 import StatsBase: fit, sample, varcorrection
 import Distributions: quantile, cdf
 import ScientificTypes: Scitype, scitype
@@ -100,13 +101,13 @@ export
   RegularGrid,
   StructuredGrid,
   origin, spacing,
-  georef,
 
   # spatial data
   AbstractData,
   SpatialData,
   GeoDataFrame,
   variables,
+  georef,
   valid,
 
   # collections

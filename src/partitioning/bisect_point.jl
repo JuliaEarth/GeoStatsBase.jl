@@ -23,8 +23,10 @@ BisectPointPartitioner(normal::SVector{N,T}, point::SVector{N,T}) where {T,N} =
 BisectPointPartitioner(normal::NTuple{N,T}, point::NTuple{N,T}) where {T,N} =
  BisectPointPartitioner(SVector(normal), SVector(point))
 
-function partition(object::AbstractSpatialObject{T,N},
-                   partitioner::BisectPointPartitioner{T,N}) where {T,N}
+function partition(object, partitioner::BisectPointPartitioner)
+  N = ndims(object)
+  T = coordtype(object)
+  
   n = partitioner.normal
   p = partitioner.point
 

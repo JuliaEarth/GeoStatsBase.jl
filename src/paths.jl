@@ -14,11 +14,11 @@ abstract type AbstractPath end
 
 Traverse spatial `object` with `path`.
 """
-traverse(object, path::AbstractPath) = @error "not implemented"
+function traverse end
 
-#------------------
+# ----------------
 # IMPLEMENTATIONS
-#------------------
+# ----------------
 include("paths/linear.jl")
 include("paths/random.jl")
 include("paths/source.jl")

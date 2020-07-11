@@ -10,11 +10,9 @@ point in the domain.
 """
 struct NearestMapper <: AbstractMapper end
 
-function Base.map(spatialdata::AbstractData{T,N},
-                  domain::AbstractDomain{T,N},
-                  targetvars::NTuple{K,Symbol},
-                  mapper::NearestMapper) where {N,T,K}
-  @assert targetvars ⊆ keys(variables(spatialdata)) "target variables must be present in spatial data"
+function map(sdata::AbstractData{T,N}, sdomain::AbstractDomain{T,N},
+             targetvars::NTuple{K,Symbol}, mapper::NearestMapper) where {N,T,K}
+  @assert targetvars ⊆ keys(variables(sdata)) "target variables must be present in spatial data"
 
   # dictionary with mappings
   mappings = Dict(var => Dict{Int,Int}() for var in targetvars)
@@ -24,18 +22,18 @@ function Base.map(spatialdata::AbstractData{T,N},
 
   # nearest neighbor search method
   neighbor = Vector{Int}(undef, 1)
-  searcher = NearestNeighborSearcher(domain, 1)
+  searcher = NearestNeighborSearcher(sdomain, 1)
 
-  for ind in 1:npoints(spatialdata)
+  for ind in 1:npoints(sdata)
     # update datum coordinates
-    coordinates!(coords, spatialdata, ind)
+    coordinates!(coords, sdata, ind)
 
     # find nearest location in the domain
     search!(neighbor, coords, searcher)
 
     # save pair if there is data for variable
     for var in targetvars
-      if isvalid(spatialdata, ind, var)
+      if isvalid(sdata, ind, var)
         push!(mappings[var], neighbor[1] => ind)
       end
     end
