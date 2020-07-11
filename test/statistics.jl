@@ -23,11 +23,7 @@
     # quantile (vector)
     ps = [0.0, 0.5, 1.0]
     quantiles2D = quantile(solution2D, ps)
-    @test eltype(quantiles2D) <: SpatialStatistic
-
-    # show methods
-    @test sprint(show, mean2D) == "2D SpatialStatistic"
-    @test sprint(show, MIME"text/plain"(), mean2D) == "2D SpatialStatistic\n  domain: 3×3 RegularGrid{Float64,2}\n  variables: value"
+    @test quantiles2D[2][:value] == quantile2D[:value]
   end
 
   @testset "Data" begin

@@ -9,7 +9,7 @@ Mean of simulation `solution`.
 """
 function mean(solution::SimulationSolution)
   data = DataFrame([variable => mean(reals) for (variable, reals) in solution.realizations])
-  SpatialStatistic(solution.domain, data)
+  georef(data, solution.domain)
 end
 
 """
@@ -19,7 +19,7 @@ Variance of simulation `solution`.
 """
 function var(solution::SimulationSolution)
   data = DataFrame([variable => var(reals) for (variable, reals) in solution.realizations])
-  SpatialStatistic(solution.domain, data)
+  georef(data, solution.domain)
 end
 
 """
@@ -28,15 +28,15 @@ end
 p-quantile of simulation `solution`.
 """
 function quantile(solution::SimulationSolution, p::Number)
-  data = []
+  cols = []
   for (variable, reals) in solution.realizations
     quantiles = map(1:npoints(solution.domain)) do location
       slice = getindex.(reals, location)
       quantile(slice, p)
     end
-    push!(data, variable => quantiles)
+    push!(cols, variable => quantiles)
   end
-  SpatialStatistic(solution.domain, DataFrame(data))
+  georef(DataFrame(cols), solution.domain)
 end
 
 quantile(solution::SimulationSolution, ps::AbstractVector) = [quantile(solution, p) for p in ps]

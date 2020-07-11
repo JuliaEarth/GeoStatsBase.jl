@@ -30,6 +30,7 @@ import Tables
 import MLJModelInterface
 import Base: join, filter, map, error
 import StatsBase: fit, sample, varcorrection
+import Statistics: mean, var, quantile
 import Distributions: quantile, cdf
 import ScientificTypes: Scitype, scitype
 import Distances: evaluate
@@ -306,10 +307,8 @@ export
   detrend!,
 
   # statistics
-  SpatialStatistic,
   EmpiricalHistogram,
-  mean, var,
-  quantile,
+  mean, var, quantile,
 
   # plot recipes
   cornerplot,
