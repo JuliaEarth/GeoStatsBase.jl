@@ -16,23 +16,19 @@ Return the variable names in spatial data `sdata` and their types.
 """
 variables(sdata::AbstractData) = Variables(sdata.table)
 
+"""
+    values(sdata)
+
+Return the values of spatial data `sdata` as a table.
+"""
+Base.values(sdata::AbstractData) = sdata.table
+
 # --------------
 # DATAFRAME API
 # --------------
 
-"""
-    getindex(sdata, inds, vars)
-
-Return the value of `vars` for the `inds` points in `sdata`.
-"""
 Base.getindex(sdata::AbstractData, inds, vars) =
   getindex(sdata.table, inds, vars)
-
-"""
-    setindex!(sdata, vals, inds, vars)
-
-Set the values `vals` of variables `vars` for points `inds` in `sdata`.
-"""
 Base.setindex!(sdata::AbstractData, vals, inds, vars) =
   setindex!(sdata.table, vals, inds, vars)
 
@@ -40,18 +36,8 @@ Base.setindex!(sdata::AbstractData, vals, inds, vars) =
 # VARIABLE API
 # -------------
 
-"""
-    getindex(sdata, var)
-
-Return the values of variable `var` in `sdata`.
-"""
-Base.getindex(sdata::AbstractData, var::Symbol) = getindex(sdata.table, :, var)
-
-"""
-    setindex!(sdata, vals, var)
-
-Set the values `vals` of variable `var` in `sdata`.
-"""
+Base.getindex(sdata::AbstractData, var::Symbol) =
+  getindex(sdata.table, :, var)
 Base.setindex!(sdata::AbstractData, vals, var::Symbol) =
   setindex!(sdata.table, vals, :, var)
 
@@ -59,20 +45,10 @@ Base.setindex!(sdata::AbstractData, vals, var::Symbol) =
 # VIEW API
 # ---------
 
-"""
-    view(sdata, inds)
-    view(sdata, vars)
-    view(sdata, inds, vars)
-
-Return a view of `sdata` with all points in `inds` and
-all variables in `vars`.
-"""
 Base.view(sdata::AbstractData, inds::AbstractVector{Int}) =
   DataView(sdata, inds, collect(keys(variables(sdata))))
-
 Base.view(sdata::AbstractData, vars::AbstractVector{Symbol}) =
   DataView(sdata, 1:npoints(sdata), vars)
-
 Base.view(sdata::AbstractData, inds::AbstractVector{Int},
                                vars::AbstractVector{Symbol}) =
   DataView(sdata, inds, vars)
@@ -81,65 +57,28 @@ Base.view(sdata::AbstractData, inds::AbstractVector{Int},
 # ITERATOR API
 # -------------
 
-"""
-    iterate(sdata, state=1)
-
-Iterate over samples in `sdata`.
-"""
 Base.iterate(sdata::AbstractData, state=1) =
   state > npoints(sdata) ? nothing : (sdata[state], state + 1)
-
-"""
-    length(sdata)
-
-Return the number of samples in `sdata`.
-"""
 Base.length(sdata::AbstractData) = npoints(sdata)
-
-"""
-    eltype(sdata)
-
-Return the element type of `sdata`.
-"""
 Base.eltype(sdata::AbstractData) = typeof(sdata[1])
 
 # --------------
 # INDEXABLE API
 # --------------
 
-"""
-    getindex(sdata, ind)
-
-Return `ind`-th sample in `sdata`.
-"""
 Base.getindex(sdata::AbstractData, ind::Int) =
   getindex(sdata.table, ind, :)
-
 Base.getindex(sdata::AbstractData, inds::AbstractVector{Int}) =
   getindex(sdata.table, inds, :)
-
-"""
-    firstindex(sdata)
-
-Return the first index of `sdata`.
-"""
 Base.firstindex(sdata::AbstractData) = 1
-
-"""
-    lastindex(sdata)
-
-Return the last index of `sdata`.
-"""
 Base.lastindex(sdata::AbstractData) = npoints(sdata)
 
 # -----------
 # TABLES API
 # -----------
 Tables.istable(::Type{<:AbstractData}) = true
-
-Tables.rowaccess(::Type{<:AbstractData}) = true
-Tables.columnaccess(::Type{<:AbstractData}) = true
-
+Tables.rowaccess(sdata::AbstractData) = Tables.rowaccess(sdata.table)
+Tables.columnaccess(sdata::AbstractData) = Tables.columnaccess(sdata.table)
 Tables.rows(sdata::AbstractData) = Tables.rows(sdata.table)
 Tables.columns(sdata::AbstractData) = Tables.columns(sdata.table)
 
