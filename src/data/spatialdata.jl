@@ -20,13 +20,6 @@ function SpatialData(domain, table)
   SpatialData{T,N,𝒟,𝒯}(domain, table)
 end
 
-"""
-    georef(table, domain)
-
-Georeference `table` on spatial `domain`.
-"""
-georef(table, domain) = SpatialData(domain, table)
-
 # ------------
 # IO methods
 # ------------

@@ -48,12 +48,13 @@ end
 # basic graph utils
 include("graphs.jl")
 
+include("variables.jl")
 include("spatialobject.jl")
 include("domains.jl")
 include("domainview.jl")
-include("variables.jl")
 include("data.jl")
 include("dataview.jl")
+include("georef.jl")
 include("collections.jl")
 include("macros.jl")
 include("paths.jl")
