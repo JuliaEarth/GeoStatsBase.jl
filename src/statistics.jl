@@ -10,9 +10,17 @@ import Statistics: mean, var, quantile
 
 A spatial statistic defined over a spatial domain.
 """
-struct SpatialStatistic{T,N,𝒟<:AbstractDomain{T,N},𝒯} <: AbstractData{T,N}
+struct SpatialStatistic{T,N,𝒟,𝒯} <: AbstractData{T,N}
   domain::𝒟
-  data::𝒯
+  table::𝒯
+end
+
+function SpatialStatistic(domain, table)
+  T = coordtype(domain)
+  N = ndims(domain)
+  𝒟 = typeof(domain)
+  𝒯 = typeof(table)
+  SpatialStatistic{T,N,𝒟,𝒯}(domain, table)
 end
 
 # ------------

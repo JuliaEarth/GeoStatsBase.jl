@@ -7,9 +7,17 @@
 
 A solution to a spatial learning problem.
 """
-struct LearningSolution{T,N,𝒟<:AbstractDomain{T,N},𝒯} <: AbstractData{T,N}
+struct LearningSolution{T,N,𝒟,𝒯} <: AbstractData{T,N}
   domain::𝒟
-  data::𝒯
+  table::𝒯
+end
+
+function LearningSolution(domain, table)
+  T = coordtype(domain)
+  N = ndims(domain)
+  𝒟 = typeof(domain)
+  𝒯 = typeof(table)
+  LearningSolution{T,N,𝒟,𝒯}(domain, table)
 end
 
 # ------------

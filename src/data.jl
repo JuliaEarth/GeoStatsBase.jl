@@ -14,7 +14,7 @@ abstract type AbstractData{T,N} <: AbstractSpatialObject{T,N} end
 
 Return the variable names in spatial data `sdata` and their types.
 """
-variables(sdata::AbstractData) = Variables(sdata.data)
+variables(sdata::AbstractData) = Variables(sdata.table)
 
 # --------------
 # DATAFRAME API
@@ -26,7 +26,7 @@ variables(sdata::AbstractData) = Variables(sdata.data)
 Return the value of `vars` for the `inds` points in `sdata`.
 """
 Base.getindex(sdata::AbstractData, inds, vars) =
-  getindex(sdata.data, inds, vars)
+  getindex(sdata.table, inds, vars)
 
 """
     setindex!(sdata, vals, inds, vars)
@@ -34,7 +34,7 @@ Base.getindex(sdata::AbstractData, inds, vars) =
 Set the values `vals` of variables `vars` for points `inds` in `sdata`.
 """
 Base.setindex!(sdata::AbstractData, vals, inds, vars) =
-  setindex!(sdata.data, vals, inds, vars)
+  setindex!(sdata.table, vals, inds, vars)
 
 # -------------
 # VARIABLE API
@@ -45,7 +45,7 @@ Base.setindex!(sdata::AbstractData, vals, inds, vars) =
 
 Return the values of variable `var` in `sdata`.
 """
-Base.getindex(sdata::AbstractData, var::Symbol) = getindex(sdata.data, :, var)
+Base.getindex(sdata::AbstractData, var::Symbol) = getindex(sdata.table, :, var)
 
 """
     setindex!(sdata, vals, var)
@@ -53,7 +53,7 @@ Base.getindex(sdata::AbstractData, var::Symbol) = getindex(sdata.data, :, var)
 Set the values `vals` of variable `var` in `sdata`.
 """
 Base.setindex!(sdata::AbstractData, vals, var::Symbol) =
-  setindex!(sdata.data, vals, :, var)
+  setindex!(sdata.table, vals, :, var)
 
 # ---------
 # VIEW API
@@ -113,10 +113,10 @@ Base.eltype(sdata::AbstractData) = typeof(sdata[1])
 Return `ind`-th sample in `sdata`.
 """
 Base.getindex(sdata::AbstractData, ind::Int) =
-  getindex(sdata.data, ind, :)
+  getindex(sdata.table, ind, :)
 
 Base.getindex(sdata::AbstractData, inds::AbstractVector{Int}) =
-  getindex(sdata.data, inds, :)
+  getindex(sdata.table, inds, :)
 
 """
     firstindex(sdata)
@@ -140,8 +140,8 @@ Tables.istable(::Type{<:AbstractData}) = true
 Tables.rowaccess(::Type{<:AbstractData}) = true
 Tables.columnaccess(::Type{<:AbstractData}) = true
 
-Tables.rows(sdata::AbstractData) = Tables.rows(sdata.data)
-Tables.columns(sdata::AbstractData) = Tables.columns(sdata.data)
+Tables.rows(sdata::AbstractData) = Tables.rows(sdata.table)
+Tables.columns(sdata::AbstractData) = Tables.columns(sdata.table)
 
 # ---------------
 # MISSING VALUES

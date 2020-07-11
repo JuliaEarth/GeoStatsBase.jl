@@ -7,17 +7,25 @@
 
 Tabular `data` georeferenced in a spatial `domain`.
 """
-struct SpatialData{T,N,𝒟<:AbstractDomain{T,N},𝒯} <: AbstractData{T,N}
+struct SpatialData{T,N,𝒟,𝒯} <: AbstractData{T,N}
   domain::𝒟
-  data::𝒯
+  table::𝒯
+end
+
+function SpatialData(domain, table)
+  T = coordtype(domain)
+  N = ndims(domain)
+  𝒟 = typeof(domain)
+  𝒯 = typeof(table)
+  SpatialData{T,N,𝒟,𝒯}(domain, table)
 end
 
 """
-    georef(data, domain)
+    georef(table, domain)
 
-Georeference table with `data` on spatial `domain`.
+Georeference `table` on spatial `domain`.
 """
-georef(data, domain::AbstractDomain) = SpatialData(domain, data)
+georef(table, domain) = SpatialData(domain, table)
 
 # ------------
 # IO methods
