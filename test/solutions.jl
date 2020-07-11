@@ -9,7 +9,7 @@
     @test sprint(show, s) == "2D EstimationSolution"
     @test sprint(show, MIME"text/plain"(), s) == "2D EstimationSolution\n  domain: 100 PointSet{Float64,2}\n  variables: z"
 
-    d = RegularGrid{Float64}(10,10)
+    d = RegularGrid(10,10)
     s = EstimationSolution(d, m, v)
     @test s[:z] == (mean=reshape(1:100,10,10), variance=reshape(1:100,10,10))
 
@@ -30,7 +30,7 @@
     @test sprint(show, s) == "2D SimulationSolution"
     @test sprint(show, MIME"text/plain"(), s) == "2D SimulationSolution\n  domain: 100 PointSet{Float64,2}\n  variables: z\n  N° reals:  10"
 
-    d = RegularGrid{Float64}(10,10)
+    d = RegularGrid(10,10)
     s = SimulationSolution(d, r)
 
     @test sprint(show, s) == "2D SimulationSolution"
@@ -39,9 +39,5 @@
     if visualtests
       @plottest plot(s,size=(800,300)) joinpath(datadir,"simsol.png") !istravis
     end
-  end
-
-  @testset "Learning" begin
-    # TODO
   end
 end

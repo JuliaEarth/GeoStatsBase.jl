@@ -24,6 +24,8 @@ struct PointwiseLearn{M} <: AbstractLearningSolver
 end
 
 function solve(problem::LearningProblem, solver::PointwiseLearn)
+  sdata = sourcedata(problem)
+  tdata = targetdata(problem)
   ptask = task(problem)
   model = solver.model
 
@@ -31,12 +33,12 @@ function solve(problem::LearningProblem, solver::PointwiseLearn)
   @assert iscompatible(model, ptask) "$model is not compatible with $ptask"
 
   # learn model on source data
-  lmodel = learn(ptask, sourcedata(problem), model)
+  lmodel = learn(ptask, sdata, model)
 
   # apply model to target data
-  result = perform(ptask, targetdata(problem), lmodel)
+  table = perform(ptask, tdata, lmodel)
 
-  LearningSolution(domain(targetdata(problem)), result)
+  georef(table, domain(tdata))
 end
 
 # ------------
