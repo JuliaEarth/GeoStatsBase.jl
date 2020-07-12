@@ -11,16 +11,13 @@ Assign `weights` to each point in spatial `domain`.
 
 Implement AbstractWeights interface from StatsBase.jl.
 """
-mutable struct SpatialWeights{S<:Real,T<:Real,
-                              V<:AbstractVector{T},
-                              D<:AbstractDomain} <: AbstractWeights{S,T,V}
+mutable struct SpatialWeights{S,T,V<:AbstractVector{T},D} <: AbstractWeights{S,T,V}
   domain::D
   values::V
   sum::S
 end
 
-SpatialWeights(domain::D, values::V) where {D<:AbstractDomain,
-                                            V<:AbstractVector} =
+SpatialWeights(domain::D, values::V) where {D,V} =
   SpatialWeights(domain, values, sum(values))
 
 domain(w::SpatialWeights) = w.domain

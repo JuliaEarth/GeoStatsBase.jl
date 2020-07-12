@@ -18,24 +18,22 @@ variables in target data `tdata`.
 
 Estimators from `DensityRatioEstimation.jl` are supported.
 """
-struct DensityRatioWeighter{DΩ<:AbstractData} <: AbstractWeighter
-  tdata::DΩ
+struct DensityRatioWeighter{D} <: AbstractWeighter
+  tdata::D
   vars::Vector{Symbol}
   dre
   optlib
 end
 
-function DensityRatioWeighter(tdata::DΩ;
-                              variables=nothing,
-                              estimator=LSIF(),
-                              optlib=default_optlib(estimator)) where {DΩ<:AbstractData}
+function DensityRatioWeighter(tdata::D; variables=nothing, estimator=LSIF(),
+                              optlib=default_optlib(estimator)) where {D}
   validvars = collect(keys(GeoStatsBase.variables(tdata)))
   wvars = variables ≠ nothing ? variables : validvars
   @assert wvars ⊆ validvars "invalid variables ($wvars) for spatial data"
-  DensityRatioWeighter{DΩ}(tdata, wvars, estimator, optlib)
+  DensityRatioWeighter{D}(tdata, wvars, estimator, optlib)
 end
 
-function weight(sdata::AbstractData, weighter::DensityRatioWeighter)
+function weight(sdata, weighter::DensityRatioWeighter)
   # retrieve method parameters
   tdata  = weighter.tdata
   vars   = weighter.vars
@@ -49,7 +47,7 @@ function weight(sdata::AbstractData, weighter::DensityRatioWeighter)
   Ω_de = view(sdata, vars)
 
   # TODO: eliminate this explicit conversion after
-  # https://github.com/JuliaEarth/GeoStats.jl/projects/2 
+  # https://github.com/JuliaEarth/GeoStats.jl/projects/2
   x_nu = collect(eachrow(Ω_nu[1:npoints(Ω_nu),vars]))
   x_de = collect(eachrow(Ω_de[1:npoints(Ω_de),vars]))
 
