@@ -35,6 +35,7 @@ georef(table, coords::AbstractMatrix) = georef(table, PointSet(coords))
 function georef(table, coordnames::NTuple)
   cols = Tables.columntable(table)
   @assert coordnames ⊆ keys(cols) "invalid coordinates for table"
+  @assert !(keys(cols) ⊆ coordnames) "table must have at least one variable"
   vars = filter(c->c[1] ∉ coordnames, pairs(cols))
   coords = reduce(hcat, [cols[cname] for cname in coordnames])
   georef(DataFrame(vars), PointSet(coords'))
