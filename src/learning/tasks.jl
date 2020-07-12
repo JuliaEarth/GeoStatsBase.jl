@@ -30,17 +30,9 @@ Check whether or not `task` is supervised.
 """
 issupervised(task::AbstractLearningTask) = false
 
-"""
-    iscomposite(task)
-
-Check whether or not `task` is composite.
-"""
-iscomposite(task::AbstractLearningTask) = false
-
-#------------------
+# ----------------
 # IMPLEMENTATIONS
-#------------------
+# ----------------
 include("tasks/regression.jl")
 include("tasks/classification.jl")
 include("tasks/clustering.jl")
-include("tasks/composite.jl")

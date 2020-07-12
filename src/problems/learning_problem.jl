@@ -17,38 +17,28 @@ julia> LearningProblem(sdata, tdata,
                        ClusteringTask((:moisture,:mineral)))
 ```
 """
-struct LearningProblem{DΩₛ<:AbstractData,
-                       DΩₜ<:AbstractData,
-                       T<:AbstractLearningTask} <: AbstractProblem
-  sdata::DΩₛ
-  tdata::DΩₜ
+struct LearningProblem{Dₛ,Dₜ,T} <: AbstractProblem
+  sdata::Dₛ
+  tdata::Dₜ
   task::T
 
-  function LearningProblem{DΩₛ,DΩₜ,T}(sdata, tdata, task) where {DΩₛ<:AbstractData,
-                                                                 DΩₜ<:AbstractData,
-                                                                 T<:AbstractLearningTask}
+  function LearningProblem{Dₛ,Dₜ,T}(sdata, tdata, task) where {Dₛ,Dₜ,T}
     sourcevars = keys(variables(sdata))
     targetvars = keys(variables(tdata))
 
     # assert task is compatible with the data
-    if iscomposite(task)
-      # TODO
-    else
-      @assert features(task) ⊆ sourcevars "features must be present in source data"
-      @assert features(task) ⊆ targetvars "features must be present in target data"
-      if issupervised(task)
-        @assert label(task) ∈ sourcevars "label must be present in source data"
-      end
+    @assert features(task) ⊆ sourcevars "features must be present in source data"
+    @assert features(task) ⊆ targetvars "features must be present in target data"
+    if issupervised(task)
+      @assert label(task) ∈ sourcevars "label must be present in source data"
     end
 
     new(sdata, tdata, task)
   end
 end
 
-LearningProblem(sdata::DΩₛ, tdata::DΩₜ, task::T) where {DΩₛ<:AbstractData,
-                                                        DΩₜ<:AbstractData,
-                                                        T<:AbstractLearningTask} =
-  LearningProblem{DΩₛ,DΩₜ,T}(sdata, tdata, task)
+LearningProblem(sdata::Dₛ, tdata::Dₜ, task::T) where {Dₛ,Dₜ,T} =
+  LearningProblem{Dₛ,Dₜ,T}(sdata, tdata, task)
 
 """
     sourcedata(problem)
