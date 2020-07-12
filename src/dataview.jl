@@ -32,6 +32,8 @@ function variables(dv::DataView)
   Variables{typeof(nt)}(nt)
 end
 
+Base.values(dv::DataView) = getindex(values(dv.data), dv.inds, dv.vars)
+
 # --------------
 # DATAFRAME API
 # --------------

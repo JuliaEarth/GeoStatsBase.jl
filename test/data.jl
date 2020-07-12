@@ -1,8 +1,8 @@
 @testset "Data" begin
   @testset "Basics" begin
+    # views and mutation
     d = georef((z=rand(3),), rand(2,3))
     v = view(d, [1,3])
-
     d[1,:z] = 1.
     d[2,:z] = 2.
     v[2,:z] = 3.
@@ -11,6 +11,20 @@
     v[:z] = [3.,1.]
     @test d[:z] == [3.,2.,1.]
     @test v[:z] == [3.,1.]
+
+    # underlying table
+    d = georef((z=rand(10,10),))
+    t = values(d)
+    @test size(t) == (100,1)
+    @test propertynames(t) == [:z]
+
+    # bidimensional views
+    d = georef((z=rand(10,10),))
+    v = view(d, 1:3, [:z])
+    td = values(d)
+    tv = values(v)
+    @test npoints(v) == 3
+    @test td[1:3,:z] == tv[:,:z]
   end
 
   @testset "Curve" begin

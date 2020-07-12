@@ -3,27 +3,6 @@
 # ------------------------------------------------------------------
 
 """
-    SpatialData(domain, data)
-
-Tabular `data` georeferenced in a spatial `domain`.
-"""
-struct SpatialData{T,N,𝒟,𝒯} <: AbstractData{T,N}
-  domain::𝒟
-  table::𝒯
-end
-
-function SpatialData(domain, table)
-  nd = npoints(domain)
-  nt = length(Tables.rows(table))
-  @assert nd == nt "number of rows ≠ number of points"
-  T = coordtype(domain)
-  N = ndims(domain)
-  𝒟 = typeof(domain)
-  𝒯 = typeof(table)
-  SpatialData{T,N,𝒟,𝒯}(domain, table)
-end
-
-"""
     georef(table, domain)
 
 Georeference `table` on spatial `domain`.
