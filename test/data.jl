@@ -63,7 +63,7 @@
     # basic checks
     data3D = readgeotable(joinpath(datadir,"data3D.tsv"), delim='\t')
     X, z = valid(data3D, :value)
-    ps = georef(DataFrame(value=z), PointSet(X))
+    ps = georef((value=z,), X)
     X, z = valid(ps, :value)
     @test coordnames(ps) == (:x1, :x2, :x3)
     @test collect(variables(ps)) == [:value => Float64]
@@ -72,9 +72,9 @@
     @test length(z) == 100
 
     # show methods
-    ps = georef(DataFrame(value=[1,2,3]), PointSet([1. 0. 1.; 0. 1. 1.]))
+    ps = georef((z=[1,2,3],), [1. 0. 1.; 0. 1. 1.])
     @test sprint(show, ps) == "3 SpatialData{Float64,2}"
-    @test sprint(show, MIME"text/plain"(), ps) == "3 SpatialData{Float64,2}\n  variables\n    └─value (Int64)"
+    @test sprint(show, MIME"text/plain"(), ps) == "3 PointSet{Float64,2}\n  variables\n    └─z (Int64)"
 
     if visualtests
       sdata = georef(DataFrame(z=[1.,0.,1.]), PointSet([25. 50. 75.; 25. 75. 50.]))
@@ -93,9 +93,9 @@
     @test length(z) == 10000
 
     # show methods
-    g = georef(DataFrame(z=[1,2,3,4]), RegularGrid(2,2))
+    g = georef((z=[1,2,3,4],), RegularGrid(2,2))
     @test sprint(show, g) == "4 SpatialData{Float64,2}"
-    @test sprint(show, MIME"text/plain"(), g) == "4 SpatialData{Float64,2}\n  variables\n    └─z (Int64)"
+    @test sprint(show, MIME"text/plain"(), g) == "2×2 RegularGrid{Float64,2}\n  variables\n    └─z (Int64)"
 
     if visualtests
       sdata = georef(DataFrame(z=vec([1 2; 3 4])), RegularGrid(2,2))
@@ -109,7 +109,7 @@
     X = readdlm(joinpath(datadir,"HurricaneX.dat"))
     Y = readdlm(joinpath(datadir,"HurricaneY.dat"))
     P = readdlm(joinpath(datadir,"HurricaneP.dat"))
-    g = georef(DataFrame(precip=vec(P)), StructuredGrid(X, Y))
+    g = georef((precip=P,), StructuredGrid(X, Y))
 
     # basic checks
     @test coordnames(g) == (:x1, :x2)
@@ -123,7 +123,7 @@
 
     # show methods
     @test sprint(show, g) == "80886 SpatialData{Float64,2}"
-    @test sprint(show, MIME"text/plain"(), g) == "80886 SpatialData{Float64,2}\n  variables\n    └─precip (Float64)"
+    @test sprint(show, MIME"text/plain"(), g) == "221×366 StructuredGrid{Float64,2}\n  variables\n    └─precip (Float64)"
 
     if visualtests
       # TODO

@@ -131,7 +131,7 @@ function Base.show(io::IO, sdata::AbstractData{T,N}) where {N,T}
 end
 
 function Base.show(io::IO, ::MIME"text/plain", sdata::AbstractData{T,N}) where {N,T}
-  println(io, sdata)
+  println(io, domain(sdata))
   println(io, "  variables")
   varlines = ["    └─$var ($V)" for (var,V) in variables(sdata)]
   print(io, join(sort(varlines), "\n"))
@@ -140,5 +140,4 @@ end
 # ----------------
 # IMPLEMENTATIONS
 # ----------------
-include("data/spatialdata.jl")
 include("data/geodataframe.jl")
