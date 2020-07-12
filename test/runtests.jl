@@ -2,7 +2,7 @@ using GeoStatsBase
 using DelimitedFiles
 using Distances
 using Distributions
-using DataFrames
+using Tables, DataFrames
 using DensityRatioEstimation
 using LinearAlgebra
 using Plots, VisualRegressionTests

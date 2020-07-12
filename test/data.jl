@@ -25,6 +25,16 @@
     tv = values(v)
     @test npoints(v) == 3
     @test td[1:3,:z] == tv[:,:z]
+
+    # tables API
+    x, y, z = rand(100), rand(100), rand(100)
+    t = DataFrame(x=x,y=y,z=z)
+    d = georef((x=x,y=y,z=z))
+    @test Tables.istable(d) == true
+    @test Tables.rowaccess(d) == Tables.rowaccess(t)
+    @test Tables.columnaccess(d) == Tables.columnaccess(t)
+    @test Tables.rows(d) == Tables.rows(t)
+    @test Tables.columns(d) == Tables.columns(t)
   end
 
   @testset "Curve" begin
