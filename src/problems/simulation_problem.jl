@@ -33,8 +33,7 @@ with 100 realizations:
 julia> SimulationProblem(sdomain, (:porosity => Float64, :facies => Int), 100)
 ```
 """
-struct SimulationProblem{S<:Union{AbstractData,Nothing},
-                         D<:AbstractDomain,M<:AbstractMapper} <: AbstractProblem
+struct SimulationProblem{S,D,M} <: AbstractProblem
   # input fields
   sdata::S
   sdomain::D
@@ -45,9 +44,7 @@ struct SimulationProblem{S<:Union{AbstractData,Nothing},
   # state fields
   mappings::Dict{Symbol,Dict{Int,Int}}
 
-  function SimulationProblem{S,D,M}(sdata, sdomain, targetvars, nreals,
-                                    mapper) where {S<:Union{AbstractData,Nothing},
-                                                   D<:AbstractDomain,M<:AbstractMapper}
+  function SimulationProblem{S,D,M}(sdata, sdomain, targetvars, nreals, mapper) where {S,D,M}
     probvnames = Tuple(keys(targetvars))
 
     @assert !isempty(probvnames) "target variables must be specified"
@@ -70,10 +67,7 @@ const VarType      = Pair{Symbol,DataType}
 const VarOrVarType = Union{Symbol,VarType}
 
 function SimulationProblem(sdata::S, sdomain::D, vars::NTuple{N,VarOrVarType}, nreals::Int;
-                           mapper::M=NearestMapper()) where {S<:AbstractData,
-                                                             D<:AbstractDomain,
-                                                             M<:AbstractMapper,
-                                                             N}
+                           mapper::M=NearestMapper()) where {S,D,M,N}
   datavars = Dict(var => Base.nonmissingtype(V) for (var,V) in variables(sdata))
 
   # pairs with variable names and types
@@ -104,15 +98,15 @@ function SimulationProblem(sdata::S, sdomain::D, vars::NTuple{N,VarOrVarType}, n
 end
 
 SimulationProblem(sdata::S, sdomain::D, var::VarOrVarType, nreals::Int;
-                  mapper::M=NearestMapper()) where {S<:AbstractData,D<:AbstractDomain,M<:AbstractMapper} =
+                  mapper::M=NearestMapper()) where {S,D,M} =
   SimulationProblem(sdata, sdomain, (var,), nreals; mapper=mapper)
 
 SimulationProblem(sdomain::D, vars::NTuple{N,VarType}, nreals::Int;
-                  mapper::M=NearestMapper()) where {D<:AbstractDomain,M<:AbstractMapper,N} =
+                  mapper::M=NearestMapper()) where {D,M,N} =
   SimulationProblem{Nothing,D,M}(nothing, sdomain, Dict(vars), nreals, mapper)
 
 SimulationProblem(sdomain::D, var::VarType, nreals::Int;
-                  mapper::M=NearestMapper()) where {D<:AbstractDomain,M<:AbstractMapper} =
+                  mapper::M=NearestMapper()) where {D,M} =
   SimulationProblem(sdomain, (var,), nreals; mapper=mapper)
 
 """

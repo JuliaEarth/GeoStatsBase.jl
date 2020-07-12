@@ -23,9 +23,7 @@ Create an estimation problem for precipitation and CO₂:
 julia> EstimationProblem(sdata, sdomain, (:precipitation,:CO₂))
 ```
 """
-struct EstimationProblem{S<:AbstractData,
-                         D<:AbstractDomain,
-                         M<:AbstractMapper} <: AbstractProblem
+struct EstimationProblem{S,D,M} <: AbstractProblem
   # input fields
   sdata::S
   sdomain::D
@@ -35,10 +33,7 @@ struct EstimationProblem{S<:AbstractData,
   # state fields
   mappings::Dict{Symbol,Dict{Int,Int}}
 
-  function EstimationProblem{S,D,M}(sdata, sdomain, targetvars,
-                                    mapper) where {S<:AbstractData,
-                                                   D<:AbstractDomain,
-                                                   M<:AbstractMapper}
+  function EstimationProblem{S,D,M}(sdata, sdomain, targetvars, mapper) where {S,D,M}
     probvnames = Tuple(keys(targetvars))
     datavnames = Tuple(keys(variables(sdata)))
 
@@ -51,20 +46,16 @@ struct EstimationProblem{S<:AbstractData,
   end
 end
 
-function EstimationProblem(sdata::S, sdomain::D, targetvarnames::NTuple{N,Symbol};
-                           mapper::M=NearestMapper()) where {S<:AbstractData,
-                                                            D<:AbstractDomain,
-                                                            M<:AbstractMapper,
-                                                            N}
+function EstimationProblem(sdata::S, sdomain::D, targetvarnames::NTuple;
+                           mapper::M=NearestMapper()) where {S,D,M}
   # build dictionary of target variables
   datavars   = variables(sdata)
-  targetvars = Dict(var => Base.nonmissingtype(T) for (var,T) in datavars if var ∈ targetvarnames)
+  targetvars = Dict(var => nonmissingtype(T) for (var,T) in datavars if var ∈ targetvarnames)
 
   EstimationProblem{S,D,M}(sdata, sdomain, targetvars, mapper)
 end
 
-EstimationProblem(sdata::AbstractData, sdomain::AbstractDomain,
-                  targetvarname::Symbol; mapper=NearestMapper()) =
+EstimationProblem(sdata, sdomain, targetvarname::Symbol; mapper=NearestMapper()) =
   EstimationProblem(sdata, sdomain, (targetvarname,); mapper=mapper)
 
 """
