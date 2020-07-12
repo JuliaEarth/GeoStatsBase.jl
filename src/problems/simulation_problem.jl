@@ -91,7 +91,6 @@ function SimulationProblem(sdata::S, sdomain::D, vars::NTuple{N,VarOrVarType}, n
 
   targetvars = Dict(varstypes)
 
-  @assert ndims(sdata) == ndims(sdomain) "data and domain must have the same number of dimensions"
   @assert coordtype(sdata) == coordtype(sdomain) "data and domain must have the same coordinate type"
 
   SimulationProblem{S,D,M}(sdata, sdomain, targetvars, nreals, mapper)

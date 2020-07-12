@@ -1,6 +1,6 @@
 @testset "Problems" begin
-  data2D = readgeotable(joinpath(datadir,"data2D.tsv"), delim='\t', coordnames=(:x,:y))
-  data3D = readgeotable(joinpath(datadir,"data3D.tsv"), delim='\t')
+  data2D = readgeotable(joinpath(datadir,"data2D.tsv"), coordnames=(:x,:y))
+  data3D = readgeotable(joinpath(datadir,"data3D.tsv"))
   grid2D = RegularGrid(100,100)
   grid3D = RegularGrid(100,100,100)
 
@@ -35,9 +35,6 @@
     @test variables(problem3D) == Dict(:value => Float64)
     @test hasdata(problem3D)
     @test nreals(problem3D) == 100
-
-    # dimension mismatch
-    @test_throws AssertionError SimulationProblem(data3D, grid2D, :value, 100)
 
     # problems with missing data have types inferred correctly
     img = Array{Union{Float64,Missing}}(rand(10,10))
