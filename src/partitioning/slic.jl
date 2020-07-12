@@ -37,8 +37,9 @@ end
 SLICPartitioner(k::Int, m::Real; tol=1e-4, maxiter=10, vars=nothing) =
   SLICPartitioner(k, m, tol, maxiter, vars)
 
-function partition(sdata::AbstractData{T,N},
-                   partitioner::SLICPartitioner) where {N,T}
+function partition(sdata, partitioner::SLICPartitioner)
+  N = ndims(sdata)
+
   # variables used for clustering
   datavars = collect(keys(variables(sdata)))
   vars = partitioner.vars ≠ nothing ? partitioner.vars : datavars
@@ -82,15 +83,14 @@ function partition(sdata::AbstractData{T,N},
   SpatialPartition(sdata, subsets)
 end
 
-function slic_spacing(sdata::AbstractData,
-                      partitioner::SLICPartitioner)
+function slic_spacing(sdata, partitioner::SLICPartitioner)
   V = volume(boundbox(sdata))
   d = ndims(sdata)
   k = partitioner.k
   (V/k) ^ (1/d)
 end
 
-function slic_initialization(sdata::AbstractData, s::Real)
+function slic_initialization(sdata, s::Real)
   # efficient neighbor search
   searcher = NearestNeighborSearcher(sdata, 1)
 
@@ -111,7 +111,7 @@ function slic_initialization(sdata::AbstractData, s::Real)
   unique(clusters)
 end
 
-function slic_assignment!(sdata::AbstractData,
+function slic_assignment!(sdata,
                           searcher::NeighborhoodSearcher,
                           vars::AbstractVector{Symbol},
                           m::Real, s::Real,
@@ -143,7 +143,7 @@ function slic_assignment!(sdata::AbstractData,
   end
 end
 
-function slic_update!(sdata::AbstractData,
+function slic_update!(sdata,
                       c::AbstractVector{Int},
                       l::AbstractVector{Int})
   for k in 1:length(c)

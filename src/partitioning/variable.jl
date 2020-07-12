@@ -12,7 +12,7 @@ struct VariablePartitioner <: AbstractPartitioner
   var::Symbol
 end
 
-function partition(sdata::AbstractData, partitioner::VariablePartitioner)
+function partition(sdata, partitioner::VariablePartitioner)
   var = partitioner.var
   svars = variables(sdata)
 

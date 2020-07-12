@@ -19,7 +19,7 @@ end
 
 UniqueCoordsFilter() = UniqueCoordsFilter(Dict{Symbol,Function}())
 
-function filter(sdata::AbstractData, filt::UniqueCoordsFilter)
+function filter(sdata, filt::UniqueCoordsFilter)
   # retrieve filtering info
   vars = variables(sdata)
   agg  = filt.agg
