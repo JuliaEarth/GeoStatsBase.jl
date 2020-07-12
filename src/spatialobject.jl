@@ -31,13 +31,6 @@ Return the coordinate type of `object`.
 coordtype(::AbstractSpatialObject{T,N}) where {N,T} = T
 
 """
-    coordnames(object)
-
-Return the name of the coordinates in `object`.
-"""
-coordnames(object::AbstractSpatialObject{T,N}) where {N,T} = ntuple(i -> Symbol(:x,i), N)
-
-"""
     npoints(object)
 
 Return the number of points in `object`.

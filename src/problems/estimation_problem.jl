@@ -41,11 +41,8 @@ struct EstimationProblem{S<:AbstractData,
                                                    M<:AbstractMapper}
     probvnames = Tuple(keys(targetvars))
     datavnames = Tuple(keys(variables(sdata)))
-    datacnames = coordnames(sdata)
 
     @assert !isempty(probvnames) && probvnames ⊆ datavnames "target variables must be present in spatial data"
-    @assert isempty(probvnames ∩ datacnames) "target variables can't be coordinates"
-    @assert ndims(sdomain) == length(datacnames) "data and domain must have the same number of dimensions"
     @assert coordtype(sdata) == coordtype(sdomain) "data and domain must have the same coordinate type"
 
     mappings = map(sdata, sdomain, probvnames, mapper)

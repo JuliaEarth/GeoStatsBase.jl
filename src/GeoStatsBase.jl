@@ -92,7 +92,6 @@ export
   bounds,
   npoints,
   coordtype,
-  coordnames,
   coordinates,
   coordinates!,
 

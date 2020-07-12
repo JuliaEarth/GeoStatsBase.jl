@@ -11,9 +11,6 @@
     @test domain(problem3D) == grid3D
     @test variables(problem3D) == Dict(:value => Float64)
 
-    # dimension mismatch
-    @test_throws AssertionError EstimationProblem(data3D, grid2D, :value)
-
     # problems with missing data have types inferred correctly
     img = Array{Union{Float64,Missing}}(rand(10,10))
     mdata = georef(DataFrame(var=vec(img)), RegularGrid(size(img)))
