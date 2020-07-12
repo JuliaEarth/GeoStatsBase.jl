@@ -11,11 +11,9 @@ the columns `coordnames` with spatial coordinates.
 The arguments `args` and keyword arguments `kwargs` are
 forwarded to the `CSV.File` function, please check their
 documentation for more details.
-
-This function returns a [`GeoDataFrame`](@ref) object.
 """
-readgeotable(args...; coordnames=[:x,:y,:z], kwargs...) =
-  GeoDataFrame(DataFrame!(CSV.File(args...; kwargs...)), coordnames)
+readgeotable(args...; coordnames=(:x,:y,:z), kwargs...) =
+  georef(DataFrame!(CSV.File(args...; kwargs...)), coordnames)
 
 """
     split(object, fraction, [normal])

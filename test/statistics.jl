@@ -28,7 +28,7 @@
 
   @testset "Data" begin
     # load data with bias towards large values (gold mine)
-    sdata = readgeotable(joinpath(datadir,"clustered.csv"), coordnames=[:x,:y])
+    sdata = readgeotable(joinpath(datadir,"clustered.csv"), coordnames=(:x,:y))
 
     # spatial mean
     μn = mean(sdata[:Au])

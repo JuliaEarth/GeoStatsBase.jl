@@ -136,8 +136,3 @@ function Base.show(io::IO, ::MIME"text/plain", sdata::AbstractData{T,N}) where {
   varlines = ["    └─$var ($V)" for (var,V) in variables(sdata)]
   print(io, join(sort(varlines), "\n"))
 end
-
-# ----------------
-# IMPLEMENTATIONS
-# ----------------
-include("data/geodataframe.jl")

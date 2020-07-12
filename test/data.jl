@@ -15,7 +15,6 @@
 
   @testset "Curve" begin
     c = georef(DataFrame(z=1:10), Curve([j for i in 1:3, j in 1:10]))
-    @test coordnames(c) == (:x1, :x2, :x3)
     @test collect(variables(c)) == [:z => Int]
     @test npoints(c) == 10
 
@@ -29,32 +28,30 @@
     end
   end
 
-  @testset "GeoDataFrame" begin
+  @testset "GeoTable" begin
     # basic checks
     data3D = readgeotable(joinpath(datadir,"data3D.tsv"), delim='\t')
     X, z = valid(data3D, :value)
-    @test coordnames(data3D) == (:x, :y, :z)
     @test collect(variables(data3D)) == [:value => Float64]
     @test npoints(data3D) == 100
     @test size(X) == (3, 100)
     @test length(z) == 100
 
     # missing data and NaN
-    missdata = readgeotable(joinpath(datadir,"missing.tsv"), delim='\t', coordnames=[:x,:y])
+    missdata = readgeotable(joinpath(datadir,"missing.tsv"), delim='\t', coordnames=(:x,:y))
     X, z = valid(missdata, :value)
     @test size(X) == (2,1)
     @test length(z) == 1
 
     # show methods
-    rawdata = DataFrame(x=[1,2,3],y=[4,5,6])
-    sdata = GeoDataFrame(rawdata, [:x,:y])
-    @test sprint(show, sdata) == "3×2 GeoDataFrame (x and y)"
-    @test sprint(show, MIME"text/plain"(), sdata) == "3×2 GeoDataFrame (x and y)\n\n│ Row │ x     │ y     │\n│     │ Int64 │ Int64 │\n├─────┼───────┼───────┤\n│ 1   │ 1     │ 4     │\n│ 2   │ 2     │ 5     │\n│ 3   │ 3     │ 6     │"
-    @test sprint(show, MIME"text/html"(), sdata) == "3×2 GeoDataFrame (x and y)\n<table class=\"data-frame\"><thead><tr><th></th><th>x</th><th>y</th></tr><tr><th></th><th>Int64</th><th>Int64</th></tr></thead><tbody><tr><th>1</th><td>1</td><td>4</td></tr><tr><th>2</th><td>2</td><td>5</td></tr><tr><th>3</th><td>3</td><td>6</td></tr></tbody></table>"
+    df = DataFrame(x=[1,2,3],y=[4,5,6],z=[1.,2.,3.])
+    sdata = georef(df, (:x,:y))
+    @test sprint(show, sdata) == "3 SpatialData{Int64,2}"
+    @test sprint(show, MIME"text/plain"(), sdata) == "3 PointSet{Int64,2}\n  variables\n    └─z (Float64)"
 
     if visualtests
       df = DataFrame(x=[25.,50.,75.],y=[25.,75.,50.],z=[1.,0.,1.])
-      sdata = GeoDataFrame(df, [:x,:y])
+      sdata = georef(df, (:x,:y))
       @plottest plot(sdata) joinpath(datadir,"geodf.png") !istravis
     end
   end
@@ -65,7 +62,6 @@
     X, z = valid(data3D, :value)
     ps = georef((value=z,), X)
     X, z = valid(ps, :value)
-    @test coordnames(ps) == (:x1, :x2, :x3)
     @test collect(variables(ps)) == [:value => Float64]
     @test npoints(ps) == 100
     @test size(X,2) == 100
@@ -86,7 +82,6 @@
     # basic checks
     g = georef(DataFrame(value=rand(10000)), RegularGrid(100,100))
     X, z = valid(g, :value)
-    @test coordnames(g) == (:x1, :x2)
     @test collect(variables(g)) == [:value => Float64]
     @test npoints(g) == 10000
     @test size(X) == (2, 10000)
@@ -112,7 +107,6 @@
     g = georef((precip=P,), StructuredGrid(X, Y))
 
     # basic checks
-    @test coordnames(g) == (:x1, :x2)
     @test collect(variables(g)) == [:precip => Float64]
     @test npoints(g) == 221*366
 

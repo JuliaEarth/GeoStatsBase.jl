@@ -1,6 +1,6 @@
 @testset "Mappers" begin
-  data1D = readgeotable(joinpath(datadir,"data1D.tsv"), delim='\t', coordnames=[:x])
-  data2D = readgeotable(joinpath(datadir,"data2D.tsv"), delim='\t', coordnames=[:x,:y])
+  data1D = readgeotable(joinpath(datadir,"data1D.tsv"), delim='\t', coordnames=(:x,))
+  data2D = readgeotable(joinpath(datadir,"data2D.tsv"), delim='\t', coordnames=(:x,:y))
 
   @testset "NearestMapper" begin
     grid1D = RegularGrid(100)

@@ -1,5 +1,5 @@
 @testset "Problems" begin
-  data2D = readgeotable(joinpath(datadir,"data2D.tsv"), delim='\t', coordnames=[:x,:y])
+  data2D = readgeotable(joinpath(datadir,"data2D.tsv"), delim='\t', coordnames=(:x,:y))
   data3D = readgeotable(joinpath(datadir,"data3D.tsv"), delim='\t')
   grid2D = RegularGrid(100,100)
   grid3D = RegularGrid(100,100,100)
@@ -23,7 +23,7 @@
     # show methods
     problem2D = EstimationProblem(data2D, grid2D, :value)
     @test sprint(show, problem2D) == "2D EstimationProblem"
-    @test sprint(show, MIME"text/plain"(), problem2D) == "2D EstimationProblem\n  data:      3×3 GeoDataFrame (x and y)\n  domain:    100×100 RegularGrid{Float64,2}\n  variables: value (Float64)"
+    @test sprint(show, MIME"text/plain"(), problem2D) == "2D EstimationProblem\n  data:      3 SpatialData{Float64,2}\n  domain:    100×100 RegularGrid{Float64,2}\n  variables: value (Float64)"
 
     if visualtests
       @plottest plot(problem2D,ms=2) joinpath(datadir,"estimation.png") !istravis
@@ -71,7 +71,7 @@
     # show methods
     problem2D = SimulationProblem(data2D, grid2D, :value, 100)
     @test sprint(show, problem2D) == "2D SimulationProblem (conditional)"
-    @test sprint(show, MIME"text/plain"(), problem2D) == "2D SimulationProblem (conditional)\n  data:      3×3 GeoDataFrame (x and y)\n  domain:    100×100 RegularGrid{Float64,2}\n  variables: value (Float64)\n  N° reals:  100"
+    @test sprint(show, MIME"text/plain"(), problem2D) == "2D SimulationProblem (conditional)\n  data:      3 SpatialData{Float64,2}\n  domain:    100×100 RegularGrid{Float64,2}\n  variables: value (Float64)\n  N° reals:  100"
 
     if visualtests
       @plottest plot(problem2D,ms=2) joinpath(datadir,"simulation.png") !istravis

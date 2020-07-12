@@ -107,7 +107,6 @@ export
   # spatial data
   AbstractData,
   SpatialData,
-  GeoDataFrame,
   variables,
   georef,
   valid,
