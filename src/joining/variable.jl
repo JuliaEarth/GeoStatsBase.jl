@@ -11,7 +11,7 @@ spatial data with all variables included.
 struct VariableJoiner <: AbstractJoiner
 end
 
-function join(sdata₁::AbstractData, sdata₂::AbstractData, joiner::VariableJoiner)
+function join(sdata₁, sdata₂, joiner::VariableJoiner)
   @assert npoints(sdata₁) == npoints(sdata₂) "cannot join different number of points"
 
   # retrieve variable names and types

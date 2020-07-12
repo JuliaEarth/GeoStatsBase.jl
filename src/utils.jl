@@ -88,8 +88,7 @@ set with unique coordinates.
 
 See [`UniqueCoordsFilter`](@ref) for more details.
 """
-uniquecoords(sdata::AbstractData; agg=Dict()) =
-  filter(sdata, UniqueCoordsFilter(agg))
+uniquecoords(sdata; agg=Dict()) = filter(sdata, UniqueCoordsFilter(agg))
 
 """
     spheredir(θ, φ)

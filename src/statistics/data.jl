@@ -57,14 +57,14 @@ quantile(d::AbstractData, p::T) where {T<:NumberOrVec} = quantile(d, p, median_h
 
 Spatial histogram of spatial data `sdata`.
 """
-EmpiricalHistogram(d::AbstractData, v::Symbol, w::AbstractWeighter) = fit(Histogram, d[v], weight(d, w))
-EmpiricalHistogram(d::AbstractData, v::Symbol, s::Number) = EmpiricalHistogram(d, v, BlockWeighter(ntuple(i->s,ndims(d))))
-EmpiricalHistogram(d::AbstractData, v::Symbol) = EmpiricalHistogram(d, v, median_heuristic(d))
-EmpiricalHistogram(d::AbstractData, w::AbstractWeighter) = Dict(v => EmpiricalHistogram(d, v, w) for (v,V) in variables(d))
-EmpiricalHistogram(d::AbstractData, s::Number) = EmpiricalHistogram(d, BlockWeighter(ntuple(i->s,ndims(d))))
-EmpiricalHistogram(d::AbstractData) = EmpiricalHistogram(d, median_heuristic(d))
+EmpiricalHistogram(d, v::Symbol, w::AbstractWeighter) = fit(Histogram, d[v], weight(d, w))
+EmpiricalHistogram(d, v::Symbol, s::Number) = EmpiricalHistogram(d, v, BlockWeighter(ntuple(i->s,ndims(d))))
+EmpiricalHistogram(d, v::Symbol) = EmpiricalHistogram(d, v, median_heuristic(d))
+EmpiricalHistogram(d, w::AbstractWeighter) = Dict(v => EmpiricalHistogram(d, v, w) for (v,V) in variables(d))
+EmpiricalHistogram(d, s::Number) = EmpiricalHistogram(d, BlockWeighter(ntuple(i->s,ndims(d))))
+EmpiricalHistogram(d) = EmpiricalHistogram(d, median_heuristic(d))
 
-function median_heuristic(d::AbstractData)
+function median_heuristic(d)
   # select at most 1000 points at random
   npts = npoints(d)
   inds = sample(1:npts, min(npts, 1000), replace=false)
