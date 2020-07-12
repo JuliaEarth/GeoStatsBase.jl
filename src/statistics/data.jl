@@ -2,8 +2,6 @@
 # Licensed under the ISC License. See LICENSE in the project root.
 # ------------------------------------------------------------------
 
-const NumberOrVec = Union{Number,AbstractVector}
-
 mean(d, v::Symbol, w::AbstractWeighter) = mean(d[v], weight(d, w))
 mean(d, v::Symbol, s::Number) = mean(d, v, BlockWeighter(ntuple(i->s,ndims(d))))
 mean(d, v::Symbol) = mean(d, v, median_heuristic(d))
@@ -36,11 +34,11 @@ specify the variable `v` and the block side `s`.
 """
 var(d::AbstractData) = var(d, median_heuristic(d))
 
-quantile(d, v::Symbol, p::T, w::AbstractWeighter) where {T<:NumberOrVec} = quantile(d[v], weight(d, w), p)
-quantile(d, v::Symbol, p::T, s::Number) where {T<:NumberOrVec} = quantile(d, v, p, BlockWeighter(ntuple(i->s,ndims(d))))
-quantile(d, v::Symbol, p::T) where {T<:NumberOrVec} = quantile(d, v, p, median_heuristic(d))
-quantile(d, p::T, w::AbstractWeighter) where {T<:NumberOrVec} = Dict(v => quantile(d, v, p, w) for (v,V) in variables(d))
-quantile(d, p::T, s::Number) where {T<:NumberOrVec} = quantile(d, p, BlockWeighter(ntuple(i->s,ndims(d))))
+quantile(d, v::Symbol, p, w::AbstractWeighter) = quantile(d[v], weight(d, w), p)
+quantile(d, v::Symbol, p, s::Number) = quantile(d, v, p, BlockWeighter(ntuple(i->s,ndims(d))))
+quantile(d, v::Symbol, p) = quantile(d, v, p, median_heuristic(d))
+quantile(d, p, w::AbstractWeighter) = Dict(v => quantile(d, v, p, w) for (v,V) in variables(d))
+quantile(d, p::T, s::Number) where {T<:Union{Number,AbstractVector}} = quantile(d, p, BlockWeighter(ntuple(i->s,ndims(d))))
 
 """
     quantile(sdata, p)
@@ -50,7 +48,7 @@ quantile(d, p::T, s::Number) where {T<:NumberOrVec} = quantile(d, p, BlockWeight
 Spatial quantile of spatial data `sdata` at probability `p`.
 Optionally, specify the variable `v` and the block side `s`.
 """
-quantile(d::AbstractData, p::T) where {T<:NumberOrVec} = quantile(d, p, median_heuristic(d))
+quantile(d::AbstractData, p) = quantile(d, p, median_heuristic(d))
 
 """
     EmpiricalHistogram(sdata)
