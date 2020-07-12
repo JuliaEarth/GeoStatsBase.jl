@@ -13,6 +13,9 @@ struct SpatialData{T,N,𝒟,𝒯} <: AbstractData{T,N}
 end
 
 function SpatialData(domain, table)
+  nd = npoints(domain)
+  nt = length(Tables.rows(table))
+  @assert nd == nt "number of rows ≠ number of points"
   T = coordtype(domain)
   N = ndims(domain)
   𝒟 = typeof(domain)
