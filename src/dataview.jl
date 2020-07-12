@@ -28,9 +28,7 @@ coordinates!(buff::AbstractVector, dv::DataView, ind::Int) =
   coordinates!(buff, dv.data, dv.inds[ind])
 
 function variables(dv::DataView)
-  vars = [(var,V) for (var,V) in variables(dv.data) if var ∈ dv.vars]
-  ns, ts = first.(vars), last.(vars)
-  nt = NamedTuple{Tuple(ns)}(ts)
+  nt = (; [(var,V) for (var,V) in variables(dv.data) if var ∈ dv.vars]...)
   Variables{typeof(nt)}(nt)
 end
 

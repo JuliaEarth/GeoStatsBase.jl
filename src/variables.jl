@@ -23,8 +23,7 @@ end
 
 function Variables(table)
   s = Tables.schema(table)
-  ns, ts = s.names, s.types
-  nt = NamedTuple{Tuple(ns)}(ts)
+  nt = (; zip(s.names, s.types)...)
   Variables{typeof(nt)}(nt)
 end
 
