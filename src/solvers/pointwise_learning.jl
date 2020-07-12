@@ -36,9 +36,7 @@ function solve(problem::LearningProblem, solver::PointwiseLearn)
   lmodel = learn(ptask, sdata, model)
 
   # apply model to target data
-  table = perform(ptask, tdata, lmodel)
-
-  georef(table, domain(tdata))
+  perform(ptask, tdata, lmodel)
 end
 
 # ------------

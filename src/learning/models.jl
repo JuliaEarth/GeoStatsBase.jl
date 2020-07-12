@@ -45,11 +45,11 @@ function perform(task::AbstractLearningTask, sdata::AbstractData, lmodel::Learne
 
   # post-process result
   var = outputvars(task)[1]
-  if issupervised(task)
-    result = isprobabilistic(model) ? mode.(ŷ) : ŷ
+  val = if issupervised(task)
+    isprobabilistic(model) ? mode.(ŷ) : ŷ
   else
-    result = ŷ
+    ŷ
   end
 
-  DataFrame([var=>result])
+  georef(DataFrame([var=>val]), domain(sdata))
 end
