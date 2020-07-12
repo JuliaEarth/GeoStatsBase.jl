@@ -24,7 +24,7 @@ is performed along a `normal` direction. The default
 direction is aligned with the first spatial dimension
 of the object.
 """
-function Base.split(object, fraction::Real, normal=nothing)
+function split(object, fraction::Real, normal=nothing)
   if isnothing(normal)
     partition(object, FractionPartitioner(fraction))
   else

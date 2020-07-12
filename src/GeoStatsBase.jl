@@ -28,7 +28,7 @@ using Parameters
 
 import Tables
 import MLJModelInterface
-import Base: join, filter, map, error
+import Base: join, filter, map, split, error
 import StatsBase: fit, sample, varcorrection
 import Statistics: mean, var, quantile
 import Distributions: quantile, cdf
