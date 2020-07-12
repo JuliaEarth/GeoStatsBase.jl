@@ -1,6 +1,6 @@
 @testset "Data" begin
   @testset "Basics" begin
-    d = georef(DataFrame(z=rand(3)), PointSet(rand(2,3)))
+    d = georef((z=rand(3),), rand(2,3))
     v = view(d, [1,3])
 
     d[1,:z] = 1.
@@ -14,14 +14,14 @@
   end
 
   @testset "Curve" begin
-    c = georef(DataFrame(z=1:10), Curve([j for i in 1:3, j in 1:10]))
+    c = georef((z=1:10,), Curve([j for i in 1:3, j in 1:10]))
     @test collect(variables(c)) == [:z => Int]
     @test npoints(c) == 10
 
     if visualtests
-      c1 = georef(DataFrame(z=1:10), Curve([j for i in 1:1, j in 1:10]))
-      c2 = georef(DataFrame(z=1:10), Curve([j for i in 1:2, j in 1:10]))
-      c3 = georef(DataFrame(z=1:10), Curve([j for i in 1:3, j in 1:10]))
+      c1 = georef((z=1:10,), Curve([j for i in 1:1, j in 1:10]))
+      c2 = georef((z=1:10,), Curve([j for i in 1:2, j in 1:10]))
+      c3 = georef((z=1:10,), Curve([j for i in 1:3, j in 1:10]))
       @plottest plot(c1,ms=4) joinpath(datadir,"curve-data1D.png") !istravis
       @plottest plot(c2,ms=4) joinpath(datadir,"curve-data2D.png") !istravis
       @plottest plot(c3,ms=4) joinpath(datadir,"curve-data3D.png") !istravis
@@ -30,7 +30,7 @@
 
   @testset "GeoTable" begin
     # basic checks
-    data3D = readgeotable(joinpath(datadir,"data3D.tsv"), delim='\t')
+    data3D = readgeotable(joinpath(datadir,"data3D.tsv"))
     X, z = valid(data3D, :value)
     @test collect(variables(data3D)) == [:value => Float64]
     @test npoints(data3D) == 100
@@ -38,7 +38,7 @@
     @test length(z) == 100
 
     # missing data and NaN
-    missdata = readgeotable(joinpath(datadir,"missing.tsv"), delim='\t', coordnames=(:x,:y))
+    missdata = readgeotable(joinpath(datadir,"missing.tsv"), coordnames=(:x,:y))
     X, z = valid(missdata, :value)
     @test size(X) == (2,1)
     @test length(z) == 1
@@ -73,14 +73,14 @@
     @test sprint(show, MIME"text/plain"(), ps) == "3 PointSet{Float64,2}\n  variables\n    └─z (Int64)"
 
     if visualtests
-      sdata = georef(DataFrame(z=[1.,0.,1.]), PointSet([25. 50. 75.; 25. 75. 50.]))
+      sdata = georef((z=[1.,0.,1.],), [25. 50. 75.; 25. 75. 50.])
       @plottest plot(sdata) joinpath(datadir,"pset-data.png") !istravis
     end
   end
 
   @testset "RegularGrid" begin
     # basic checks
-    g = georef(DataFrame(value=rand(10000)), RegularGrid(100,100))
+    g = georef((value=rand(100,100),))
     X, z = valid(g, :value)
     @test collect(variables(g)) == [:value => Float64]
     @test npoints(g) == 10000
@@ -93,9 +93,9 @@
     @test sprint(show, MIME"text/plain"(), g) == "2×2 RegularGrid{Float64,2}\n  variables\n    └─z (Int64)"
 
     if visualtests
-      sdata = georef(DataFrame(z=vec([1 2; 3 4])), RegularGrid(2,2))
+      sdata = georef((z=[1 2; 3 4],))
       @plottest plot(sdata) joinpath(datadir,"grid2D-data1.png") !istravis
-      sdata = georef(DataFrame(z=vec([1 2; 3 4])), RegularGrid((2,2), (-10.,-10.), (10.,10.)))
+      sdata = georef((z=[1 2; 3 4],), (-10.,-10.), (10.,10.))
       @plottest plot(sdata) joinpath(datadir,"grid2D-data2.png") !istravis
     end
   end

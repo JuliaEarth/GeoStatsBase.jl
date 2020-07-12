@@ -13,7 +13,7 @@
 
     # problems with missing data have types inferred correctly
     img = Array{Union{Float64,Missing}}(rand(10,10))
-    mdata = georef(DataFrame(var=vec(img)), RegularGrid(size(img)))
+    mdata = georef((var=img,))
     problem = EstimationProblem(mdata, grid2D, :var)
     @test variables(problem) == Dict(:var => Float64)
 
@@ -38,7 +38,7 @@
 
     # problems with missing data have types inferred correctly
     img = Array{Union{Float64,Missing}}(rand(10,10))
-    mdata = georef(DataFrame(var=vec(img)), RegularGrid(size(img)))
+    mdata = georef((var=img,))
     problem = SimulationProblem(mdata, grid2D, :var, 3)
     @test variables(problem) == Dict(:var => Float64)
 
@@ -74,8 +74,8 @@
 
   @testset "Learning" begin
     Random.seed!(123)
-    sdata = georef(DataFrame(x=rand(10),y=rand(10),z=rand(10)), PointSet(10rand(2,10)))
-    tdata = georef(DataFrame(x=rand(100)), RegularGrid(10,10))
+    sdata = georef((x=rand(10),y=rand(10),z=rand(10)), 10rand(2,10))
+    tdata = georef((x=rand(10,10),))
     rtask = RegressionTask(:x, :y)
     ctask = ClusteringTask(:x, :c)
 
