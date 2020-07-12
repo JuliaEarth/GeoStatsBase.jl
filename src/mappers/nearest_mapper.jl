@@ -10,8 +10,10 @@ point in the domain.
 """
 struct NearestMapper <: AbstractMapper end
 
-function map(sdata::AbstractData{T,N}, sdomain::AbstractDomain{T,N},
-             targetvars::NTuple{K,Symbol}, mapper::NearestMapper) where {N,T,K}
+function map(sdata, sdomain, targetvars, mapper::NearestMapper)
+  N = ndims(sdata)
+  T = coordtype(sdata)
+
   @assert targetvars ⊆ keys(variables(sdata)) "target variables must be present in spatial data"
 
   # dictionary with mappings

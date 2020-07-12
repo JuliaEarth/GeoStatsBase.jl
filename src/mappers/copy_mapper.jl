@@ -16,8 +16,7 @@ end
 CopyMapper(dest) = CopyMapper(nothing, dest)
 CopyMapper() = CopyMapper(nothing, nothing)
 
-function map(sdata::AbstractData{T,N}, sdomain::AbstractDomain{T,N},
-             targetvars::NTuple{K,Symbol}, mapper::CopyMapper) where {N,T,K}
+function map(sdata, sdomain, targetvars, mapper::CopyMapper)
   @assert targetvars ⊆ keys(variables(sdata)) "target variables must be present in spatial data"
 
   # dictionary with mappings
