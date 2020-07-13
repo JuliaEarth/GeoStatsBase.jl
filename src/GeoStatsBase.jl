@@ -181,7 +181,6 @@ export
   LeaveBallOut,
   CrossValidation,
   BlockCrossValidation,
-  BallSampleValidation,
   WeightedHoldOut,
   WeightedCrossValidation,
   WeightedBootstrap,

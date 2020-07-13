@@ -23,7 +23,6 @@ function error end
 include("errors/leave_ball_out.jl")
 include("errors/cross_validation.jl")
 include("errors/block_cross_validation.jl")
-include("errors/ball_sample_validation.jl")
 include("errors/weighted_hold_out.jl")
 include("errors/weighted_cross_validation.jl")
 include("errors/weighted_bootstrap.jl")
