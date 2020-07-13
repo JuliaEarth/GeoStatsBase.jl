@@ -10,6 +10,7 @@
     # dummy classifier → 0.5 misclassification rate
     for m in [CrossValidation(10),
               BlockCrossValidation(0.1),
+              LeaveBallOut(0.1),
               DensityRatioValidation(10)]
       e = error(s, p, m)
       @test isapprox(e[:y], 0.5, atol=0.05)
