@@ -83,9 +83,6 @@ include("plotrecipes.jl")
 include("utils.jl")
 
 export
-  # default table
-  DataFrame,
-
   # spatial object
   AbstractSpatialObject,
   domain,
