@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------
 # Licensed under the ISC License. See LICENSE in the project root.
 # ------------------------------------------------------------------
-
+# TODO: review
 """
     CookieCutter(master, others)
 
@@ -26,7 +26,7 @@ julia> solver   = CookieCutter(fsolver, [0 => psolver₀, 1 => psolver₁])
 """
 struct CookieCutter <: AbstractSimulationSolver
   master::AbstractSimulationSolver
-  others::Vector{Pair{Number,AbstractSimulationSolver}}
+  others::Dict{Number,AbstractSimulationSolver}
 end
 
 function solve(problem::SimulationProblem, solver::CookieCutter)
@@ -35,7 +35,7 @@ function solve(problem::SimulationProblem, solver::CookieCutter)
   pdomain = domain(problem)
   pvars   = variables(problem)
   preals  = nreals(problem)
-  pmaps   = datamap(problem)
+  pmapper = mapper(problem)
 
   # master variable
   mvars = variables(solver.master)
@@ -48,78 +48,37 @@ function solve(problem::SimulationProblem, solver::CookieCutter)
   ovars = Tuple(var => V for (var, V) in pvars if var ≠ mvar)
   @assert length(ovars) > 0 "cookie-cutter requires problem with more than one target variable"
 
-  # copy mappings for master variable
-  mmapper = CopyMapper(collect(values(pmaps[mvar])), collect(keys(pmaps[mvar])))
-
-  # define master problem
+  # define master and others problem
   if hasdata(problem)
-    mproblem = SimulationProblem(pdata, pdomain, mvar, preals, mapper=mmapper)
+    mproblem = SimulationProblem(pdata, pdomain, mvar, preals, mapper=pmapper)
+    oproblem = SimulationProblem(pdata, pdomain, first.(ovars), preals, mapper=pmapper)
   else
-    mproblem = SimulationProblem(pdomain, mvar => mtype, preals, mapper=mmapper)
+    mproblem = SimulationProblem(pdomain, mvar => mtype, preals, mapper=pmapper)
+    oproblem = SimulationProblem(pdomain, ovars, preals, mapper=pmapper)
   end
 
-  # solve master problem
-  msolution = solve(mproblem, solver.master)
+  # realizations of master variable
+  msol = solve(mproblem, solver.master)
+  mreals = msol[mvar]
 
-  # pre-allocate memory for result
-  realizations = msolution.realizations
-  for (var, V) in ovars
-    reals = map(1:preals) do i
-      # find inactive locations in master variable
-      inactive = findall(isnan, realizations[mvar][i])
-
-      # copy inactive locations to other variable
-      real = Vector{V}(undef, npoints(pdomain))
-      view(real, inactive) .= V(NaN)
-
-      real
-    end
-    realizations[var] = reals
-  end
-
-  # find mappings for all other variables
-  omaps = merge([pmaps[var] for var in first.(ovars)]...)
+  # pre-allocate memory for realizations
+  reals = Dict(var => [Vector{V}(undef, npoints(pdomain)) for i in 1:preals] for (var,V) in ovars)
 
   # solve other problems
-  for (i, mreal) in enumerate(realizations[mvar])
-    for (mval, osolver) in solver.others
-      # lookup indices with given master value
-      inds = findall(isequal(mval), mreal)
+  for (mval, osolver) in solver.others
+    osol = solve(oproblem, osolver)
 
-      if !isempty(inds)
-        # define subdomain
-        odomain = view(pdomain, inds)
-
-        # find mappings for subdomain
-        datlocs = Vector{Int}()
-        domlocs = Vector{Int}()
-        for (j, ind) in enumerate(inds)
-          if ind ∈ keys(omaps)
-            push!(datlocs, omaps[ind])
-            push!(domlocs, j)
-          end
-        end
-
-        # copy hard data if needed
-        omapper = CopyMapper(datlocs, domlocs)
-
-        # define subproblem
-        if hasdata(problem)
-          oproblem = SimulationProblem(pdata, odomain, first.(ovars), 1, mapper=omapper)
-        else
-          oproblem = SimulationProblem(odomain, ovars, 1, mapper=omapper)
-        end
-
-        # solve subproblem
-        osolution = solve(oproblem, osolver)
-
-        # save result and continue
-        for (var, V) in ovars
-          view(realizations[var][i], inds) .= osolution.realizations[var][1]
-        end
+    # cookie-cutter step
+    for (var, V) in ovars
+      vreals = osol[var]
+      for i in 1:preals
+        mask = mreals[i] .== mval
+        reals[var][i][mask] .= vreals[i][mask]
       end
     end
   end
+
+  realizations = merge(reals, Dict(mvar => mreals))
 
   SimulationSolution(pdomain, realizations)
 end
