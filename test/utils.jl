@@ -23,10 +23,36 @@
     @test cl[2] < cr[2]
   end
 
-  # TODO: test groupby
-  # TODO: test boundbox
-  # TODO: test join
-  # TODO: test sample
+  @testset "groupby" begin
+    d = georef((z=[1,2,3],x=[4,5,6]), rand(2,3))
+    g = groupby(d, :z)
+    @test all(npoints.(g) .== 1)
+    for i in 1:3
+      @test collect(g[i][1]) ∈ [[1,4],[2,5],[3,6]]
+    end
+  end
+
+  @testset "boundbox" begin
+    d = RegularGrid((10,10), (1.,1.), (1.,1.))
+    b = boundbox(d)
+    @test lowerleft(b) == [1.,1.]
+    @test upperright(b) == [10.,10.]
+  end
+
+  @testset "join" begin
+    coords = rand(2,3)
+    d1 = georef((x=[1,2,3],), coords)
+    d2 = georef((y=[4.,5.,6.],), coords)
+    d = join(d1, d2)
+    vars = collect(variables(d))
+    @test vars[1] == (:x => Int)
+    @test vars[2] == (:y => Float64)
+    @test d[:x] == [1,2,3]
+    @test d[:y] == [4.,5.,6.]
+  end
+
+  @testset "sample" begin
+  end
 
   @testset "uniquecoords" begin
     X = rand(3, 10)
