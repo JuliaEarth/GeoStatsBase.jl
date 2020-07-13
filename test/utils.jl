@@ -52,6 +52,11 @@
   end
 
   @testset "sample" begin
+    d = georef((z=rand(10,10),))
+    s = sample(d, 50)
+    @test npoints(s) == 50
+    s = sample(d, 50, rand([1,2], 100))
+    @test npoints(s) == 50
   end
 
   @testset "uniquecoords" begin
