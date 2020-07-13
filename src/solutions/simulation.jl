@@ -7,86 +7,49 @@
 
 A solution to a spatial simulation problem.
 """
-struct SimulationSolution{𝒟<:AbstractDomain}
+struct SimulationSolution{𝒟,ℛ}
   domain::𝒟
-  realizations::Dict{Symbol,Vector{<:AbstractVector}}
+  realizations::ℛ
   nreals::Int
 
-  function SimulationSolution{𝒟}(domain, realizations) where {𝒟}
+  function SimulationSolution{𝒟,ℛ}(domain, realizations) where {𝒟,ℛ}
     n = [length(r) for (var, r) in realizations]
     @assert length(unique(n)) == 1 "number of realizations must be unique"
     new(domain, realizations, n[1])
   end
 end
 
-SimulationSolution(domain, realizations) =
-  SimulationSolution{typeof(domain)}(domain, realizations)
+SimulationSolution(domain::𝒟, realizations::ℛ) where {𝒟,ℛ} =
+  SimulationSolution{𝒟,ℛ}(domain, realizations)
 
-"""
-    getindex(solution, var)
+# -------------
+# VARIABLE API
+# -------------
 
-Return simulation solution for specific variable `var`
-as a vector of realizations.
-"""
-function Base.getindex(solution::SimulationSolution, var::Symbol)
+Base.getindex(solution::SimulationSolution, var::Symbol) =
   solution.realizations[var]
-end
 
-function Base.getindex(solution::SimulationSolution{<:RegularGrid}, var::Symbol)
-  sz = size(solution.domain)
-  [reshape(real, sz) for real in solution.realizations[var]]
-end
-
-#---------------
+# -------------
 # ITERATOR API
-#---------------
+# -------------
 
-"""
-    iterate(solution, state=1)
-
-Iterate over realizations in simulation `solution`.
-"""
 Base.iterate(solution::SimulationSolution, state=1) =
   state > solution.nreals ? nothing : (solution[state], state + 1)
-
-"""
-    length(solution)
-
-Return the number of realizations in simulation `solution`.
-"""
 Base.length(solution::SimulationSolution) = solution.nreals
 
-#----------------
+# --------------
 # INDEXABLE API
-#----------------
+# --------------
 
-"""
-    getindex(solution, ind)
-
-Return the `ind`-th realization of simulation `solution`.
-"""
 function Base.getindex(solution::SimulationSolution, ind::Int)
   sdomain = solution.domain
   sreals  = solution.realizations
   idata   = DataFrame([var => reals[ind] for (var, reals) in sreals])
   georef(idata, sdomain)
 end
-
 Base.getindex(solution::SimulationSolution, inds::AbstractVector{Int}) =
   [getindex(solution, ind) for ind in inds]
-
-"""
-    firstindex(solution)
-
-Return the first index of simulation `solution`.
-"""
 Base.firstindex(solution::SimulationSolution) = 1
-
-"""
-    lastindex(solution)
-
-Return the last index of simulation `solution`.
-"""
 Base.lastindex(solution::SimulationSolution) = length(solution)
 
 # ------------

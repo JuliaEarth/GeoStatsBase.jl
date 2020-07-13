@@ -1,6 +1,6 @@
 @testset "Solvers" begin
   @testset "CookieCutter" begin
-    problem = SimulationProblem(RegularGrid{Float64}(100,100), (:facies => Int, :property => Float64), 3)
+    problem = SimulationProblem(RegularGrid(100,100), (:facies => Int, :property => Float64), 3)
     solver = CookieCutter(DummySimSolver(:facies => NamedTuple()),
                           [0 => DummySimSolver(), 1 => DummySimSolver()])
 
@@ -16,8 +16,7 @@
   end
 
   @testset "SeqSim" begin
-    sdomain = RegularGrid{Float64}(100, 100)
-    problem = SimulationProblem(sdomain, :var => Float64, 3)
+    problem = SimulationProblem(RegularGrid(100,100), :var => Float64, 3)
     solver = SeqSim(:var => (estimator=DummyEstimator(),
                              neighborhood=BallNeighborhood{2}(10.),
                              minneighbors=1, maxneighbors=10,
