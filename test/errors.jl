@@ -13,7 +13,7 @@
               LeaveBallOut(0.1),
               DensityRatioValidation(10)]
       e = error(s, p, m)
-      @test isapprox(e[:y], 0.5, atol=0.05)
+      @test isapprox(e[:y], 0.5, atol=0.06)
     end
   end
 end
