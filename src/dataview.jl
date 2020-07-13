@@ -61,9 +61,6 @@ Base.setindex!(dv::DataView, vals, var::Symbol) =
 Base.getindex(dv::DataView, ind::Int) =
   getindex(dv.data, dv.inds[ind], dv.vars)
 
-Base.getindex(dv::DataView, inds::AbstractVector{Int}) =
-  getindex(dv.data, dv.inds[inds], dv.vars)
-
 # ------------
 # IO methods
 # ------------

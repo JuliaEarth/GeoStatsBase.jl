@@ -68,8 +68,6 @@ Base.eltype(sdata::AbstractData) = typeof(sdata[1])
 
 Base.getindex(sdata::AbstractData, ind::Int) =
   getindex(sdata.table, ind, :)
-Base.getindex(sdata::AbstractData, inds::AbstractVector{Int}) =
-  getindex(sdata.table, inds, :)
 Base.firstindex(sdata::AbstractData) = 1
 Base.lastindex(sdata::AbstractData) = npoints(sdata)
 

@@ -26,6 +26,19 @@
     @test npoints(v) == 3
     @test td[1:3,:z] == tv[:,:z]
 
+    # indexable API
+    d = georef((x=[1,2,3],y=[4,5,6]), rand(2,3))
+    v = view(d, 2:3)
+    @test collect(d[1]) == [1,4]
+    @test collect(d[2]) == [2,5]
+    @test collect(d[3]) == [3,6]
+    @test collect(v[1]) == collect(d[2])
+    @test collect(v[2]) == collect(d[3])
+    @test firstindex(d) == 1
+    @test firstindex(v) == 1
+    @test lastindex(d) == 3
+    @test lastindex(v) == 2
+
     # tables API
     x, y, z = rand(100), rand(100), rand(100)
     t = DataFrame(x=x,y=y,z=z)
