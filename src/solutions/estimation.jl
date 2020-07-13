@@ -7,31 +7,18 @@
 
 A solution to a spatial estimation problem.
 """
-struct EstimationSolution{𝒟<:AbstractDomain}
+struct EstimationSolution{𝒟,ℳ,𝒱}
   domain::𝒟
-  mean::Dict{Symbol,<:AbstractVector}
-  variance::Dict{Symbol,<:AbstractVector}
+  mean::ℳ
+  variance::𝒱
 end
 
-EstimationSolution(domain, mean, variance) =
-  EstimationSolution{typeof(domain)}(domain, mean, variance)
+# -------------
+# VARIABLE API
+# -------------
 
-"""
-    getindex(solution, var)
-
-Return estimation solution for specific variable `var`
-as a named tuple (mean=m, variance=v).
-"""
-function Base.getindex(solution::EstimationSolution, var::Symbol)
+Base.getindex(solution::EstimationSolution, var::Symbol) =
   (mean=solution.mean[var], variance=solution.variance[var])
-end
-
-function Base.getindex(solution::EstimationSolution{<:RegularGrid}, var::Symbol)
-  sz = size(solution.domain)
-  M = reshape(solution.mean[var], sz)
-  V = reshape(solution.variance[var], sz)
-  (mean=M, variance=V)
-end
 
 # ------------
 # IO methods
