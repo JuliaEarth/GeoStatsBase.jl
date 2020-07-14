@@ -30,7 +30,7 @@ function sample(object, sampler::BallSampler)
   msize  = sampler.maxsize ≠ nothing ? sampler.maxsize : Inf
 
   # neighborhood search method with ball
-  ball = BallNeighborhood{N}(radius, metric)
+  ball = BallNeighborhood(radius, metric)
   searcher = NeighborhoodSearcher(object, ball)
 
   # pre-allocate memory for coordinates

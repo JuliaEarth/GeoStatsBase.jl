@@ -38,8 +38,6 @@ SLICPartitioner(k::Int, m::Real; tol=1e-4, maxiter=10, vars=nothing) =
   SLICPartitioner(k, m, tol, maxiter, vars)
 
 function partition(sdata, partitioner::SLICPartitioner)
-  N = ndims(sdata)
-
   # variables used for clustering
   datavars = collect(keys(variables(sdata)))
   vars = partitioner.vars ≠ nothing ? partitioner.vars : datavars
@@ -56,7 +54,7 @@ function partition(sdata, partitioner::SLICPartitioner)
   c = slic_initialization(sdata, s)
 
   # ball neighborhood search
-  searcher = NeighborhoodSearcher(sdata, BallNeighborhood{N}(s))
+  searcher = NeighborhoodSearcher(sdata, BallNeighborhood(s))
 
   # pre-allocate memory for label and distance
   l = fill(0, npoints(sdata))

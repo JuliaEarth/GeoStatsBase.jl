@@ -3,20 +3,22 @@
 # ------------------------------------------------------------------
 
 """
-    BallNeighborhood{N}(radius, metric=Euclidean())
+    BallNeighborhood(radius, metric=Euclidean())
 
-A `N`-dimensional ball neighborhood with `radius` and `metric`.
+A ball neighborhood with `radius` and `metric`.
 """
-struct BallNeighborhood{T,N,M} <: AbstractNeighborhood{T,N}
+struct BallNeighborhood{T,M} <: AbstractNeighborhood
   radius::T
   metric::M
+
+  function BallNeighborhood{T,M}(radius, metric) where {T,M}
+    @assert radius > 0 "radius must be positive"
+    new(radius, metric)
+  end
 end
 
-function BallNeighborhood{N}(radius::T, metric::M=Euclidean()) where {M,N,T}
-  @assert radius > 0 "radius must be positive"
-  @assert N > 0 "number of dimensions must be positive"
-  BallNeighborhood{T,N,M}(radius, metric)
-end
+BallNeighborhood(radius::T, metric::M=Euclidean()) where {T,M} =
+  BallNeighborhood{T,M}(radius, metric)
 
 """
     radius(ball)
@@ -35,24 +37,17 @@ metric(ball::BallNeighborhood) = ball.metric
 isneighbor(ball::BallNeighborhood, xₒ::AbstractVector, x::AbstractVector) =
   evaluate(ball.metric, xₒ, x) ≤ ball.radius
 
-function volume(ball::BallNeighborhood{T,N,Euclidean}) where {N,T}
-  # https://en.wikipedia.org/wiki/Volume_of_an_n-ball
-  R = ball.radius
-  (π^(N/2) / gamma(N/2 + 1)) * R^N
-end
-
 # ------------
 # IO methods
 # ------------
-function Base.show(io::IO, ball::BallNeighborhood{T,N,M}) where {M,N,T}
+function Base.show(io::IO, ball::BallNeighborhood)
   r = ball.radius
   d = ball.metric
-  print(io, "$(N)D BallNeighborhood($r, $d)")
+  print(io, "BallNeighborhood($r, $d)")
 end
 
-function Base.show(io::IO, ::MIME"text/plain",
-                   ball::BallNeighborhood{T,N,M}) where {M,N,T}
-  println(io, "$(N)D BallNeighborhood")
+function Base.show(io::IO, ::MIME"text/plain", ball::BallNeighborhood)
+  println(io, "BallNeighborhood")
   println(io, "  radius: ", ball.radius)
   print(  io, "  metric: ", ball.metric)
 end

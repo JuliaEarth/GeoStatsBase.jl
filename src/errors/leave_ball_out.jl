@@ -9,10 +9,9 @@ Leave-`ball`-out (a.k.a. spatial leave-one-out) validation.
 Optionally, specify `loss` function from `LossFunctions.jl`
 for some of the variables.
 
-    LeaveBallOut(radius; ndims=3, loss=Dict())
+    LeaveBallOut(radius; loss=Dict())
 
-By default, use Euclidean ball of given `radius` in space
-with `ndims` dimensions.
+By default, use Euclidean ball of given `radius` in space.
 
 ## References
 
@@ -28,8 +27,8 @@ end
 LeaveBallOut(ball::BallNeighborhood; loss=Dict()) =
   LeaveBallOut{typeof(ball)}(ball, loss)
 
-LeaveBallOut(radius::Real; ndims=3, loss=Dict()) =
-  LeaveBallOut(BallNeighborhood{ndims}(radius), loss=loss)
+LeaveBallOut(radius::Number; loss=Dict()) =
+  LeaveBallOut(BallNeighborhood(radius), loss=loss)
 
 function error(solver::AbstractLearningSolver,
                problem::LearningProblem,
