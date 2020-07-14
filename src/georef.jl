@@ -27,7 +27,7 @@ function georef(table, coordnames::NTuple)
   @assert !(keys(cols) ⊆ coordnames) "table must have at least one variable"
   vars = filter(c->c[1] ∉ coordnames, pairs(cols))
   coords = reduce(hcat, [cols[cname] for cname in coordnames])
-  georef(DataFrame(vars), PointSet(coords'))
+  georef(DataFrame(vars), coords')
 end
 
 """
@@ -46,16 +46,13 @@ Georefrence named `tuple` on `PointSet(coords)`.
 georef(tuple::NamedTuple, coords::AbstractMatrix) = georef(tuple, PointSet(coords))
 
 """
-    georef(tuple, origin, spacing)
+    georef(tuple; origin=(0.,0.,...), spacing=(1.,1.,...))
 
 Georeference named `tuple` on `RegularGrid(size(tuple[1]), origin, spacing)`.
 """
-georef(tuple, origin, spacing) = georef(tuple, RegularGrid(size(tuple[1]), origin, spacing))
+georef(tuple;
+       origin=ntuple(i->0., ndims(tuple[1])),
+       spacing=ntuple(i->1., ndims(tuple[1]))) = georef(tuple, origin, spacing)
 
-"""
-    georef(tuple)
-
-Georeference named `tuple` on `RegularGrid` with `origin=(0.,0.,...)` and
-with `spacing=(1.,1.,...)`.
-"""
-georef(tuple) = georef(tuple, ntuple(i->0., ndims(tuple[1])), ntuple(i->1., ndims(tuple[1])))
+georef(tuple, origin, spacing) =
+  georef(tuple, RegularGrid(size(tuple[1]), origin, spacing))
