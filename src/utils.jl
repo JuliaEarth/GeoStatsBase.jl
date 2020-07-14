@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------
 
 """
-    readgeotable(args; coordnames=[:x,:y,:z], kwargs)
+    readgeotable(args; coordnames=(:x,:y,:z), kwargs)
 
 Read data from disk using `CSV.File`, optionally specifying
 the columns `coordnames` with spatial coordinates.
