@@ -43,11 +43,17 @@
     x, y, z = rand(100), rand(100), rand(100)
     t = DataFrame(x=x,y=y,z=z)
     d = georef((x=x,y=y,z=z))
+    v = view(d, 1:3)
     @test Tables.istable(d) == true
     @test Tables.rowaccess(d) == Tables.rowaccess(t)
     @test Tables.columnaccess(d) == Tables.columnaccess(t)
     @test Tables.rows(d) == Tables.rows(t)
     @test Tables.columns(d) == Tables.columns(t)
+    @test Tables.istable(v) == true
+    @test Tables.rowaccess(v) == Tables.rowaccess(d)
+    @test Tables.columnaccess(v) == Tables.columnaccess(d)
+    @test Tables.rows(v) == Tables.rows(t[1:3,:])
+    @test Tables.columns(v) == Tables.columns(t[1:3,:])
   end
 
   @testset "Curve" begin
