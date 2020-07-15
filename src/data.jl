@@ -74,6 +74,7 @@ Base.lastindex(sdata::AbstractData) = npoints(sdata)
 # -----------
 # TABLES API
 # -----------
+
 Tables.istable(::Type{<:AbstractData}) = true
 Tables.rowaccess(sdata::AbstractData) = Tables.rowaccess(sdata.table)
 Tables.columnaccess(sdata::AbstractData) = Tables.columnaccess(sdata.table)
