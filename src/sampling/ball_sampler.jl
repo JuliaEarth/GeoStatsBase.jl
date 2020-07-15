@@ -13,13 +13,13 @@ a ball neighborhood of given `radius`.
 * `metric`  - Metric for the ball (default to `Euclidean()`)
 * `maxsize` - Maximum size of the resulting sample (default to none)
 """
-struct BallSampler{T,M<:Metric} <: AbstractSampler
+struct BallSampler{T,M} <: AbstractSampler
   radius::T
   metric::M
   maxsize::Union{Int,Nothing}
 end
 
-BallSampler(radius::Real; metric=Euclidean(), maxsize=nothing) =
+BallSampler(radius; metric=Euclidean(), maxsize=nothing) =
   BallSampler(radius, metric, maxsize)
 
 function sample(object, sampler::BallSampler)

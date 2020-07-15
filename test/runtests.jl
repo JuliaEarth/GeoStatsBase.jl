@@ -38,6 +38,7 @@ testfiles = [
   "collections.jl",
   "partitioning.jl",
   "weighting.jl",
+  "sampling.jl",
   "covering.jl",
   "filtering.jl",
   "paths.jl",
