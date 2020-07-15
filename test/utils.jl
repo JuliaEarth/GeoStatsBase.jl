@@ -60,12 +60,12 @@
   end
 
   @testset "uniquecoords" begin
-    X = rand(3, 10)
-    z = rand(10)
+    X = [i*j for i in 1:2, j in 1:100_000]
+    z = rand(100_000)
     d = georef((z=[z;z],), [X X])
     u = uniquecoords(d)
     U = coordinates(u)
-    @test npoints(u) == 10
+    @test npoints(u) == 100_000
     @test Set(eachcol(U)) == Set(eachcol(X))
   end
 
