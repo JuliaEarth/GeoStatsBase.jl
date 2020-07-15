@@ -17,7 +17,7 @@
   r = range(-1,stop=1,length=100)
   μ = [x^2 + y^2 for x in r, y in r]
   ϵ = 0.1rand(100,100)
-  d = georef(DataFrame(z=vec(μ+ϵ)), RegularGrid(100,100))
+  d = georef((z=μ+ϵ,))
   d̄ = detrend!(d, :z, degree=2)
   z̄ = reshape(d̄[:z], 100, 100)
   @test all([abs(z̄[i] - μ[i]) < 0.1 for i in 1:length(z̄)])
