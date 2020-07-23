@@ -227,6 +227,7 @@ export
   NearestNeighborSearcher,
   NeighborhoodSearcher,
   BoundedSearcher,
+  KBallSearcher,
   search!, search,
   maxneighbors,
   object,
