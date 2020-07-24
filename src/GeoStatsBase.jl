@@ -55,7 +55,7 @@ include("domainview.jl")
 include("data.jl")
 include("dataview.jl")
 include("georef.jl")
-include("collections.jl")
+include("setops.jl")
 include("macros.jl")
 include("paths.jl")
 include("trends.jl")
@@ -107,9 +107,8 @@ export
   georef,
   valid,
 
-  # collections
-  DomainCollection,
-  DataCollection,
+  # set operations
+  ⊔,
 
   # mappers
   AbstractMapper,
