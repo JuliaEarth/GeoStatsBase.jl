@@ -69,6 +69,7 @@ Tables.rowaccess(dv::DataView) = Tables.rowaccess(dv.data)
 Tables.columnaccess(dv::DataView) = Tables.columnaccess(dv.data)
 Tables.rows(dv::DataView) = Tables.rows(getindex(dv.data, dv.inds, dv.vars))
 Tables.columns(dv::DataView) = Tables.columns(getindex(dv.data, dv.inds, dv.vars))
+Tables.schema(dv::DataView) = Tables.schema(getindex(dv.data, dv.inds, dv.vars))
 
 # ------------
 # IO methods

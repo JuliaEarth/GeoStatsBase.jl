@@ -80,6 +80,7 @@ Tables.rowaccess(sdata::AbstractData) = Tables.rowaccess(sdata.table)
 Tables.columnaccess(sdata::AbstractData) = Tables.columnaccess(sdata.table)
 Tables.rows(sdata::AbstractData) = Tables.rows(sdata.table)
 Tables.columns(sdata::AbstractData) = Tables.columns(sdata.table)
+Tables.schema(sdata::AbstractData) = Tables.schema(sdata.table)
 
 # ---------------
 # MISSING VALUES
