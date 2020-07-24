@@ -8,8 +8,7 @@
 Join spatial data with shared domain to produce
 spatial data with all variables included.
 """
-struct VariableJoiner <: AbstractJoiner
-end
+struct VariableJoiner <: AbstractJoiner end
 
 function join(sdata₁, sdata₂, joiner::VariableJoiner)
   @assert npoints(sdata₁) == npoints(sdata₂) "cannot join different number of points"
