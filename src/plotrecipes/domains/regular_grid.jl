@@ -30,8 +30,9 @@
 end
 
 @recipe function f(domain::RegularGrid{T,N}) where {N,T}
-  X  = coordinates(domain)
   sz = size(domain)
+  or = origin(domain)
+  sp = spacing(domain)
 
   seriescolor --> :black
   legend --> false
@@ -39,61 +40,58 @@ end
   if N == 1
     @series begin
       seriestype --> :scatterpath
-      X[1,:], fill(zero(T), sz[1])
+      marker --> :vline
+      x = range(or[1]-sp[1]/2, step=sp[1], length=sz[1]+1)
+      x, fill(zero(T), sz[1]+1)
     end
   elseif N == 2
-    aspect_ratio --> :equal
-    linear = LinearIndices(sz)
     @series begin
-      seriestype --> :scatter
-      X[1,:], X[2,:]
-    end
-    for i in 1:sz[1]
-      @series begin
-        seriestype --> :path
-        primary --> false
-        inds = [linear[i,j] for j in 1:sz[2]]
-        X[1,inds], X[2,inds]
+      seriestype --> :path
+      aspect_ratio --> :equal
+      xs = range(or[1]-sp[1]/2, step=sp[1], length=sz[1]+1)
+      ys = range(or[2]-sp[2]/2, step=sp[2], length=sz[2]+1)
+      coords = []
+      for x in xs
+        push!(coords, (x, first(ys)))
+        push!(coords, (x, last(ys)))
+        push!(coords, (NaN, NaN))
       end
-    end
-    for j in 1:sz[2]
-      @series begin
-        seriestype --> :path
-        primary --> false
-        inds = [linear[i,j] for i in 1:sz[1]]
-        X[1,inds], X[2,inds]
+      for y in ys
+        push!(coords, (first(xs), y))
+        push!(coords, (last(xs), y))
+        push!(coords, (NaN, NaN))
       end
+      x = getindex.(coords, 1)
+      y = getindex.(coords, 2)
+      x, y
     end
   elseif N == 3
-    aspect_ratio --> :equal
-    linear = LinearIndices(sz)
     @series begin
-      seriestype --> :scatter
-      X[1,:], X[2,:], X[3,:]
-    end
-    for i in 1:sz[1], j in 1:sz[2]
-      @series begin
-        seriestype --> :path
-        primary --> false
-        inds = [linear[i,j,k] for k in 1:sz[3]]
-        X[1,inds], X[2,inds], X[3,inds]
+      seriestype --> :path
+      aspect_ratio --> :equal
+      xs = range(or[1]-sp[1]/2, step=sp[1], length=sz[1]+1)
+      ys = range(or[2]-sp[2]/2, step=sp[2], length=sz[2]+1)
+      zs = range(or[3]-sp[3]/2, step=sp[3], length=sz[3]+1)
+      coords = []
+      for y in ys, z in zs
+        push!(coords, (first(xs), y, z))
+        push!(coords, (last(xs), y, z))
+        push!(coords, (NaN, NaN, NaN))
       end
-    end
-    for i in 1:sz[1], k in 1:sz[3]
-      @series begin
-        seriestype --> :path
-        primary --> false
-        inds = [linear[i,j,k] for j in 1:sz[2]]
-        X[1,inds], X[2,inds], X[3,inds]
+      for x in xs, z in zs
+        push!(coords, (x, first(ys), z))
+        push!(coords, (x, last(ys), z))
+        push!(coords, (NaN, NaN, NaN))
       end
-    end
-    for j in 1:sz[2], k in 1:sz[3]
-      @series begin
-        seriestype --> :path
-        primary --> false
-        inds = [linear[i,j,k] for i in 1:sz[1]]
-        X[1,inds], X[2,inds], X[3,inds]
+      for x in xs, y in ys
+        push!(coords, (x, y, first(zs)))
+        push!(coords, (x, y, last(zs)))
+        push!(coords, (NaN, NaN, NaN))
       end
+      x = getindex.(coords, 1)
+      y = getindex.(coords, 2)
+      z = getindex.(coords, 3)
+      x, y, z
     end
   else
     @error "cannot plot in more than 3 dimensions"
