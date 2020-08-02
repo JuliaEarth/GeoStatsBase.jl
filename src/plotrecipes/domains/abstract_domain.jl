@@ -2,7 +2,7 @@
 # Licensed under the ISC License. See LICENSE in the project root.
 # ------------------------------------------------------------------
 
-@recipe function f(domain::AbstractDomain, data::AbstractVector) where {N,T}
+@recipe function f(domain::AbstractDomain, data::AbstractVector)
   @series begin
     PointSet(coordinates(domain)), data
   end

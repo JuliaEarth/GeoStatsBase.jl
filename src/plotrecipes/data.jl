@@ -10,7 +10,7 @@
   validvars = sort([var for (var, V) in GeoStatsBase.variables(sdata)])
 
   # plot all variables by default
-  variables == nothing && (variables = validvars)
+  variables === nothing && (variables = validvars)
   @assert variables ⊆ validvars "invalid variable name"
 
   # shared plot specs
