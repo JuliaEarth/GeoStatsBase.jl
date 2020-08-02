@@ -96,6 +96,6 @@ end
 
 function Base.show(io::IO, ::MIME"text/plain", grid::RegularGrid{T,N}) where {N,T}
   println(io, grid)
-  println(io, "  origin:     ", Tuple(grid.origin))
-  print(  io, "  spacing:    ", Tuple(grid.spacing))
+  println(io, "  origin:  ", Tuple(grid.origin))
+  print(  io, "  spacing: ", Tuple(grid.spacing))
 end
