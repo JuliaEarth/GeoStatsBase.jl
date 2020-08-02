@@ -25,7 +25,7 @@ In this case, the origin and spacing default to (0,0,...) and (1,1,...).
 Create a 3D grid with 100x100x50 locations:
 
 ```julia
-julia> RegularGrid{Float64}(100,100,50)
+julia> RegularGrid(100,100,50)
 ```
 
 Create a 2D grid with 100x100 locations and origin at (10.,20.) units:

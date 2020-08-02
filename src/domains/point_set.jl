@@ -9,6 +9,20 @@ A set of points with coordinate matrix `coords`. The number of rows
 of the matrix is the dimensionality of the domain whereas the number
 of columns is the number of points in the set. Alternatively, `coords`
 can be a vector of tuples (i.e. points).
+
+## Examples
+
+Create a 2D point set with 100 points:
+
+```julia
+julia> PointSet(rand(2,100))
+```
+
+Or equivalently, using a vector of tuples:
+
+```julia
+julia> PointSet([(rand(),rand()) for i in 1:100])
+```
 """
 struct PointSet{T,N} <: AbstractDomain{T,N}
   coords::Matrix{T}
