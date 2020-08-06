@@ -45,6 +45,7 @@ testfiles = [
   "trends.jl",
   "regions.jl",
   "neighborhoods.jl",
+  "neighborsearch.jl",
   "learning.jl",
   "mappers.jl",
   "problems.jl",
