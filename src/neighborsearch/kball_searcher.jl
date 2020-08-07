@@ -1,16 +1,12 @@
 # ------------------------------------------------------------------
 # Licensed under the ISC License. See LICENSE in the project root.
-#
-# Author: @exepulveda
 # ------------------------------------------------------------------
 
 """
     KBallSearcher(object, k, ball; locations)
 
-A method for searching neighbors in spatial `object` inside `neighborhood`.
-Used when doing estimation combining k-nearest and radius.
-It searches first for the k-nearest by using the internal kdtree and then
-limiting the results within the `BallNeighborhood`
+A method that searches `k` nearest neighbors and then filters
+these neighbors using a norm `ball`.
 """
 struct KBallSearcher{O,B,K} <: AbstractBoundedNeighborSearcher
   # input fields
@@ -35,18 +31,21 @@ maxneighbors(searcher::KBallSearcher) = searcher.k
 
 function search!(neighbors::AbstractVector{Int}, xₒ::AbstractVector,
                  searcher::KBallSearcher; mask=nothing)
-  k    = searcher.k
-  ball = searcher.ball
-  r    = radius(ball)
+  k = searcher.k
+  r = radius(searcher.ball)
 
   inds, dists = knn(searcher.kdtree, xₒ, k, true)
   locs = view(searcher.locations, inds)
 
+  # keep neighbors inside ball
+  keep = dists .≤ r
+
+  # possibly mask some of the neighbors
+  isnothing(mask) || (keep .*= mask[locs])
+
   nneigh = 0
-  @inbounds for i in 1:length(inds)
-    #if mask is true, the locations must be skipped
-    useit = (mask === nothing) || !mask[locs[i]]
-    if useit && (dists[i] ≤ r)
+  @inbounds for i in 1:k
+    if keep[i]
       nneigh += 1
       neighbors[nneigh] = locs[i]
     end
