@@ -46,7 +46,7 @@ function error(solver::AbstractLearningSolver,
   # weight samples based on the features of target data
   tdata = targetdata(problem)
   vars = collect(features(task(problem)))
-  weighter = DensityRatioWeighter(tdata, variables=vars,
+  weighter = DensityRatioWeighter(tdata, vars,
                                   estimator=eestimator.dre,
                                   optlib=eestimator.optlib)
   wcv = WeightedCrossValidation(weighter,

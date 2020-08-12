@@ -35,7 +35,7 @@ struct EstimationProblem{S,D,M} <: AbstractProblem
 
   function EstimationProblem{S,D,M}(sdata, sdomain, targetvars, mapper) where {S,D,M}
     probvnames = Tuple(keys(targetvars))
-    datavnames = Tuple(keys(variables(sdata)))
+    datavnames = name.(variables(sdata))
 
     @assert !isempty(probvnames) && probvnames ⊆ datavnames "target variables must be present in spatial data"
     @assert coordtype(sdata) == coordtype(sdomain) "data and domain must have the same coordinate type"
@@ -49,8 +49,8 @@ end
 function EstimationProblem(sdata::S, sdomain::D, targetvarnames::NTuple;
                            mapper::M=NearestMapper()) where {S,D,M}
   # build dictionary of target variables
-  datavars   = variables(sdata)
-  targetvars = Dict(var => nonmissingtype(T) for (var,T) in datavars if var ∈ targetvarnames)
+  vars = filter(v -> name(v) ∈ targetvarnames, variables(sdata))
+  targetvars = Dict(name(var) => mactype(var) for var in vars)
 
   EstimationProblem{S,D,M}(sdata, sdomain, targetvars, mapper)
 end

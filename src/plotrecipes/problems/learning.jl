@@ -5,8 +5,8 @@
 @recipe function f(problem::LearningProblem)
   sdata   = sourcedata(problem)
   tdata   = targetdata(problem)
-  svars   = join(sort([var for (var,V) in variables(sdata)]), ", ")
-  tvars   = join(sort([var for (var,V) in variables(tdata)]), ", ")
+  svars   = join(sort(collect(name.(variables(sdata)))), ", ")
+  tvars   = join(sort(collect(name.(variables(tdata)))), ", ")
 
   title --> "Learning Problem"
   legend --> true

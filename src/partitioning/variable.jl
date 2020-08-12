@@ -14,11 +14,8 @@ end
 
 function partition(sdata, partitioner::VariablePartitioner)
   var = partitioner.var
-  svars = variables(sdata)
 
-  @assert var ∈ keys(svars) "invalid variable name"
-
-  V = svars[var]
+  @assert var ∈ name.(variables(sdata)) "invalid variable name"
 
   # partition function with missings
   function f(i, j)
@@ -31,7 +28,7 @@ function partition(sdata, partitioner::VariablePartitioner)
   g(i, j) = sdata[i,var] == sdata[j,var]
 
   # select the appropriate predicate function
-  pred = Missing <: V ? f : g
+  pred = Missing <: eltype(sdata[var]) ? f : g
 
   # perform partition
   p = partition(sdata, PredicatePartitioner(pred))

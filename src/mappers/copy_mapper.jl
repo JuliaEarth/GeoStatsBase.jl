@@ -17,7 +17,7 @@ CopyMapper(dest) = CopyMapper(nothing, dest)
 CopyMapper() = CopyMapper(nothing, nothing)
 
 function map(sdata, sdomain, targetvars, mapper::CopyMapper)
-  @assert targetvars ⊆ keys(variables(sdata)) "target variables must be present in spatial data"
+  @assert targetvars ⊆ name.(variables(sdata)) "target variables must be present in spatial data"
 
   # dictionary with mappings
   mappings = Dict(var => Dict{Int,Int}() for var in targetvars)

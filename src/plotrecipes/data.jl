@@ -7,10 +7,10 @@
   sdomain = domain(sdata)
 
   # valid variables
-  validvars = sort([var for (var, V) in GeoStatsBase.variables(sdata)])
+  validvars = name.(GeoStatsBase.variables(sdata))
 
   # plot all variables by default
-  variables === nothing && (variables = validvars)
+  isnothing(variables) && (variables = validvars)
   @assert variables ⊆ validvars "invalid variable name"
 
   # shared plot specs

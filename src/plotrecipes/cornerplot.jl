@@ -7,7 +7,7 @@ function cornerplot(sdata::AbstractData, vars=nothing;
                     bandwidthx=100, bandwidthy=100,
                     kwargs...)
   # variables in alphabetical order
-  vars = vars ≠ nothing ? vars : sort(collect(keys(variables(sdata))))
+  vars = vars ≠ nothing ? vars : sort(collect(name.(variables(sdata))))
 
   plts = []
   n = length(vars)
