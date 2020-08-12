@@ -3,9 +3,10 @@
 # ------------------------------------------------------------------
 
 """
-    Variable(name, type=Float64)
+    Variable(name, [type])
 
 A spatial variable with given `name` and machine `type`.
+Default machine type is `Float64`.
 """
 struct Variable
   name::Symbol
