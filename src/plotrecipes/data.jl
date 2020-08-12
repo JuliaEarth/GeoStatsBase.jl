@@ -19,12 +19,8 @@
   for (i, var) in enumerate(vars)
     # retrieve valid values
     vals = map(1:npoints(sdata)) do ind
-      if isvalid(sdata, ind, var)
-        v = sdata[ind,var]
-        v isa Number ? v : get(v)
-      else
-        NaN
-      end
+      v = sdata[ind,var]
+      ismissing(v) ? NaN : v
     end
     @series begin
       subplot := i
