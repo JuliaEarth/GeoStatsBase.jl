@@ -2,7 +2,7 @@
 # Licensed under the ISC License. See LICENSE in the project root.
 # ------------------------------------------------------------------
 
-@recipe function f(sdata::AbstractData; variables=nothing)
+@recipe function f(sdata::AbstractData, variables=nothing)
   # retrieve underlying domain
   sdomain = domain(sdata)
 
