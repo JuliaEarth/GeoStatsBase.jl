@@ -7,7 +7,7 @@
   sdomain = domain(sdata)
 
   # valid variables
-  validvars = name.(GeoStatsBase.variables(sdata))
+  validvars = name.(variables(sdata))
 
   # plot all variables by default
   isnothing(vars) && (vars = validvars)
