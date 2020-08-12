@@ -68,7 +68,7 @@ const VarOrVarType = Union{Symbol,VarType}
 
 function SimulationProblem(sdata::S, sdomain::D, vars::NTuple{N,VarOrVarType}, nreals::Int;
                            mapper::M=NearestMapper()) where {S,D,M,N}
-  datavars = Dict(name(var) => type(var) for var in variables(sdata))
+  datavars = Dict(name(var) => mactype(var) for var in variables(sdata))
 
   # pairs with variable names and types
   varstypes = map(vars) do vt

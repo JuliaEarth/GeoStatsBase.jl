@@ -85,7 +85,7 @@ include("utils.jl")
 export
   # spatial variable
   Variable,
-  name, type,
+  name, mactype,
 
   # spatial object
   AbstractSpatialObject,

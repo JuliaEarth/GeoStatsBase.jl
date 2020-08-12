@@ -22,11 +22,11 @@ Return the name of the spatial `variable`.
 name(var::Variable) = var.name
 
 """
-    type(variable)
+    mactype(variable)
 
 Return the machine type of the spatial `variable`.
 """
-type(var::Variable) = var.type
+mactype(var::Variable) = var.type
 
 """
     variables(table)

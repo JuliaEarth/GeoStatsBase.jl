@@ -39,7 +39,7 @@ function filter(sdata, filt::UniqueCoordsFilter)
 
   # construct new point set data
   locs = Vector{Int}()
-  vals = Dict(name(var) => Vector{type(var)}() for var in vars)
+  vals = Dict(name(var) => Vector{mactype(var)}() for var in vars)
   for g in values(groups)
     i = g[1] # select any location
     if length(g) > 1

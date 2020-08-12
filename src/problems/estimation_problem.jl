@@ -50,7 +50,7 @@ function EstimationProblem(sdata::S, sdomain::D, targetvarnames::NTuple;
                            mapper::M=NearestMapper()) where {S,D,M}
   # build dictionary of target variables
   vars = filter(v -> name(v) ∈ targetvarnames, variables(sdata))
-  targetvars = Dict(name(var) => type(var) for var in vars)
+  targetvars = Dict(name(var) => mactype(var) for var in vars)
 
   EstimationProblem{S,D,M}(sdata, sdomain, targetvars, mapper)
 end

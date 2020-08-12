@@ -106,7 +106,7 @@ end
 function Base.show(io::IO, ::MIME"text/plain", sdata::AbstractData{T,N}) where {N,T}
   println(io, domain(sdata))
   println(io, "  variables")
-  varlines = ["    └─$(name(var)) ($(type(var)))" for var in variables(sdata)]
+  varlines = ["    └─$(name(var)) ($(mactype(var)))" for var in variables(sdata)]
   print(io, join(sort(varlines), "\n"))
 end
 
