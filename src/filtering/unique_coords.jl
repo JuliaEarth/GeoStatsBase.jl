@@ -23,7 +23,7 @@ function filter(sdata, filt::UniqueCoordsFilter)
   # retrieve filtering info
   vars = variables(sdata)
   agg  = filt.agg
-  for (var, V) in vars
+  for var in name.(vars)
     if var ∉ keys(agg)
       ST = scitype(sdata[1,var])
       agg[var] = ST <: Continuous ? _mean : _first
@@ -39,17 +39,17 @@ function filter(sdata, filt::UniqueCoordsFilter)
 
   # construct new point set data
   locs = Vector{Int}()
-  vals = Dict(var => Vector{V}() for (var, V) in vars)
+  vals = Dict(name(var) => Vector{type(var)}() for var in vars)
   for g in values(groups)
     i = g[1] # select any location
     if length(g) > 1
       # aggregate variables
-      for (var, V) in vars
+      for var in name.(vars)
         push!(vals[var], agg[var](sdata[g,var]))
       end
     else
       # copy location
-      for (var, V) in vars
+      for var in name.(vars)
         push!(vals[var], sdata[i,var])
       end
     end
@@ -57,7 +57,7 @@ function filter(sdata, filt::UniqueCoordsFilter)
   end
 
   # construct data with correct variable order
-  data = DataFrame([var => vals[var] for var in keys(vars)])
+  data = DataFrame([var => vals[var] for var in name.(vars)])
   pset = PointSet(coordinates(sdata, locs))
 
   georef(data, pset)

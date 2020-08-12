@@ -27,10 +27,7 @@ npoints(dv::DataView) = length(dv.inds)
 coordinates!(buff::AbstractVector, dv::DataView, ind::Int) =
   coordinates!(buff, dv.data, dv.inds[ind])
 
-function variables(dv::DataView)
-  nt = (; [(var,V) for (var,V) in variables(dv.data) if var ∈ dv.vars]...)
-  Variables{typeof(nt)}(nt)
-end
+variables(dv::DataView) = variables(getindex(dv.data, dv.inds, dv.vars))
 
 Base.values(dv::DataView) = getindex(values(dv.data), dv.inds, dv.vars)
 
@@ -79,11 +76,4 @@ function Base.show(io::IO, dv::DataView)
   T = coordtype(dv)
   npts = npoints(dv)
   print(io, "$npts DataView{$T,$N}")
-end
-
-function Base.show(io::IO, ::MIME"text/plain", dv::DataView)
-  println(io, dv)
-  println(io, "  variables")
-  varlines = ["    └─$var ($V)" for (var,V) in variables(dv)]
-  print(io, join(varlines, "\n"))
 end

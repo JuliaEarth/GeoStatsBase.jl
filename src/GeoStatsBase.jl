@@ -83,6 +83,10 @@ include("plotrecipes.jl")
 include("utils.jl")
 
 export
+  # spatial variable
+  Variable,
+  name, type,
+
   # spatial object
   AbstractSpatialObject,
   domain,

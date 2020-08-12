@@ -14,7 +14,7 @@ abstract type AbstractData{T,N} <: AbstractSpatialObject{T,N} end
 
 Return the variable names in spatial data `sdata` and their types.
 """
-variables(sdata::AbstractData) = Variables(sdata.table)
+variables(sdata::AbstractData) = variables(sdata.table)
 
 """
     values(sdata)
@@ -46,7 +46,7 @@ Base.setindex!(sdata::AbstractData, vals, var::Symbol) =
 # ---------
 
 Base.view(sdata::AbstractData, inds::AbstractVector{Int}) =
-  DataView(sdata, inds, collect(keys(variables(sdata))))
+  DataView(sdata, inds, collect(name.(variables(sdata))))
 Base.view(sdata::AbstractData, vars::AbstractVector{Symbol}) =
   DataView(sdata, 1:npoints(sdata), vars)
 Base.view(sdata::AbstractData, inds::AbstractVector{Int},
@@ -95,33 +95,6 @@ function Base.isvalid(sdata::AbstractData, ind::Int, var::Symbol)
   !(ismissing(val) || (val isa Number && isnan(val)))
 end
 
-"""
-    valid(sdata, var)
-
-Return all points in `sdata` with a valid value for `var`. The output is
-a tuple with the matrix of coordinates as the first item and the vector
-of values as the second item.
-"""
-function valid(sdata::AbstractData{T,N}, var::Symbol) where {N,T}
-  V = variables(sdata)[var]
-  npts = npoints(sdata)
-
-  # pre-allocate memory for result
-  X = Matrix{T}(undef, N, npts)
-  z = Vector{V}(undef, npts)
-
-  nvalid = 0
-  for ind in 1:npoints(sdata)
-    if isvalid(sdata, ind, var)
-      nvalid += 1
-      coordinates!(view(X,:,nvalid), sdata, ind)
-      z[nvalid] = getindex(sdata, ind, var)
-    end
-  end
-
-  X[:,1:nvalid], z[1:nvalid]
-end
-
 # ------------
 # IO methods
 # ------------
@@ -133,7 +106,7 @@ end
 function Base.show(io::IO, ::MIME"text/plain", sdata::AbstractData{T,N}) where {N,T}
   println(io, domain(sdata))
   println(io, "  variables")
-  varlines = ["    └─$var ($V)" for (var,V) in variables(sdata)]
+  varlines = ["    └─$(name(var)) ($(type(var)))" for var in variables(sdata)]
   print(io, join(sort(varlines), "\n"))
 end
 

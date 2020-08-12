@@ -58,7 +58,7 @@
 
   @testset "Curve" begin
     c = georef((z=1:10,), Curve([j for i in 1:3, j in 1:10]))
-    @test collect(variables(c)) == [:z => Int]
+    @test variables(c) == (Variable(:z, Int),)
     @test npoints(c) == 10
 
     if visualtests
@@ -73,18 +73,9 @@
 
   @testset "GeoTable" begin
     # basic checks
-    data3D = readgeotable(joinpath(datadir,"data3D.tsv"))
-    X, z = valid(data3D, :value)
-    @test collect(variables(data3D)) == [:value => Float64]
-    @test npoints(data3D) == 100
-    @test size(X) == (3, 100)
-    @test length(z) == 100
-
-    # missing data and NaN
-    missdata = readgeotable(joinpath(datadir,"missing.tsv"), coordnames=(:x,:y))
-    X, z = valid(missdata, :value)
-    @test size(X) == (2,1)
-    @test length(z) == 1
+    D = readgeotable(joinpath(datadir,"data3D.tsv"))
+    @test variables(D) == (Variable(:value, Float64),)
+    @test npoints(D) == 100
 
     # show methods
     df = DataFrame(x=[1,2,3],y=[4,5,6],z=[1.,2.,3.])
@@ -101,14 +92,9 @@
 
   @testset "PointSet" begin
     # basic checks
-    data3D = readgeotable(joinpath(datadir,"data3D.tsv"), delim='\t')
-    X, z = valid(data3D, :value)
-    ps = georef((value=z,), X)
-    X, z = valid(ps, :value)
-    @test collect(variables(ps)) == [:value => Float64]
+    ps = readgeotable(joinpath(datadir,"data3D.tsv"), delim='\t')
+    @test variables(ps) == (Variable(:value, Float64),)
     @test npoints(ps) == 100
-    @test size(X,2) == 100
-    @test length(z) == 100
 
     # show methods
     ps = georef((z=[1,2,3],), [1. 0. 1.; 0. 1. 1.])
@@ -123,12 +109,9 @@
 
   @testset "RegularGrid" begin
     # basic checks
-    g = georef((value=rand(100,100),))
-    X, z = valid(g, :value)
-    @test collect(variables(g)) == [:value => Float64]
+    g = georef((Z=rand(100,100),))
+    @test variables(g) == (Variable(:Z, Float64),)
     @test npoints(g) == 10000
-    @test size(X) == (2, 10000)
-    @test length(z) == 10000
 
     # show methods
     g = georef((z=[1,2,3,4],), RegularGrid(2,2))
@@ -147,20 +130,15 @@
     X = readdlm(joinpath(datadir,"HurricaneX.dat"))
     Y = readdlm(joinpath(datadir,"HurricaneY.dat"))
     P = readdlm(joinpath(datadir,"HurricaneP.dat"))
-    g = georef((precip=P,), StructuredGrid(X, Y))
+    g = georef((P=P,), StructuredGrid(X, Y))
 
     # basic checks
-    @test collect(variables(g)) == [:precip => Float64]
+    @test variables(g) == (Variable(:P, Float64),)
     @test npoints(g) == 221*366
-
-    # missing values
-    X, z = valid(g, :precip)
-    @test size(X) == (2, 64416)
-    @test length(z) == 64416
 
     # show methods
     @test sprint(show, g) == "80886 SpatialData{Float64,2}"
-    @test sprint(show, MIME"text/plain"(), g) == "221×366 StructuredGrid{Float64,2}\n  variables\n    └─precip (Float64)"
+    @test sprint(show, MIME"text/plain"(), g) == "221×366 StructuredGrid{Float64,2}\n  variables\n    └─P (Float64)"
 
     if visualtests
       # TODO

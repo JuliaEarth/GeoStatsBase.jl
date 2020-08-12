@@ -5,7 +5,7 @@
 @recipe function f(problem::SimulationProblem)
   pdata   = data(problem)
   pdomain = domain(problem)
-  vars    = join(keys(variables(pdata)), ", ")
+  vars    = join(name.(variables(pdata)), ", ")
 
   title --> "Simulation Problem"
   legend --> true

@@ -39,8 +39,8 @@ SLICPartitioner(k::Int, m::Real; tol=1e-4, maxiter=10, vars=nothing) =
 
 function partition(sdata, partitioner::SLICPartitioner)
   # variables used for clustering
-  datavars = collect(keys(variables(sdata)))
-  vars = partitioner.vars ≠ nothing ? partitioner.vars : datavars
+  datavars = collect(name.(variables(sdata)))
+  vars = isnothing(partitioner.vars) ? datavars : partitioner.vars
 
   @assert vars ⊆ datavars "SLIC features not found in spatial data"
 
@@ -81,14 +81,14 @@ function partition(sdata, partitioner::SLICPartitioner)
   SpatialPartition(sdata, subsets)
 end
 
-function slic_spacing(sdata, partitioner::SLICPartitioner)
+function slic_spacing(sdata, partitioner)
   V = volume(boundbox(sdata))
   d = ndims(sdata)
   k = partitioner.k
   (V/k) ^ (1/d)
 end
 
-function slic_initialization(sdata, s::Real)
+function slic_initialization(sdata, s)
   # efficient neighbor search
   searcher = NearestNeighborSearcher(sdata, 1)
 
@@ -109,13 +109,7 @@ function slic_initialization(sdata, s::Real)
   unique(clusters)
 end
 
-function slic_assignment!(sdata,
-                          searcher::NeighborhoodSearcher,
-                          vars::AbstractVector{Symbol},
-                          m::Real, s::Real,
-                          c::AbstractVector{Int},
-                          l::AbstractVector{Int},
-                          d::AbstractVector{Float64})
+function slic_assignment!(sdata, searcher, vars, m, s, c, l, d)
   for (k, cₖ) in enumerate(c)
     xₖ = coordinates(sdata, [cₖ])
     inds = search(vec(xₖ), searcher)
@@ -141,9 +135,7 @@ function slic_assignment!(sdata,
   end
 end
 
-function slic_update!(sdata,
-                      c::AbstractVector{Int},
-                      l::AbstractVector{Int})
+function slic_update!(sdata, c, l)
   for k in 1:length(c)
     inds = findall(isequal(k), l)
     X  = coordinates(sdata, inds)

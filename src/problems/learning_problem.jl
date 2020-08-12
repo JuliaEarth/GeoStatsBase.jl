@@ -23,8 +23,8 @@ struct LearningProblem{Dₛ,Dₜ,T} <: AbstractProblem
   task::T
 
   function LearningProblem{Dₛ,Dₜ,T}(sdata, tdata, task) where {Dₛ,Dₜ,T}
-    sourcevars = keys(variables(sdata))
-    targetvars = keys(variables(tdata))
+    sourcevars = name.(variables(sdata))
+    targetvars = name.(variables(tdata))
 
     # assert task is compatible with the data
     @assert features(task) ⊆ sourcevars "features must be present in source data"

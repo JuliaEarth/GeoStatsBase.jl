@@ -44,9 +44,9 @@
     d1 = georef((x=[1,2,3],), coords)
     d2 = georef((y=[4.,5.,6.],), coords)
     d = join(d1, d2)
-    vars = collect(variables(d))
-    @test vars[1] == (:x => Int)
-    @test vars[2] == (:y => Float64)
+    vars = variables(d)
+    @test vars[1] == Variable(:x, Int)
+    @test vars[2] == Variable(:y, Float64)
     @test d[:x] == [1,2,3]
     @test d[:y] == [4.,5.,6.]
   end

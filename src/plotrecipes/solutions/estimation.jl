@@ -10,7 +10,7 @@
   validvars = sort(collect(keys(solution.mean)))
 
   # plot all variables by default
-  variables == nothing && (variables = validvars)
+  isnothing(variables) && (variables = validvars)
   @assert variables ⊆ validvars "invalid variable name"
 
   # plot mean and variance for each variable

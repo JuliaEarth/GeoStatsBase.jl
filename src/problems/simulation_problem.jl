@@ -51,7 +51,7 @@ struct SimulationProblem{S,D,M} <: AbstractProblem
     @assert nreals > 0 "number of realizations must be positive"
 
     if sdata ≠ nothing
-      datavnames = Tuple(keys(variables(sdata)))
+      datavnames = name.(variables(sdata))
       dmappings = map(sdata, sdomain, datavnames, mapper)
       omappings = Dict(var => Dict() for var in probvnames if var ∉ datavnames)
       mappings  = merge(dmappings, omappings)
@@ -68,7 +68,7 @@ const VarOrVarType = Union{Symbol,VarType}
 
 function SimulationProblem(sdata::S, sdomain::D, vars::NTuple{N,VarOrVarType}, nreals::Int;
                            mapper::M=NearestMapper()) where {S,D,M,N}
-  datavars = Dict(var => nonmissingtype(V) for (var,V) in variables(sdata))
+  datavars = Dict(name(var) => type(var) for var in variables(sdata))
 
   # pairs with variable names and types
   varstypes = map(vars) do vt

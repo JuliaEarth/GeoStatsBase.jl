@@ -5,7 +5,7 @@
 @recipe function f(problem::EstimationProblem)
   pdata   = data(problem)
   pdomain = domain(problem)
-  vars    = join(keys(variables(pdata)), ", ")
+  vars    = join(name.(variables(pdata)), ", ")
 
   title --> "Estimation Problem"
   legend --> true

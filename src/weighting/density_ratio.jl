@@ -3,14 +3,13 @@
 # ------------------------------------------------------------------
 
 """
-    DensityRatioWeighter(tdata; [options])
+    DensityRatioWeighter(tdata, [vars]; [options])
 
 Density ratio weights based on empirical distribution of
-variables in target data `tdata`.
+variables in target data `tdata`. Default to all variables.
 
 ## Optional parameters
 
-* `variables` - Variables to consider (default to all)
 * `estimator` - Density ratio estimator (default to `LSIF()`)
 * `optlib`    - Optimization library (default to `default_optlib(estimator)`)
 
@@ -18,19 +17,19 @@ variables in target data `tdata`.
 
 Estimators from `DensityRatioEstimation.jl` are supported.
 """
-struct DensityRatioWeighter{D} <: AbstractWeighter
-  tdata::D
-  vars::Vector{Symbol}
+struct DensityRatioWeighter <: AbstractWeighter
+  tdata
+  vars
   dre
   optlib
 end
 
-function DensityRatioWeighter(tdata::D; variables=nothing, estimator=LSIF(),
-                              optlib=default_optlib(estimator)) where {D}
-  validvars = collect(keys(GeoStatsBase.variables(tdata)))
-  wvars = variables ≠ nothing ? variables : validvars
+function DensityRatioWeighter(tdata, vars=nothing; estimator=LSIF(),
+                              optlib=default_optlib(estimator))
+  validvars = collect(name.(variables(tdata)))
+  wvars = isnothing(vars) ? validvars : vars
   @assert wvars ⊆ validvars "invalid variables ($wvars) for spatial data"
-  DensityRatioWeighter{D}(tdata, wvars, estimator, optlib)
+  DensityRatioWeighter(tdata, wvars, estimator, optlib)
 end
 
 function weight(sdata, weighter::DensityRatioWeighter)
@@ -40,7 +39,7 @@ function weight(sdata, weighter::DensityRatioWeighter)
   dre    = weighter.dre
   optlib = weighter.optlib
 
-  @assert vars ⊆ keys(variables(sdata)) "invalid variables ($vars) for spatial data"
+  @assert vars ⊆ name.(variables(sdata)) "invalid variables ($vars) for spatial data"
 
   # numerator and denominator samples
   Ω_nu = view(tdata, vars)

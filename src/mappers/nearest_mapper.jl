@@ -14,7 +14,7 @@ function map(sdata, sdomain, targetvars, mapper::NearestMapper)
   N = ndims(sdata)
   T = coordtype(sdata)
 
-  @assert targetvars ⊆ keys(variables(sdata)) "target variables must be present in spatial data"
+  @assert targetvars ⊆ name.(variables(sdata)) "target variables must be present in spatial data"
 
   # dictionary with mappings
   mappings = Dict(var => Dict{Int,Int}() for var in targetvars)
