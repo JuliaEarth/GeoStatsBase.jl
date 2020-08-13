@@ -18,10 +18,10 @@
 
   for (i, var) in enumerate(vars)
     # retrieve valid values
-    vals = map(1:npoints(sdata)) do ind
-      v = sdata[ind,var]
-      ismissing(v) ? NaN : v
-    end
+    vals = sdata[var]
+    vals = vals isa CategoricalArray ? levelcode.(vals) : vals
+    coalesce.(vals, NaN)
+
     @series begin
       subplot := i
       title --> string(var)
