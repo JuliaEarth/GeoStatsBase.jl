@@ -58,9 +58,9 @@ function filter(sdata, filt::UniqueCoordsFilter)
 
   # construct data with correct variable order
   data = DataFrame([var => vals[var] for var in name.(vars)])
-  pset = PointSet(coordinates(sdata, locs))
+  coords = coordinates(sdata, locs)
 
-  georef(data, pset)
+  georef(data, coords)
 end
 
 function _mean(xs)
