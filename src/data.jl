@@ -82,19 +82,6 @@ Tables.rows(sdata::AbstractData) = Tables.rows(sdata.table)
 Tables.columns(sdata::AbstractData) = Tables.columns(sdata.table)
 Tables.schema(sdata::AbstractData) = Tables.schema(sdata.table)
 
-# ---------------
-# MISSING VALUES
-# ---------------
-"""
-    isvalid(sdata, ind, var)
-
-Return `true` if the `ind`-th point in `sdata` has a valid value for `var`.
-"""
-function Base.isvalid(sdata::AbstractData, ind::Int, var::Symbol)
-  val = getindex(sdata, ind, var)
-  !(ismissing(val) || (val isa Number && isnan(val)))
-end
-
 # ------------
 # IO methods
 # ------------

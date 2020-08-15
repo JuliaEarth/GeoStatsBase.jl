@@ -31,7 +31,7 @@ function map(sdata, sdomain, targetvars, mapper::CopyMapper)
   for i in eachindex(orig, dest)
     # save pair if there is data for variable
     for var in targetvars
-      if isvalid(sdata, orig[i], var)
+      if !ismissing(sdata[orig[i],var])
         push!(mappings[var], dest[i] => orig[i])
       end
     end
