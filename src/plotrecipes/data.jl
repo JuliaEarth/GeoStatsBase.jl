@@ -20,7 +20,7 @@
     # retrieve valid values
     vals = sdata[var]
     vals = vals isa CategoricalArray ? levelcode.(vals) : vals
-    coalesce.(vals, NaN)  # replace missing values with NaN
+    vals = replace(vals, missing => NaN)
 
     @series begin
       subplot := i
