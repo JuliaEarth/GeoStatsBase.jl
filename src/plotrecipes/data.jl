@@ -2,30 +2,26 @@
 # Licensed under the ISC License. See LICENSE in the project root.
 # ------------------------------------------------------------------
 
-@recipe function f(sdata::AbstractData; variables=nothing)
+@recipe function f(sdata::AbstractData, vars=nothing)
   # retrieve underlying domain
   sdomain = domain(sdata)
 
   # valid variables
-  validvars = name.(GeoStatsBase.variables(sdata))
+  validvars = name.(variables(sdata))
 
   # plot all variables by default
-  isnothing(variables) && (variables = validvars)
-  @assert variables ⊆ validvars "invalid variable name"
+  isnothing(vars) && (vars = validvars)
+  @assert vars ⊆ validvars "invalid variable name"
 
   # shared plot specs
-  layout --> length(variables)
+  layout --> length(vars)
 
-  for (i, var) in enumerate(variables)
+  for (i, var) in enumerate(vars)
     # retrieve valid values
-    vals = map(1:npoints(sdata)) do ind
-      if isvalid(sdata, ind, var)
-        v = sdata[ind,var]
-        v isa Number ? v : get(v)
-      else
-        NaN
-      end
-    end
+    vals = sdata[var]
+    vals = vals isa CategoricalArray ? levelcode.(vals) : vals
+    vals = replace(vals, missing => NaN)
+
     @series begin
       subplot := i
       title --> string(var)

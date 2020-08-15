@@ -14,7 +14,7 @@ using StatsBase: Histogram, Weights, AbstractWeights
 using Distances: Metric, Euclidean, Mahalanobis, pairwise
 using Distributions: ContinuousUnivariateDistribution, median, mode
 using CategoricalArrays: CategoricalValue, CategoricalArray
-using CategoricalArrays: levels, isordered, pool
+using CategoricalArrays: levels, isordered, pool, levelcode
 using NearestNeighbors: KDTree, knn, inrange
 using DataFrames: DataFrame, DataFrame!
 using StaticArrays: SVector, MVector
