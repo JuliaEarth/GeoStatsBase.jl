@@ -198,14 +198,12 @@ export
   ShiftedPath,
   traverse,
 
-  # regions
+  # geometries
   AbstractGeometry,
   Rectangle,
-  center,
-  lowerleft,
-  upperright,
-  side,
+  origin,
   sides,
+  center,
   diagonal,
   volume,
 
@@ -219,7 +217,6 @@ export
   CylinderNeighborhood,
   coordtype,
   isneighbor,
-  volume,
   radius,
   height,
   metric,

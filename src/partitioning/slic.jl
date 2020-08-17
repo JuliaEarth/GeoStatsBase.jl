@@ -94,8 +94,8 @@ function slic_initialization(sdata, s)
 
   # bounding box properties
   bbox = boundbox(sdata)
-  lo = lowerleft(bbox)
-  up = upperright(bbox)
+  lo = origin(bbox)
+  up = lo + sides(bbox)
 
   # cluster centers
   clusters = Vector{Int}()

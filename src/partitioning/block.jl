@@ -28,18 +28,18 @@ function partition(object, partitioner::BlockPartitioner)
   @assert all(psides .≤ sides(bbox)) "invalid block sides"
 
   # bounding box properties
+  lo = origin(bbox)
+  up = lo + sides(bbox)
   ce = center(bbox)
-  lo = lowerleft(bbox)
-  up = upperright(bbox)
 
   # find number of blocks to left and right
   nleft  = @. ceil(Int, (ce - lo) / psides)
   nright = @. ceil(Int, (up - ce) / psides)
 
-  origin  = @. ce - nleft * psides
+  start   = @. ce - nleft * psides
   nblocks = @. nleft + nright
 
-  subsets = [Vector{Int}() for i in 1:prod(nblocks)]
+  subsets   = [Vector{Int}() for i in 1:prod(nblocks)]
   neighbors = [Vector{Int}() for i in 1:prod(nblocks)]
 
   # Cartesian to linear indices
@@ -50,7 +50,7 @@ function partition(object, partitioner::BlockPartitioner)
     coordinates!(coords, object, j)
 
     # find block coordinates
-    c = @. floor(Int, (coords - origin) / psides) + 1
+    c = @. floor(Int, (coords - start) / psides) + 1
     @inbounds for i in 1:N
       c[i] = clamp(c[i], 1, nblocks[i])
     end

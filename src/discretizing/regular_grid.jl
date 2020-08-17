@@ -13,4 +13,4 @@ struct RegularGridDiscretizer{N} <: AbstractDiscretizer
 end
 
 discretize(r::Rectangle{T,N}, d::RegularGridDiscretizer{N}) where {N,T} =
-  RegularGrid(lowerleft(r), upperright(r), dims=d.dims)
+  RegularGrid(origin(r), origin(r) + sides(r), dims=d.dims)
