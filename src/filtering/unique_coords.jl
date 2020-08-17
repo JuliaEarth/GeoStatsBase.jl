@@ -57,7 +57,8 @@ function filter(sdata, filt::UniqueCoordsFilter)
   end
 
   # construct data with correct variable order
-  data = DataFrame([var => vals[var] for var in name.(vars)])
+  ctor = Tables.materializer(values(sdata))
+  data = ctor([var => vals[var] for var in name.(vars)])
   coords = coordinates(sdata, locs)
 
   georef(data, coords)

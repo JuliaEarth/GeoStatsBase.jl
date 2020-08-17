@@ -51,5 +51,5 @@ function perform(task::AbstractLearningTask, sdata, lmodel::LearnedModel)
     ŷ
   end
 
-  georef(DataFrame([var=>val]), domain(sdata))
+  georef((; var=>val), domain(sdata))
 end

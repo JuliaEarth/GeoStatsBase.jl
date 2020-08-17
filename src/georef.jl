@@ -22,12 +22,14 @@ georef(table, coords::AbstractMatrix) = georef(table, PointSet(coords))
 Georeference `table` using columns `coordnames`.
 """
 function georef(table, coordnames::NTuple)
-  cols = Tables.columntable(table)
-  @assert coordnames ⊆ keys(cols) "invalid coordinates for table"
-  @assert !(keys(cols) ⊆ coordnames) "table must have at least one variable"
-  vars = filter(c->c[1] ∉ coordnames, pairs(cols))
-  coords = reduce(hcat, [cols[cname] for cname in coordnames])
-  georef(DataFrame(vars), coords')
+  ctor = Tables.materializer(table)
+  colnames = Tables.columnnames(table)
+  @assert coordnames ⊆ colnames "invalid coordinates for table"
+  @assert !(colnames ⊆ coordnames) "table must have at least one variable"
+  varnames = setdiff(colnames, coordnames)
+  vars = [v => Tables.getcolumn(table, v) for v in varnames]
+  coords = reduce(hcat, [Tables.getcolumn(table, c) for c in coordnames])
+  georef(ctor(vars), coords')
 end
 
 """

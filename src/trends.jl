@@ -36,20 +36,24 @@ in the spatial `sdata`. Approximate the trend with a polynomial
 of given `degree`.
 """
 function trend(sdata, vars::AbstractVector{Symbol}; degree=1)
+  𝒯 = values(sdata)
+  𝒟 = domain(sdata)
+
   # build LHS of linear system
-  xs = eachcol(coordinates(sdata))
+  xs = eachcol(coordinates(𝒟))
   X  = polymat(xs, degree)
 
   # solve for each variable
-  ŷs = map(vars) do var
-    y  = sdata[var]
+  ŷs = map(vars) do v
+    y  = Tables.getcolumn(𝒯, v)
     θ  = X'*X \ X'*y
     ŷ  = X*θ
   end
 
-  data = DataFrame(ŷs, vars)
+  ctor  = Tables.materializer(𝒯)
+  table = ctor(vars .=> ŷs)
 
-  georef(data, domain(sdata))
+  georef(table, 𝒟)
 end
 
 trend(sdata, var::Symbol; kwargs...) = trend(sdata, [var]; kwargs...)
