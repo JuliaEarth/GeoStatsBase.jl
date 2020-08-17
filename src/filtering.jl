@@ -20,3 +20,4 @@ function filter end
 # IMPLEMENTATIONS
 # ----------------
 include("filtering/unique_coords.jl")
+include("filtering/predicate.jl")

@@ -59,6 +59,13 @@
     @test npoints(s) == 50
   end
 
+  @testset "filter" begin
+    𝒟 = georef((a=[1,2,3], b=[1,1,missing]))
+    𝒫 = filter(s -> !ismissing(s.b), 𝒟)
+    @test 𝒫[:a] == [1,2]
+    @test 𝒫[:b] == [1,1]
+  end
+
   @testset "uniquecoords" begin
     X = [i*j for i in 1:2, j in 1:1_000_000]
     z = rand(1_000_000)

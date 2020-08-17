@@ -10,4 +10,20 @@
     ndata = filter(sdata, UniqueCoordsFilter())
     @test npoints(ndata) == 100
   end
+
+  @testset "PredicateFilter" begin
+    𝒟 = georef((a=[1,2,3],b=[3,2,1]))
+    𝒫ₐ = filter(𝒟, PredicateFilter(s -> s.a > 1))
+    𝒫ᵦ = filter(𝒟, PredicateFilter(s -> s.b > 1))
+    𝒫ₐᵦ = filter(𝒟, PredicateFilter(s -> s.a > 1 && s.b > 1))
+    @test npoints(𝒫ₐ) == 2
+    @test npoints(𝒫ᵦ) == 2
+    @test npoints(𝒫ₐᵦ) == 1
+    @test 𝒫ₐ[:a] == [2,3]
+    @test 𝒫ₐ[:b] == [2,1]
+    @test 𝒫ᵦ[:a] == [1,2]
+    @test 𝒫ᵦ[:b] == [3,2]
+    @test 𝒫ₐᵦ[:a] == [2]
+    @test 𝒫ₐᵦ[:b] == [2]
+  end
 end

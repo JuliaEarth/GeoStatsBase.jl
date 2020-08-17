@@ -81,6 +81,15 @@ join(sdata₁::AbstractData, sdata₂::AbstractData) =
   join(sdata₁, sdata₂, VariableJoiner())
 
 """
+    filter(pred, sdata)
+
+Filter spatial data `sdata` using predicate function `pred`.
+
+See [`PredicateFilter`](@ref) for more details.
+"""
+filter(pred, sdata::AbstractData) = filter(sdata, PredicateFilter(pred))
+
+"""
     uniquecoords(sdata; agg=Dict())
 
 Filter spatial data `sdata` to produce a new data
