@@ -17,9 +17,9 @@ function filter(sdata, filt::PredicateFilter)
   𝒯 = values(sdata)
   𝒟 = domain(sdata)
 
-  # use row table view
+  # row table view
   ctor = Tables.materializer(𝒯)
-  rows = Tables.rowtable(𝒯)
+  rows = Tables.rows(𝒯)
 
   # locations to retain
   locs = findall(filt.pred, rows)
