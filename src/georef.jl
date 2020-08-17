@@ -14,7 +14,7 @@ georef(table, domain) = SpatialData(domain, table)
 
 Georeference `table` on a `PointSet(coords)`.
 """
-georef(table, coords::AbstractMatrix) = georef(table, PointSet(coords))
+georef(table, coords::AbstractVecOrMat) = georef(table, PointSet(coords))
 
 """
     georef(table, coordnames)
