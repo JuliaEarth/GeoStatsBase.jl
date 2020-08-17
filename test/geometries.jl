@@ -1,6 +1,6 @@
-@testset "Regions" begin
+@testset "Geometries" begin
   @testset "Rectangle" begin
-    r = RectangleRegion((1.,1.), (2.,3.))
+    r = Rectangle((1.,1.), (2.,3.))
     @test GeoStatsBase.center(r) == [3/2, 4/2]
     @test lowerleft(r) == [1., 1.]
     @test upperright(r) == [2., 3.]

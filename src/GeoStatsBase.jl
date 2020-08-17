@@ -59,7 +59,7 @@ include("setops.jl")
 include("macros.jl")
 include("paths.jl")
 include("trends.jl")
-include("regions.jl")
+include("geometries.jl")
 include("distances.jl")
 include("neighborhoods.jl")
 include("neighborsearch.jl")
@@ -199,8 +199,8 @@ export
   traverse,
 
   # regions
-  AbstractRegion,
-  RectangleRegion,
+  AbstractGeometry,
+  Rectangle,
   center,
   lowerleft,
   upperright,

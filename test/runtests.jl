@@ -43,7 +43,7 @@ testfiles = [
   "filtering.jl",
   "paths.jl",
   "trends.jl",
-  "regions.jl",
+  "geometries.jl",
   "neighborhoods.jl",
   "neighborsearch.jl",
   "learning.jl",

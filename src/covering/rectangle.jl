@@ -10,7 +10,10 @@ bounding rectangle (or bounding box).
 """
 struct RectangleCoverer <: AbstractCoverer end
 
-function cover(domain::AbstractDomain{T,N}, coverer::RectangleCoverer) where {N,T}
+function cover(domain, coverer::RectangleCoverer)
+  N = ndims(domain)
+  T = coordtype(domain)
+
   lowerleft  = MVector(ntuple(i->typemax(T), N))
   upperright = MVector(ntuple(i->typemin(T), N))
 
@@ -23,12 +26,12 @@ function cover(domain::AbstractDomain{T,N}, coverer::RectangleCoverer) where {N,
     end
   end
 
-  RectangleRegion(Tuple(lowerleft), Tuple(upperright))
+  Rectangle(lowerleft, upperright)
 end
 
 function cover(grid::RegularGrid, coverer::RectangleCoverer)
   lowerleft  = origin(grid)
   upperright = origin(grid) .+ (size(grid) .- 1) .* spacing(grid)
 
-  RectangleRegion(lowerleft, upperright)
+  Rectangle(lowerleft, upperright)
 end

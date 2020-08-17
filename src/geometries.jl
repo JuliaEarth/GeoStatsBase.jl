@@ -3,13 +3,13 @@
 # ------------------------------------------------------------------
 
 """
-    AbstractRegion
+    AbstractGeometry{T,N}
 
-A region in a `N`-dimensional space with coordinates of type `T`.
+A geometry in a `N`-dimensional space with coordinates of type `T`.
 """
-abstract type AbstractRegion{T,N} end
+abstract type AbstractGeometry{T,N} end
 
 #------------------
 # IMPLEMENTATIONS
 #------------------
-include("regions/rectangle.jl")
+include("geometries/rectangle.jl")
