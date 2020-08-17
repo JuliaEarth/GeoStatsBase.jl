@@ -51,7 +51,7 @@ function error(solver::AbstractLearningSolver,
   folds  = subsets(partition(sdata, partitioner))
   nfolds = length(folds)
 
-  solutions = pmap(1:nfolds) do k
+  solutions = map(1:nfolds) do k
     # source and target indices
     sinds = [ind for i in vcat(1:k-1, k+1:nfolds) for ind in folds[i]]
     tinds = folds[k]
@@ -65,7 +65,7 @@ function error(solver::AbstractLearningSolver,
     solve(subproblem, solver)
   end
 
-  result = pmap(ovars) do var
+  result = map(ovars) do var
     losses = map(1:nfolds) do k
       hold = view(sdata, folds[k])
       y = hold[var]

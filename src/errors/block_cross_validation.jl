@@ -46,7 +46,7 @@ function error(solver::AbstractLearningSolver,
   neighbors = blocks[:neighbors]
   allblocks = 1:length(blocks)
 
-  solutions = pmap(allblocks) do b
+  solutions = map(allblocks) do b
     # source and target blocks
     sblocks = setdiff(allblocks, vcat(neighbors[b], b))
     tblocks = [b]
@@ -62,7 +62,7 @@ function error(solver::AbstractLearningSolver,
     solve(subproblem, solver)
   end
 
-  result = pmap(ovars) do var
+  result = map(ovars) do var
     losses = map(allblocks) do b
       dview = view(sdata, bsubsets[b])
       y = dview[var]

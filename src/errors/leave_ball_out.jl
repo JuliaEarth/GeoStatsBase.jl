@@ -49,7 +49,7 @@ function error(solver::AbstractLearningSolver,
   # pre-allocate memory for coordinates
   coords = MVector{ndims(sdata),coordtype(sdata)}(undef)
 
-  solutions = pmap(1:npoints(sdata)) do i
+  solutions = map(1:npoints(sdata)) do i
     coordinates!(coords, sdata, i)
 
     # points inside and outside ball
@@ -63,7 +63,7 @@ function error(solver::AbstractLearningSolver,
     solve(subproblem, solver)
   end
 
-  result = pmap(ovars) do var
+  result = map(ovars) do var
     y = [sdata[i,var] for i in 1:npoints(sdata)]
     ŷ = [solutions[i][1,var] for i in 1:npoints(sdata)]
     var => value(loss[var], y, ŷ, AggMode.Mean())

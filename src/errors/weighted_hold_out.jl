@@ -44,7 +44,7 @@ function error(solver::AbstractLearningSolver,
   # weight hold-out set
   w = weight(hold, eestimator.weighter)
 
-  result = pmap(ovars) do var
+  result = map(ovars) do var
     y = hold[var]
     ŷ = solution[var]
     var => value(loss[var], y, ŷ, AggMode.WeightedSum(w)) /length(y)

@@ -39,7 +39,7 @@ function error(solver::AbstractLearningSolver,
   # weight source data
   weights = weight(sdata, eestimator.weighter)
 
-  results = pmap(1:b) do _
+  results = map(1:b) do _
     # create bootstrap sample
     sinds = sample(1:n, n, replace=true)
     binds = sample(1:n, weights, n, replace=true)
