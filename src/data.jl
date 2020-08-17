@@ -23,6 +23,19 @@ Return the values of spatial data `sdata` as a table.
 """
 Base.values(sdata::AbstractData) = sdata.table
 
+# -----------
+# TABLES API
+# -----------
+
+Tables.istable(::Type{<:AbstractData}) = true
+Tables.schema(sdata::AbstractData) = Tables.schema(sdata.table)
+Tables.rowaccess(sdata::AbstractData) = Tables.rowaccess(sdata.table)
+Tables.columnaccess(sdata::AbstractData) = Tables.columnaccess(sdata.table)
+Tables.rows(sdata::AbstractData) = Tables.rows(sdata.table)
+Tables.columns(sdata::AbstractData) = Tables.columns(sdata.table)
+Tables.columnnames(sdata::AbstractData) = Tables.columnnames(sdata.table)
+Tables.getcolumn(sdata::AbstractData, c::Symbol) = Tables.getcolumn(sdata.table, c)
+
 # --------------
 # DATAFRAME API
 # --------------
@@ -40,18 +53,6 @@ Base.getindex(sdata::AbstractData, var::Symbol) =
   getindex(sdata.table, :, var)
 Base.setindex!(sdata::AbstractData, vals, var::Symbol) =
   setindex!(sdata.table, vals, :, var)
-
-# ---------
-# VIEW API
-# ---------
-
-Base.view(sdata::AbstractData, inds::AbstractVector{Int}) =
-  DataView(sdata, inds, collect(name.(variables(sdata))))
-Base.view(sdata::AbstractData, vars::AbstractVector{Symbol}) =
-  DataView(sdata, 1:npoints(sdata), vars)
-Base.view(sdata::AbstractData, inds::AbstractVector{Int},
-                               vars::AbstractVector{Symbol}) =
-  DataView(sdata, inds, vars)
 
 # -------------
 # ITERATOR API
@@ -71,16 +72,17 @@ Base.getindex(sdata::AbstractData, ind::Int) =
 Base.firstindex(sdata::AbstractData) = 1
 Base.lastindex(sdata::AbstractData) = npoints(sdata)
 
-# -----------
-# TABLES API
-# -----------
+# ---------
+# VIEW API
+# ---------
 
-Tables.istable(::Type{<:AbstractData}) = true
-Tables.rowaccess(sdata::AbstractData) = Tables.rowaccess(sdata.table)
-Tables.columnaccess(sdata::AbstractData) = Tables.columnaccess(sdata.table)
-Tables.rows(sdata::AbstractData) = Tables.rows(sdata.table)
-Tables.columns(sdata::AbstractData) = Tables.columns(sdata.table)
-Tables.schema(sdata::AbstractData) = Tables.schema(sdata.table)
+Base.view(sdata::AbstractData, inds::AbstractVector{Int}) =
+  DataView(sdata, inds, collect(name.(variables(sdata))))
+Base.view(sdata::AbstractData, vars::AbstractVector{Symbol}) =
+  DataView(sdata, 1:npoints(sdata), vars)
+Base.view(sdata::AbstractData, inds::AbstractVector{Int},
+                               vars::AbstractVector{Symbol}) =
+  DataView(sdata, inds, vars)
 
 # ------------
 # IO methods

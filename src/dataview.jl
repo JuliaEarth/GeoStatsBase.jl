@@ -31,6 +31,18 @@ variables(dv::DataView) = variables(getindex(dv.data, dv.inds, dv.vars))
 
 Base.values(dv::DataView) = getindex(values(dv.data), dv.inds, dv.vars)
 
+# -----------
+# TABLES API
+# -----------
+
+Tables.schema(dv::DataView) = Tables.schema(getindex(dv.data, dv.inds, dv.vars))
+Tables.rowaccess(dv::DataView) = Tables.rowaccess(dv.data)
+Tables.columnaccess(dv::DataView) = Tables.columnaccess(dv.data)
+Tables.rows(dv::DataView) = Tables.rows(getindex(dv.data, dv.inds, dv.vars))
+Tables.columns(dv::DataView) = Tables.columns(getindex(dv.data, dv.inds, dv.vars))
+Tables.columnnames(dv::DataView) = Tables.columnnames(getindex(dv.data, dv.inds, dv.vars))
+Tables.getcolumn(dv::DataView, c::Symbol) = Tables.getcolumn(getindex(dv.data, dv.inds, dv.vars), c)
+
 # --------------
 # DATAFRAME API
 # --------------
@@ -57,16 +69,6 @@ Base.setindex!(dv::DataView, vals, var::Symbol) =
 
 Base.getindex(dv::DataView, ind::Int) =
   getindex(dv.data, dv.inds[ind], dv.vars)
-
-# -----------
-# TABLES API
-# -----------
-
-Tables.rowaccess(dv::DataView) = Tables.rowaccess(dv.data)
-Tables.columnaccess(dv::DataView) = Tables.columnaccess(dv.data)
-Tables.rows(dv::DataView) = Tables.rows(getindex(dv.data, dv.inds, dv.vars))
-Tables.columns(dv::DataView) = Tables.columns(getindex(dv.data, dv.inds, dv.vars))
-Tables.schema(dv::DataView) = Tables.schema(getindex(dv.data, dv.inds, dv.vars))
 
 # ------------
 # IO methods
