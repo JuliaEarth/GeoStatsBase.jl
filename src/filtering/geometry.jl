@@ -22,17 +22,12 @@ function _inside(object, r::Rectangle)
   N = ndims(object)
   T = coordtype(object)
 
-  lo = origin(r)
-  up = lo + sides(r)
-
   x = MVector{N,T}(undef)
 
   inds = Vector{Int}()
   for i in 1:npoints(object)
     coordinates!(x, object, i)
-    if all(lo .≤ x .≤ up)
-        push!(inds, i)
-    end
+    x ∈ r && push!(inds, i)
   end
 
   inds

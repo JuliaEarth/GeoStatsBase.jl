@@ -18,6 +18,8 @@ Rectangle(origin::NTuple{N,T}, sides::NTuple{N,T}) where {N,T} =
 Rectangle(origin::MVector{N,T}, sides::MVector{N,T}) where {N,T} =
   Rectangle{T,N}(origin, sides)
 
+in(x, r::Rectangle) = all(r.origin .≤ x .≤ r.origin + r.sides)
+
 """
     origin(rectangle)
 
