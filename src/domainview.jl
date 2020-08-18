@@ -23,6 +23,8 @@ npoints(dv::DomainView) = length(dv.locations)
 coordinates!(buff::AbstractVector, dv::DomainView, location::Int) =
   coordinates!(buff, dv.domain, dv.locations[location])
 
+Base.collect(dv::DomainView) = PointSet(coordinates(dv))
+
 # ------------
 # IO methods
 # ------------

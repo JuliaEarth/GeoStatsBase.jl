@@ -34,6 +34,7 @@ testfiles = [
   "distributions.jl",
   "data.jl",
   "domains.jl",
+  "views.jl",
   "georef.jl",
   "setops.jl",
   "partitioning.jl",
