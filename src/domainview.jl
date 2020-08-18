@@ -3,25 +3,22 @@
 # ------------------------------------------------------------------
 
 """
-    DomainView(domain, locations)
+    DomainView(domain, inds)
 
-Return a view of `domain` at `locations`.
-
-### Notes
-
-This type implements the `AbstractDomain` interface.
+Return a view of `domain` at `inds`.
 """
-struct DomainView{T,N,
-                  D<:AbstractDomain{T,N},
-                  I<:AbstractVector{Int}} <: AbstractDomain{T,N}
-  domain::D
-  locations::I
+struct DomainView{T,N} <: AbstractDomain{T,N}
+  domain
+  inds
 end
 
-npoints(dv::DomainView) = length(dv.locations)
+DomainView(domain, inds) =
+  DomainView{coordtype(domain),ndims(domain)}(domain, inds)
 
-coordinates!(buff::AbstractVector, dv::DomainView, location::Int) =
-  coordinates!(buff, dv.domain, dv.locations[location])
+npoints(dv::DomainView) = length(dv.inds)
+
+coordinates!(buff::AbstractVector, dv::DomainView, ind::Int) =
+  coordinates!(buff, dv.domain, dv.inds[ind])
 
 Base.collect(dv::DomainView) = PointSet(coordinates(dv))
 
