@@ -26,4 +26,14 @@
     @test 𝒫ₐᵦ[:a] == [2]
     @test 𝒫ₐᵦ[:b] == [2]
   end
+
+  @testset "GeometryFilter" begin
+    𝒟 = RegularGrid(10,10)
+    𝒮 = georef((z=rand(100),), 𝒟)
+    ℱ = GeometryFilter(Rectangle((1.,1.),(10.,10.)))
+    𝒫 = filter(𝒟, ℱ)
+    𝒱 = filter(𝒮, ℱ)
+    @test npoints(𝒫) == 81
+    @test npoints(𝒫) == 81
+  end
 end

@@ -295,6 +295,7 @@ export
   AbstractFilter,
   UniqueCoordsFilter,
   PredicateFilter,
+  GeometryFilter,
 
   # trends
   polymat,

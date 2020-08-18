@@ -12,10 +12,11 @@ struct GeometryFilter{G} <: AbstractFilter
   geometry::G
 end
 
-Base.filter(object, filt::GeometryFilter) = _filter(object, filt.geometry)
+Base.filter(object, filt::GeometryFilter) =
+  _filter(object, filt.geometry)
 
 _filter(object, geometry::AbstractGeometry) =
-  view(object, _inside(object, geometry))
+  collect(view(object, _inside(object, geometry)))
 
 function _inside(object, r::Rectangle)
   N = ndims(object)
