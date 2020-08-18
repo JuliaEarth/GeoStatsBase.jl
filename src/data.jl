@@ -80,8 +80,7 @@ Base.view(sdata::AbstractData, inds::AbstractVector{Int}) =
   DataView(sdata, inds, collect(name.(variables(sdata))))
 Base.view(sdata::AbstractData, vars::AbstractVector{Symbol}) =
   DataView(sdata, 1:npoints(sdata), vars)
-Base.view(sdata::AbstractData, inds::AbstractVector{Int},
-                               vars::AbstractVector{Symbol}) =
+Base.view(sdata::AbstractData, inds, vars) =
   DataView(sdata, inds, vars)
 
 # ------------
