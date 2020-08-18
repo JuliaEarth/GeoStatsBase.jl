@@ -3,22 +3,18 @@
 # ------------------------------------------------------------------
 
 """
-    DataView(spatialdata, inds, vars)
+    DataView(sdata, inds, vars)
 
-Return a view of `spatialdata` at `inds` and `vars`.
-
-### Notes
-
-This type implements the `AbstractData` interface.
+Return a view of spatial data `sdata` at `inds` and `vars`.
 """
-struct DataView{T,N,
-                S<:AbstractData{T,N},
-                I<:AbstractVector{Int},
-                V<:AbstractVector{Symbol}} <: AbstractData{T,N}
-  data::S
-  inds::I
-  vars::V
+struct DataView{T,N} <: AbstractData{T,N}
+  data
+  inds
+  vars
 end
+
+DataView(data, inds, vars) =
+  DataView{coordtype(data),ndims(data)}(data, inds, vars)
 
 domain(dv::DataView) = view(domain(dv.data), dv.inds)
 
