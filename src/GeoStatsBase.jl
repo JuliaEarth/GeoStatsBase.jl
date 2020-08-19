@@ -55,7 +55,6 @@ include("domainview.jl")
 include("data.jl")
 include("dataview.jl")
 include("georef.jl")
-include("setops.jl")
 include("macros.jl")
 include("paths.jl")
 include("trends.jl")
@@ -72,6 +71,8 @@ include("discretizing.jl")
 include("sampling.jl")
 include("joining.jl")
 include("filtering.jl")
+include("setops.jl")
+include("geoops.jl")
 include("learning.jl")
 include("mappers.jl")
 include("problems.jl")
@@ -113,6 +114,9 @@ export
 
   # set operations
   ⊔,
+
+  # geometry operations
+  inside,
 
   # mappers
   AbstractMapper,
@@ -295,7 +299,6 @@ export
   AbstractFilter,
   UniqueCoordsFilter,
   PredicateFilter,
-  GeometryFilter,
 
   # trends
   polymat,
