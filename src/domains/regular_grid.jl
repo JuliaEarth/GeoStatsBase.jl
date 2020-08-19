@@ -52,16 +52,19 @@ struct RegularGrid{T,N} <: AbstractDomain{T,N}
   end
 end
 
+RegularGrid(dims::Dims{N}, origin::Vec{N,T}, spacing::Vec{N,T}) where {N,T} =
+  RegularGrid{T,N}(dims, origin, spacing)
+
 RegularGrid(dims::Dims{N}, origin::NTuple{N,T}, spacing::NTuple{N,T}) where {N,T} =
   RegularGrid{T,N}(dims, origin, spacing)
 
-RegularGrid(start::SVector{N,T}, finish::SVector{N,T};
+RegularGrid(start::Vec{N,T}, finish::Vec{N,T};
             dims::Dims{N}=ntuple(i->100, N)) where {N,T} =
   RegularGrid{T,N}(dims, start, @. (finish - start) / (dims - 1))
 
 RegularGrid(start::NTuple{N,T}, finish::NTuple{N,T};
             dims::Dims{N}=ntuple(i->100, N)) where {N,T} =
-  RegularGrid(SVector{N,T}(start), SVector{N,T}(finish); dims=dims)
+  RegularGrid(SVector(start), SVector(finish); dims=dims)
 
 RegularGrid{T}(dims::Dims{N}) where {N,T} =
   RegularGrid{T,N}(dims, ntuple(i->zero(T), N), ntuple(i->one(T), N))

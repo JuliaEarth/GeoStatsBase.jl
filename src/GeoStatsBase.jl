@@ -36,7 +36,9 @@ import ScientificTypes: Scitype, scitype
 import Distances: evaluate
 import DataFrames: groupby
 
+# aliases
 const MI = MLJModelInterface
+const Vec{N,T} = Union{SVector{N,T},MVector{N,T}}
 
 # convention of scientific types
 include("convention.jl")

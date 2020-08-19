@@ -35,14 +35,13 @@ function inside(grid::RegularGrid, rect::Rectangle)
   rlo, rup = ro, @. ro + rs
 
   # Cartesian indices of new corners
-  ilo = @. ceil(Int, (rlo - lo) / sp)
-  iup = @. min(floor(Int, (rup - lo) / sp), sz)
+  ilo = @. max(ceil(Int, (rlo - lo) / sp) + 1, 1)
+  iup = @. min(floor(Int, (rup - lo) / sp) + 1, sz)
 
   # corners in real coordinates
   linear = LinearIndices(sz)
-  start  = coordinates(grid, linear[ilo...])
-  finish = coordinates(grid, linear[iup...])
-  dims   = @. iup - ilo + 1
+  orig   = coordinates(grid, linear[ilo...])
+  dims   = Dims(@. iup - ilo + 1)
 
-  RegularGrid(Tuple(start), Tuple(finish), dims=Tuple(dims))
+  RegularGrid(dims, orig, sp)
 end
