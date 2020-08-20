@@ -37,6 +37,7 @@ testfiles = [
   "views.jl",
   "georef.jl",
   "setops.jl",
+  "geoops.jl",
   "partitioning.jl",
   "weighting.jl",
   "sampling.jl",
