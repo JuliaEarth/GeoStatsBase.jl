@@ -50,16 +50,20 @@ Optionally, specify the variable `v` and the block side `s`.
 """
 quantile(d::AbstractData, p) = quantile(d, p, median_heuristic(d))
 
-"""
-    EmpiricalHistogram(sdata)
-
-Spatial histogram of spatial data `sdata`.
-"""
 EmpiricalHistogram(d, v::Symbol, w::AbstractWeighter) = fit(Histogram, d[v], weight(d, w))
 EmpiricalHistogram(d, v::Symbol, s::Number) = EmpiricalHistogram(d, v, BlockWeighter(ntuple(i->s,ndims(d))))
 EmpiricalHistogram(d, v::Symbol) = EmpiricalHistogram(d, v, median_heuristic(d))
 EmpiricalHistogram(d, w::AbstractWeighter) = Dict(v => EmpiricalHistogram(d, v, w) for v in name.(variables(d)))
 EmpiricalHistogram(d, s::Number) = EmpiricalHistogram(d, BlockWeighter(ntuple(i->s,ndims(d))))
+
+"""
+    EmpiricalHistogram(sdata)
+    EmpiricalHistogram(sdata, v)
+    EmpiricalHistogram(sdata, v, s)
+
+Spatial histogram of spatial data `sdata`. Optionally,
+specify the variable `v` and the block side `s`.
+"""
 EmpiricalHistogram(d) = EmpiricalHistogram(d, median_heuristic(d))
 
 function median_heuristic(d)
