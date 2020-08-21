@@ -28,8 +28,7 @@ function partition(object, partitioner::BlockPartitioner)
   @assert all(psides .≤ sides(bbox)) "invalid block sides"
 
   # bounding box properties
-  lo = origin(bbox)
-  up = lo + sides(bbox)
+  lo, up = extrema(bbox)
   ce = center(bbox)
 
   # find number of blocks to left and right

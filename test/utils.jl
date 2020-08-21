@@ -34,9 +34,7 @@
 
   @testset "boundbox" begin
     d = RegularGrid((10,10), (1.,1.), (1.,1.))
-    b = boundbox(d)
-    @test origin(b) == [1.,1.]
-    @test origin(b) + sides(b) == [10.,10.]
+    @test extrema(boundbox(d)) == ([1.,1.], [10.,10.])
   end
 
   @testset "join" begin

@@ -41,7 +41,7 @@
     𝒫 = PointSet([0. 2. 5. 7. 10.; 0. 3. 5. 6. 11.])
     𝒮 = georef((z=[1,2,3,4,5],), 𝒫)
     R1 = Rectangle((0.,0.), (5.,5.))
-    R2 = Rectangle((5.,5.), (5.,5.))
+    R2 = Rectangle((5.,5.), (10.,10.))
     I = inside(𝒫, R1)
     @test coordinates(I) == [0. 2. 5.; 0. 3. 5.]
     I = inside(𝒫, R2)
@@ -55,7 +55,7 @@
     𝒢 = RegularGrid(3,3)
     𝒮 = georef((z=1:9,), 𝒢)
     R1 = Rectangle((0.,0.),(1.,1.))
-    R2 = Rectangle((1.,1.),(1.,1.))
+    R2 = Rectangle((1.,1.),(2.,2.))
     R3 = Rectangle((0.,0.),(2.,2.))
     I = inside(𝒢, R1)
     @test I isa RegularGrid

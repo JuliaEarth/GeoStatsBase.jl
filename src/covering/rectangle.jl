@@ -26,11 +26,8 @@ function cover(domain, coverer::RectangleCoverer)
     end
   end
 
-  origin = lowerleft
-  sides  = upperright - lowerleft
-
-  Rectangle(origin, sides)
+  Rectangle(lowerleft, upperright)
 end
 
 cover(grid::RegularGrid, coverer::RectangleCoverer) =
-  Rectangle(origin(grid), (size(grid) .- 1) .* spacing(grid))
+  Rectangle(origin(grid), origin(grid) + (size(grid) .- 1) .* spacing(grid))

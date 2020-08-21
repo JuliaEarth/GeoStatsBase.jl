@@ -52,12 +52,10 @@ function _corners(grid::RegularGrid, rect::Rectangle)
   or = origin(grid)
   sp = spacing(grid)
   sz = size(grid)
-  ro = origin(rect)
-  rs = sides(rect)
 
   # lower left and upper right
   lo,  up  = or, @. or + (sz - 1)*sp
-  rlo, rup = ro, @. ro + rs
+  rlo, rup = extrema(rect)
 
   # Cartesian indices of new corners
   ilo = @. max(ceil(Int, (rlo - lo) / sp) + 1, 1)
