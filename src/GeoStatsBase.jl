@@ -47,9 +47,6 @@ function __init__()
   ScientificTypes.set_convention(GeoStats())
 end
 
-# basic graph utils
-include("graphs.jl")
-
 include("variables.jl")
 include("geotraits.jl")
 include("domains.jl")

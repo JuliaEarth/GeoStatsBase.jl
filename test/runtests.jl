@@ -29,7 +29,6 @@ include("dummy.jl")
 
 # list of tests
 testfiles = [
-  "graphs.jl",
   "distances.jl",
   "distributions.jl",
   "data.jl",

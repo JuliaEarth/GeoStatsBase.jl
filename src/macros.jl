@@ -2,6 +2,23 @@
 # Licensed under the ISC License. See LICENSE in the project root.
 # ------------------------------------------------------------------
 
+# connected component of adjacency matrix containing vertex
+function component(adjacency::AbstractMatrix{Int}, vertex::Int)
+  frontier = [vertex]
+  visited  = Int[]
+  # breadth-first search
+  while !isempty(frontier)
+    u = pop!(frontier)
+    push!(visited, u)
+    for v in findall(!iszero, adjacency[u,:])
+      if v ∉ visited
+        push!(frontier, v)
+      end
+    end
+  end
+  visited
+end
+
 """
     @metasolver solver solvertype body
 
