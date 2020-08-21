@@ -28,7 +28,7 @@ function search(xₒ::AbstractVector, searcher::NeighborhoodSearcher{O,N,T};
   neigh  = searcher.neigh
   locs   = mask ≠ nothing ? view(1:npoints(object), mask) : 1:npoints(object)
 
-  x = MVector{ndims(object),coordtype(object)}(undef)
+  x = MVector{ncoords(object),coordtype(object)}(undef)
 
   neighbors = Vector{Int}()
   @inbounds for loc in locs

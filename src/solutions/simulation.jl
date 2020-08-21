@@ -56,8 +56,8 @@ Base.lastindex(solution::SimulationSolution) = length(solution)
 # IO methods
 # ------------
 function Base.show(io::IO, solution::SimulationSolution)
-  dim = ndims(solution.domain)
-  print(io, "$(dim)D SimulationSolution")
+  N = ncoords(solution.domain)
+  print(io, "$(N)D SimulationSolution")
 end
 
 function Base.show(io::IO, ::MIME"text/plain", solution::SimulationSolution)

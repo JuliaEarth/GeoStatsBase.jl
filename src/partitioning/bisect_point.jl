@@ -24,7 +24,7 @@ BisectPointPartitioner(normal::NTuple{N,T}, point::NTuple{N,T}) where {T,N} =
  BisectPointPartitioner(SVector(normal), SVector(point))
 
 function partition(object, partitioner::BisectPointPartitioner)
-  N = ndims(object)
+  N = ncoords(object)
   T = coordtype(object)
   
   n = partitioner.normal

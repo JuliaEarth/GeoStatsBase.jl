@@ -8,7 +8,7 @@
 Return all locations of `object` that are inside `geometry`.
 """
 function inside(object, geom)
-  N = ndims(object)
+  N = ncoords(object)
   T = coordtype(object)
 
   x = MVector{N,T}(undef)

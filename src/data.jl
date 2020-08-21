@@ -10,7 +10,6 @@ Spatial data in a `N`-dimensional space with coordinates of type `T`.
 abstract type AbstractData{T,N} end
 
 geotype(::AbstractData) = GeoData()
-ndims(::AbstractData{T,N}) where {T,N} = N
 domain(data::AbstractData) = data.domain
 values(data::AbstractData) = data.table
 
@@ -114,7 +113,7 @@ function SpatialData(domain, table)
   nt = length(Tables.rows(table))
   @assert nd == nt "number of rows ≠ number of points"
   T = coordtype(domain)
-  N = ndims(domain)
+  N = ncoords(domain)
   𝒟 = typeof(domain)
   𝒯 = typeof(table)
   SpatialData{T,N,𝒟,𝒯}(domain, table)

@@ -10,7 +10,7 @@ Spatial domain in a `N`-dimensional space with coordinates of type `T`.
 abstract type AbstractDomain{T,N} end
 
 geotype(::AbstractDomain) = GeoDomain()
-ndims(::AbstractDomain{T,N}) where {T,N} = N
+ncoords(::AbstractDomain{T,N}) where {T,N} = N
 coordtype(::AbstractDomain{T,N}) where {T,N} = T
 
 """

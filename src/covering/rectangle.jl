@@ -11,7 +11,7 @@ bounding rectangle (or bounding box).
 struct RectangleCoverer <: AbstractCoverer end
 
 function cover(domain, coverer::RectangleCoverer)
-  N = ndims(domain)
+  N = ncoords(domain)
   T = coordtype(domain)
 
   lowerleft  = MVector(ntuple(i->typemax(T), N))

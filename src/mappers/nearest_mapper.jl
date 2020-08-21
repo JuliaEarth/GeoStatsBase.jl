@@ -11,7 +11,7 @@ point in the domain.
 struct NearestMapper <: AbstractMapper end
 
 function map(sdata, sdomain, targetvars, mapper::NearestMapper)
-  N = ndims(sdata)
+  N = ncoords(sdata)
   T = coordtype(sdata)
 
   @assert targetvars ⊆ name.(variables(sdata)) "target variables must be present in spatial data"

@@ -35,7 +35,7 @@ function traverse(object, path::SourcePath)
   batches = Iterators.partition(others, batchsize)
 
   # pre-allocate memory for coordinates
-  X = Matrix{coordtype(object)}(undef, ndims(object), batchsize)
+  X = Matrix{coordtype(object)}(undef, ncoords(object), batchsize)
 
   # compute distances to sources
   dists = []

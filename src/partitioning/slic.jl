@@ -83,7 +83,7 @@ end
 
 function slic_spacing(sdata, partitioner)
   V = volume(boundbox(sdata))
-  d = ndims(sdata)
+  d = ncoords(sdata)
   k = partitioner.k
   (V/k) ^ (1/d)
 end

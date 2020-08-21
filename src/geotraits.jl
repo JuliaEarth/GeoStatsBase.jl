@@ -16,7 +16,7 @@ A [`GeoCollection`](@ref) that represents geospatial domains.
 
 ## Traits
 
-* [`ndims`](@ref)       - number of dimensions
+* [`ncoords`](@ref)     - number of coordinates
 * [`npoints`](@ref)     - number of elements
 * [`coordtype`](@ref)   - coordinate type
 * [`coordinate!`](@ref) - coordinates
@@ -44,11 +44,12 @@ Return the geospatial type of the `object`.
 geotype
 
 """
-    ndims(object)
+    ncoords(object)
 
 Return the number of dimensions of `object`.
 """
-ndims
+ncoords(obj) = ncoords(geotype(obj), obj)
+ncoords(::GeoData, obj) = ncoords(domain(obj))
 
 """
     coordtype(object)
@@ -107,7 +108,7 @@ end
 Return the coordinates of the `ind` in the `object`.
 """
 function coordinates(obj, ind::Int)
-  N = ndims(obj)
+  N = ncoords(obj)
   T = coordtype(obj)
   x = MVector{N,T}(undef)
   coordinates!(x, obj, ind)
@@ -120,7 +121,7 @@ end
 Return the coordinates of `inds` in the `object`.
 """
 function coordinates(obj, inds::AbstractVector{Int})
-  N = ndims(obj)
+  N = ncoords(obj)
   T = coordtype(obj)
   X = Matrix{T}(undef, N, length(inds))
   coordinates!(X, obj, inds)

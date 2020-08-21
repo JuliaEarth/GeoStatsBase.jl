@@ -171,9 +171,9 @@ nreals(problem::SimulationProblem) = problem.nreals
 # IO methods
 # ------------
 function Base.show(io::IO, problem::SimulationProblem)
-  dim = ndims(problem.sdomain)
+  N = ncoords(problem.sdomain)
   kind = hasdata(problem) ? "conditional" : "unconditional"
-  print(io, "$(dim)D SimulationProblem ($kind)")
+  print(io, "$(N)D SimulationProblem ($kind)")
 end
 
 function Base.show(io::IO, ::MIME"text/plain", problem::SimulationProblem)

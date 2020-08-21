@@ -106,8 +106,8 @@ datamap(problem::EstimationProblem) = problem.mappings
 # IO methods
 # ------------
 function Base.show(io::IO, problem::EstimationProblem)
-  dim = ndims(problem.sdomain)
-  print(io, "$(dim)D EstimationProblem")
+  N = ncoords(problem.sdomain)
+  print(io, "$(N)D EstimationProblem")
 end
 
 function Base.show(io::IO, ::MIME"text/plain", problem::EstimationProblem)

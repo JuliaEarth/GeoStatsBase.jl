@@ -24,8 +24,8 @@ Base.getindex(solution::EstimationSolution, var::Symbol) =
 # IO methods
 # ------------
 function Base.show(io::IO, solution::EstimationSolution)
-  dim = ndims(solution.domain)
-  print(io, "$(dim)D EstimationSolution")
+  N = ncoords(solution.domain)
+  print(io, "$(N)D EstimationSolution")
 end
 
 function Base.show(io::IO, ::MIME"text/plain", solution::EstimationSolution)

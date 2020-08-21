@@ -13,7 +13,7 @@ struct DomainView{T,N} <: AbstractDomain{T,N}
 end
 
 DomainView(domain, inds) =
-  DomainView{coordtype(domain),ndims(domain)}(domain, inds)
+  DomainView{coordtype(domain),ncoords(domain)}(domain, inds)
 
 npoints(dv::DomainView) = length(dv.inds)
 
@@ -26,7 +26,7 @@ Base.collect(dv::DomainView) = PointSet(coordinates(dv))
 # IO methods
 # ------------
 function Base.show(io::IO, dv::DomainView)
-  N = ndims(dv)
+  N = ncoords(dv)
   T = coordtype(dv)
   npts = npoints(dv)
   print(io, "$npts DomainView{$T,$N}")

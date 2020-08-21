@@ -67,6 +67,8 @@ function solvesingle(problem::SimulationProblem, covars::NamedTuple,
   # retrieve problem info
   pdata = data(problem)
   pdomain = domain(problem)
+  N = ncoords(pdomain)
+  T = coordtype(pdomain)
 
   varreals = map(covars.names) do var
     # unpack preprocessed parameters
@@ -79,11 +81,11 @@ function solvesingle(problem::SimulationProblem, covars::NamedTuple,
     realization = Vector{V}(undef, npoints(pdomain))
 
     # pre-allocate memory for coordinates
-    xₒ = MVector{ndims(pdomain),coordtype(pdomain)}(undef)
+    xₒ = MVector{N,T}(undef)
 
     # pre-allocate memory for neighbors coordinates
     neighbors = Vector{Int}(undef, maxneighbors)
-    X = Matrix{coordtype(pdomain)}(undef, ndims(pdomain), maxneighbors)
+    X = Matrix{T}(undef, N, maxneighbors)
 
     # keep track of simulated locations
     simulated = falses(npoints(pdomain))

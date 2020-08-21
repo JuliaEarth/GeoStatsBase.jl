@@ -148,7 +148,7 @@ function partition(object, partitioner::AbstractPredicatePartitioner)
 end
 
 function partition(object, partitioner::AbstractSpatialPredicatePartitioner)
-  N = ndims(object)
+  N = ncoords(object)
   T = coordtype(object)
 
   # pre-allocate memory for coordinates

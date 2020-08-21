@@ -23,7 +23,7 @@ BallSampler(radius; metric=Euclidean(), maxsize=nothing) =
   BallSampler(radius, metric, maxsize)
 
 function sample(object, sampler::BallSampler)
-  N = ndims(object)
+  N = ncoords(object)
   T = coordtype(object)
   radius = sampler.radius
   metric = sampler.metric

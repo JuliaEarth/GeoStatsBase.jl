@@ -40,7 +40,7 @@ function error(solver::AbstractLearningSolver,
     end
   end
 
-  bsides    = length(sides) > 1 ? sides : ntuple(i->sides, ndims(sdata))
+  bsides    = length(sides) > 1 ? sides : ntuple(i->sides, ncoords(sdata))
   blocks    = partition(sdata, BlockPartitioner(bsides))
   bsubsets  = subsets(blocks)
   neighbors = blocks[:neighbors]

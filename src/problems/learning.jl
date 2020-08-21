@@ -65,8 +65,8 @@ task(problem::LearningProblem) = problem.task
 # IO methods
 # ------------
 function Base.show(io::IO, problem::LearningProblem)
-  dim = ndims(problem.sdata)
-  print(io, "$(dim)D LearningProblem")
+  N = ncoords(problem.sdata)
+  print(io, "$(N)D LearningProblem")
 end
 
 function Base.show(io::IO, ::MIME"text/plain", problem::LearningProblem)

@@ -47,7 +47,7 @@ function error(solver::AbstractLearningSolver,
   searcher = NeighborhoodSearcher(sdata, ball)
 
   # pre-allocate memory for coordinates
-  coords = MVector{ndims(sdata),coordtype(sdata)}(undef)
+  coords = MVector{ncoords(sdata),coordtype(sdata)}(undef)
 
   solutions = map(1:npoints(sdata)) do i
     coordinates!(coords, sdata, i)

@@ -19,7 +19,7 @@ BlockPartitioner(sides::Vararg{T,N}) where {N,T} =
   BlockPartitioner(sides)
 
 function partition(object, partitioner::BlockPartitioner)
-  N = ndims(object)
+  N = ncoords(object)
   T = coordtype(object)
 
   psides = partitioner.sides

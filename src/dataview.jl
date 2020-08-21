@@ -14,7 +14,7 @@ struct DataView{T,N} <: AbstractData{T,N}
 end
 
 DataView(data, inds, vars) =
-  DataView{coordtype(data),ndims(data)}(data, inds, vars)
+  DataView{coordtype(data),ncoords(data)}(data, inds, vars)
 
 domain(dv::DataView) = view(domain(dv.data), dv.inds)
 
@@ -72,7 +72,7 @@ Base.getindex(dv::DataView, ind::Int) =
 # IO methods
 # ------------
 function Base.show(io::IO, dv::DataView)
-  N = ndims(dv)
+  N = ncoords(dv)
   T = coordtype(dv)
   npts = npoints(dv)
   print(io, "$npts DataView{$T,$N}")

@@ -1,7 +1,7 @@
 @testset "Domains" begin
   @testset "Curve" begin
     c = Curve([j for i in 1:3, j in 1:5])
-    @test ndims(c) == 3
+    @test ncoords(c) == 3
     @test npoints(c) == 5
     @test coordtype(c) == Int
     @test coordinates(c, 1) == [1, 1, 1]
@@ -42,7 +42,7 @@
 
   @testset "RegularGrid" begin
     grid = RegularGrid{Float32}(200,100)
-    @test ndims(grid) == 2
+    @test ncoords(grid) == 2
     @test coordtype(grid) == Float32
     @test size(grid) == (200,100)
     @test npoints(grid) == 200*100
@@ -51,7 +51,7 @@
     @test spacing(grid) == [1f0, 1f0]
 
     grid = RegularGrid((200,100,50), (0.,0.,0.), (1.,1.,1.))
-    @test ndims(grid) == 3
+    @test ncoords(grid) == 3
     @test coordtype(grid) == Float64
     @test size(grid) == (200,100,50)
     @test npoints(grid) == 200*100*50
@@ -60,7 +60,7 @@
     @test spacing(grid) == [1.,1.,1.]
 
     grid = RegularGrid((-1.,-1.), (1.,1.), dims=(200,100))
-    @test ndims(grid) == 2
+    @test ncoords(grid) == 2
     @test coordtype(grid) == Float64
     @test size(grid) == (200,100)
     @test npoints(grid) == 200*100
