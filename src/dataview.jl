@@ -18,14 +18,14 @@ DataView(data, inds, vars) =
 
 domain(dv::DataView) = view(domain(dv.data), dv.inds)
 
+values(dv::DataView) = getindex(values(dv.data), dv.inds, dv.vars)
+
 npoints(dv::DataView) = length(dv.inds)
 
 coordinates!(buff::AbstractVector, dv::DataView, ind::Int) =
   coordinates!(buff, dv.data, dv.inds[ind])
 
 variables(dv::DataView) = variables(getindex(dv.data, dv.inds, dv.vars))
-
-Base.values(dv::DataView) = getindex(values(dv.data), dv.inds, dv.vars)
 
 Base.collect(dv::DataView) = georef(values(dv), coordinates(dv))
 

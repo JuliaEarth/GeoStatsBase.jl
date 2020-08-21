@@ -2,9 +2,38 @@
 # Licensed under the ISC License. See LICENSE in the project root.
 # ------------------------------------------------------------------
 
-# GEOSPATIAL TRAITS
+"""
+    GeoCollection
+
+An indexable collection of georeferenced elements.
+"""
 abstract type GeoCollection end
+
+"""
+    GeoDomain
+
+A [`GeoCollection`](@ref) that represents geospatial domains.
+
+## Traits
+
+* [`ndims`](@ref)       - number of dimensions
+* [`npoints`](@ref)     - number of elements
+* [`coordtype`](@ref)   - coordinate type
+* [`coordinate!`](@ref) - coordinates
+"""
 struct GeoDomain <: GeoCollection end
+
+"""
+    GeoData
+
+A [`GeoCollection`](@ref) that represents geospatial data, i.e.
+a geospatial `domain` together with a data table of `values`.
+
+## Traits
+
+* [`domain`](@ref)      - spatial domain
+* [`values`](@ref)      - data table
+"""
 struct GeoData <: GeoCollection end
 
 """
@@ -26,16 +55,22 @@ ndims
 
 Return the coordinate type of `object`.
 """
-coordtype
+coordtype(obj) = coordtype(geotype(obj), obj)
+coordtype(::GeoData, obj) = coordtype(domain(obj))
 
 """
     domain(object)
 
 Return underlying domain of the `object`.
 """
-domain(obj) = domain(geotype(obj), obj)
-domain(::GeoCollection, obj) = obj.domain
-domain(::GeoDomain, obj) = obj
+domain
+
+"""
+    values(data)
+
+Return the values of geospatial `data` as a table.
+"""
+values
 
 """
     npoints(object)

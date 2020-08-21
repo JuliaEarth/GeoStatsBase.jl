@@ -11,7 +11,8 @@ abstract type AbstractData{T,N} end
 
 geotype(::AbstractData) = GeoData()
 ndims(::AbstractData{T,N}) where {T,N} = N
-coordtype(::AbstractData{T,N}) where {T,N} = T
+domain(data::AbstractData) = data.domain
+values(data::AbstractData) = data.table
 
 """
     variables(data)
@@ -19,13 +20,6 @@ coordtype(::AbstractData{T,N}) where {T,N} = T
 Return the variable names in geospatial `data` and their types.
 """
 variables(data::AbstractData) = variables(data.table)
-
-"""
-    values(data)
-
-Return the values of geospatial `data` as a table.
-"""
-Base.values(data::AbstractData) = data.table
 
 # -----------
 # TABLES API
