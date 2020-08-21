@@ -7,21 +7,25 @@
 
 Spatial data in a `N`-dimensional space with coordinates of type `T`.
 """
-abstract type AbstractData{T,N} <: AbstractSpatialObject{T,N} end
+abstract type AbstractData{T,N} end
+
+geotype(::AbstractData) = GeoData()
+ndims(::AbstractData{T,N}) where {T,N} = N
+coordtype(::AbstractData{T,N}) where {T,N} = T
 
 """
-    variables(sdata)
+    variables(data)
 
-Return the variable names in spatial data `sdata` and their types.
+Return the variable names in geospatial `data` and their types.
 """
-variables(sdata::AbstractData) = variables(sdata.table)
+variables(data::AbstractData) = variables(data.table)
 
 """
-    values(sdata)
+    values(data)
 
-Return the values of spatial data `sdata` as a table.
+Return the values of geospatial `data` as a table.
 """
-Base.values(sdata::AbstractData) = sdata.table
+Base.values(data::AbstractData) = data.table
 
 # -----------
 # TABLES API

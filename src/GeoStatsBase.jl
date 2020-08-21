@@ -28,7 +28,7 @@ using Parameters
 
 import Tables
 import MLJModelInterface
-import Base: in, join, filter, map, split, error
+import Base: ndims, in, join, filter, map, split, error
 import StatsBase: fit, sample, varcorrection
 import Statistics: mean, var, quantile
 import Distributions: quantile, cdf
@@ -51,7 +51,7 @@ end
 include("graphs.jl")
 
 include("variables.jl")
-include("spatialobject.jl")
+include("geotraits.jl")
 include("domains.jl")
 include("domainview.jl")
 include("data.jl")
@@ -88,10 +88,12 @@ export
   Variable,
   name, mactype,
 
-  # spatial object
-  AbstractSpatialObject,
+  # geotraits
+  GeoCollection,
+  GeoDomain,
+  GeoData,
+  geotype,
   domain,
-  bounds,
   npoints,
   coordtype,
   coordinates,

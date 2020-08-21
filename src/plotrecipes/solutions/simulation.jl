@@ -4,7 +4,7 @@
 
 @recipe function f(solution::SimulationSolution; variables=nothing)
   # retrieve underlying domain
-  sdomain = domain(solution)
+  sdomain = solution.domain
 
   # valid variables
   validvars = sort(collect(keys(solution.realizations)))
