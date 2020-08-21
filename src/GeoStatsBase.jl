@@ -73,7 +73,6 @@ include("discretizing.jl")
 include("sampling.jl")
 include("joining.jl")
 include("filtering.jl")
-include("setops.jl")
 include("geoops.jl")
 include("learning.jl")
 include("mappers.jl")
@@ -113,12 +112,6 @@ export
   variables,
   georef,
   valid,
-
-  # set operations
-  ⊔,
-
-  # geometry operations
-  inside,
 
   # mappers
   AbstractMapper,
@@ -300,6 +293,10 @@ export
   # filtering
   AbstractFilter,
   UniqueCoordsFilter,
+
+  # operations
+  inside,
+  ⊔,
 
   # trends
   polymat,
