@@ -72,7 +72,6 @@ include("covering.jl")
 include("discretizing.jl")
 include("sampling.jl")
 include("joining.jl")
-include("filtering.jl")
 include("geoops.jl")
 include("learning.jl")
 include("mappers.jl")
@@ -290,11 +289,8 @@ export
   AbstractJoiner,
   VariableJoiner,
 
-  # filtering
-  AbstractFilter,
-  UniqueCoordsFilter,
-
   # operations
+  uniquecoords,
   inside,
   ⊔,
 
@@ -311,10 +307,9 @@ export
   cornerplot,
 
   # utilities
+  readgeotable,
   groupby,
   boundbox,
-  readgeotable,
-  uniquecoords,
   spheredir
 
 end

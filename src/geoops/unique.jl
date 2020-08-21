@@ -3,26 +3,18 @@
 # ------------------------------------------------------------------
 
 """
-    UniqueCoordsFilter(agg)
+    uniquecoords(sdata, agg=Dict())
 
-A filter method to retain locations in spatial objects
-with unique coordinates.
+Retain locations in spatial objects with unique coordinates.
 
 Duplicates of a variable `var` are aggregated with
 aggregation function `agg[var]`. Default aggregation
 function is `mean` for continuous variables and `first`
 otherwise.
 """
-struct UniqueCoordsFilter <: AbstractFilter
-  agg::Dict{Symbol,Function}
-end
-
-UniqueCoordsFilter() = UniqueCoordsFilter(Dict{Symbol,Function}())
-
-function filter(sdata, filt::UniqueCoordsFilter)
+function uniquecoords(sdata; agg=Dict())
   # retrieve filtering info
   vars = variables(sdata)
-  agg  = filt.agg
   for var in name.(vars)
     if var ∉ keys(agg)
       ST = scitype(sdata[1,var])

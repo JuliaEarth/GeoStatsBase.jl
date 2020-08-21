@@ -4,3 +4,4 @@
 
 include("geoops/union.jl")
 include("geoops/inside.jl")
+include("geoops/unique.jl")

@@ -106,16 +106,6 @@ function filter(pred, sdata::AbstractData)
 end
 
 """
-    uniquecoords(sdata; agg=Dict())
-
-Filter spatial data `sdata` to produce a new data
-set with unique coordinates.
-
-See [`UniqueCoordsFilter`](@ref) for more details.
-"""
-uniquecoords(sdata; agg=Dict()) = filter(sdata, UniqueCoordsFilter(agg))
-
-"""
     spheredir(θ, φ)
 
 Returns the 3D direction given polar angle `θ` and

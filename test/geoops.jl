@@ -1,5 +1,5 @@
 @testset "Geometric operations" begin
-  @testset "Disjoint union" begin
+  @testset "disjoint union" begin
     d₁ = RegularGrid(10,10)
     d₂ = PointSet(rand(2,10))
     d = d₁ ⊔ d₂
@@ -16,7 +16,27 @@
     @test isequal(s[:c], [missing,missing,missing,"foo","bar"])
   end
 
-  @testset "Inside" begin
+  @testset "uniquecoords" begin
+    X = [i*j for i in 1:2, j in 1:1_000_000]
+    z = rand(1_000_000)
+    d = georef((z=[z;z],), [X X])
+    u = uniquecoords(d)
+    U = coordinates(u)
+    @test npoints(u) == 1_000_000
+    @test Set(eachcol(U)) == Set(eachcol(X))
+
+    X = rand(3,100)
+    z = rand(100)
+    n = [string(i) for i in 1:100]
+    Xd = hcat(X, X[:,1:10])
+    zd = vcat(z, z[1:10])
+    nd = vcat(n, n[1:10])
+    sdata = georef(DataFrame(z=zd, n=nd), PointSet(Xd))
+    ndata = uniquecoords(sdata)
+    @test npoints(ndata) == 100
+  end
+
+  @testset "inside" begin
     # point set + rectangle
     𝒫 = PointSet([0. 2. 5. 7. 10.; 0. 3. 5. 6. 11.])
     𝒮 = georef((z=[1,2,3,4,5],), 𝒫)

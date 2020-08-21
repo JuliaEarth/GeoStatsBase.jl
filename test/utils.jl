@@ -80,16 +80,6 @@
     @test 𝒫ₐᵦ[:b] == [2]
   end
 
-  @testset "uniquecoords" begin
-    X = [i*j for i in 1:2, j in 1:1_000_000]
-    z = rand(1_000_000)
-    d = georef((z=[z;z],), [X X])
-    u = uniquecoords(d)
-    U = coordinates(u)
-    @test npoints(u) == 1_000_000
-    @test Set(eachcol(U)) == Set(eachcol(X))
-  end
-
   @testset "spheredir" begin
     @test spheredir(90, 0) ≈ [1,0,0]
     @test spheredir(90,90) ≈ [0,1,0]
