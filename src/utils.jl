@@ -83,11 +83,27 @@ join(sdata₁::AbstractData, sdata₂::AbstractData) =
 """
     filter(pred, sdata)
 
-Filter spatial data `sdata` using predicate function `pred`.
-
-See [`PredicateFilter`](@ref) for more details.
+Retain all locations in spatial data `sdata` according to
+a predicate function `pred`. A predicate function takes
+table rows as input, e.g. `pred(r) = r.state == "CA"`.
 """
-filter(pred, sdata::AbstractData) = filter(sdata, PredicateFilter(pred))
+function filter(pred, sdata::AbstractData)
+  𝒯 = values(sdata)
+  𝒟 = domain(sdata)
+
+  # row table view
+  ctor = Tables.materializer(𝒯)
+  rows = Tables.rows(𝒯)
+
+  # locations to retain
+  locs = findall(pred, rows)
+
+  # return point set
+  table = ctor(rows[locs])
+  coord = coordinates(𝒟, locs)
+
+  georef(table, coord)
+end
 
 """
     uniquecoords(sdata; agg=Dict())
