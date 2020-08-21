@@ -2,7 +2,7 @@
 # Licensed under the ISC License. See LICENSE in the project root.
 # ------------------------------------------------------------------
 
-@recipe function f(solution::EstimationSolution; variables=nothing)
+@recipe function f(solution::EstimationSolution, vars=nothing)
   # retrieve underlying domain
   sdomain = solution.domain
 
@@ -10,14 +10,14 @@
   validvars = sort(collect(keys(solution.mean)))
 
   # plot all variables by default
-  isnothing(variables) && (variables = validvars)
-  @assert variables ⊆ validvars "invalid variable name"
+  isnothing(vars) && (vars = validvars)
+  @assert vars ⊆ validvars "invalid variable name"
 
   # plot mean and variance for each variable
-  layout --> (length(variables), 2)
+  layout --> (length(vars), 2)
   legend --> false
 
-  for (i, var) in enumerate(variables)
+  for (i, var) in enumerate(vars)
     @series begin
       subplot := 2i - 1
       title --> string(var, " mean")

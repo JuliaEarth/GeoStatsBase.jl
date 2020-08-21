@@ -2,7 +2,7 @@
 # Licensed under the ISC License. See LICENSE in the project root.
 # ------------------------------------------------------------------
 
-@recipe function f(solution::SimulationSolution; variables=nothing)
+@recipe function f(solution::SimulationSolution, vars=nothing)
   # retrieve underlying domain
   sdomain = solution.domain
 
@@ -10,21 +10,21 @@
   validvars = sort(collect(keys(solution.realizations)))
 
   # plot all variables by default
-  isnothing(variables) && (variables = validvars)
-  @assert variables ⊆ validvars "invalid variable name"
+  isnothing(vars) && (vars = validvars)
+  @assert vars ⊆ validvars "invalid variable name"
 
   # number of realizations
-  nreals = length(solution.realizations[variables[1]])
+  nreals = length(solution.realizations[vars[1]])
 
   # plot at most 3 realizations per variable
   N = min(nreals, 3)
-  layout --> (length(variables), N)
+  layout --> (length(vars), N)
   legend --> false
 
   # select realizations at random
   inds = sample(1:nreals, N, replace=false)
 
-  for (i, var) in enumerate(variables)
+  for (i, var) in enumerate(vars)
     reals = solution.realizations[var][inds]
 
     # find value limits across realizations
