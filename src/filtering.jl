@@ -21,4 +21,3 @@ function filter end
 # ----------------
 include("filtering/unique_coords.jl")
 include("filtering/predicate.jl")
-include("filtering/geometry.jl")
