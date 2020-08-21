@@ -42,24 +42,24 @@ struct SimulationProblem{S,D,M} <: AbstractProblem
   nreals::Int
 
   # state fields
-  mappings::Dict{Symbol,Dict{Int,Int}}
+  maps::Dict{Symbol,Dict{Int,Int}}
 
   function SimulationProblem{S,D,M}(sdata, sdomain, targetvars, nreals, mapper) where {S,D,M}
-    probvnames = Tuple(keys(targetvars))
+    pnames = Tuple(keys(targetvars))
 
-    @assert !isempty(probvnames) "target variables must be specified"
+    @assert !isempty(pnames) "target variables must be specified"
     @assert nreals > 0 "number of realizations must be positive"
 
-    if sdata ≠ nothing
-      datavnames = name.(variables(sdata))
-      dmappings = map(sdata, sdomain, datavnames, mapper)
-      omappings = Dict(var => Dict() for var in probvnames if var ∉ datavnames)
-      mappings  = merge(dmappings, omappings)
+    if isnothing(sdata)
+      maps   = Dict(var => Dict() for var in pnames)
     else
-      mappings = Dict(var => Dict() for var in probvnames)
+      vnames = name.(variables(sdata))
+      dmaps  = map(sdata, sdomain, vnames, mapper)
+      omaps  = Dict(var => Dict() for var in pnames if var ∉ vnames)
+      maps   = merge(dmaps, omaps)
     end
 
-    new(sdata, sdomain, mapper, targetvars, nreals, mappings)
+    new(sdata, sdomain, mapper, targetvars, nreals, maps)
   end
 end
 
@@ -142,7 +142,7 @@ variables(problem::SimulationProblem) = problem.targetvars
 Return the mapping from domain locations to data locations for the
 `targetvar` of the `problem`.
 """
-datamap(problem::SimulationProblem, var::Symbol) = problem.mappings[var]
+datamap(problem::SimulationProblem, var::Symbol) = problem.maps[var]
 
 """
     datamap(problem)
@@ -150,7 +150,7 @@ datamap(problem::SimulationProblem, var::Symbol) = problem.mappings[var]
 Return the mappings from domain locations to data locations for all
 the variables of the `problem`.
 """
-datamap(problem::SimulationProblem) = problem.mappings
+datamap(problem::SimulationProblem) = problem.maps
 
 """
     hasdata(problem)
