@@ -14,20 +14,12 @@ ncoords(::AbstractDomain{T,N}) where {T,N} = N
 coordtype(::AbstractDomain{T,N}) where {T,N} = T
 
 """
-    view(domain, locations)
+    view(domain, inds)
 
-Return a view of `domain` with all points in `locations`.
+Return a view of `domain` at given indices `inds`.
 """
-Base.view(domain::AbstractDomain,
-          locations::AbstractVector{Int}) = DomainView(domain, locations)
-
-# ------------
-# IO methods
-# ------------
-function Base.show(io::IO, domain::AbstractDomain{T,N}) where {N,T}
-  n = nelms(domain)
-  print(io, "$n SpatialDomain{$T,$N}")
-end
+Base.view(domain::AbstractDomain, inds::AbstractVector{Int}) =
+  SpatialDomainView(domain, inds)
 
 #------------------
 # IMPLEMENTATIONS

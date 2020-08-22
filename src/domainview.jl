@@ -3,35 +3,35 @@
 # ------------------------------------------------------------------
 
 """
-    DomainView(domain, inds)
+    SpatialDomainView(domain, inds)
 
 Return a view of `domain` at `inds`.
 """
-struct DomainView
+struct SpatialDomainView
   domain
   inds
 end
 
-geotrait(::DomainView) = GeoDomain()
-nelms(dv::DomainView) = length(dv.inds)
-ncoords(dv::DomainView) = ncoords(dv.domain)
-coordtype(dv::DomainView) = coordtype(dv.domain)
-coordinates!(buff::AbstractVector, dv::DomainView, ind::Int) =
+geotrait(::SpatialDomainView) = GeoDomain()
+nelms(dv::SpatialDomainView) = length(dv.inds)
+ncoords(dv::SpatialDomainView) = ncoords(dv.domain)
+coordtype(dv::SpatialDomainView) = coordtype(dv.domain)
+coordinates!(buff::AbstractVector, dv::SpatialDomainView, ind::Int) =
   coordinates!(buff, dv.domain, dv.inds[ind])
 
-Base.collect(dv::DomainView) = PointSet(coordinates(dv))
+Base.collect(dv::SpatialDomainView) = PointSet(coordinates(dv))
 
 # ------------
 # IO methods
 # ------------
-function Base.show(io::IO, dv::DomainView)
+function Base.show(io::IO, dv::SpatialDomainView)
   N = ncoords(dv)
   T = coordtype(dv)
   npts = nelms(dv)
-  print(io, "$npts DomainView{$T,$N}")
+  print(io, "$npts SpatialDomainView{$T,$N}")
 end
 
-function Base.show(io::IO, ::MIME"text/plain", dv::DomainView)
+function Base.show(io::IO, ::MIME"text/plain", dv::SpatialDomainView)
   println(io, dv)
   Base.print_array(io, coordinates(dv))
 end

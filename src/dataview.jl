@@ -3,91 +3,91 @@
 # ------------------------------------------------------------------
 
 """
-    DataView(sdata, inds, vars)
+    SpatialDataView(sdata, inds, vars)
 
 Return a view of spatial data `sdata` at `inds` and `vars`.
 """
-struct DataView
+struct SpatialDataView
   data
   inds
   vars
 end
 
-geotrait(::DataView) = GeoData()
-domain(dv::DataView) = view(domain(dv.data), dv.inds)
-values(dv::DataView) = getindex(values(dv.data), dv.inds, dv.vars)
+geotrait(::SpatialDataView) = GeoData()
+domain(dv::SpatialDataView) = view(domain(dv.data), dv.inds)
+values(dv::SpatialDataView) = getindex(values(dv.data), dv.inds, dv.vars)
 
-Base.collect(dv::DataView) = georef(values(dv), coordinates(dv))
+Base.collect(dv::SpatialDataView) = georef(values(dv), coordinates(dv))
 
 # -----------------------------------
 # specialize methods for performance
 # -----------------------------------
-nelms(dv::DataView) = length(dv.inds)
+nelms(dv::SpatialDataView) = length(dv.inds)
 
-coordinates!(buff::AbstractVector, dv::DataView, ind::Int) =
+coordinates!(buff::AbstractVector, dv::SpatialDataView, ind::Int) =
   coordinates!(buff, dv.data, dv.inds[ind])
 
 # -----------
 # TABLES API
 # -----------
 
-Tables.istable(::Type{DataView}) = true
-Tables.schema(dv::DataView) = Tables.schema(getindex(dv.data, dv.inds, dv.vars))
-Tables.rowaccess(dv::DataView) = Tables.rowaccess(dv.data)
-Tables.columnaccess(dv::DataView) = Tables.columnaccess(dv.data)
-Tables.rows(dv::DataView) = Tables.rows(getindex(dv.data, dv.inds, dv.vars))
-Tables.columns(dv::DataView) = Tables.columns(getindex(dv.data, dv.inds, dv.vars))
-Tables.columnnames(dv::DataView) = Tables.columnnames(getindex(dv.data, dv.inds, dv.vars))
-Tables.getcolumn(dv::DataView, c::Symbol) = Tables.getcolumn(getindex(dv.data, dv.inds, dv.vars), c)
+Tables.istable(::Type{<:SpatialDataView}) = true
+Tables.schema(dv::SpatialDataView) = Tables.schema(getindex(dv.data, dv.inds, dv.vars))
+Tables.rowaccess(dv::SpatialDataView) = Tables.rowaccess(dv.data)
+Tables.columnaccess(dv::SpatialDataView) = Tables.columnaccess(dv.data)
+Tables.rows(dv::SpatialDataView) = Tables.rows(getindex(dv.data, dv.inds, dv.vars))
+Tables.columns(dv::SpatialDataView) = Tables.columns(getindex(dv.data, dv.inds, dv.vars))
+Tables.columnnames(dv::SpatialDataView) = Tables.columnnames(getindex(dv.data, dv.inds, dv.vars))
+Tables.getcolumn(dv::SpatialDataView, c::Symbol) = Tables.getcolumn(getindex(dv.data, dv.inds, dv.vars), c)
 
 # --------------
 # DATAFRAME API
 # --------------
 
-Base.getindex(dv::DataView, inds, vars) =
+Base.getindex(dv::SpatialDataView, inds, vars) =
   getindex(dv.data, dv.inds[inds], vars)
 
-Base.setindex!(dv::DataView, vals, inds, vars) =
+Base.setindex!(dv::SpatialDataView, vals, inds, vars) =
   setindex!(dv.data, vals, dv.inds[inds], vars)
 
 # -------------
 # VARIABLE API
 # -------------
 
-variables(dv::DataView) = variables(getindex(dv.data, dv.inds, dv.vars))
+variables(dv::SpatialDataView) = variables(getindex(dv.data, dv.inds, dv.vars))
 
-Base.getindex(dv::DataView, var::Symbol) =
+Base.getindex(dv::SpatialDataView, var::Symbol) =
   getindex(dv.data, dv.inds, var)
 
-Base.setindex!(dv::DataView, vals, var::Symbol) =
+Base.setindex!(dv::SpatialDataView, vals, var::Symbol) =
   setindex!(dv.data, vals, dv.inds, var)
 
 # --------------
 # INDEXABLE API
 # --------------
 
-Base.getindex(dv::DataView, ind::Int) =
+Base.getindex(dv::SpatialDataView, ind::Int) =
   getindex(dv.data, dv.inds[ind], dv.vars)
-Base.firstindex(dv::DataView) = 1
-Base.lastindex(dv::DataView)  = nelms(dv)
+Base.firstindex(dv::SpatialDataView) = 1
+Base.lastindex(dv::SpatialDataView)  = nelms(dv)
 
 # ---------
 # VIEW API
 # ---------
 
-Base.view(dv::DataView, inds::AbstractVector{Int}) =
-  DataView(dv.data, dv.inds[inds], dv.vars)
-Base.view(dv::DataView, vars::AbstractVector{Symbol}) =
-  DataView(dv.data, 1:nelms(dv), vars)
-Base.view(dv::DataView, inds, vars) =
-  DataView(dv.data, dv.inds[inds], vars)
+Base.view(dv::SpatialDataView, inds::AbstractVector{Int}) =
+  SpatialDataView(dv.data, dv.inds[inds], dv.vars)
+Base.view(dv::SpatialDataView, vars::AbstractVector{Symbol}) =
+  SpatialDataView(dv.data, 1:nelms(dv), vars)
+Base.view(dv::SpatialDataView, inds, vars) =
+  SpatialDataView(dv.data, dv.inds[inds], vars)
 
 # ------------
 # IO methods
 # ------------
-function Base.show(io::IO, dv::DataView)
+function Base.show(io::IO, dv::SpatialDataView)
   N = ncoords(dv)
   T = coordtype(dv)
   n = nelms(dv)
-  print(io, "$n DataView{$T,$N}")
+  print(io, "$n SpatialDataView{$T,$N}")
 end

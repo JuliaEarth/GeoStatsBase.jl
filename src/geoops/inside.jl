@@ -28,8 +28,8 @@ function inside(grid::RegularGrid, rect::Rectangle)
   _subgrid(grid, ilo, iup)
 end
 
-function inside(sdata::SpatialData{T,N,𝒟,𝒯},
-                rect::Rectangle) where {T,N,𝒟<:RegularGrid,𝒯}
+function inside(sdata::SpatialData{𝒟,𝒯},
+                rect::Rectangle) where {𝒟<:RegularGrid,𝒯}
   grid  = domain(sdata)
   table = values(sdata)
 

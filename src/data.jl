@@ -3,113 +3,104 @@
 # ------------------------------------------------------------------
 
 """
-    AbstractData{T,N}
+    SpatialData(domain, data)
 
-Spatial data in a `N`-dimensional space with coordinates of type `T`.
+Tabular `data` georeferenced in a spatial `domain`.
 """
-abstract type AbstractData{T,N} end
+struct SpatialData{𝒟,𝒯}
+  domain::𝒟
+  table::𝒯
 
-geotrait(::AbstractData) = GeoData()
-domain(data::AbstractData) = data.domain
-values(data::AbstractData) = data.table
+  function SpatialData{𝒟,𝒯}(domain, table) where {𝒟,𝒯}
+    ne = nelms(domain)
+    nr = length(Tables.rows(table))
+    @assert ne == nr "number of rows ≠ number of points"
+    new(domain, table)
+  end
+end
+
+SpatialData(domain::𝒟, table::𝒯) where {𝒟,𝒯} =
+  SpatialData{𝒟,𝒯}(domain, table)
+
+geotrait(::SpatialData)    = GeoData()
+domain(sdata::SpatialData) = sdata.domain
+values(sdata::SpatialData) = sdata.table
 
 # -----------
 # TABLES API
 # -----------
 
-Tables.istable(::Type{<:AbstractData}) = true
-Tables.schema(sdata::AbstractData) = Tables.schema(sdata.table)
-Tables.rowaccess(sdata::AbstractData) = Tables.rowaccess(sdata.table)
-Tables.columnaccess(sdata::AbstractData) = Tables.columnaccess(sdata.table)
-Tables.rows(sdata::AbstractData) = Tables.rows(sdata.table)
-Tables.columns(sdata::AbstractData) = Tables.columns(sdata.table)
-Tables.columnnames(sdata::AbstractData) = Tables.columnnames(sdata.table)
-Tables.getcolumn(sdata::AbstractData, c::Symbol) = Tables.getcolumn(sdata.table, c)
+Tables.istable(::Type{<:SpatialData}) = true
+Tables.schema(sdata::SpatialData) = Tables.schema(sdata.table)
+Tables.rowaccess(sdata::SpatialData) = Tables.rowaccess(sdata.table)
+Tables.columnaccess(sdata::SpatialData) = Tables.columnaccess(sdata.table)
+Tables.rows(sdata::SpatialData) = Tables.rows(sdata.table)
+Tables.columns(sdata::SpatialData) = Tables.columns(sdata.table)
+Tables.columnnames(sdata::SpatialData) = Tables.columnnames(sdata.table)
+Tables.getcolumn(sdata::SpatialData, c::Symbol) = Tables.getcolumn(sdata.table, c)
 
 # --------------
 # DATAFRAME API
 # --------------
 
-Base.getindex(sdata::AbstractData, inds, vars) =
+Base.getindex(sdata::SpatialData, inds, vars) =
   getindex(sdata.table, inds, vars)
-Base.setindex!(sdata::AbstractData, vals, inds, vars) =
+Base.setindex!(sdata::SpatialData, vals, inds, vars) =
   setindex!(sdata.table, vals, inds, vars)
 
 # -------------
 # VARIABLE API
 # -------------
 
-variables(data::AbstractData) = variables(data.table)
+variables(sdata::SpatialData) = variables(sdata.table)
 
-Base.getindex(sdata::AbstractData, var::Symbol) =
+Base.getindex(sdata::SpatialData, var::Symbol) =
   getindex(sdata.table, :, var)
-Base.setindex!(sdata::AbstractData, vals, var::Symbol) =
+Base.setindex!(sdata::SpatialData, vals, var::Symbol) =
   setindex!(sdata.table, vals, :, var)
 
 # -------------
 # ITERATOR API
 # -------------
 
-Base.iterate(sdata::AbstractData, state=1) =
+Base.iterate(sdata::SpatialData, state=1) =
   state > nelms(sdata) ? nothing : (sdata[state], state + 1)
-Base.length(sdata::AbstractData) = nelms(sdata)
-Base.eltype(sdata::AbstractData) = typeof(sdata[1])
+Base.length(sdata::SpatialData) = nelms(sdata)
+Base.eltype(sdata::SpatialData) = typeof(sdata[1])
 
 # --------------
 # INDEXABLE API
 # --------------
 
-Base.getindex(sdata::AbstractData, ind::Int) =
+Base.getindex(sdata::SpatialData, ind::Int) =
   getindex(sdata.table, ind, :)
-Base.firstindex(sdata::AbstractData) = 1
-Base.lastindex(sdata::AbstractData)  = nelms(sdata)
+Base.firstindex(sdata::SpatialData) = 1
+Base.lastindex(sdata::SpatialData)  = nelms(sdata)
 
 # ---------
 # VIEW API
 # ---------
 
-Base.view(sdata::AbstractData, inds::AbstractVector{Int}) =
-  DataView(sdata, inds, collect(name.(variables(sdata))))
-Base.view(sdata::AbstractData, vars::AbstractVector{Symbol}) =
-  DataView(sdata, 1:nelms(sdata), vars)
-Base.view(sdata::AbstractData, inds, vars) =
-  DataView(sdata, inds, vars)
+Base.view(sdata::SpatialData, inds::AbstractVector{Int}) =
+  SpatialDataView(sdata, inds, collect(name.(variables(sdata))))
+Base.view(sdata::SpatialData, vars::AbstractVector{Symbol}) =
+  SpatialDataView(sdata, 1:nelms(sdata), vars)
+Base.view(sdata::SpatialData, inds, vars) =
+  SpatialDataView(sdata, inds, vars)
 
 # ------------
 # IO methods
 # ------------
-function Base.show(io::IO, sdata::AbstractData{T,N}) where {N,T}
-  npts = nelms(sdata)
-  print(io, "$npts SpatialData{$T,$N}")
+function Base.show(io::IO, sdata::SpatialData)
+  N = ncoords(sdata)
+  T = coordtype(sdata)
+  n = nelms(sdata)
+  print(io, "$n SpatialData{$T,$N}")
 end
 
-function Base.show(io::IO, ::MIME"text/plain", sdata::AbstractData{T,N}) where {N,T}
+function Base.show(io::IO, ::MIME"text/plain", sdata::SpatialData)
   println(io, domain(sdata))
   println(io, "  variables")
   varlines = ["    └─$(name(var)) ($(mactype(var)))" for var in variables(sdata)]
   print(io, join(sort(varlines), "\n"))
-end
-
-# ----------------
-# IMPLEMENTATIONS
-# ----------------
-"""
-    SpatialData(domain, data)
-
-Tabular `data` georeferenced in a spatial `domain`.
-"""
-struct SpatialData{T,N,𝒟,𝒯} <: AbstractData{T,N}
-  domain::𝒟
-  table::𝒯
-end
-
-function SpatialData(domain, table)
-  nd = nelms(domain)
-  nt = length(Tables.rows(table))
-  @assert nd == nt "number of rows ≠ number of points"
-  T = coordtype(domain)
-  N = ncoords(domain)
-  𝒟 = typeof(domain)
-  𝒯 = typeof(table)
-  SpatialData{T,N,𝒟,𝒯}(domain, table)
 end
