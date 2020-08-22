@@ -2,12 +2,16 @@
 # Licensed under the ISC License. See LICENSE in the project root.
 # ------------------------------------------------------------------
 
-function cornerplot(sdata::AbstractData, vars=nothing;
+function cornerplot(sdata, vars=nothing;
                     quantiles=[0.25,0.50,0.75],
                     bandwidthx=100, bandwidthy=100,
                     kwargs...)
-  # variables in alphabetical order
-  vars = vars ≠ nothing ? vars : sort(collect(name.(variables(sdata))))
+  # valid variables
+  validvars = name.(variables(sdata))
+
+  # plot all variables by default
+  isnothing(vars) && (vars = validvars)
+  @assert vars ⊆ validvars "invalid variable name"
 
   plts = []
   n = length(vars)

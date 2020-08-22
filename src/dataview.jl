@@ -7,17 +7,14 @@
 
 Return a view of spatial data `sdata` at `inds` and `vars`.
 """
-struct DataView{T,N} <: AbstractData{T,N}
+struct DataView
   data
   inds
   vars
 end
 
-DataView(data, inds, vars) =
-  DataView{coordtype(data),ncoords(data)}(data, inds, vars)
-
+geotrait(dv::DataView) = GeoData()
 domain(dv::DataView) = view(domain(dv.data), dv.inds)
-
 values(dv::DataView) = getindex(values(dv.data), dv.inds, dv.vars)
 
 Base.collect(dv::DataView) = georef(values(dv), coordinates(dv))
@@ -34,6 +31,7 @@ coordinates!(buff::AbstractVector, dv::DataView, ind::Int) =
 # TABLES API
 # -----------
 
+Tables.istable(::Type{DataView}) = true
 Tables.schema(dv::DataView) = Tables.schema(getindex(dv.data, dv.inds, dv.vars))
 Tables.rowaccess(dv::DataView) = Tables.rowaccess(dv.data)
 Tables.columnaccess(dv::DataView) = Tables.columnaccess(dv.data)
@@ -70,6 +68,19 @@ Base.setindex!(dv::DataView, vals, var::Symbol) =
 
 Base.getindex(dv::DataView, ind::Int) =
   getindex(dv.data, dv.inds[ind], dv.vars)
+Base.firstindex(dv::DataView) = 1
+Base.lastindex(dv::DataView)  = nelms(dv)
+
+# ---------
+# VIEW API
+# ---------
+
+Base.view(dv::DataView, inds::AbstractVector{Int}) =
+  DataView(dv.data, dv.inds[inds], dv.vars)
+Base.view(dv::DataView, vars::AbstractVector{Symbol}) =
+  DataView(dv.data, 1:nelms(dv), vars)
+Base.view(dv::DataView, inds, vars) =
+  DataView(dv.data, dv.inds[inds], vars)
 
 # ------------
 # IO methods

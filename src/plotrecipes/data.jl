@@ -2,7 +2,7 @@
 # Licensed under the ISC License. See LICENSE in the project root.
 # ------------------------------------------------------------------
 
-@recipe function f(sdata::AbstractData, vars=nothing)
+@recipe function f(sdata::Union{SpatialData,DataView}, vars=nothing)
   # retrieve underlying domain
   sdomain = domain(sdata)
 
