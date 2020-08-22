@@ -78,6 +78,28 @@
     @test 𝒫ₐᵦ[:b] == [2]
   end
 
+  @testset "slice" begin
+    d = RegularGrid((10,10), (1.,1.), (1.,1.))
+    s = slice(d, 0.:5., 0.:5.)
+    @test s isa RegularGrid
+    @test extrema(coordinates(s)) == (1.,5.)
+    s = slice(d, 5.:20.5, 6.:21.0)
+    @test coordinates(s, 1) == [5.,6.]
+    @test coordinates(s, npoints(s)) == [10.,10.]
+
+    d = RegularGrid(10,10,10)
+    s = slice(d, 5.5:10.0, 2.3:4.2, -1.2:2.0)
+    @test s isa RegularGrid
+    @test origin(s) == [6.,3.,0.]
+    @test spacing(s) == [1.,1.,1.]
+    @test size(s) == (4,1,2)
+
+    d = PointSet([1. 5. 7.; 2. 3. 6.])
+    s = slice(d, 2.:6., 2.:6.)
+    @test npoints(s) == 1
+    @test coordinates(s, 1) == [5.,3.]
+  end
+
   @testset "spheredir" begin
     @test spheredir(90, 0) ≈ [1,0,0]
     @test spheredir(90,90) ≈ [0,1,0]

@@ -312,6 +312,7 @@ export
   readgeotable,
   groupby,
   boundbox,
+  slice,
   spheredir
 
 end

@@ -106,6 +106,15 @@ function filter(pred, sdata::AbstractData)
 end
 
 """
+    slice(object, xmin:xmax, ymin:ymax, ...)
+
+Slice spatial `object` using real coordinate ranges
+`xmin:xmax`, `ymin:ymax`, ...
+"""
+slice(object, ranges::Vararg) =
+  inside(object, Rectangle(first.(ranges), last.(ranges)))
+
+"""
     spheredir(θ, φ)
 
 Returns the 3D direction given polar angle `θ` and
