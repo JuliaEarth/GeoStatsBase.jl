@@ -55,8 +55,7 @@ include("domainview.jl")
 include("data.jl")
 include("dataview.jl")
 
-# workaround while traits are not
-# sorted out in the language
+# workaround while traits are not sorted out in the language
 const AbstractData = Union{SpatialData,SpatialDataView}
 const AbstractDomain = Union{SpatialDomain,SpatialDomainView}
 

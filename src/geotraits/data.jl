@@ -7,11 +7,11 @@
 
 Return underlying domain of the `object`.
 """
-domain
+function domain end
 
 """
     values(object)
 
 Return the values of `object` as a table.
 """
-values
+function values end
