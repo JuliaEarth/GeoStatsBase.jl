@@ -56,8 +56,8 @@ Base.setindex!(sdata::AbstractData, vals, var::Symbol) =
 # -------------
 
 Base.iterate(sdata::AbstractData, state=1) =
-  state > npoints(sdata) ? nothing : (sdata[state], state + 1)
-Base.length(sdata::AbstractData) = npoints(sdata)
+  state > nelms(sdata) ? nothing : (sdata[state], state + 1)
+Base.length(sdata::AbstractData) = nelms(sdata)
 Base.eltype(sdata::AbstractData) = typeof(sdata[1])
 
 # --------------
@@ -67,7 +67,7 @@ Base.eltype(sdata::AbstractData) = typeof(sdata[1])
 Base.getindex(sdata::AbstractData, ind::Int) =
   getindex(sdata.table, ind, :)
 Base.firstindex(sdata::AbstractData) = 1
-Base.lastindex(sdata::AbstractData) = npoints(sdata)
+Base.lastindex(sdata::AbstractData) = nelms(sdata)
 
 # ---------
 # VIEW API
@@ -76,7 +76,7 @@ Base.lastindex(sdata::AbstractData) = npoints(sdata)
 Base.view(sdata::AbstractData, inds::AbstractVector{Int}) =
   DataView(sdata, inds, collect(name.(variables(sdata))))
 Base.view(sdata::AbstractData, vars::AbstractVector{Symbol}) =
-  DataView(sdata, 1:npoints(sdata), vars)
+  DataView(sdata, 1:nelms(sdata), vars)
 Base.view(sdata::AbstractData, inds, vars) =
   DataView(sdata, inds, vars)
 
@@ -84,7 +84,7 @@ Base.view(sdata::AbstractData, inds, vars) =
 # IO methods
 # ------------
 function Base.show(io::IO, sdata::AbstractData{T,N}) where {N,T}
-  npts = npoints(sdata)
+  npts = nelms(sdata)
   print(io, "$npts SpatialData{$T,$N}")
 end
 
@@ -109,7 +109,7 @@ struct SpatialData{T,N,𝒟,𝒯} <: AbstractData{T,N}
 end
 
 function SpatialData(domain, table)
-  nd = npoints(domain)
+  nd = nelms(domain)
   nt = length(Tables.rows(table))
   @assert nd == nt "number of rows ≠ number of points"
   T = coordtype(domain)

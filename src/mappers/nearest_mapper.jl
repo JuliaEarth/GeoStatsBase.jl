@@ -26,7 +26,7 @@ function map(sdata, sdomain, targetvars, mapper::NearestMapper)
   neighbor = Vector{Int}(undef, 1)
   searcher = NearestNeighborSearcher(sdomain, 1)
 
-  for ind in 1:npoints(sdata)
+  for ind in 1:nelms(sdata)
     # update datum coordinates
     coordinates!(coords, sdata, ind)
 

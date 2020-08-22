@@ -19,7 +19,7 @@ WeightedSampler(size, weights=nothing; replace=false) =
   WeightedSampler(size, weights, replace)
 
 function sample(object, sampler::WeightedSampler)
-  n = npoints(object)
+  n = nelms(object)
   s = sampler.size
   w = sampler.weights
   r = sampler.replace

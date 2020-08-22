@@ -10,4 +10,4 @@ permutation of `1:N`.
 """
 struct RandomPath <: AbstractPath end
 
-traverse(object, path::RandomPath) = randperm(npoints(object))
+traverse(object, path::RandomPath) = randperm(nelms(object))

@@ -36,7 +36,7 @@ end
 
 Base.size(grid::StructuredGrid) = grid.dims
 
-npoints(grid::StructuredGrid) = prod(grid.dims)
+nelms(grid::StructuredGrid) = prod(grid.dims)
 
 function coordinates!(buff::AbstractVector{T}, grid::StructuredGrid{T,N},
                       location::Int) where {N,T}

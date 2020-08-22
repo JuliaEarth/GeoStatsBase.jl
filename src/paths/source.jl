@@ -19,8 +19,8 @@ function traverse(object, path::SourcePath)
   sources   = path.sources
   batchsize = path.batchsize
   @assert allunique(sources) "non-unique sources"
-  @assert all(1 .≤ sources .≤ npoints(object)) "sources must be valid locations"
-  @assert length(sources) ≤ npoints(object) "more sources than points in object"
+  @assert all(1 .≤ sources .≤ nelms(object)) "sources must be valid locations"
+  @assert length(sources) ≤ nelms(object) "more sources than points in object"
 
   # coordinate matrix for source points
   S = coordinates(object, sources)
@@ -29,7 +29,7 @@ function traverse(object, path::SourcePath)
   kdtree = KDTree(S)
 
   # other locations that are not sources
-  others = setdiff(1:npoints(object), sources)
+  others = setdiff(1:nelms(object), sources)
 
   # process points in batches
   batches = Iterators.partition(others, batchsize)

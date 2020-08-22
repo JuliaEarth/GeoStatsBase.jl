@@ -23,7 +23,7 @@
     v = view(d, 1:3, [:z])
     td = values(d)
     tv = values(v)
-    @test npoints(v) == 3
+    @test nelms(v) == 3
     @test td[1:3,:z] == tv[:,:z]
 
     # indexable API
@@ -59,7 +59,7 @@
   @testset "Curve" begin
     c = georef((z=1:10,), Curve([j for i in 1:3, j in 1:10]))
     @test variables(c) == (Variable(:z, Int),)
-    @test npoints(c) == 10
+    @test nelms(c) == 10
 
     if visualtests
       c1 = georef((z=1:10,), Curve([j for i in 1:1, j in 1:10]))
@@ -75,7 +75,7 @@
     # basic checks
     D = readgeotable(joinpath(datadir,"data3D.tsv"))
     @test variables(D) == (Variable(:value, Float64),)
-    @test npoints(D) == 100
+    @test nelms(D) == 100
 
     # show methods
     df = DataFrame(x=[1,2,3],y=[4,5,6],z=[1.,2.,3.])
@@ -94,7 +94,7 @@
     # basic checks
     ps = readgeotable(joinpath(datadir,"data3D.tsv"), delim='\t')
     @test variables(ps) == (Variable(:value, Float64),)
-    @test npoints(ps) == 100
+    @test nelms(ps) == 100
 
     # show methods
     ps = georef((z=[1,2,3],), [1. 0. 1.; 0. 1. 1.])
@@ -111,7 +111,7 @@
     # basic checks
     g = georef((Z=rand(100,100),))
     @test variables(g) == (Variable(:Z, Float64),)
-    @test npoints(g) == 10000
+    @test nelms(g) == 10000
 
     # show methods
     g = georef((z=[1,2,3,4],), RegularGrid(2,2))
@@ -134,7 +134,7 @@
 
     # basic checks
     @test variables(g) == (Variable(:P, Float64),)
-    @test npoints(g) == 221*366
+    @test nelms(g) == 221*366
 
     # show methods
     @test sprint(show, g) == "80886 SpatialData{Float64,2}"

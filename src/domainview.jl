@@ -15,7 +15,7 @@ end
 DomainView(domain, inds) =
   DomainView{coordtype(domain),ncoords(domain)}(domain, inds)
 
-npoints(dv::DomainView) = length(dv.inds)
+nelms(dv::DomainView) = length(dv.inds)
 
 coordinates!(buff::AbstractVector, dv::DomainView, ind::Int) =
   coordinates!(buff, dv.domain, dv.inds[ind])
@@ -28,7 +28,7 @@ Base.collect(dv::DomainView) = PointSet(coordinates(dv))
 function Base.show(io::IO, dv::DomainView)
   N = ncoords(dv)
   T = coordtype(dv)
-  npts = npoints(dv)
+  npts = nelms(dv)
   print(io, "$npts DomainView{$T,$N}")
 end
 

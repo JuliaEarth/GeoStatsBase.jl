@@ -34,7 +34,7 @@ function partition(object, partitioner::BisectPointPartitioner)
 
   left  = Vector{Int}()
   right = Vector{Int}()
-  for location in 1:npoints(object)
+  for location in 1:nelms(object)
     coordinates!(x, object, location)
     if (x - p) ⋅ n < zero(T)
       push!(left, location)

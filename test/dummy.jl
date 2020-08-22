@@ -7,7 +7,7 @@ import GeoStatsBase: solve, solvesingle
 function solve(problem::EstimationProblem, solver::DummyEstimSolver)
   sdat = data(problem)
   sdom = domain(problem)
-  npts = npoints(sdom)
+  npts = nelms(sdom)
   vars = [v for (v,V) in variables(problem)]
   μvar = Dict(v => fill(mean(sdat[v]),npts) for v in vars)
   σvar = Dict(v => fill(var(sdat[v]),npts) for v in vars)
@@ -18,7 +18,7 @@ end
 function solvesingle(problem::SimulationProblem, covars::NamedTuple,
                      solver::DummySimSolver, preproc)
   reals = map(covars.names) do var
-    npts = npoints(domain(problem))
+    npts = nelms(domain(problem))
     V    = variables(problem)[var]
     real = vcat(fill(zero(V), npts÷2), fill(one(V), npts÷2))
     var => real

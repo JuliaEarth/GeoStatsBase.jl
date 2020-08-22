@@ -39,7 +39,7 @@ PointSet(coords::AbstractMatrix{T}) where {T} =
 PointSet(coords::AbstractVector{NTuple{N,T}}) where {N,T} =
   PointSet([c[i] for i in 1:N, c in coords])
 
-npoints(ps::PointSet) = size(ps.coords, 2)
+nelms(ps::PointSet) = size(ps.coords, 2)
 
 function coordinates!(buff::AbstractVector{T}, ps::PointSet{T,N},
                       location::Int) where {N,T}

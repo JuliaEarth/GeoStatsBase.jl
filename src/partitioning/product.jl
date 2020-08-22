@@ -21,8 +21,8 @@ function partition(object, partitioner::ProductPartitioner)
   s₂ = subsets(partition(object, partitioner.p₂))
 
   # label-based representation
-  l₁ = Vector{Int}(undef, npoints(object))
-  l₂ = Vector{Int}(undef, npoints(object))
+  l₁ = Vector{Int}(undef, nelms(object))
+  l₂ = Vector{Int}(undef, nelms(object))
   for (i, inds) in enumerate(s₁)
     l₁[inds] .= i
   end
@@ -33,8 +33,8 @@ function partition(object, partitioner::ProductPartitioner)
   # product of labels
   counter = 0
   d = Dict{Tuple{Int,Int},Int}()
-  l = Vector{Int}(undef, npoints(object))
-  for i in 1:npoints(object)
+  l = Vector{Int}(undef, nelms(object))
+  for i in 1:nelms(object)
     t = (l₁[i], l₂[i])
     if t ∉ keys(d)
       counter += 1

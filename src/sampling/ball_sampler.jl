@@ -37,7 +37,7 @@ function sample(object, sampler::BallSampler)
   coords = MVector{N,T}(undef)
 
   locations = Vector{Int}()
-  notviewed = trues(npoints(object))
+  notviewed = trues(nelms(object))
   while length(locations) < msize && any(notviewed)
     location = rand(findall(notviewed))
     coordinates!(coords, object, location)

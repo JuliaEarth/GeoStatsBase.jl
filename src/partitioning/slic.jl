@@ -57,8 +57,8 @@ function partition(sdata, partitioner::SLICPartitioner)
   searcher = NeighborhoodSearcher(sdata, BallNeighborhood(s))
 
   # pre-allocate memory for label and distance
-  l = fill(0, npoints(sdata))
-  d = fill(Inf, npoints(sdata))
+  l = fill(0, nelms(sdata))
+  d = fill(Inf, nelms(sdata))
 
   # performance parameters
   tol     = partitioner.tol

@@ -47,8 +47,8 @@ function weight(sdata, weighter::DensityRatioWeighter)
 
   # TODO: eliminate this explicit conversion after
   # https://github.com/JuliaEarth/GeoStats.jl/projects/2
-  x_nu = collect(eachrow(Ω_nu[1:npoints(Ω_nu),vars]))
-  x_de = collect(eachrow(Ω_de[1:npoints(Ω_de),vars]))
+  x_nu = collect(eachrow(Ω_nu[1:nelms(Ω_nu),vars]))
+  x_de = collect(eachrow(Ω_de[1:nelms(Ω_de),vars]))
 
   # perform denstiy ratio estimation
   ratios = densratio(x_nu, x_de, dre, optlib=optlib)

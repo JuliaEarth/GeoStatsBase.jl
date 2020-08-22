@@ -34,7 +34,7 @@ function error(solver::AbstractLearningSolver,
 
   # bootstrap parameters
   b = eestimator.nsamples
-  n = npoints(sdata)
+  n = nelms(sdata)
 
   # weight source data
   weights = weight(sdata, eestimator.weighter)

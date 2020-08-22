@@ -21,11 +21,11 @@ end
 FractionPartitioner(fraction) = FractionPartitioner(fraction, true)
 
 function partition(object, p::FractionPartitioner)
-  npts = npoints(object)
-  frac = round(Int, p.fraction * npts)
+  n = nelms(object)
+  f = round(Int, p.fraction * n)
 
-  locs = p.shuffle ? randperm(npts) : 1:npts
-  subsets = [locs[1:frac], locs[frac+1:npts]]
+  locs = p.shuffle ? randperm(n) : 1:n
+  subsets = [locs[1:f], locs[f+1:n]]
 
   SpatialPartition(object, subsets)
 end

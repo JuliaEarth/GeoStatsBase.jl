@@ -41,7 +41,7 @@ end
 
 Curve(coords::AbstractMatrix{T}) where {T} = Curve{T,size(coords,1)}(coords)
 
-npoints(curve::Curve) = size(curve.coords, 2)
+nelms(curve::Curve) = size(curve.coords, 2)
 
 function coordinates!(buff::AbstractVector{T}, curve::Curve{T,N},
                       location::Int) where {N,T}

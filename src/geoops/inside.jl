@@ -14,7 +14,7 @@ function inside(object, geom)
   x = MVector{N,T}(undef)
 
   inds = Vector{Int}()
-  for i in 1:npoints(object)
+  for i in 1:nelms(object)
     coordinates!(x, object, i)
     x ∈ geom && push!(inds, i)
   end

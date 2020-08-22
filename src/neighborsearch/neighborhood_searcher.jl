@@ -26,7 +26,7 @@ function search(xₒ::AbstractVector, searcher::NeighborhoodSearcher{O,N,T};
                 mask=nothing) where {O,N,T}
   object = searcher.object
   neigh  = searcher.neigh
-  locs   = mask ≠ nothing ? view(1:npoints(object), mask) : 1:npoints(object)
+  locs   = mask ≠ nothing ? view(1:nelms(object), mask) : 1:nelms(object)
 
   x = MVector{ncoords(object),coordtype(object)}(undef)
 

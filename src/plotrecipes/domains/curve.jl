@@ -11,7 +11,7 @@
   colorbar --> true
 
   if N == 1
-    X[1,:], fill(0, npoints(domain))
+    X[1,:], fill(0, nelms(domain))
   elseif N == 2
     aspect_ratio --> :equal
     X[1,:], X[2,:]
@@ -32,7 +32,7 @@ end
 
   if N == 1
     @series begin
-      X[1,:], fill(0, npoints(domain))
+      X[1,:], fill(0, nelms(domain))
     end
   elseif N == 2
     aspect_ratio --> :equal

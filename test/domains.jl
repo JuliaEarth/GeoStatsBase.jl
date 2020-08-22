@@ -1,8 +1,8 @@
 @testset "Domains" begin
   @testset "Curve" begin
     c = Curve([j for i in 1:3, j in 1:5])
+    @test nelms(c) == 5
     @test ncoords(c) == 3
-    @test npoints(c) == 5
     @test coordtype(c) == Int
     @test coordinates(c, 1) == [1, 1, 1]
     @test coordinates(c, 5) == [5, 5, 5]
@@ -22,7 +22,7 @@
 
   @testset "PointSet" begin
     ps = PointSet([1. 0.; 0. 1.])
-    @test npoints(ps) == 2
+    @test nelms(ps) == 2
     @test coordinates(ps, 1) == [1., 0.]
     @test coordinates(ps, 2) == [0., 1.]
 
@@ -45,7 +45,7 @@
     @test ncoords(grid) == 2
     @test coordtype(grid) == Float32
     @test size(grid) == (200,100)
-    @test npoints(grid) == 200*100
+    @test nelms(grid) == 200*100
     @test coordinates(grid, 1) == [0.,0.]
     @test origin(grid) == [0f0, 0f0]
     @test spacing(grid) == [1f0, 1f0]
@@ -54,7 +54,7 @@
     @test ncoords(grid) == 3
     @test coordtype(grid) == Float64
     @test size(grid) == (200,100,50)
-    @test npoints(grid) == 200*100*50
+    @test nelms(grid) == 200*100*50
     @test coordinates(grid, 1) == [0.,0.,0.]
     @test origin(grid) == [0.,0.,0.]
     @test spacing(grid) == [1.,1.,1.]
@@ -63,7 +63,7 @@
     @test ncoords(grid) == 2
     @test coordtype(grid) == Float64
     @test size(grid) == (200,100)
-    @test npoints(grid) == 200*100
+    @test nelms(grid) == 200*100
     @test coordinates(grid, 1) == [-1.,-1.]
     @test coordinates(grid, 200*100) == [1.,1.]
     @test origin(grid) == [-1.,-1.]
@@ -87,7 +87,7 @@
 
     X = [1.,5.,6.,10.]
     g1 = StructuredGrid(X)
-    @test npoints(g1) == 4
+    @test nelms(g1) == 4
     @test coordinates(g1) == [1. 5. 6. 10.]
 
     @test sprint(show, g1) == "4 StructuredGrid{Float64,1}"
@@ -96,7 +96,7 @@
     X  = [x for x in range(0,10,length=nx), j in 1:ny]
     Y  = sin.(X) .+ [0.5j for i in 1:nx, j in 1:ny]
     g2 = StructuredGrid(X, Y)
-    @test npoints(g2) == nx*ny
+    @test nelms(g2) == nx*ny
     @test size(g2) == (nx, ny)
     @test size(coordinates(g2)) == (2, nx*ny)
 
@@ -106,7 +106,7 @@
     Y = sin.(X) .+ [0.5j for i in 1:nx, j in 1:ny, k in 1:nz]
     Z = [1.0(k-1) for i in 1:nx, j in 1:ny, k in 1:nz]
     g3 = StructuredGrid(X, Y, Z)
-    @test npoints(g3) == nx*ny*nz
+    @test nelms(g3) == nx*ny*nz
     @test size(g3) == (nx, ny, nz)
     @test size(coordinates(g3)) == (3, nx*ny*nz)
 

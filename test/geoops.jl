@@ -3,14 +3,14 @@
     d₁ = RegularGrid(10,10)
     d₂ = PointSet(rand(2,10))
     d = d₁ ⊔ d₂
-    @test npoints(d) == 110
+    @test nelms(d) == 110
 
     d₁ = PointSet(rand(2,3))
     d₂ = PointSet(rand(2,2))
     s₁ = georef((a=[1,2,3],b=[4,5,6]), d₁)
     s₂ = georef((a=[7.,8.],c=["foo","bar"]), d₂)
     s = s₁ ⊔ s₂
-    @test npoints(s) == 5
+    @test nelms(s) == 5
     @test isequal(s[:a], [1.,2.,3.,7.,8.])
     @test isequal(s[:b], [4,5,6,missing,missing])
     @test isequal(s[:c], [missing,missing,missing,"foo","bar"])
@@ -22,7 +22,7 @@
     d = georef((z=[z;z],), [X X])
     u = uniquecoords(d)
     U = coordinates(u)
-    @test npoints(u) == 1_000_000
+    @test nelms(u) == 1_000_000
     @test Set(eachcol(U)) == Set(eachcol(X))
 
     X = rand(3,100)
@@ -33,7 +33,7 @@
     nd = vcat(n, n[1:10])
     sdata = georef(DataFrame(z=zd, n=nd), PointSet(Xd))
     ndata = uniquecoords(sdata)
-    @test npoints(ndata) == 100
+    @test nelms(ndata) == 100
   end
 
   @testset "inside" begin

@@ -3,11 +3,11 @@
 # ------------------------------------------------------------------
 
 """
-    npoints(object)
+    nelms(object)
 
-Return the number of points in `object`.
+Return the number of elements in `object`.
 """
-npoints(obj) = npoints(geotrait(obj), obj)
+nelms(obj) = nelms(geotrait(obj), obj)
 
 """
     ncoords(object)

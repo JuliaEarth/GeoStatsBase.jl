@@ -18,9 +18,9 @@ struct NearestNeighborSearcher{O,K} <: AbstractBoundedNeighborSearcher
   kdtree::K
 end
 
-function NearestNeighborSearcher(object::O, k::Int; locations=1:npoints(object), metric=Euclidean()) where {O}
+function NearestNeighborSearcher(object::O, k::Int; locations=1:nelms(object), metric=Euclidean()) where {O}
   @assert 1 ≤ k ≤ length(locations) "number of neighbors must be smaller than number of locations"
-  @assert locations ⊆ 1:npoints(object) "invalid locations for spatial object"
+  @assert locations ⊆ 1:nelms(object) "invalid locations for spatial object"
   kdtree = KDTree(coordinates(object, locations), metric)
   NearestNeighborSearcher{O,typeof(kdtree)}(object, k, locations, kdtree)
 end

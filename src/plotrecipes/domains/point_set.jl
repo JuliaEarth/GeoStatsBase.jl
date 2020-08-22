@@ -33,7 +33,7 @@ end
 
   if N == 1
     @series begin
-      X[1,:], fill(0, npoints(domain))
+      X[1,:], fill(0, nelms(domain))
     end
   elseif N == 2
     aspect_ratio --> :equal

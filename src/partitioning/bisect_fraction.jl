@@ -42,7 +42,7 @@ function partition(object, partitioner::BisectFractionPartitioner)
     m = (a + b) / 2
 
     p = partition(object, BisectPointPartitioner(n, m))
-    g = npoints(p[1]) / npoints(object)
+    g = nelms(p[1]) / nelms(object)
 
     g ≈ f && break
     g > f && (b = m)

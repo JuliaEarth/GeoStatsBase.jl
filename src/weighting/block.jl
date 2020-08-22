@@ -23,7 +23,7 @@ BlockWeighter(sides::Vararg{T,N}) where {N,T} =
 function weight(sdomain::AbstractDomain, weighter::BlockWeighter)
   p = partition(sdomain, BlockPartitioner(weighter.sides))
 
-  weights = Vector{Float64}(undef, npoints(sdomain))
+  weights = Vector{Float64}(undef, nelms(sdomain))
   for s in subsets(p)
     n = length(s)
     weights[s] .= 1/n

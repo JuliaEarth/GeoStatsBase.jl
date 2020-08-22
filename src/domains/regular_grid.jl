@@ -79,7 +79,7 @@ Base.size(grid::RegularGrid) = grid.dims
 origin(grid::RegularGrid)    = grid.origin
 spacing(grid::RegularGrid)   = grid.spacing
 
-npoints(grid::RegularGrid) = prod(grid.dims)
+nelms(grid::RegularGrid) = prod(grid.dims)
 
 function coordinates!(buff::AbstractVector{T}, grid::RegularGrid{T,N},
                       location::Int) where {N,T}

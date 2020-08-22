@@ -68,8 +68,8 @@ EmpiricalHistogram(d) = EmpiricalHistogram(d, median_heuristic(d))
 
 function median_heuristic(d)
   # select at most 1000 points at random
-  npts = npoints(d)
-  inds = sample(1:npts, min(npts, 1000), replace=false)
+  nel = nelms(d)
+  inds = sample(1:nel, min(nel, 1000), replace=false)
   X = coordinates(d, inds)
   D = pairwise(Euclidean(), X, dims=2)
 

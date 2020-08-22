@@ -25,8 +25,8 @@ Base.view(domain::AbstractDomain,
 # IO methods
 # ------------
 function Base.show(io::IO, domain::AbstractDomain{T,N}) where {N,T}
-  npts = npoints(domain)
-  print(io, "$npts SpatialDomain{$T,$N}")
+  n = nelms(domain)
+  print(io, "$n SpatialDomain{$T,$N}")
 end
 
 #------------------

@@ -2,7 +2,7 @@
 # Licensed under the ISC License. See LICENSE in the project root.
 # ------------------------------------------------------------------
 
-npoints(::GeoData, obj) = npoints(domain(obj))
+nelms(::GeoData, obj) = nelms(domain(obj))
 
 ncoords(::GeoData, obj) = ncoords(domain(obj))
 
@@ -53,4 +53,4 @@ end
 
 Return the coordinates of all indices in `object`.
 """
-coordinates(obj) = coordinates(obj, 1:npoints(obj))
+coordinates(obj) = coordinates(obj, 1:nelms(obj))

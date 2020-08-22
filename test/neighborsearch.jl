@@ -24,7 +24,7 @@
     @test neighbors[1] == 56
 
     #testing with masks
-    mask = trues(npoints(domain))
+    mask = trues(nelms(domain))
     mask[56] = false #excluding location #56
     neighbors = GeoStatsBase.search(xₒ, searcher, mask=mask)
     @test length(neighbors) == 4

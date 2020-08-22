@@ -20,7 +20,7 @@ domain(dv::DataView) = view(domain(dv.data), dv.inds)
 
 values(dv::DataView) = getindex(values(dv.data), dv.inds, dv.vars)
 
-npoints(dv::DataView) = length(dv.inds)
+nelms(dv::DataView) = length(dv.inds)
 
 coordinates!(buff::AbstractVector, dv::DataView, ind::Int) =
   coordinates!(buff, dv.data, dv.inds[ind])
@@ -74,6 +74,6 @@ Base.getindex(dv::DataView, ind::Int) =
 function Base.show(io::IO, dv::DataView)
   N = ncoords(dv)
   T = coordtype(dv)
-  npts = npoints(dv)
-  print(io, "$npts DataView{$T,$N}")
+  n = nelms(dv)
+  print(io, "$n DataView{$T,$N}")
 end

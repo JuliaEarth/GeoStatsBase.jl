@@ -30,7 +30,7 @@ p-quantile of simulation `solution`.
 function quantile(solution::SimulationSolution, p::Number)
   cols = []
   for (variable, reals) in solution.realizations
-    quantiles = map(1:npoints(solution.domain)) do location
+    quantiles = map(1:nelms(solution.domain)) do location
       slice = getindex.(reals, location)
       quantile(slice, p)
     end

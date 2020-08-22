@@ -16,7 +16,7 @@ A [`GeoCollection`](@ref) that represents geospatial domains.
 
 ## Traits
 
-* [`npoints`](@ref)     - number of elements
+* [`nelms`](@ref)       - number of elements
 * [`ncoords`](@ref)     - number of coordinates
 * [`coordtype`](@ref)   - coordinate type
 * [`coordinate!`](@ref) - coordinates

@@ -157,8 +157,7 @@ datamap(problem::SimulationProblem) = problem.maps
 
 Return `true` if simulation `problem` has data.
 """
-hasdata(problem::SimulationProblem) = (problem.sdata ≠ nothing &&
-                                       npoints(problem.sdata) > 0)
+hasdata(problem::SimulationProblem) = !isnothing(problem.sdata)
 
 """
     nreals(problem)

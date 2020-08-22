@@ -49,12 +49,12 @@ function error(solver::AbstractLearningSolver,
   # pre-allocate memory for coordinates
   coords = MVector{ncoords(sdata),coordtype(sdata)}(undef)
 
-  solutions = map(1:npoints(sdata)) do i
+  solutions = map(1:nelms(sdata)) do i
     coordinates!(coords, sdata, i)
 
     # points inside and outside ball
     inside  = search(coords, searcher)
-    outside = [j for j in 1:npoints(sdata) if j ∉ inside]
+    outside = [j for j in 1:nelms(sdata) if j ∉ inside]
 
     # setup and solve learning sub-problem
     subproblem = LearningProblem(view(sdata, outside),
@@ -64,8 +64,8 @@ function error(solver::AbstractLearningSolver,
   end
 
   result = map(ovars) do var
-    y = [sdata[i,var] for i in 1:npoints(sdata)]
-    ŷ = [solutions[i][1,var] for i in 1:npoints(sdata)]
+    y = [sdata[i,var] for i in 1:nelms(sdata)]
+    ŷ = [solutions[i][1,var] for i in 1:nelms(sdata)]
     var => value(loss[var], y, ŷ, AggMode.Mean())
   end
 

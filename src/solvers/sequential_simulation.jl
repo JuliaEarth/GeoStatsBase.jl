@@ -78,7 +78,7 @@ function solvesingle(problem::SimulationProblem, covars::NamedTuple,
     V = variables(problem)[var]
 
     # pre-allocate memory for result
-    realization = Vector{V}(undef, npoints(pdomain))
+    realization = Vector{V}(undef, nelms(pdomain))
 
     # pre-allocate memory for coordinates
     xₒ = MVector{N,T}(undef)
@@ -88,7 +88,7 @@ function solvesingle(problem::SimulationProblem, covars::NamedTuple,
     X = Matrix{T}(undef, N, maxneighbors)
 
     # keep track of simulated locations
-    simulated = falses(npoints(pdomain))
+    simulated = falses(nelms(pdomain))
     for (loc, datloc) in datamap(problem, var)
       realization[loc] = pdata[datloc,var]
       simulated[loc] = true

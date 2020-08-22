@@ -11,7 +11,7 @@ spatial data with all variables included.
 struct VariableJoiner <: AbstractJoiner end
 
 function join(sdata₁, sdata₂, joiner::VariableJoiner)
-  @assert npoints(sdata₁) == npoints(sdata₂) "cannot join different number of points"
+  @assert nelms(sdata₁) == nelms(sdata₂) "cannot join different number of points"
 
   𝒯 = hcat(values(sdata₁), values(sdata₂), makeunique=true)
   𝒟 = domain(sdata₁)

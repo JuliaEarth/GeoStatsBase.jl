@@ -17,13 +17,13 @@ end
 UniformPartitioner(k::Int) = UniformPartitioner(k, true)
 
 function partition(object, partitioner::UniformPartitioner)
-  npts = npoints(object)
-  nset = partitioner.k
+  n = nelms(object)
+  k = partitioner.k
 
-  @assert nset ≤ npts "number of subsets must be smaller than number of points"
+  @assert k ≤ n "number of subsets must be smaller than number of points"
 
-  inds = partitioner.shuffle ? shuffle(1:npts) : collect(1:npts)
-  subsets = collect(Iterators.partition(inds, npts ÷ nset))
+  inds = partitioner.shuffle ? shuffle(1:n) : collect(1:n)
+  subsets = collect(Iterators.partition(inds, n ÷ k))
 
   SpatialPartition(object, subsets)
 end

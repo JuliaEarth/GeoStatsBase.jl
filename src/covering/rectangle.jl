@@ -18,7 +18,7 @@ function cover(domain, coverer::RectangleCoverer)
   upperright = MVector(ntuple(i->typemin(T), N))
 
   x = MVector{N,T}(undef)
-  for l in 1:npoints(domain)
+  for l in 1:nelms(domain)
     coordinates!(x, domain, l)
     for d in 1:N
       x[d] < lowerleft[d]  && (lowerleft[d]  = x[d])

@@ -49,12 +49,12 @@
 
       p = partition(grid, DirectionPartitioner((1.,0.)))
       @test setify(subsets(p)) == setify([collect((i-1)*n+1:i*n) for i in 1:n])
-      ns = [npoints(d) for d in p]
+      ns = [nelms(d) for d in p]
       @test all(ns .== n)
 
       p = partition(grid, DirectionPartitioner((0.,1.)))
       @test setify(subsets(p)) == setify([collect(i:n:n*n) for i in 1:n])
-      ns = [npoints(d) for d in p]
+      ns = [nelms(d) for d in p]
       @test all(ns .== n)
     end
   end
@@ -63,16 +63,16 @@
     grid = RegularGrid(10,10)
 
     p = partition(grid, FractionPartitioner(0.5))
-    @test npoints(p[1]) == npoints(p[2]) == 50
+    @test nelms(p[1]) == nelms(p[2]) == 50
     @test length(p) == 2
 
     p = partition(grid, FractionPartitioner(0.7))
-    @test npoints(p[1]) == 70
-    @test npoints(p[2]) == 30
+    @test nelms(p[1]) == 70
+    @test nelms(p[2]) == 30
 
     p = partition(grid, FractionPartitioner(0.3))
-    @test npoints(p[1]) == 30
-    @test npoints(p[2]) == 70
+    @test nelms(p[1]) == 30
+    @test nelms(p[2]) == 70
   end
 
   @testset "SLICPartitioner" begin
@@ -80,7 +80,7 @@
     sdata = georef(DataFrame(z=vec(img)), RegularGrid(size(img)))
     p = partition(sdata, SLICPartitioner(4, 1.0))
     @test length(p) == 4
-    @test all(npoints.(p) .== 100)
+    @test all(nelms.(p) .== 100)
     @test mean(coordinates(p[1]), dims=2) == [ 4.5, 4.5][:,:]
     @test mean(coordinates(p[2]), dims=2) == [14.5, 4.5][:,:]
     @test mean(coordinates(p[3]), dims=2) == [ 4.5,14.5][:,:]
@@ -101,19 +101,19 @@
 
     p = partition(grid, BlockPartitioner(5.,5.))
     @test length(p) == 4
-    @test all(npoints.(p) .== 25)
+    @test all(nelms.(p) .== 25)
 
     p = partition(grid, BlockPartitioner(5.,2.))
     @test length(p) == 12
-    @test Set(npoints.(p)) == Set([5,10])
+    @test Set(nelms.(p)) == Set([5,10])
   end
 
   @testset "BisectPointPartitioner" begin
     grid = RegularGrid(10,10)
 
     p = partition(grid, BisectPointPartitioner((0.,1.), (5.,5.1)))
-    @test npoints(p[1]) == 60
-    @test npoints(p[2]) == 40
+    @test nelms(p[1]) == 60
+    @test nelms(p[2]) == 40
 
     # all points in X₁ are below those in X₂
     X₁ = coordinates(p[1])
@@ -126,16 +126,16 @@
     # flipping normal direction is equivalent to swapping subsets
     p₁ = partition(grid, BisectPointPartitioner(( 1.,0.), (5.1,5.)))
     p₂ = partition(grid, BisectPointPartitioner((-1.,0.), (5.1,5.)))
-    @test npoints(p₁[1]) == npoints(p₂[2]) == 60
-    @test npoints(p₁[2]) == npoints(p₂[1]) == 40
+    @test nelms(p₁[1]) == nelms(p₂[2]) == 60
+    @test nelms(p₁[2]) == nelms(p₂[1]) == 40
   end
 
   @testset "BisectFractionPartitioner" begin
     grid = RegularGrid(10,10)
 
     p = partition(grid, BisectFractionPartitioner((1.,0.), 0.2))
-    @test npoints(p[1]) == 20
-    @test npoints(p[2]) == 80
+    @test nelms(p[1]) == 20
+    @test nelms(p[2]) == 80
 
     # all points in X₁ are to the left of X₂
     X₁ = coordinates(p[1])
@@ -148,8 +148,8 @@
     # flipping normal direction is equivalent to swapping subsets
     p₁ = partition(grid, BisectFractionPartitioner(( 1.,0.), 0.2))
     p₂ = partition(grid, BisectFractionPartitioner((-1.,0.), 0.8))
-    @test npoints(p₁[1]) == npoints(p₂[2]) == 20
-    @test npoints(p₁[2]) == npoints(p₂[1]) == 80
+    @test nelms(p₁[1]) == nelms(p₂[2]) == 20
+    @test nelms(p₁[2]) == nelms(p₂[1]) == 80
   end
 
   @testset "BallPartitioner" begin
@@ -160,7 +160,7 @@
 
     # 3 balls with 1 point, and 1 ball with 2 points
     p = partition(pset, BallPartitioner(0.5))
-    n = npoints.(p)
+    n = nelms.(p)
     @test length(p) == 4
     @test count(i->i==1, n) == 3
     @test count(i->i==2, n) == 1
@@ -169,7 +169,7 @@
     # 5 balls with 1 point each
     p = partition(pset, BallPartitioner(0.2))
     @test length(p) == 5
-    @test all(npoints.(p) .== 1)
+    @test all(nelms.(p) .== 1)
     @test setify(subsets(p)) == setify([[1],[2],[3],[4],[5]])
   end
 
@@ -213,14 +213,14 @@
     s = subsets(partition(g, sp))
     @test length(s) == 100
     for d in partition(g, sp)
-      @test npoints(d) == 1
+      @test nelms(d) == 1
     end
     # defining a predicate to check if points x and y belong to the square [0.,5.]x[0.,5.]
     pred(x, y) = all([0.,0.] .<= x .<=[5.,5.]) && all([0.,0.] .<= y .<= [5.,5.])
     sp = SpatialPredicatePartitioner(pred)
     p = partition(g, sp)
     s = subsets(p)
-    n = npoints.(p)
+    n = nelms.(p)
 
     # There will be 65 partitions:
     # 1 partition with 36 points (inside square [0.,5.]x[0.,5.])

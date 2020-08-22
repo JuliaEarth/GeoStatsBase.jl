@@ -17,7 +17,7 @@ end
 UniformSampler(size::Int) = UniformSampler(size, false)
 
 function sample(object, sampler::UniformSampler)
-  n = npoints(object)
+  n = nelms(object)
   s = sampler.size
   r = sampler.replace
   if s > n && r == false

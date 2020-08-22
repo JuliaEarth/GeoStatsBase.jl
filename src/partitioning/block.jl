@@ -45,7 +45,7 @@ function partition(object, partitioner::BlockPartitioner)
   linear = LinearIndices(Dims(nblocks))
 
   coords = MVector{N,T}(undef)
-  for j in 1:npoints(object)
+  for j in 1:nelms(object)
     coordinates!(coords, object, j)
 
     # find block coordinates

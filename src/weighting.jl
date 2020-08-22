@@ -31,7 +31,7 @@ end
 # IO methods
 # ------------
 function Base.show(io::IO, w::SpatialWeights)
-  npts = npoints(w.domain)
+  npts = nelms(w.domain)
   print(io, "$npts SpatialWeights")
 end
 

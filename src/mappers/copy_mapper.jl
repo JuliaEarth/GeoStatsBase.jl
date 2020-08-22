@@ -23,8 +23,8 @@ function map(sdata, sdomain, targetvars, mapper::CopyMapper)
   mappings = Dict(var => Dict{Int,Int}() for var in targetvars)
 
   # retrieve origin and destination indices
-  orig = isnothing(mapper.orig) ? (1:npoints(sdata)) : mapper.orig
-  dest = isnothing(mapper.dest) ? (1:npoints(sdata)) : mapper.dest
+  orig = isnothing(mapper.orig) ? (1:nelms(sdata)) : mapper.orig
+  dest = isnothing(mapper.dest) ? (1:nelms(sdata)) : mapper.dest
 
   @assert length(orig) == length(dest) "invalid mapping specification"
 

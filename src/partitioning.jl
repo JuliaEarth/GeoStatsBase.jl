@@ -128,7 +128,7 @@ function partition end
 
 function partition(object, partitioner::AbstractPredicatePartitioner)
   subsets = Vector{Vector{Int}}()
-  for i in randperm(npoints(object))
+  for i in randperm(nelms(object))
     inserted = false
     for subset in subsets
       j = subset[1]
@@ -156,7 +156,7 @@ function partition(object, partitioner::AbstractSpatialPredicatePartitioner)
   y = MVector{N,T}(undef)
 
   subsets = Vector{Vector{Int}}()
-  for i in randperm(npoints(object))
+  for i in randperm(nelms(object))
     coordinates!(x, object, i)
 
     inserted = false

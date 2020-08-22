@@ -3,7 +3,7 @@
     d = RegularGrid(10, 10)
     X = coordinates(d)
     v = view(d, 1:10)
-    @test npoints(v) == 10
+    @test nelms(v) == 10
     @test coordinates(v) == X[:,1:10]
     @test collect(v) isa PointSet
   end
@@ -13,7 +13,7 @@
     T = values(d)
     X = coordinates(d)
     v = view(d, 1:10)
-    @test npoints(v) == 10
+    @test nelms(v) == 10
     @test coordinates(v) == X[:,1:10]
     @test collect(v) isa SpatialData
   end
