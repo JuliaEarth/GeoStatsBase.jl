@@ -13,7 +13,7 @@ struct DataView
   vars
 end
 
-geotrait(dv::DataView) = GeoData()
+geotrait(::DataView) = GeoData()
 domain(dv::DataView) = view(domain(dv.data), dv.inds)
 values(dv::DataView) = getindex(values(dv.data), dv.inds, dv.vars)
 

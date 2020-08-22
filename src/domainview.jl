@@ -7,16 +7,15 @@
 
 Return a view of `domain` at `inds`.
 """
-struct DomainView{T,N} <: AbstractDomain{T,N}
+struct DomainView
   domain
   inds
 end
 
-DomainView(domain, inds) =
-  DomainView{coordtype(domain),ncoords(domain)}(domain, inds)
-
+geotrait(::DomainView) = GeoDomain()
 nelms(dv::DomainView) = length(dv.inds)
-
+ncoords(dv::DomainView) = ncoords(dv.domain)
+coordtype(dv::DomainView) = coordtype(dv.domain)
 coordinates!(buff::AbstractVector, dv::DomainView, ind::Int) =
   coordinates!(buff, dv.domain, dv.inds[ind])
 

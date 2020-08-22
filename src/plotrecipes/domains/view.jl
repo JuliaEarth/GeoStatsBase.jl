@@ -2,14 +2,14 @@
 # Licensed under the ISC License. See LICENSE in the project root.
 # ------------------------------------------------------------------
 
-@recipe function f(domain::AbstractDomain, data::AbstractVector)
+@recipe function f(dv::DomainView, data::AbstractVector)
   @series begin
-    PointSet(coordinates(domain)), data
+    collect(dv), data
   end
 end
 
-@recipe function f(domain::AbstractDomain)
+@recipe function f(dv::DomainView)
   @series begin
-    PointSet(coordinates(domain))
+    collect(dv)
   end
 end
