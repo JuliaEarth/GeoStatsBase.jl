@@ -37,13 +37,13 @@ a geospatial `domain` together with a data table of `values`.
 struct GeoData <: GeoCollection end
 
 """
-    geotype(object)
+    geotrait(object)
 
-Return the geospatial type of the `object`.
+Return the geospatial trait of the `object`.
 """
-geotype
+geotrait
 
-# required traits for each geotype
+# required functions for each geotrait
 include("geotraits/domain.jl")
 include("geotraits/data.jl")
 

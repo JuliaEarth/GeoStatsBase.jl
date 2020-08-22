@@ -90,7 +90,7 @@ export
   GeoCollection,
   GeoDomain,
   GeoData,
-  geotype,
+  geotrait,
   ncoords,
   coordtype,
   npoints,

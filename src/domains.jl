@@ -9,7 +9,7 @@ Spatial domain in a `N`-dimensional space with coordinates of type `T`.
 """
 abstract type AbstractDomain{T,N} end
 
-geotype(::AbstractDomain) = GeoDomain()
+geotrait(::AbstractDomain) = GeoDomain()
 ncoords(::AbstractDomain{T,N}) where {T,N} = N
 coordtype(::AbstractDomain{T,N}) where {T,N} = T
 

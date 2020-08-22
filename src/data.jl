@@ -9,7 +9,7 @@ Spatial data in a `N`-dimensional space with coordinates of type `T`.
 """
 abstract type AbstractData{T,N} end
 
-geotype(::AbstractData) = GeoData()
+geotrait(::AbstractData) = GeoData()
 domain(data::AbstractData) = data.domain
 values(data::AbstractData) = data.table
 

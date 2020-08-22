@@ -7,21 +7,21 @@
 
 Return the number of points in `object`.
 """
-npoints(obj) = npoints(geotype(obj), obj)
+npoints(obj) = npoints(geotrait(obj), obj)
 
 """
     ncoords(object)
 
 Return the number of dimensions of `object`.
 """
-ncoords(obj) = ncoords(geotype(obj), obj)
+ncoords(obj) = ncoords(geotrait(obj), obj)
 
 """
     coordtype(object)
 
 Return the coordinate type of `object`.
 """
-coordtype(obj) = coordtype(geotype(obj), obj)
+coordtype(obj) = coordtype(geotrait(obj), obj)
 
 """
     coordinates!(buff, object, ind)
@@ -29,4 +29,4 @@ coordtype(obj) = coordtype(geotype(obj), obj)
 Non-allocating version of [`coordinates`](@ref).
 """
 coordinates!(buff::AbstractVector, obj, ind::Int) =
-  coordinates!(geotype(obj), buff, obj, ind)
+  coordinates!(geotrait(obj), buff, obj, ind)
