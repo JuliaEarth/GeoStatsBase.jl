@@ -13,13 +13,6 @@ geotrait(::AbstractData) = GeoData()
 domain(data::AbstractData) = data.domain
 values(data::AbstractData) = data.table
 
-"""
-    variables(data)
-
-Return the variable names in geospatial `data` and their types.
-"""
-variables(data::AbstractData) = variables(data.table)
-
 # -----------
 # TABLES API
 # -----------
@@ -45,6 +38,8 @@ Base.setindex!(sdata::AbstractData, vals, inds, vars) =
 # -------------
 # VARIABLE API
 # -------------
+
+variables(data::AbstractData) = variables(data.table)
 
 Base.getindex(sdata::AbstractData, var::Symbol) =
   getindex(sdata.table, :, var)

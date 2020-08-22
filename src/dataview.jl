@@ -20,8 +20,6 @@ domain(dv::DataView) = view(domain(dv.data), dv.inds)
 
 values(dv::DataView) = getindex(values(dv.data), dv.inds, dv.vars)
 
-variables(dv::DataView) = variables(getindex(dv.data, dv.inds, dv.vars))
-
 Base.collect(dv::DataView) = georef(values(dv), coordinates(dv))
 
 # -----------------------------------
@@ -57,6 +55,8 @@ Base.setindex!(dv::DataView, vals, inds, vars) =
 # -------------
 # VARIABLE API
 # -------------
+
+variables(dv::DataView) = variables(getindex(dv.data, dv.inds, dv.vars))
 
 Base.getindex(dv::DataView, var::Symbol) =
   getindex(dv.data, dv.inds, var)
