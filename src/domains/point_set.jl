@@ -24,7 +24,7 @@ Or equivalently, using a vector of tuples:
 julia> PointSet([(rand(),rand()) for i in 1:100])
 ```
 """
-struct PointSet{T,N} <: AbstractDomain{T,N}
+struct PointSet{T,N} <: SpatialDomain{T,N}
   coords::Matrix{T}
 
   function PointSet{T,N}(coords) where {N,T}

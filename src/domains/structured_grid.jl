@@ -17,7 +17,7 @@ surface using `LAT` and `LON` coordinates:
 julia> StructuredGrid(LAT, LON)
 ```
 """
-struct StructuredGrid{T,N} <: AbstractDomain{T,N}
+struct StructuredGrid{T,N} <: SpatialDomain{T,N}
   coords::Matrix{T}
   dims::Dims{N}
 end

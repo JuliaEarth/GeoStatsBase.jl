@@ -3,22 +3,22 @@
 # ------------------------------------------------------------------
 
 """
-    AbstractDomain{T,N}
+    SpatialDomain{T,N}
 
 Spatial domain in a `N`-dimensional space with coordinates of type `T`.
 """
-abstract type AbstractDomain{T,N} end
+abstract type SpatialDomain{T,N} end
 
-geotrait(::AbstractDomain) = GeoDomain()
-ncoords(::AbstractDomain{T,N}) where {T,N} = N
-coordtype(::AbstractDomain{T,N}) where {T,N} = T
+geotrait(::SpatialDomain) = GeoDomain()
+ncoords(::SpatialDomain{T,N}) where {T,N} = N
+coordtype(::SpatialDomain{T,N}) where {T,N} = T
 
 """
     view(domain, inds)
 
 Return a view of `domain` at given indices `inds`.
 """
-Base.view(domain::AbstractDomain, inds::AbstractVector{Int}) =
+Base.view(domain::SpatialDomain, inds::AbstractVector{Int}) =
   SpatialDomainView(domain, inds)
 
 #------------------

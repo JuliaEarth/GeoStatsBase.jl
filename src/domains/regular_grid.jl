@@ -40,7 +40,7 @@ Create a 1D grid from -1 to 1 with 100 locations:
 julia> RegularGrid((-1.,),(1.,), dims=(100,))
 ```
 """
-struct RegularGrid{T,N} <: AbstractDomain{T,N}
+struct RegularGrid{T,N} <: SpatialDomain{T,N}
   dims::Dims{N}
   origin::SVector{N,T}
   spacing::SVector{N,T}

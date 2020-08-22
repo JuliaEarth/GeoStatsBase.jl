@@ -23,7 +23,7 @@ with parameter `t ∈ R`:
 julia> Curve(x, y, z)
 ```
 """
-struct Curve{T,N} <: AbstractDomain{T,N}
+struct Curve{T,N} <: SpatialDomain{T,N}
   coords::Matrix{T}
 end
 
