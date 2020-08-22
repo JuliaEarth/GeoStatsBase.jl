@@ -32,7 +32,7 @@ function DensityRatioWeighter(tdata, vars=nothing; estimator=LSIF(),
   DensityRatioWeighter(tdata, wvars, estimator, optlib)
 end
 
-function weight(sdata, weighter::DensityRatioWeighter)
+function weight(::GeoData, sdata, weighter::DensityRatioWeighter)
   # retrieve method parameters
   tdata  = weighter.tdata
   vars   = weighter.vars
@@ -42,16 +42,16 @@ function weight(sdata, weighter::DensityRatioWeighter)
   @assert vars ⊆ name.(variables(sdata)) "invalid variables ($vars) for spatial data"
 
   # numerator and denominator samples
-  Ω_nu = view(tdata, vars)
-  Ω_de = view(sdata, vars)
+  Ωnu = view(tdata, vars)
+  Ωde = view(sdata, vars)
 
   # TODO: eliminate this explicit conversion after
   # https://github.com/JuliaEarth/GeoStats.jl/projects/2
-  x_nu = collect(eachrow(Ω_nu[1:nelms(Ω_nu),vars]))
-  x_de = collect(eachrow(Ω_de[1:nelms(Ω_de),vars]))
+  xnu = collect(eachrow(Ωnu[1:nelms(Ωnu),vars]))
+  xde = collect(eachrow(Ωde[1:nelms(Ωde),vars]))
 
   # perform denstiy ratio estimation
-  ratios = densratio(x_nu, x_de, dre, optlib=optlib)
+  ratios = densratio(xnu, xde, dre, optlib=optlib)
 
   SpatialWeights(domain(sdata), ratios)
 end

@@ -52,7 +52,8 @@ abstract type AbstractWeighter end
 
 Weight spatial `object` with `weighter` method.
 """
-function weight end
+weight(object, weighter::AbstractWeighter) =
+  weight(geotrait(object), object, weighter)
 
 # ----------------
 # IMPLEMENTATIONS

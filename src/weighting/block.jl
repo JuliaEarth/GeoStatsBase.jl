@@ -17,20 +17,19 @@ end
 BlockWeighter(sides::NTuple{N,T}) where {N,T} =
   BlockWeighter{T,N}(sides)
 
-BlockWeighter(sides::Vararg{T,N}) where {N,T} =
-  BlockWeighter(sides)
+BlockWeighter(sides::Vararg) = BlockWeighter(sides)
 
-function weight(sdomain::AbstractDomain, weighter::BlockWeighter)
-  p = partition(sdomain, BlockPartitioner(weighter.sides))
+weight(::GeoData, object, weighter::BlockWeighter) =
+  weight(domain(object), weighter)
 
-  weights = Vector{Float64}(undef, nelms(sdomain))
+function weight(::GeoDomain, object, weighter::BlockWeighter)
+  p = partition(object, BlockPartitioner(weighter.sides))
+
+  weights = Vector{Float64}(undef, nelms(object))
   for s in subsets(p)
     n = length(s)
     weights[s] .= 1/n
   end
 
-  SpatialWeights(sdomain, weights)
+  SpatialWeights(object, weights)
 end
-
-weight(sdata::AbstractData, weighter::BlockWeighter) =
-  weight(domain(sdata), weighter)
