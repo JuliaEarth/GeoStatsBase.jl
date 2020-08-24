@@ -22,5 +22,12 @@
 
     @test sprint(show, v) == "10 SpatialDataView{Float64,1}"
     @test sprint(show, MIME"text/plain"(), v) == "10 SpatialDomainView{Float64,1}\n  variables\n    └─w (Float64)\n    └─z (Float64)" 
+
+    d = georef((z=rand(100), w=rand(100)))
+    v1 = view(d, shuffle(1:100))
+    c1 = collect(v1)
+    v2 = view(v1, [:z])
+    c2 = view(c1, [:z])
+    @test [x for x in v2] == [x for x in c2]
   end
 end
