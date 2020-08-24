@@ -3,9 +3,10 @@
 # ------------------------------------------------------------------
 
 """
-    LearnedModel(model, θ)
+    LearnedModel(m, θ)
 
-An object that stores `model` together with learned parameters `θ`.
+An object that stores a learning `model`
+along with its learned parameters `θ`.
 """
 struct LearnedModel
   model
@@ -35,7 +36,7 @@ end
 
 Perform the `task` with `sdata` using a *learned* `lmodel`.
 """
-function perform(task::AbstractLearningTask, sdata, lmodel::LearnedModel)
+function perform(task::AbstractLearningTask, sdata, lmodel)
   # unpack model and learned parameters
   model, θ = lmodel.model, lmodel.θ
 
