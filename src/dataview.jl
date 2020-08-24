@@ -85,7 +85,7 @@ Base.lastindex(dv::SpatialDataView)  = nelms(dv)
 Base.view(dv::SpatialDataView, inds::AbstractVector{Int}) =
   SpatialDataView(dv.data, dv.inds[inds], dv.vars)
 Base.view(dv::SpatialDataView, vars::AbstractVector{Symbol}) =
-  SpatialDataView(dv.data, 1:nelms(dv), vars)
+  SpatialDataView(dv.data, dv.inds, vars)
 Base.view(dv::SpatialDataView, inds, vars) =
   SpatialDataView(dv.data, dv.inds[inds], vars)
 
