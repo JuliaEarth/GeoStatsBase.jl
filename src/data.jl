@@ -99,8 +99,12 @@ function Base.show(io::IO, sdata::SpatialData)
 end
 
 function Base.show(io::IO, ::MIME"text/plain", sdata::SpatialData)
-  println(io, domain(sdata))
+  𝒟 = domain(sdata)
+  𝒯 = values(sdata)
+  s = Tables.schema(𝒯)
+  vars = zip(s.names, s.types)
+  println(io, 𝒟)
   println(io, "  variables")
-  varlines = ["    └─$(name(var)) ($(mactype(var)))" for var in variables(sdata)]
+  varlines = ["    └─$var ($V)" for (var,V) in vars]
   print(io, join(sort(varlines), "\n"))
 end
