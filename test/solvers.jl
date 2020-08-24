@@ -31,6 +31,7 @@
   end
 
   @testset "PointwiseLearn" begin
+    # synthetic data
     Random.seed!(1234)
     f(x,y) = sin(4*(abs(x)+abs(y))) < 0 ? 1 : 0 
     X = [sin(i/10) for i in 1:100, j in 1:100]
@@ -39,25 +40,41 @@
     ϵ₁ = 0.1randn(Float64, size(X))
     ϵ₂ = 0.1randn(Float64, size(Y))
 
+    # source and target data
     S = georef((X=X,Y=Y,Z=Z))
     T = georef((X=X+ϵ₁,Y=Y+ϵ₂))
-    𝓉 = ClassificationTask((:X,:Y), :Z)
-    𝒫 = LearningProblem(S, T, 𝓉)
 
+    # view versions
+    inds = shuffle(1:nelms(S))
+    Sv = view(S, inds)
+    Tv = view(T, inds)
+
+    # classification task
+    𝓉 = ClassificationTask((:X,:Y), :Z)
+
+    # learning problems
+    𝒫₁ = LearningProblem(S, T, 𝓉)
+    𝒫₂ = LearningProblem(Sv, Tv, 𝓉)
+
+    # pointwise solver
     m = @load DecisionTreeClassifier
     ℒ = PointwiseLearn(m)
 
-    T̂ = solve(𝒫, ℒ)
+    R₁ = solve(𝒫₁, ℒ)
+    R₂ = solve(𝒫₂, ℒ)
 
-    err = mean(S[:Z] .!= T̂[:Z])
-    @test err < 0.15
+    # error is small
+    @test mean(S[:Z] .!= R₁[:Z]) < 0.15
+    @test mean(Sv[:Z] .!= R₂[:Z]) < 0.15
 
     if visualtests
-      @plottest begin
-        p1 = plot(S, (:Z,))
-        p2 = plot(T̂)
-        plot(p1, p2, size=(800,400))
-      end joinpath(datadir,"pointlearn.png") !istravis
+      for (i,s) in enumerate([(S,R₁), (Sv,R₂)])
+        @plottest begin
+          p1 = plot(s[1], (:Z,))
+          p2 = plot(s[2])
+          plot(p1, p2, size=(800,400))
+        end joinpath(datadir,"pointlearn$i.png") !istravis
+      end
     end
   end
 end
