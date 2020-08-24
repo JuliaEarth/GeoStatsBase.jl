@@ -46,7 +46,6 @@ Tables.getcolumn(dv::SpatialDataView, c::Symbol) = Tables.getcolumn(getindex(dv.
 
 Base.getindex(dv::SpatialDataView, inds, vars) =
   getindex(dv.data, dv.inds[inds], vars)
-
 Base.setindex!(dv::SpatialDataView, vals, inds, vars) =
   setindex!(dv.data, vals, dv.inds[inds], vars)
 
@@ -58,9 +57,17 @@ variables(dv::SpatialDataView) = variables(getindex(dv.data, dv.inds, dv.vars))
 
 Base.getindex(dv::SpatialDataView, var::Symbol) =
   getindex(dv.data, dv.inds, var)
-
 Base.setindex!(dv::SpatialDataView, vals, var::Symbol) =
   setindex!(dv.data, vals, dv.inds, var)
+
+# -------------
+# ITERATOR API
+# -------------
+
+Base.iterate(dv::SpatialDataView, state=1) =
+  state > nelms(dv) ? nothing : (dv[state], state + 1)
+Base.length(dv::SpatialDataView) = nelms(dv)
+Base.eltype(dv::SpatialDataView) = typeof(dv[1])
 
 # --------------
 # INDEXABLE API
