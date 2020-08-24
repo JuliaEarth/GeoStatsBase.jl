@@ -4,9 +4,12 @@ using Distances
 using Distributions
 using Tables, DataFrames
 using DensityRatioEstimation
+using CategoricalArrays
 using LinearAlgebra
 using Plots, VisualRegressionTests
 using Test, Pkg, Random
+
+using MLJ: @load
 
 # workaround GR warnings
 ENV["GKSwstype"] = "100"
@@ -16,7 +19,6 @@ islinux = Sys.islinux()
 istravis = "TRAVIS" ∈ keys(ENV)
 isappveyor = "APPVEYOR" ∈ keys(ENV)
 isCI = istravis || isappveyor
-# Only run visual tests on Travis Linux
 visualtests = !isCI || (istravis && islinux)
 if !isCI
   Pkg.add("Gtk")
