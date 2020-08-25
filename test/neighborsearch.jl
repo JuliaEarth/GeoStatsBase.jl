@@ -1,4 +1,8 @@
 @testset "Neighborsearch" begin
+  @testset "NeighborhoodSearcher" begin
+    # TODO
+  end
+
   @testset "KNearestSearcher" begin
     𝒟 = RegularGrid(10,10)
     S = KNearestSearcher(𝒟, 3)
@@ -10,14 +14,6 @@
     @test Set(n) == Set([91,81,92])
     n = GeoStatsBase.search([9.,9.], S)
     @test Set(n) == Set([100,99,90])
-  end
-
-  @testset "NeighborhoodSearcher" begin
-    # TODO
-  end
-
-  @testset "BoundedSearcher" begin
-    # TODO
   end
 
   @testset "KBallSearcher" begin
@@ -69,5 +65,9 @@
     neighbors = GeoStatsBase.search(xₒ, searcher)
 
     @test length(neighbors) == 0
+  end
+
+  @testset "BoundedSearcher" begin
+    # TODO
   end
 end

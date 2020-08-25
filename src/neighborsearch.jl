@@ -25,12 +25,12 @@ the spatial object.
 function search end
 
 """
-    search(location, searcher, mask=nothing)
+    search(ind, searcher, mask=nothing)
 
-Return neighbors of `location` in spatial object using `searcher` and a `mask`.
+Return neighbors of index `ind` in spatial object using `searcher` and a `mask`.
 """
-search(location::Int, searcher::AbstractNeighborSearcher; mask=nothing) =
-  search(coordinates(object(searcher), location), searcher; mask=mask)
+search(ind::Int, searcher::AbstractNeighborSearcher; mask=nothing) =
+  search(coordinates(object(searcher), ind), searcher; mask=mask)
 
 """
     AbstractBoundedNeighborSearcher
@@ -56,14 +56,13 @@ and return number of neighbors found.
 function search! end
 
 """
-    search!(neighbors, location, searcher, mask)
+    search!(neighbors, ind, searcher, mask)
 
-Update `neighbors` of `location` in spatial object using `searcher` and `mask`,
+Update `neighbors` of index `ind` in spatial object using `searcher` and `mask`,
 and return number of neighbors found.
 """
-search!(neighbors::AbstractVector{Int}, location::Int,
-        searcher::AbstractBoundedNeighborSearcher; mask=nothing) =
-  search!(neighbors, coordinates(object(searcher), location), searcher; mask=mask)
+search!(neighbors, ind::Int, searcher::AbstractBoundedNeighborSearcher; mask=nothing) =
+  search!(neighbors, coordinates(object(searcher), ind), searcher; mask=mask)
 
 function search(xₒ::AbstractVector, searcher::AbstractBoundedNeighborSearcher; mask=nothing)
   neighbors = Vector{Int}(undef, maxneighbors(searcher))
@@ -74,7 +73,7 @@ end
 #------------------
 # IMPLEMENTATIONS
 #------------------
-include("neighborsearch/knearest.jl")
 include("neighborsearch/neighborhood.jl")
+include("neighborsearch/knearest.jl")
 include("neighborsearch/kball.jl")
 include("neighborsearch/bounded.jl")

@@ -17,24 +17,31 @@ struct NeighborhoodSearcher{O,N,K} <: AbstractNeighborSearcher
 end
 
 function NeighborhoodSearcher(object::O, neigh::N) where {O,N}
-  kdtree = neigh isa BallNeighborhood ? KDTree(coordinates(object), metric(neigh)) : nothing
+  kdtree = if neigh isa BallNeighborhood
+    KDTree(coordinates(object), metric(neigh))
+  else
+    nothing
+  end
   NeighborhoodSearcher{O,N,typeof(kdtree)}(object, neigh, kdtree)
 end
 
 # search method for any neighborhood
-function search(xₒ::AbstractVector, searcher::NeighborhoodSearcher{O,N,T};
-                mask=nothing) where {O,N,T}
+function search(xₒ::AbstractVector, searcher::NeighborhoodSearcher; mask=nothing)
   object = searcher.object
   neigh  = searcher.neigh
-  locs   = mask ≠ nothing ? view(1:nelms(object), mask) : 1:nelms(object)
+  N = ncoords(object)
+  T = coordtype(object)
+  n = nelms(object)
 
-  x = MVector{ncoords(object),coordtype(object)}(undef)
+  inds = mask ≠ nothing ? view(1:n, mask) : 1:n
+
+  x = MVector{N,T}(undef)
 
   neighbors = Vector{Int}()
-  @inbounds for loc in locs
-    coordinates!(x, object, loc)
+  @inbounds for ind in inds
+    coordinates!(x, object, ind)
     if isneighbor(neigh, xₒ, x)
-      push!(neighbors, loc)
+      push!(neighbors, ind)
     end
   end
 
@@ -42,18 +49,18 @@ function search(xₒ::AbstractVector, searcher::NeighborhoodSearcher{O,N,T};
 end
 
 # search method for ball neighborhood
-function search(xₒ::AbstractVector, searcher::NeighborhoodSearcher{O,N,T};
-                mask=nothing) where {O,N<:BallNeighborhood,T}
-  locs = inrange(searcher.kdtree, xₒ, radius(searcher.neigh))
+function search(xₒ::AbstractVector, searcher::NeighborhoodSearcher{O,N,K};
+                mask=nothing) where {O,N<:BallNeighborhood,K}
+  inds = inrange(searcher.kdtree, xₒ, radius(searcher.neigh))
   if mask ≠ nothing
     neighbors = Vector{Int}()
-    @inbounds for loc in locs
-      if mask[loc]
-        push!(neighbors, loc)
+    @inbounds for ind in inds
+      if mask[ind]
+        push!(neighbors, ind)
       end
     end
     neighbors
   else
-    locs
+    inds
   end
 end

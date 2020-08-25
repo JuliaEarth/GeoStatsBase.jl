@@ -16,16 +16,16 @@ object(searcher::BoundedSearcher) = object(searcher.searcher)
 
 maxneighbors(searcher::BoundedSearcher) = searcher.nmax
 
-function search!(neighbors::AbstractVector{Int}, xₒ::AbstractVector,
+function search!(neighbors, xₒ::AbstractVector,
                  searcher::BoundedSearcher; mask=nothing)
-  locs = search(xₒ, searcher.searcher)
+  inds = search(xₒ, searcher.searcher)
   nmax = searcher.nmax
 
   nneigh = 0
-  @inbounds for loc in locs
-    if mask[loc]
+  @inbounds for ind in inds
+    if mask[ind]
       nneigh += 1
-      neighbors[nneigh] = loc
+      neighbors[nneigh] = ind
     end
     nneigh == nmax && break
   end
