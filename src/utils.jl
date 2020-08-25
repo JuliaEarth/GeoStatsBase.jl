@@ -73,14 +73,6 @@ function sample(object::Union{AbstractDomain,AbstractData}, nsamples::Int,
 end
 
 """
-    join(sdata₁, sdata₂)
-
-Join variables in spatial data `sdata₁` and `sdata₂`.
-"""
-join(sdata₁::AbstractData, sdata₂::AbstractData) =
-  join(sdata₁, sdata₂, VariableJoiner())
-
-"""
     filter(pred, sdata)
 
 Retain all locations in spatial data `sdata` according to

@@ -1,19 +1,29 @@
 @testset "Geometric operations" begin
-  @testset "disjoint union" begin
+  @testset "cat" begin
     d₁ = RegularGrid(10,10)
     d₂ = PointSet(rand(2,10))
-    d = d₁ ⊔ d₂
+    d = vcat(d₁, d₂)
     @test nelms(d) == 110
 
     d₁ = PointSet(rand(2,3))
     d₂ = PointSet(rand(2,2))
     s₁ = georef((a=[1,2,3],b=[4,5,6]), d₁)
     s₂ = georef((a=[7.,8.],c=["foo","bar"]), d₂)
-    s = s₁ ⊔ s₂
+    s = vcat(s₁, s₂)
     @test nelms(s) == 5
     @test isequal(s[:a], [1.,2.,3.,7.,8.])
     @test isequal(s[:b], [4,5,6,missing,missing])
     @test isequal(s[:c], [missing,missing,missing,"foo","bar"])
+
+    coords = rand(2,3)
+    d₁ = georef((a=[1,2,3],), coords)
+    d₂ = georef((b=[4.,5.,6.],), coords)
+    d = hcat(d₁, d₂)
+    s = Tables.schema(values(d))
+    @test s.names == (:a, :b)
+    @test s.types == (Int, Float64)
+    @test d[:a] == [1,2,3]
+    @test d[:b] == [4.,5.,6.]
   end
 
   @testset "uniquecoords" begin

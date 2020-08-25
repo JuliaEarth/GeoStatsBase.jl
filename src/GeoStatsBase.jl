@@ -29,7 +29,7 @@ using Parameters
 import Tables
 import MLJModelInterface
 import Base: values
-import Base: in, join, filter, map, split, error
+import Base: in, filter, map, split, error
 import StatsBase: fit, sample, varcorrection
 import Statistics: mean, var, quantile
 import Distributions: quantile, cdf
@@ -74,7 +74,6 @@ include("weighting.jl")
 include("covering.jl")
 include("discretizing.jl")
 include("sampling.jl")
-include("joining.jl")
 include("geoops.jl")
 include("learning.jl")
 include("mappers.jl")
@@ -290,14 +289,9 @@ export
   BallSampler,
   sample,
 
-  # joining
-  AbstractJoiner,
-  VariableJoiner,
-
   # operations
   uniquecoords,
   inside,
-  ⊔,
 
   # trends
   polymat,

@@ -37,18 +37,6 @@
     @test extrema(boundbox(d)) == ([1.,1.], [10.,10.])
   end
 
-  @testset "join" begin
-    coords = rand(2,3)
-    d1 = georef((x=[1,2,3],), coords)
-    d2 = georef((y=[4.,5.,6.],), coords)
-    d = join(d1, d2)
-    vars = variables(d)
-    @test vars[1] == Variable(:x, Int)
-    @test vars[2] == Variable(:y, Float64)
-    @test d[:x] == [1,2,3]
-    @test d[:y] == [4.,5.,6.]
-  end
-
   @testset "sample" begin
     d = georef((z=rand(10,10),))
     s = sample(d, 50)
