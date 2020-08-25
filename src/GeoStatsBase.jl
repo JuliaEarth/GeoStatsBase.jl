@@ -117,7 +117,6 @@ export
   SpatialData,
   variables,
   georef,
-  valid,
 
   # mappers
   AbstractMapper,
@@ -206,7 +205,6 @@ export
   # geometries
   AbstractGeometry,
   Rectangle,
-  origin,
   sides,
   center,
   diagonal,
