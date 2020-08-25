@@ -90,7 +90,7 @@ end
 
 function slic_initialization(sdata, s)
   # efficient neighbor search
-  searcher = NearestNeighborSearcher(sdata, 1)
+  searcher = KNearestSearcher(sdata, 1)
 
   # bounding box properties
   bbox = boundbox(sdata)

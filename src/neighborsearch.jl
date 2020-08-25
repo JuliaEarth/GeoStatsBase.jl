@@ -74,7 +74,7 @@ end
 #------------------
 # IMPLEMENTATIONS
 #------------------
-include("neighborsearch/nearest_searcher.jl")
+include("neighborsearch/knearest_searcher.jl")
 include("neighborsearch/neighborhood_searcher.jl")
 include("neighborsearch/bounded_searcher.jl")
 include("neighborsearch/kball_searcher.jl")

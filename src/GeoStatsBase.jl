@@ -226,7 +226,7 @@ export
   # neighborhood search
   AbstractNeighborSearcher,
   AbstractBoundedNeighborSearcher,
-  NearestNeighborSearcher,
+  KNearestSearcher,
   NeighborhoodSearcher,
   BoundedSearcher,
   KBallSearcher,

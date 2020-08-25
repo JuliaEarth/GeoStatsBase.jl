@@ -3,12 +3,12 @@
 # ------------------------------------------------------------------
 
 """
-    NearestNeighborSearcher(object, k; locations=all, metric=Euclidean())
+    KNearestSearcher(object, k; locations=all, metric=Euclidean())
 
 A method for searching `k` nearest neighbors in spatial `object`
 `locations` according to `metric`.
 """
-struct NearestNeighborSearcher{O,K} <: AbstractBoundedNeighborSearcher
+struct KNearestSearcher{O,K} <: AbstractBoundedNeighborSearcher
   # input fields
   object::O
   k::Int
@@ -18,17 +18,17 @@ struct NearestNeighborSearcher{O,K} <: AbstractBoundedNeighborSearcher
   kdtree::K
 end
 
-function NearestNeighborSearcher(object::O, k::Int; locations=1:nelms(object), metric=Euclidean()) where {O}
+function KNearestSearcher(object::O, k::Int; locations=1:nelms(object), metric=Euclidean()) where {O}
   @assert 1 ≤ k ≤ length(locations) "number of neighbors must be smaller than number of locations"
   @assert locations ⊆ 1:nelms(object) "invalid locations for spatial object"
   kdtree = KDTree(coordinates(object, locations), metric)
-  NearestNeighborSearcher{O,typeof(kdtree)}(object, k, locations, kdtree)
+  KNearestSearcher{O,typeof(kdtree)}(object, k, locations, kdtree)
 end
 
-maxneighbors(searcher::NearestNeighborSearcher) = searcher.k
+maxneighbors(searcher::KNearestSearcher) = searcher.k
 
 function search!(neighbors::AbstractVector{Int}, xₒ::AbstractVector,
-                 searcher::NearestNeighborSearcher; mask=nothing)
+                 searcher::KNearestSearcher; mask=nothing)
   k       = searcher.k
   inds, _ = knn(searcher.kdtree, xₒ, k, true)
   locs    = view(searcher.locations, inds)
