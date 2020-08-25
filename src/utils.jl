@@ -19,10 +19,8 @@ readgeotable(args...; coordnames=(:x,:y,:z), kwargs...) =
     split(object, fraction, [normal])
 
 Split spatial `object` into two parts where the first
-part has a `fraction` of the total volume. The split
-is performed along a `normal` direction. The default
-direction is aligned with the first spatial dimension
-of the object.
+part has a `fraction` of the elements. Optionally, the
+split is performed perpendicular to a `normal` direction.
 """
 function split(object, fraction::Real, normal=nothing)
   if isnothing(normal)
@@ -87,12 +85,12 @@ function filter(pred, sdata::AbstractData)
   ctor = Tables.materializer(𝒯)
   rows = Tables.rows(𝒯)
 
-  # locations to retain
-  locs = findall(pred, rows)
+  # indices to retain
+  inds = findall(pred, rows)
 
   # return point set
-  table = ctor(rows[locs])
-  coord = coordinates(𝒟, locs)
+  table = ctor(rows[inds])
+  coord = coordinates(𝒟, inds)
 
   georef(table, coord)
 end

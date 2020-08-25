@@ -19,7 +19,7 @@ function inside(object, geom)
     x ∈ geom && push!(inds, i)
   end
 
-  collect(view(object, inds))
+  view(object, inds)
 end
 
 # regular grid + rectangle
