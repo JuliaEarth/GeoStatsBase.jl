@@ -40,7 +40,6 @@ testfiles = [
   "partitioning.jl",
   "weighting.jl",
   "sampling.jl",
-  "covering.jl",
   "geoops.jl",
   "paths.jl",
   "trends.jl",

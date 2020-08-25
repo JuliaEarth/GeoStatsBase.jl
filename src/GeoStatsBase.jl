@@ -71,7 +71,6 @@ include("distributions.jl")
 include("estimators.jl")
 include("partitioning.jl")
 include("weighting.jl")
-include("covering.jl")
 include("discretizing.jl")
 include("sampling.jl")
 include("geoops.jl")
@@ -271,11 +270,6 @@ export
   BlockWeighter,
   DensityRatioWeighter,
   weight,
-
-  # covering
-  AbstractCoverer,
-  RectangleCoverer,
-  cover,
 
   # discretizing
   AbstractDiscretizer,
