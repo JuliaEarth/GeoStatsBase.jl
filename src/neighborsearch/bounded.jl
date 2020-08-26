@@ -21,13 +21,20 @@ function search!(neighbors, xₒ::AbstractVector,
   inds = search(xₒ, searcher.searcher)
   nmax = searcher.nmax
 
-  nneigh = 0
-  @inbounds for ind in inds
-    if mask[ind]
-      nneigh += 1
-      neighbors[nneigh] = ind
+  if isnothing(mask)
+    nneigh = min(length(inds), nmax)
+    @inbounds for i in 1:nneigh
+      neighbors[i] = inds[i]
     end
-    nneigh == nmax && break
+  else
+    nneigh = 0
+    @inbounds for ind in inds
+      if mask[ind]
+        nneigh += 1
+        neighbors[nneigh] = ind
+      end
+      nneigh == nmax && break
+    end
   end
 
   nneigh

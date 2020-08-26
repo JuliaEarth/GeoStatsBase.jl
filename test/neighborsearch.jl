@@ -88,6 +88,14 @@
   end
 
   @testset "BoundedSearcher" begin
-    # TODO
+    𝒟 = RegularGrid(10,10)
+    S1 = NeighborhoodSearcher(𝒟, BallNeighborhood(5.0))
+    S2 = KNearestSearcher(𝒟, 10)
+    B1 = BoundedSearcher(S1, 5)
+    B2 = BoundedSearcher(S2, 5)
+    n = GeoStatsBase.search(coordinates(𝒟, rand(1:100)), B1)
+    @test length(n) == 5
+    n = GeoStatsBase.search(coordinates(𝒟, rand(1:100)), B2)
+    @test length(n) == 5
   end
 end
