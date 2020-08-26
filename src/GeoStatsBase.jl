@@ -215,11 +215,8 @@ export
   # neighborhoods
   AbstractNeighborhood,
   BallNeighborhood,
-  CylinderNeighborhood,
-  coordtype,
   isneighbor,
   radius,
-  height,
   metric,
 
   # neighborhood search

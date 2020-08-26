@@ -26,30 +26,4 @@
     @test sprint(show, n) == "BallNeighborhood(1.0, Euclidean(0.0))"
     @test sprint(show, MIME"text/plain"(), n) == "BallNeighborhood\n  radius: 1.0\n  metric: Euclidean(0.0)"
   end
-
-  @testset "CylinderNeighborhood" begin
-    g = RegularGrid(3,3,3)
-    n = CylinderNeighborhood(1., 1.)
-    for i in [1,2,4,10,11,13]
-      @test isneighbor(n, coordinates(g, 1), coordinates(g, i))
-    end
-    n = CylinderNeighborhood(2., 1.)
-    for i in [1,2,3,4,5,7,10,11,12,13,14,16]
-      @test isneighbor(n, coordinates(g, 1), coordinates(g, i))
-    end
-    n = CylinderNeighborhood(1., 2.)
-    for i in [1,2,4,10,11,13,19,20,22]
-      @test isneighbor(n, coordinates(g, 1), coordinates(g, i))
-    end
-
-    g = RegularGrid(100,100,100)
-    n = CylinderNeighborhood(1., 1.)
-    for i in [1,2,101,10001,10002,10101]
-      @test isneighbor(n, coordinates(g, 1), coordinates(g, i))
-    end
-
-    n = CylinderNeighborhood(1., 1.)
-    @test sprint(show, n) == "CylinderNeighborhood(1.0, 1.0)"
-    @test sprint(show, MIME"text/plain"(), n) == "CylinderNeighborhood\n  radius: 1.0\n  height: 1.0"
-  end
 end

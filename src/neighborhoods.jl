@@ -21,4 +21,3 @@ function isneighbor end
 # IMPLEMENTATIONS
 # ----------------
 include("neighborhoods/ball.jl")
-include("neighborhoods/cylinder.jl")
