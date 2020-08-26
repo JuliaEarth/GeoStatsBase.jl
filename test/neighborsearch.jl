@@ -1,6 +1,26 @@
 @testset "Neighborsearch" begin
   @testset "NeighborhoodSearcher" begin
-    # TODO
+    𝒟 = RegularGrid(10,10)
+
+    S = NeighborhoodSearcher(𝒟, BallNeighborhood(1.0))
+    n = GeoStatsBase.search([0.,0.], S)
+    @test Set(n) == Set([1,2,11])
+    n = GeoStatsBase.search([9.,0.], S)
+    @test Set(n) == Set([9,10,20])
+    n = GeoStatsBase.search([0.,9.], S)
+    @test Set(n) == Set([91,81,92])
+    n = GeoStatsBase.search([9.,9.], S)
+    @test Set(n) == Set([100,99,90])
+
+    S = NeighborhoodSearcher(𝒟, BallNeighborhood(√2))
+    n = GeoStatsBase.search([0.,0.], S)
+    @test Set(n) == Set([1,2,11,12])
+    n = GeoStatsBase.search([9.,0.], S)
+    @test Set(n) == Set([9,10,19,20])
+    n = GeoStatsBase.search([0.,9.], S)
+    @test Set(n) == Set([81,82,91,92])
+    n = GeoStatsBase.search([9.,9.], S)
+    @test Set(n) == Set([89,90,99,100])
   end
 
   @testset "KNearestSearcher" begin
