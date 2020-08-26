@@ -7,10 +7,10 @@
 
 Return a view of spatial data `sdata` at `inds` and `vars`.
 """
-struct SpatialDataView
-  data
-  inds
-  vars
+struct SpatialDataView{𝒮,I,V}
+  data::𝒮
+  inds::I
+  vars::V
 end
 
 geotrait(::SpatialDataView) = GeoData()

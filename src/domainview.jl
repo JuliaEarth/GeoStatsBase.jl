@@ -7,9 +7,9 @@
 
 Return a view of `domain` at `inds`.
 """
-struct SpatialDomainView
-  domain
-  inds
+struct SpatialDomainView{𝒟,I}
+  domain::𝒟
+  inds::I
 end
 
 geotrait(::SpatialDomainView) = GeoDomain()
