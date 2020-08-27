@@ -76,9 +76,8 @@
   end
 
   @testset "SLICPartitioner" begin
-    img   = [ones(10,10) 2ones(10,10); 3ones(10,10) 4ones(10,10)]
-    sdata = georef(DataFrame(z=vec(img)), RegularGrid(size(img)))
-    p = partition(sdata, SLICPartitioner(4, 1.0))
+    𝒮 = georef((z=[ones(10,10) 2ones(10,10); 3ones(10,10) 4ones(10,10)],))
+    p = partition(𝒮, SLICPartitioner(4, 1.0))
     @test length(p) == 4
     @test all(nelms.(p) .== 100)
     @test mean(coordinates(p[1]), dims=2) == [ 4.5, 4.5][:,:]
@@ -86,9 +85,8 @@
     @test mean(coordinates(p[3]), dims=2) == [ 4.5,14.5][:,:]
     @test mean(coordinates(p[4]), dims=2) == [14.5,14.5][:,:]
 
-    img   = [√(i^2+j^2) for i in 1:100, j in 1:100]
-    sdata = georef(DataFrame(z=vec(img)), RegularGrid(size(img)))
-    p = partition(sdata, SLICPartitioner(50, 1.0))
+    𝒮 = georef((z=[√(i^2+j^2) for i in 1:100, j in 1:100],))
+    p = partition(𝒮, SLICPartitioner(50, 1.0))
     @test length(p) == 49
 
     if visualtests

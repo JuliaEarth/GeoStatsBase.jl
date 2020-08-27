@@ -1,7 +1,7 @@
 @testset "Data" begin
   @testset "Basics" begin
     # views and mutation
-    d = georef((z=rand(3),), rand(2,3))
+    d = georef((z=rand(3),))
     v = view(d, [1,3])
     d[1,:z] = 1.
     d[2,:z] = 2.

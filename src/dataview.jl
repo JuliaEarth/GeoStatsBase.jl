@@ -22,8 +22,6 @@ Base.collect(dv::SpatialDataView) = georef(values(dv), coordinates(dv))
 # -----------------------------------
 # specialize methods for performance
 # -----------------------------------
-nelms(dv::SpatialDataView) = length(dv.inds)
-
 coordinates!(buff::AbstractVector, dv::SpatialDataView, ind::Int) =
   coordinates!(buff, dv.data, dv.inds[ind])
 
@@ -54,7 +52,12 @@ Base.setindex!(dv::SpatialDataView, vals, inds, vars) =
 # VARIABLE API
 # -------------
 
-variables(dv::SpatialDataView) = variables(getindex(dv.data, dv.inds, dv.vars))
+function variables(dv::SpatialDataView)
+  s = Tables.schema(dv.data)
+  ns, ts = s.names, s.types
+  fs = [(n, t) for (n, t) in zip(ns, ts) if n ∈ dv.vars]
+  @. Variable(first(fs), nonmissing(last(fs)))
+end
 
 Base.getindex(dv::SpatialDataView, var::Symbol) =
   getindex(dv.data, dv.inds, var)

@@ -44,11 +44,8 @@ function weight(::GeoData, sdata, weighter::DensityRatioWeighter)
   # numerator and denominator samples
   Ωnu = view(tdata, vars)
   Ωde = view(sdata, vars)
-
-  # TODO: eliminate this explicit conversion after
-  # https://github.com/JuliaEarth/GeoStats.jl/projects/2
-  xnu = collect(eachrow(Ωnu[1:nelms(Ωnu),vars]))
-  xde = collect(eachrow(Ωde[1:nelms(Ωde),vars]))
+  xnu = collect(eachrow(values(Ωnu)))
+  xde = collect(eachrow(values(Ωde)))
 
   # perform denstiy ratio estimation
   ratios = densratio(xnu, xde, dre, optlib=optlib)

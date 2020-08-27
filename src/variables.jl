@@ -28,14 +28,3 @@ name(var::Variable) = var.name
 Return the machine type of the spatial `variable`.
 """
 mactype(var::Variable) = var.type
-
-"""
-    variables(table)
-
-Return the spatial variables stored in `table`.
-"""
-function variables(table)
-  s = Tables.schema(table)
-  ns, ts = s.names, s.types
-  @. Variable(ns, nonmissing(ts))
-end

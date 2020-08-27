@@ -36,7 +36,7 @@ function error(solver::AbstractLearningSolver,
   sides = eestimator.sides
   for var in ovars
     if var ∉ keys(loss)
-      loss[var] = defaultloss(sdata[1,var])
+      loss[var] = defaultloss(sdata[var][1])
     end
   end
 

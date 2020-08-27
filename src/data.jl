@@ -53,7 +53,11 @@ Base.setindex!(sdata::SpatialData, vals, inds, vars) =
 # VARIABLE API
 # -------------
 
-variables(sdata::SpatialData) = variables(values(sdata))
+function variables(sdata::SpatialData)
+  s = Tables.schema(sdata)
+  ns, ts = s.names, s.types
+  @. Variable(ns, nonmissing(ts))
+end
 
 Base.getindex(sdata::SpatialData, var::Symbol) =
   getindex(values(sdata), :, var)
