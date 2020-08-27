@@ -60,24 +60,6 @@ Base.getindex(sdata::SpatialData, var::Symbol) =
 Base.setindex!(sdata::SpatialData, vals, var::Symbol) =
   setindex!(values(sdata), vals, :, var)
 
-# -------------
-# ITERATOR API
-# -------------
-
-Base.iterate(sdata::SpatialData, state=1) =
-  state > nelms(sdata) ? nothing : (sdata[state], state + 1)
-Base.length(sdata::SpatialData) = nelms(sdata)
-Base.eltype(sdata::SpatialData) = typeof(sdata[1])
-
-# --------------
-# INDEXABLE API
-# --------------
-
-Base.getindex(sdata::SpatialData, ind::Int) =
-  getindex(values(sdata), ind, :)
-Base.firstindex(sdata::SpatialData) = 1
-Base.lastindex(sdata::SpatialData)  = nelms(sdata)
-
 # ---------
 # VIEW API
 # ---------

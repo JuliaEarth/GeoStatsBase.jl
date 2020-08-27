@@ -61,24 +61,6 @@ Base.getindex(dv::SpatialDataView, var::Symbol) =
 Base.setindex!(dv::SpatialDataView, vals, var::Symbol) =
   setindex!(dv.data, vals, dv.inds, var)
 
-# -------------
-# ITERATOR API
-# -------------
-
-Base.iterate(dv::SpatialDataView, state=1) =
-  state > nelms(dv) ? nothing : (dv[state], state + 1)
-Base.length(dv::SpatialDataView) = nelms(dv)
-Base.eltype(dv::SpatialDataView) = typeof(dv[1])
-
-# --------------
-# INDEXABLE API
-# --------------
-
-Base.getindex(dv::SpatialDataView, ind::Int) =
-  getindex(dv.data, dv.inds[ind], dv.vars)
-Base.firstindex(dv::SpatialDataView) = 1
-Base.lastindex(dv::SpatialDataView)  = nelms(dv)
-
 # ---------
 # VIEW API
 # ---------

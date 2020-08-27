@@ -28,6 +28,6 @@
     c1 = collect(v1)
     v2 = view(v1, [:z])
     c2 = view(c1, [:z])
-    @test [x for x in v2] == [x for x in c2]
+    @test values(v2) == values(c2)
   end
 end
