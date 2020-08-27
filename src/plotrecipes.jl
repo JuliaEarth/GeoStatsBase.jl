@@ -3,7 +3,6 @@
 # ------------------------------------------------------------------
 
 # domains
-include("plotrecipes/domains/curve.jl")
 include("plotrecipes/domains/point_set.jl")
 include("plotrecipes/domains/regular_grid.jl")
 include("plotrecipes/domains/structured_grid.jl")

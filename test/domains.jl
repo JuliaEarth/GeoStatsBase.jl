@@ -1,25 +1,4 @@
 @testset "Domains" begin
-  @testset "Curve" begin
-    c = Curve([j for i in 1:3, j in 1:5])
-    @test nelms(c) == 5
-    @test ncoords(c) == 3
-    @test coordtype(c) == Int
-    @test coordinates(c, 1) == [1, 1, 1]
-    @test coordinates(c, 5) == [5, 5, 5]
-
-    @test sprint(show, c) == "5 Curve{Int64,3}"
-    @test sprint(show, MIME"text/plain"(), c) == "5 Curve{Int64,3}\n 1  2  3  4  5\n 1  2  3  4  5\n 1  2  3  4  5"
-
-    if visualtests
-      c1 = Curve([j for i in 1:1, j in 1:5])
-      c2 = Curve([j for i in 1:2, j in 1:5])
-      c3 = Curve([j for i in 1:3, j in 1:5])
-      @plottest plot(c1,ms=4) joinpath(datadir,"curve1D.png") !istravis
-      @plottest plot(c2,ms=4) joinpath(datadir,"curve2D.png") !istravis
-      @plottest plot(c3,ms=4) joinpath(datadir,"curve3D.png") !istravis
-    end
-  end
-
   @testset "PointSet" begin
     ps = PointSet([1. 0.; 0. 1.])
     @test nelms(ps) == 2

@@ -43,21 +43,6 @@
     @test Tables.columns(v) == Tables.columns(t[1:3,:])
   end
 
-  @testset "Curve" begin
-    c = georef((z=1:10,), Curve([j for i in 1:3, j in 1:10]))
-    @test variables(c) == (Variable(:z, Int),)
-    @test nelms(c) == 10
-
-    if visualtests
-      c1 = georef((z=1:10,), Curve([j for i in 1:1, j in 1:10]))
-      c2 = georef((z=1:10,), Curve([j for i in 1:2, j in 1:10]))
-      c3 = georef((z=1:10,), Curve([j for i in 1:3, j in 1:10]))
-      @plottest plot(c1,ms=4) joinpath(datadir,"curve-data1D.png") !istravis
-      @plottest plot(c2,ms=4) joinpath(datadir,"curve-data2D.png") !istravis
-      @plottest plot(c3,ms=4) joinpath(datadir,"curve-data3D.png") !istravis
-    end
-  end
-
   @testset "GeoTable" begin
     # basic checks
     D = readgeotable(joinpath(datadir,"data3D.tsv"))

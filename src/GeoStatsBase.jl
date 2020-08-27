@@ -104,7 +104,6 @@ export
 
   # domains
   AbstractDomain,
-  Curve,
   PointSet,
   RegularGrid,
   StructuredGrid,
