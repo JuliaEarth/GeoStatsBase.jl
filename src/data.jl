@@ -31,33 +31,34 @@ values(sdata::SpatialData) = sdata.table
 # -----------
 
 Tables.istable(::Type{<:SpatialData}) = true
-Tables.schema(sdata::SpatialData) = Tables.schema(sdata.table)
-Tables.rowaccess(sdata::SpatialData) = Tables.rowaccess(sdata.table)
-Tables.columnaccess(sdata::SpatialData) = Tables.columnaccess(sdata.table)
-Tables.rows(sdata::SpatialData) = Tables.rows(sdata.table)
-Tables.columns(sdata::SpatialData) = Tables.columns(sdata.table)
-Tables.columnnames(sdata::SpatialData) = Tables.columnnames(sdata.table)
-Tables.getcolumn(sdata::SpatialData, c::Symbol) = Tables.getcolumn(sdata.table, c)
+Tables.schema(sdata::SpatialData) = Tables.schema(values(sdata))
+Tables.materializer(sdata::SpatialData) = Tables.materializer(values(sdata))
+Tables.rowaccess(sdata::SpatialData) = Tables.rowaccess(values(sdata))
+Tables.rows(sdata::SpatialData) = Tables.rows(values(sdata))
+Tables.columnaccess(sdata::SpatialData) = Tables.columnaccess(values(sdata))
+Tables.columns(sdata::SpatialData) = Tables.columns(values(sdata))
+Tables.columnnames(sdata::SpatialData) = Tables.columnnames(values(sdata))
+Tables.getcolumn(sdata::SpatialData, c::Symbol) = Tables.getcolumn(values(sdata), c)
 
 # --------------
 # DATAFRAME API
 # --------------
 
 Base.getindex(sdata::SpatialData, inds, vars) =
-  getindex(sdata.table, inds, vars)
+  getindex(values(sdata), inds, vars)
 Base.setindex!(sdata::SpatialData, vals, inds, vars) =
-  setindex!(sdata.table, vals, inds, vars)
+  setindex!(values(sdata), vals, inds, vars)
 
 # -------------
 # VARIABLE API
 # -------------
 
-variables(sdata::SpatialData) = variables(sdata.table)
+variables(sdata::SpatialData) = variables(values(sdata))
 
 Base.getindex(sdata::SpatialData, var::Symbol) =
-  getindex(sdata.table, :, var)
+  getindex(values(sdata), :, var)
 Base.setindex!(sdata::SpatialData, vals, var::Symbol) =
-  setindex!(sdata.table, vals, :, var)
+  setindex!(values(sdata), vals, :, var)
 
 # -------------
 # ITERATOR API
@@ -73,7 +74,7 @@ Base.eltype(sdata::SpatialData) = typeof(sdata[1])
 # --------------
 
 Base.getindex(sdata::SpatialData, ind::Int) =
-  getindex(sdata.table, ind, :)
+  getindex(values(sdata), ind, :)
 Base.firstindex(sdata::SpatialData) = 1
 Base.lastindex(sdata::SpatialData)  = nelms(sdata)
 

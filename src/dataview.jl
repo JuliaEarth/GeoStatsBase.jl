@@ -33,9 +33,10 @@ coordinates!(buff::AbstractVector, dv::SpatialDataView, ind::Int) =
 
 Tables.istable(::Type{<:SpatialDataView}) = true
 Tables.schema(dv::SpatialDataView) = Tables.schema(getindex(dv.data, dv.inds, dv.vars))
+Tables.materializer(dv::SpatialDataView) = Tables.materializer(dv.data)
 Tables.rowaccess(dv::SpatialDataView) = Tables.rowaccess(dv.data)
-Tables.columnaccess(dv::SpatialDataView) = Tables.columnaccess(dv.data)
 Tables.rows(dv::SpatialDataView) = Tables.rows(getindex(dv.data, dv.inds, dv.vars))
+Tables.columnaccess(dv::SpatialDataView) = Tables.columnaccess(dv.data)
 Tables.columns(dv::SpatialDataView) = Tables.columns(getindex(dv.data, dv.inds, dv.vars))
 Tables.columnnames(dv::SpatialDataView) = Tables.columnnames(getindex(dv.data, dv.inds, dv.vars))
 Tables.getcolumn(dv::SpatialDataView, c::Symbol) = Tables.getcolumn(getindex(dv.data, dv.inds, dv.vars), c)
