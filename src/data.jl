@@ -14,7 +14,7 @@ struct SpatialData{𝒟,𝒯}
   function SpatialData{𝒟,𝒯}(domain, table) where {𝒟,𝒯}
     ne = nelms(domain)
     nr = length(Tables.rows(table))
-    @assert ne == nr "number of rows ≠ number of points"
+    @assert ne == nr "number of table rows ≠ number of mesh elements"
     new(domain, table)
   end
 end

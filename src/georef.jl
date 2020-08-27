@@ -45,7 +45,7 @@ georef(tuple::NamedTuple, domain) =
 
 Georefrence named `tuple` on `PointSet(coords)`.
 """
-georef(tuple::NamedTuple, coords::AbstractMatrix) = georef(tuple, PointSet(coords))
+georef(tuple::NamedTuple, coords::AbstractVecOrMat) = georef(tuple, PointSet(coords))
 
 """
     georef(tuple; origin=(0.,0.,...), spacing=(1.,1.,...))
