@@ -42,8 +42,8 @@ function error(solver::AbstractLearningSolver,
 
   bsides    = length(sides) > 1 ? sides : ntuple(i->sides, ncoords(sdata))
   blocks    = partition(sdata, BlockPartitioner(bsides))
+  neighbors = metadata(blocks)[:neighbors]
   bsubsets  = subsets(blocks)
-  neighbors = blocks[:neighbors]
   allblocks = 1:length(blocks)
 
   # error for a block b

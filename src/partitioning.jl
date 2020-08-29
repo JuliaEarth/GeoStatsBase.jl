@@ -32,45 +32,20 @@ Return the metadata dictionary saved in the partition.
 """
 metadata(partition::SpatialPartition) = partition.metadata
 
-"""
-    Base.iterate(partition)
+# --------------
+# INDEXABLE API
+# --------------
 
-Iterate the partition returning views of spatial object.
-"""
 Base.iterate(partition::SpatialPartition, state=1) =
   state > length(partition) ? nothing : (partition[state], state + 1)
 
-"""
-    Base.length(partition)
-
-Return the number of subsets in `partition`.
-"""
 Base.length(partition::SpatialPartition) = length(partition.subsets)
 
-"""
-    Base.getindex(partition, ind)
-
-Return `ind`-th object in the `partition` as a view.
-"""
 Base.getindex(partition::SpatialPartition, ind::Int) =
   view(partition.object, partition.subsets[ind])
 
-"""
-    Base.getindex(partition, inds)
-
-Return the ind-th object in the `partition` for
-each ind in `inds`.
-"""
 Base.getindex(partition::SpatialPartition, inds::AbstractVector{Int}) =
   [getindex(partition, ind) for ind in inds]
-
-"""
-    Base.getindex(partition, prop)
-
-Return the metadata `prop` for each subset in the partition.
-"""
-Base.getindex(partition::SpatialPartition, prop::Symbol) =
-  partition.metadata[prop]
 
 # ------------
 # IO methods
@@ -81,9 +56,10 @@ function Base.show(io::IO, partition::SpatialPartition)
 end
 
 function Base.show(io::IO, ::MIME"text/plain", partition::SpatialPartition)
-  meta = metadata(partition)
-  lines = ["  └─$(length(subset))" for subset in partition.subsets]
-  lines = length(lines) > 11 ? vcat(lines[1:5],["  ⋮"],lines[end-4:end]) : lines
+  subs = partition.subsets
+  meta = partition.metadata
+  lines = ["  └─$(length(sub))" for sub in subs]
+  lines = length(lines) > 11 ? [lines[1:5]; ["  ⋮"]; lines[end-4:end]] : lines
   println(io, partition)
   println(io, "  N° points")
   print(io, join(lines, "\n"))
