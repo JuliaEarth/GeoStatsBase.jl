@@ -53,6 +53,9 @@ function error(solver::AbstractLearningSolver,
   # retrieve problem info
   sdata = sourcedata(problem)
   ovars = outputvars(task(problem))
+  partitioner = eestimator.partitioner
+  weighter = eestimator.weighter
+  lambda = eestimator.lambda
   loss  = eestimator.loss
   for var in ovars
     if var ∉ keys(loss)
@@ -60,13 +63,17 @@ function error(solver::AbstractLearningSolver,
     end
   end
 
+  # weight all samples
+  weights = weight(sdata, weighter) .^ lambda
+
   # folds for cross-validation
-  folds  = subsets(partition(sdata, eestimator.partitioner))
+  folds  = subsets(partition(sdata, partitioner))
   nfolds = length(folds)
 
-  solutions = map(1:nfolds) do k
+  # error for a fold k
+  function ε(k)
     # source and target indices
-    sinds = [ind for i in vcat(1:k-1, k+1:nfolds) for ind in folds[i]]
+    sinds = [ind for i in [1:k-1; k+1:nfolds] for ind in folds[i]]
     tinds = folds[k]
 
     # source and target data
@@ -75,22 +82,23 @@ function error(solver::AbstractLearningSolver,
 
     # setup and solve sub-problem
     subproblem = LearningProblem(train, hold, task(problem))
-    solve(subproblem, solver)
-  end
+    solution   = solve(subproblem, solver)
 
-  # weight all samples
-  weights = weight(sdata, eestimator.weighter) .^ eestimator.lambda
-
-  result = map(ovars) do var
-    losses = map(1:nfolds) do k
-      hold = view(sdata, folds[k])
-      w = view(weights, folds[k])
+    # loss for each variable
+    losses = map(ovars) do var
       y = hold[var]
-      ŷ = solutions[k][var]
-      value(loss[var], y, ŷ, AggMode.WeightedSum(w)) / length(y)
+      ŷ = solution[var]
+      w = view(weights, tinds)
+      ℒ = value(loss[var], y, ŷ, AggMode.WeightedSum(w)) / length(y)
+      var => ℒ
     end
-    var => mean(losses)
+
+    Dict(losses)
   end
 
-  Dict(result)
+  # compute error for each fold in parallel
+  εs = foldxt(vcat, Map(ε), 1:nfolds)
+
+  # combine error from different folds
+  Dict(var => mean(get.(εs, var, 0)) for var in ovars)
 end
