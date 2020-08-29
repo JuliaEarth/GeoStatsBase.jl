@@ -184,7 +184,6 @@ export
   CrossValidation,
   BlockCrossValidation,
   WeightedCrossValidation,
-  WeightedBootstrap,
   DensityRatioValidation,
 
   # helper macros
