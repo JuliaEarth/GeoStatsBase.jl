@@ -46,31 +46,38 @@ function error(solver::AbstractLearningSolver,
   neighbors = blocks[:neighbors]
   allblocks = 1:length(blocks)
 
-  solutions = map(allblocks) do b
+  # error for a block b
+  function ε(b)
     # source and target blocks
-    sblocks = setdiff(allblocks, vcat(neighbors[b], b))
+    sblocks = setdiff(allblocks, [neighbors[b]; b])
     tblocks = [b]
 
     # source and target indices
     sinds = reduce(vcat, bsubsets[sblocks])
     tinds = reduce(vcat, bsubsets[tblocks])
 
-    # setup and solve learning sub-problem
-    subproblem = LearningProblem(view(sdata, sinds),
-                                 view(sdata, tinds),
-                                 task(problem))
-    solve(subproblem, solver)
-  end
+    # source and target data
+    train = view(sdata, sinds)
+    hold  = view(sdata, tinds)
 
-  result = map(ovars) do var
-    losses = map(allblocks) do b
-      dview = view(sdata, bsubsets[b])
-      y = dview[var]
-      ŷ = solutions[b][var]
-      value(loss[var], y, ŷ, AggMode.Mean())
+    # setup and solve sub-problem
+    subproblem = LearningProblem(train, hold, task(problem))
+    solution   = solve(subproblem, solver)
+
+    # loss for each variable
+    losses = map(ovars) do var
+      y = hold[var]
+      ŷ = solution[var]
+      ℒ = value(loss[var], y, ŷ, AggMode.Mean())
+      var => ℒ
     end
-    var => mean(losses)
+
+    Dict(losses)
   end
 
-  Dict(result)
+  # compute error for each fold in parallel
+  εs = foldxt(vcat, Map(ε), allblocks)
+
+  # combine error from different folds
+  Dict(var => mean(get.(εs, var, 0)) for var in ovars)
 end
