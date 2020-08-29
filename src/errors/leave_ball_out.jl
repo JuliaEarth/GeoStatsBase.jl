@@ -46,28 +46,41 @@ function error(solver::AbstractLearningSolver,
   # efficient neighborhood search
   searcher = NeighborhoodSearcher(sdata, ball)
 
-  # pre-allocate memory for coordinates
-  coords = MVector{ncoords(sdata),coordtype(sdata)}(undef)
+  # number of folds
+  nfolds = nelms(sdata)
 
-  solutions = map(1:nelms(sdata)) do i
-    coordinates!(coords, sdata, i)
-
+  # error for a ball b
+  function ε(b)
     # points inside and outside ball
+    coords  = coordinates(sdata, b)
     inside  = search(coords, searcher)
-    outside = [j for j in 1:nelms(sdata) if j ∉ inside]
+    outside = setdiff(1:nelms(sdata), inside)
 
-    # setup and solve learning sub-problem
-    subproblem = LearningProblem(view(sdata, outside),
-                                 view(sdata, [i]),
-                                 task(problem))
-    solve(subproblem, solver)
+    # source and target indices
+    sinds = outside
+    tinds = [b]
+
+    # source and target data
+    train = view(sdata, sinds)
+    hold  = view(sdata, tinds)
+
+    # setup and solve sub-problem
+    subproblem = LearningProblem(train, hold, task(problem))
+    solution   = solve(subproblem, solver)
+
+    # loss for each variable
+    losses = map(ovars) do var
+      y = sdata[var][b]
+      ŷ = solution[var][1]
+      var => value(loss[var], y, ŷ)
+    end
+
+    Dict(losses)
   end
 
-  result = map(ovars) do var
-    y = [sdata[i,var] for i in 1:nelms(sdata)]
-    ŷ = [solutions[i][1,var] for i in 1:nelms(sdata)]
-    var => value(loss[var], y, ŷ, AggMode.Mean())
-  end
+  # compute error for each fold in parallel
+  εs = foldxt(vcat, Map(ε), 1:nfolds)
 
-  Dict(result)
+  # combine error from different folds
+  Dict(var => mean(get.(εs, var, 0)) for var in ovars)
 end
