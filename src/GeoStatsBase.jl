@@ -183,7 +183,6 @@ export
   LeaveBallOut,
   CrossValidation,
   BlockCrossValidation,
-  WeightedHoldOut,
   WeightedCrossValidation,
   WeightedBootstrap,
   DensityRatioValidation,
