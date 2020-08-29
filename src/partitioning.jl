@@ -3,11 +3,10 @@
 # ------------------------------------------------------------------
 
 """
-    SpatialPartition(object, subsets, metadata=Dict())
+    SpatialPartition(object, subsets, [metadata])
 
 A partition of a spatial `object` into `subsets`.
-Optionally, save `metadata` in the partitioning
-algorithm.
+Optionally, save `metadata` as a dictionary.
 """
 struct SpatialPartition{O}
   object::O
@@ -38,13 +37,8 @@ metadata(partition::SpatialPartition) = partition.metadata
 
 Iterate the partition returning views of spatial object.
 """
-function Base.iterate(partition::SpatialPartition, state=1)
-  if state > length(partition.subsets)
-    nothing
-  else
-    view(partition.object, partition.subsets[state]), state + 1
-  end
-end
+Base.iterate(partition::SpatialPartition, state=1) =
+  state > length(partition) ? nothing : (partition[state], state + 1)
 
 """
     Base.length(partition)
