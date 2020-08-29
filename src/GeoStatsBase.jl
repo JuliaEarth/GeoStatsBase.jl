@@ -19,6 +19,7 @@ using NearestNeighbors: KDTree, knn, inrange
 using DataFrames: DataFrame, DataFrame!
 using StaticArrays: SVector, MVector
 using AverageShiftedHistograms: ash
+using Transducers: Map, foldxt
 using SpecialFunctions: gamma
 using DensityRatioEstimation
 using ScientificTypes
