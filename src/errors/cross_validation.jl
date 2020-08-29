@@ -51,9 +51,10 @@ function error(solver::AbstractLearningSolver,
   folds  = subsets(partition(sdata, partitioner))
   nfolds = length(folds)
 
-  solutions = map(1:nfolds) do k
+  # error for a fold k
+  function ε(k)
     # source and target indices
-    sinds = [ind for i in vcat(1:k-1, k+1:nfolds) for ind in folds[i]]
+    sinds = [ind for i in [1:k-1; k+1:nfolds] for ind in folds[i]]
     tinds = folds[k]
 
     # source and target data
@@ -62,18 +63,22 @@ function error(solver::AbstractLearningSolver,
 
     # setup and solve sub-problem
     subproblem = LearningProblem(train, hold, task(problem))
-    solve(subproblem, solver)
-  end
+    solution   = solve(subproblem, solver)
 
-  result = map(ovars) do var
-    losses = map(1:nfolds) do k
-      hold = view(sdata, folds[k])
+    # loss for each variable
+    losses = map(ovars) do var
       y = hold[var]
-      ŷ = solutions[k][var]
-      value(loss[var], y, ŷ, AggMode.Mean())
+      ŷ = solution[var]
+      ℒ = value(loss[var], y, ŷ, AggMode.Mean())
+      var => ℒ
     end
-    var => mean(losses)
+
+    Dict(losses)
   end
 
-  Dict(result)
+  # compute error for each fold in parallel
+  εs = foldxt(vcat, Map(ε), 1:nfolds)
+
+  # combine error from different folds
+  Dict(var => mean(get.(εs, var, 0)) for var in ovars)
 end
