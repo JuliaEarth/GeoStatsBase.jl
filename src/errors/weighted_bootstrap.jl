@@ -26,44 +26,46 @@ function error(solver::AbstractLearningSolver,
   sdata = sourcedata(problem)
   ovars = outputvars(task(problem))
   loss  = eestimator.loss
+  nboot = eestimator.nsamples
   for var in ovars
     if var ∉ keys(loss)
       loss[var] = defaultloss(sdata[var][1])
     end
   end
 
-  # bootstrap parameters
-  b = eestimator.nsamples
-  n = nelms(sdata)
-
   # weight source data
   weights = weight(sdata, eestimator.weighter)
 
-  results = map(1:b) do _
-    # create bootstrap sample
-    sinds = sample(1:n, n, replace=true)
-    binds = sample(1:n, weights, n, replace=true)
+  # error for bootstrap sample
+  function ε()
+    # bootstrap sample
+    bsize = nelms(sdata)
+    sinds = sample(1:bsize, bsize, replace=true)
+    binds = sample(1:bsize, weights, bsize, replace=true)
     tinds = setdiff(binds, sinds)
 
-    # training and holdout set
+    # source and target data
     train = view(sdata, sinds)
     hold  = view(sdata, tinds)
 
-    # solve problem for this sample
+    # setup and solve sub-problem
     subproblem = LearningProblem(train, hold, task(problem))
     solution   = solve(subproblem, solver)
 
-    result = map(ovars) do var
+    # loss for each variable
+    losses = map(ovars) do var
       y = hold[var]
       ŷ = solution[var]
-      var => value(loss[var], y, ŷ, AggMode.Mean())
+      ℒ = value(loss[var], y, ŷ, AggMode.Mean())
+      var => ℒ
     end
 
-    # results for bootstrap sample
-    Dict(result)
+    Dict(losses)
   end
 
-  # average results across samples
-  sums = reduce((r₁, r₂) -> merge(+, r₁, r₂), results)
-  Dict(var => val / b for (var, val) in sums)
+  # compute error for each fold in parallel
+  εs = foldxt(vcat, Map(ε), 1:nfolds)
+
+  # combine error from different folds
+  Dict(var => mean(get.(εs, var, 0)) for var in ovars)
 end
