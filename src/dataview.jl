@@ -2,6 +2,16 @@
 # Licensed under the ISC License. See LICENSE in the project root.
 # ------------------------------------------------------------------
 
+# helper function for table view
+function viewtable(table, rows, cols)
+  t = Tables.columns(table)
+  v = map(cols) do c
+    col = Tables.getcolumn(t, c)
+    c => view(col, rows)
+  end
+  (; v...)
+end
+
 """
     SpatialDataView(sdata, inds, vars)
 
@@ -25,29 +35,24 @@ Base.collect(dv::SpatialDataView) = georef(values(dv), coordinates(dv))
 coordinates!(buff::AbstractVector, dv::SpatialDataView, ind::Int) =
   coordinates!(buff, dv.data, dv.inds[ind])
 
-# helper function for table view
-function viewtable(table, rows, cols)
-  t = Tables.columns(table)
-  v = map(cols) do c
-    col = Tables.getcolumn(t, c)
-    c => view(col, rows)
-  end
-  (; v...)
-end
-
 # -----------
 # TABLES API
 # -----------
 
 Tables.istable(::Type{<:SpatialDataView}) = true
-Tables.schema(dv::SpatialDataView) = Tables.schema(viewtable(values(dv.data), dv.inds, dv.vars))
 Tables.materializer(dv::SpatialDataView) = Tables.materializer(dv.data)
-Tables.rowaccess(dv::SpatialDataView) = Tables.rowaccess(dv.data)
-Tables.rows(dv::SpatialDataView) = Tables.rows(viewtable(values(dv.data), dv.inds, dv.vars))
 Tables.columnaccess(dv::SpatialDataView) = Tables.columnaccess(dv.data)
-Tables.columns(dv::SpatialDataView) = Tables.columns(viewtable(values(dv.data), dv.inds, dv.vars))
-Tables.columnnames(dv::SpatialDataView) = Tables.columnnames(viewtable(values(dv.data), dv.inds, dv.vars))
-Tables.getcolumn(dv::SpatialDataView, c::Symbol) = Tables.getcolumn(viewtable(values(dv.data), dv.inds, dv.vars), c)
+Tables.rowaccess(dv::SpatialDataView) = Tables.rowaccess(dv.data)
+Tables.schema(dv::SpatialDataView) =
+  Tables.schema(viewtable(values(dv.data), dv.inds, dv.vars))
+Tables.columns(dv::SpatialDataView) =
+  Tables.columns(viewtable(values(dv.data), dv.inds, dv.vars))
+Tables.columnnames(dv::SpatialDataView) =
+  Tables.columnnames(viewtable(values(dv.data), dv.inds, dv.vars))
+Tables.getcolumn(dv::SpatialDataView, c::Symbol) =
+  Tables.getcolumn(viewtable(values(dv.data), dv.inds, dv.vars), c)
+Tables.rows(dv::SpatialDataView) =
+  Tables.rows(viewtable(values(dv.data), dv.inds, dv.vars))
 
 # -------------
 # VARIABLE API

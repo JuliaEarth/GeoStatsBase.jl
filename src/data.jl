@@ -31,14 +31,14 @@ values(sdata::SpatialData) = sdata.table
 # -----------
 
 Tables.istable(::Type{<:SpatialData}) = true
-Tables.schema(sdata::SpatialData) = Tables.schema(values(sdata))
 Tables.materializer(sdata::SpatialData) = Tables.materializer(values(sdata))
-Tables.rowaccess(sdata::SpatialData) = Tables.rowaccess(values(sdata))
-Tables.rows(sdata::SpatialData) = Tables.rows(values(sdata))
 Tables.columnaccess(sdata::SpatialData) = Tables.columnaccess(values(sdata))
+Tables.rowaccess(sdata::SpatialData) = Tables.rowaccess(values(sdata))
+Tables.schema(sdata::SpatialData) = Tables.schema(values(sdata))
 Tables.columns(sdata::SpatialData) = Tables.columns(values(sdata))
 Tables.columnnames(sdata::SpatialData) = Tables.columnnames(values(sdata))
 Tables.getcolumn(sdata::SpatialData, c::Symbol) = Tables.getcolumn(values(sdata), c)
+Tables.rows(sdata::SpatialData) = Tables.rows(values(sdata))
 
 # -------------
 # VARIABLE API
