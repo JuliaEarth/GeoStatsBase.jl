@@ -34,22 +34,6 @@ Base.collect(dv::DataView) = georef(values(dv), coordinates(dv))
 coordinates!(buff::AbstractVector, dv::DataView, ind::Int) =
   coordinates!(buff, dv.data, dv.inds[ind])
 
-# -------------
-# VARIABLE API
-# -------------
-
-function variables(dv::DataView)
-  s = Tables.schema(dv.data)
-  ns, ts = s.names, s.types
-  fs = [(n, t) for (n, t) in zip(ns, ts) if n ∈ dv.vars]
-  @. Variable(first(fs), nonmissing(last(fs)))
-end
-
-Base.getindex(dv::DataView, var::Symbol) =
-  Tables.getcolumn(dv, var)
-Base.setindex!(dv::DataView, vals, var::Symbol) =
-  setindex!(values(dv.data), vals, dv.inds, var)
-
 # ---------
 # VIEW API
 # ---------
