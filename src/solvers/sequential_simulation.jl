@@ -90,7 +90,7 @@ function solvesingle(problem::SimulationProblem, covars::NamedTuple,
     # keep track of simulated locations
     simulated = falses(nelms(pdomain))
     for (loc, datloc) in datamap(problem, var)
-      realization[loc] = pdata[datloc,var]
+      realization[loc] = pdata[var][datloc]
       simulated[loc] = true
     end
 
