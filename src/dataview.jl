@@ -24,7 +24,7 @@ struct DataView{𝒮,I,V} <: AbstractData
 end
 
 domain(dv::DataView) = view(domain(dv.data), dv.inds)
-values(dv::DataView) = getindex(values(dv.data), dv.inds, dv.vars)
+values(dv::DataView) = viewtable(values(dv.data), dv.inds, dv.vars)
 
 Base.collect(dv::DataView) = georef(values(dv), coordinates(dv))
 
@@ -33,25 +33,6 @@ Base.collect(dv::DataView) = georef(values(dv), coordinates(dv))
 # -----------------------------------
 coordinates!(buff::AbstractVector, dv::DataView, ind::Int) =
   coordinates!(buff, dv.data, dv.inds[ind])
-
-# -----------
-# TABLES API
-# -----------
-
-Tables.istable(::Type{<:DataView}) = true
-Tables.materializer(dv::DataView) = Tables.materializer(dv.data)
-Tables.columnaccess(dv::DataView) = Tables.columnaccess(dv.data)
-Tables.rowaccess(dv::DataView) = Tables.rowaccess(dv.data)
-Tables.schema(dv::DataView) =
-  Tables.schema(viewtable(values(dv.data), dv.inds, dv.vars))
-Tables.columns(dv::DataView) =
-  Tables.columns(viewtable(values(dv.data), dv.inds, dv.vars))
-Tables.columnnames(dv::DataView) =
-  Tables.columnnames(viewtable(values(dv.data), dv.inds, dv.vars))
-Tables.getcolumn(dv::DataView, c::Symbol) =
-  Tables.getcolumn(viewtable(values(dv.data), dv.inds, dv.vars), c)
-Tables.rows(dv::DataView) =
-  Tables.rows(viewtable(values(dv.data), dv.inds, dv.vars))
 
 # -------------
 # VARIABLE API

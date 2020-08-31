@@ -21,8 +21,8 @@
     # bidimensional views
     d = georef((z=rand(10,10),))
     v = view(d, 1:3, [:z])
-    td = values(d)
-    tv = values(v)
+    td = DataFrame(values(d))
+    tv = DataFrame(values(v))
     @test nelms(v) == 3
     @test td[1:3,:z] == tv[:,:z]
 
@@ -32,13 +32,11 @@
     d = georef((x=x,y=y,z=z))
     v = view(d, 1:3)
     @test Tables.istable(d) == true
+    @test Tables.istable(v) == true
     @test Tables.rowaccess(d) == Tables.rowaccess(t)
     @test Tables.columnaccess(d) == Tables.columnaccess(t)
     @test Tables.rows(d) == Tables.rows(t)
     @test Tables.columns(d) == Tables.columns(t)
-    @test Tables.istable(v) == true
-    @test Tables.rowaccess(v) == Tables.rowaccess(d)
-    @test Tables.columnaccess(v) == Tables.columnaccess(d)
     rv = DataFrame(Tables.rows(v))
     rt = DataFrame(Tables.rows(t[1:3,:]))
     cv = DataFrame(Tables.columns(v))

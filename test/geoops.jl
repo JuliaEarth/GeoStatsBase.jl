@@ -116,10 +116,9 @@
     d = georef((z=[1,2,3],x=[4,5,6]), rand(2,3))
     g = groupby(d, :z)
     @test all(nelms.(g) .== 1)
-    tups = [(z=[1],x=[4]), (z=[2],x=[5]), (z=[3],x=[6])]
-    rows = values.(georef.(tups))
+    rows = [[1 4], [2 5], [3 6]]
     for i in 1:3
-      @test values(g[i]) ∈ rows
+      @test Tables.matrix(values(g[i])) ∈ rows
     end
   end
 
