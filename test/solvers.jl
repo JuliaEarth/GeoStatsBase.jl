@@ -16,17 +16,24 @@
   end
 
   @testset "SeqSim" begin
-    problem = SimulationProblem(RegularGrid(100,100), :var => Float64, 3)
-    solver = SeqSim(:var => (estimator=DummyEstimator(),
-                             neighborhood=BallNeighborhood(10.),
-                             minneighbors=1, maxneighbors=10,
-                             marginal=Normal(), path=LinearPath()))
+    Random.seed!(1234)
+    sdata = georef((z=rand(100),), 100*rand(2,100))
+    sgrid = RegularGrid(100,100)
+
+    prob1 = SimulationProblem(sgrid, :z => Float64, 3)
+    prob2 = SimulationProblem(sdata, sgrid, :z, 3)
+
+    solver = SeqSim(:z => (estimator=DummyEstimator(),
+                           neighborhood=BallNeighborhood(10.),
+                           minneighbors=1, maxneighbors=10,
+                           marginal=Normal(), path=LinearPath()))
 
     Random.seed!(1234)
-    solution = solve(problem, solver)
+    usol = solve(prob1, solver)
+    csol = solve(prob2, solver)
 
     if visualtests
-      @plottest plot(solution,size=(900,300)) joinpath(datadir,"seqsim.png") !istravis
+      @plottest plot(usol,size=(900,300)) joinpath(datadir,"seqsim.png") !istravis
     end
   end
 
