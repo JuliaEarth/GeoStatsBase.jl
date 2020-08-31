@@ -35,7 +35,7 @@ function map(sdata, sdomain, targetvars, mapper::NearestMapper)
 
     # save pair if there is data for variable
     for var in targetvars
-      if !ismissing(sdata[ind,var])
+      if !ismissing(sdata[var][ind])
         push!(mappings[var], neighbor[1] => ind)
       end
     end

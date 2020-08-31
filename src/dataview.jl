@@ -25,28 +25,29 @@ Base.collect(dv::SpatialDataView) = georef(values(dv), coordinates(dv))
 coordinates!(buff::AbstractVector, dv::SpatialDataView, ind::Int) =
   coordinates!(buff, dv.data, dv.inds[ind])
 
+# helper function for table view
+function viewtable(table, rows, cols)
+  t = Tables.columns(table)
+  v = map(cols) do c
+    col = Tables.getcolumn(t, c)
+    c => view(col, rows)
+  end
+  (; v...)
+end
+
 # -----------
 # TABLES API
 # -----------
 
 Tables.istable(::Type{<:SpatialDataView}) = true
-Tables.schema(dv::SpatialDataView) = Tables.schema(getindex(dv.data, dv.inds, dv.vars))
+Tables.schema(dv::SpatialDataView) = Tables.schema(viewtable(values(dv.data), dv.inds, dv.vars))
 Tables.materializer(dv::SpatialDataView) = Tables.materializer(dv.data)
 Tables.rowaccess(dv::SpatialDataView) = Tables.rowaccess(dv.data)
-Tables.rows(dv::SpatialDataView) = Tables.rows(getindex(dv.data, dv.inds, dv.vars))
+Tables.rows(dv::SpatialDataView) = Tables.rows(viewtable(values(dv.data), dv.inds, dv.vars))
 Tables.columnaccess(dv::SpatialDataView) = Tables.columnaccess(dv.data)
-Tables.columns(dv::SpatialDataView) = Tables.columns(getindex(dv.data, dv.inds, dv.vars))
-Tables.columnnames(dv::SpatialDataView) = Tables.columnnames(getindex(dv.data, dv.inds, dv.vars))
-Tables.getcolumn(dv::SpatialDataView, c::Symbol) = Tables.getcolumn(getindex(dv.data, dv.inds, dv.vars), c)
-
-# --------------
-# DATAFRAME API
-# --------------
-
-Base.getindex(dv::SpatialDataView, inds, vars) =
-  getindex(dv.data, dv.inds[inds], vars)
-Base.setindex!(dv::SpatialDataView, vals, inds, vars) =
-  setindex!(dv.data, vals, dv.inds[inds], vars)
+Tables.columns(dv::SpatialDataView) = Tables.columns(viewtable(values(dv.data), dv.inds, dv.vars))
+Tables.columnnames(dv::SpatialDataView) = Tables.columnnames(viewtable(values(dv.data), dv.inds, dv.vars))
+Tables.getcolumn(dv::SpatialDataView, c::Symbol) = Tables.getcolumn(viewtable(values(dv.data), dv.inds, dv.vars), c)
 
 # -------------
 # VARIABLE API
@@ -60,9 +61,9 @@ function variables(dv::SpatialDataView)
 end
 
 Base.getindex(dv::SpatialDataView, var::Symbol) =
-  getindex(dv.data, dv.inds, var)
+  Tables.getcolumn(dv, var)
 Base.setindex!(dv::SpatialDataView, vals, var::Symbol) =
-  setindex!(dv.data, vals, dv.inds, var)
+  setindex!(values(dv.data), vals, dv.inds, var)
 
 # ---------
 # VIEW API

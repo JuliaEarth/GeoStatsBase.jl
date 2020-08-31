@@ -17,7 +17,7 @@ function uniquecoords(sdata; agg=Dict())
   vars = variables(sdata)
   for var in name.(vars)
     if var ∉ keys(agg)
-      ST = scitype(sdata[1,var])
+      ST = scitype(sdata[var][1])
       agg[var] = ST <: Continuous ? _mean : _first
     end
   end
@@ -37,12 +37,12 @@ function uniquecoords(sdata; agg=Dict())
     if length(g) > 1
       # aggregate variables
       for var in name.(vars)
-        push!(vals[var], agg[var](sdata[g,var]))
+        push!(vals[var], agg[var](sdata[var][g]))
       end
     else
       # copy location
       for var in name.(vars)
-        push!(vals[var], sdata[i,var])
+        push!(vals[var], sdata[var][i])
       end
     end
     push!(locs, i)

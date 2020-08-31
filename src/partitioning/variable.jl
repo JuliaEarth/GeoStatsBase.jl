@@ -17,24 +17,27 @@ function partition(sdata, partitioner::VariablePartitioner)
 
   @assert var ∈ name.(variables(sdata)) "invalid variable name"
 
+  # data for variable
+  vdata = sdata[var]
+
   # partition function with missings
   function f(i, j)
-    vi, vj = sdata[i,var], sdata[j,var]
+    vi, vj = vdata[i], vdata[j]
     mi, mj = ismissing(vi), ismissing(vj)
     (mi && mj) || ((!mi && !mj) && (vi == vj))
   end
 
   # partition function without missings
-  g(i, j) = sdata[i,var] == sdata[j,var]
+  g(i, j) = vdata[i] == vdata[j]
 
   # select the appropriate predicate function
-  pred = Missing <: eltype(sdata[var]) ? f : g
+  pred = Missing <: eltype(vdata) ? f : g
 
   # perform partition
   p = partition(sdata, PredicatePartitioner(pred))
 
   # retrieve value from each subset
-  vals = [sdata[s[1],var] for s in subsets(p)]
+  vals = [vdata[s[1]] for s in subsets(p)]
 
   # save metadata
   metadata = Dict(:values => vals)

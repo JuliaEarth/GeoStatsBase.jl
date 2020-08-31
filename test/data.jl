@@ -3,9 +3,9 @@
     # views and mutation
     d = georef((z=rand(3),))
     v = view(d, [1,3])
-    d[1,:z] = 1.
-    d[2,:z] = 2.
-    v[2,:z] = 3.
+    d[:z][1] = 1.
+    d[:z][2] = 2.
+    v[:z][2] = 3.
     @test d[:z] == [1.,2.,3.]
     @test v[:z] == [1.,3.]
     v[:z] = [3.,1.]
@@ -39,8 +39,12 @@
     @test Tables.istable(v) == true
     @test Tables.rowaccess(v) == Tables.rowaccess(d)
     @test Tables.columnaccess(v) == Tables.columnaccess(d)
-    @test Tables.rows(v) == Tables.rows(t[1:3,:])
-    @test Tables.columns(v) == Tables.columns(t[1:3,:])
+    rv = DataFrame(Tables.rows(v))
+    rt = DataFrame(Tables.rows(t[1:3,:]))
+    cv = DataFrame(Tables.columns(v))
+    ct = DataFrame(Tables.columns(t[1:3,:]))
+    @test rv == rt
+    @test cv == ct
   end
 
   @testset "GeoTable" begin

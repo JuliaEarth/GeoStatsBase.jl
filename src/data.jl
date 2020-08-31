@@ -40,15 +40,6 @@ Tables.columns(sdata::SpatialData) = Tables.columns(values(sdata))
 Tables.columnnames(sdata::SpatialData) = Tables.columnnames(values(sdata))
 Tables.getcolumn(sdata::SpatialData, c::Symbol) = Tables.getcolumn(values(sdata), c)
 
-# --------------
-# DATAFRAME API
-# --------------
-
-Base.getindex(sdata::SpatialData, inds, vars) =
-  getindex(values(sdata), inds, vars)
-Base.setindex!(sdata::SpatialData, vals, inds, vars) =
-  setindex!(values(sdata), vals, inds, vars)
-
 # -------------
 # VARIABLE API
 # -------------
@@ -60,7 +51,7 @@ function variables(sdata::SpatialData)
 end
 
 Base.getindex(sdata::SpatialData, var::Symbol) =
-  getindex(values(sdata), :, var)
+  Tables.getcolumn(sdata, var)
 Base.setindex!(sdata::SpatialData, vals, var::Symbol) =
   setindex!(values(sdata), vals, :, var)
 
