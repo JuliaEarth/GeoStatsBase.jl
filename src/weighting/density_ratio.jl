@@ -44,8 +44,8 @@ function weight(sdata, weighter::DensityRatioWeighter)
   # numerator and denominator samples
   Ωnu = view(tdata, vars)
   Ωde = view(sdata, vars)
-  xnu = collect(eachrow(values(Ωnu)))
-  xde = collect(eachrow(values(Ωde)))
+  xnu = collect(Tables.rows(values(Ωnu)))
+  xde = collect(Tables.rows(values(Ωde)))
 
   # perform denstiy ratio estimation
   ratios = densratio(xnu, xde, dre, optlib=optlib)

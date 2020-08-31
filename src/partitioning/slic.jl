@@ -120,8 +120,8 @@ function slic_assignment!(sdata, searcher, vars, m, s, c, l, d)
     # distance between variables
     𝒮ᵢ = view(sdata, inds, vars)
     𝒮ₖ = view(sdata, [cₖ], vars)
-    V  = Matrix(values(𝒮ᵢ))
-    vₖ = Matrix(values(𝒮ₖ))
+    V  = Tables.matrix(values(𝒮ᵢ))
+    vₖ = Tables.matrix(values(𝒮ₖ))
     dᵥ = pairwise(Euclidean(), V, vₖ, dims=1)
 
     # total distance
