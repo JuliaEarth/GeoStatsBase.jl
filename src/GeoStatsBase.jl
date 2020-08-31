@@ -276,7 +276,6 @@ export
   # trends
   polymat,
   trend,
-  detrend!,
 
   # statistics
   EmpiricalHistogram,

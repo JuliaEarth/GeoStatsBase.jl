@@ -57,19 +57,3 @@ function trend(sdata, vars::AbstractVector{Symbol}; degree=1)
 end
 
 trend(sdata, var::Symbol; kwargs...) = trend(sdata, [var]; kwargs...)
-
-"""
-    detrend!(sdata, vars; degree=1)
-
-Detrend the variables `vars` in the spatial `sdata` in place,
-and return the trends.
-"""
-function detrend!(sdata, vars::AbstractVector{Symbol}; kwargs...)
-  μ = trend(sdata, vars; kwargs...)
-  for var in vars
-    sdata[var] -= μ[var]
-  end
-  μ
-end
-
-detrend!(sdata, var::Symbol; kwargs...) = detrend!(sdata, [var]; kwargs...)
