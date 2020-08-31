@@ -32,7 +32,7 @@ function DensityRatioWeighter(tdata, vars=nothing; estimator=LSIF(),
   DensityRatioWeighter(tdata, wvars, estimator, optlib)
 end
 
-function weight(::GeoData, sdata, weighter::DensityRatioWeighter)
+function weight(sdata, weighter::DensityRatioWeighter)
   # retrieve method parameters
   tdata  = weighter.tdata
   vars   = weighter.vars

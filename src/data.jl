@@ -3,11 +3,63 @@
 # ------------------------------------------------------------------
 
 """
+    AbstractData
+
+An abstract type to aid with custom spatial data types. Users can
+subtype their domains from this type, and implement the methods in
+`geotraits/data.jl`.
+"""
+abstract type AbstractData end
+
+# -----------
+# TABLES API
+# -----------
+
+Tables.istable(::Type{<:AbstractData}) = true
+Tables.materializer(sdata::AbstractData) = Tables.materializer(values(sdata))
+Tables.columnaccess(sdata::AbstractData) = Tables.columnaccess(values(sdata))
+Tables.rowaccess(sdata::AbstractData) = Tables.rowaccess(values(sdata))
+Tables.schema(sdata::AbstractData) = Tables.schema(values(sdata))
+Tables.columns(sdata::AbstractData) = Tables.columns(values(sdata))
+Tables.columnnames(sdata::AbstractData) = Tables.columnnames(values(sdata))
+Tables.getcolumn(sdata::AbstractData, c::Symbol) = Tables.getcolumn(values(sdata), c)
+Tables.rows(sdata::AbstractData) = Tables.rows(values(sdata))
+
+# -------------
+# VARIABLE API
+# -------------
+
+function variables(sdata::AbstractData)
+  s = Tables.schema(sdata)
+  ns, ts = s.names, s.types
+  @. Variable(ns, nonmissing(ts))
+end
+
+Base.getindex(sdata::AbstractData, var::Symbol) =
+  Tables.getcolumn(sdata, var)
+Base.setindex!(sdata::AbstractData, vals, var::Symbol) =
+  setindex!(values(sdata), vals, :, var)
+
+# ---------
+# VIEW API
+# ---------
+
+Base.view(sdata::AbstractData, inds::AbstractVector{Int}) =
+  DataView(sdata, inds, collect(name.(variables(sdata))))
+Base.view(sdata::AbstractData, vars::AbstractVector{Symbol}) =
+  DataView(sdata, 1:nelms(sdata), vars)
+Base.view(sdata::AbstractData, inds, vars) =
+  DataView(sdata, inds, vars)
+
+#------------------
+# IMPLEMENTATIONS
+#------------------
+"""
     SpatialData(domain, data)
 
 Tabular `data` georeferenced in a spatial `domain`.
 """
-struct SpatialData{𝒟,𝒯}
+struct SpatialData{𝒟,𝒯} <: AbstractData
   domain::𝒟
   table::𝒯
 
@@ -22,49 +74,8 @@ end
 SpatialData(domain::𝒟, table::𝒯) where {𝒟,𝒯} =
   SpatialData{𝒟,𝒯}(domain, table)
 
-geotrait(::SpatialData)    = GeoData()
 domain(sdata::SpatialData) = sdata.domain
 values(sdata::SpatialData) = sdata.table
-
-# -----------
-# TABLES API
-# -----------
-
-Tables.istable(::Type{<:SpatialData}) = true
-Tables.materializer(sdata::SpatialData) = Tables.materializer(values(sdata))
-Tables.columnaccess(sdata::SpatialData) = Tables.columnaccess(values(sdata))
-Tables.rowaccess(sdata::SpatialData) = Tables.rowaccess(values(sdata))
-Tables.schema(sdata::SpatialData) = Tables.schema(values(sdata))
-Tables.columns(sdata::SpatialData) = Tables.columns(values(sdata))
-Tables.columnnames(sdata::SpatialData) = Tables.columnnames(values(sdata))
-Tables.getcolumn(sdata::SpatialData, c::Symbol) = Tables.getcolumn(values(sdata), c)
-Tables.rows(sdata::SpatialData) = Tables.rows(values(sdata))
-
-# -------------
-# VARIABLE API
-# -------------
-
-function variables(sdata::SpatialData)
-  s = Tables.schema(sdata)
-  ns, ts = s.names, s.types
-  @. Variable(ns, nonmissing(ts))
-end
-
-Base.getindex(sdata::SpatialData, var::Symbol) =
-  Tables.getcolumn(sdata, var)
-Base.setindex!(sdata::SpatialData, vals, var::Symbol) =
-  setindex!(values(sdata), vals, :, var)
-
-# ---------
-# VIEW API
-# ---------
-
-Base.view(sdata::SpatialData, inds::AbstractVector{Int}) =
-  SpatialDataView(sdata, inds, collect(name.(variables(sdata))))
-Base.view(sdata::SpatialData, vars::AbstractVector{Symbol}) =
-  SpatialDataView(sdata, 1:nelms(sdata), vars)
-Base.view(sdata::SpatialData, inds, vars) =
-  SpatialDataView(sdata, inds, vars)
 
 # ------------
 # IO methods

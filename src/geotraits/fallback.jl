@@ -2,13 +2,13 @@
 # Licensed under the ISC License. See LICENSE in the project root.
 # ------------------------------------------------------------------
 
-nelms(::GeoData, obj) = nelms(domain(obj))
+nelms(obj) = nelms(domain(obj))
 
-ncoords(::GeoData, obj) = ncoords(domain(obj))
+ncoords(obj) = ncoords(domain(obj))
 
-coordtype(::GeoData, obj) = coordtype(domain(obj))
+coordtype(obj) = coordtype(domain(obj))
 
-coordinates!(::GeoData, buff, obj, ind) =
+coordinates!(buff, obj, ind) =
   coordinates!(buff, domain(obj), ind)
 
 """
@@ -16,7 +16,7 @@ coordinates!(::GeoData, buff, obj, ind) =
 
 Non-allocating version of [`coordinates`](@ref)
 """
-function coordinates!(buff::AbstractMatrix, obj, inds::AbstractVector{Int})
+function coordinates!(buff, obj, inds::AbstractVector{Int})
   for j in 1:length(inds)
     coordinates!(view(buff,:,j), obj, inds[j])
   end

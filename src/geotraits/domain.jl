@@ -7,7 +7,7 @@
 
 Return the number of elements in `object`.
 """
-nelms(obj) = nelms(geotrait(obj), obj)
+function nelms end
 
 """
     ncoords(object)
@@ -15,14 +15,14 @@ nelms(obj) = nelms(geotrait(obj), obj)
 Return the number of dimensions
 (or coordinates) of the `object`.
 """
-ncoords(obj) = ncoords(geotrait(obj), obj)
+function ncoords end
 
 """
     coordtype(object)
 
 Return the coordinate type of the `object`.
 """
-coordtype(obj) = coordtype(geotrait(obj), obj)
+function coordtype end
 
 """
     coordinates!(buff, object, ind)
@@ -30,5 +30,4 @@ coordtype(obj) = coordtype(geotrait(obj), obj)
 Compute the coordinates of the `ind`-th
 element of the `object` in `buff`.
 """
-coordinates!(buff::AbstractVector, obj, ind::Int) =
-  coordinates!(geotrait(obj), buff, obj, ind)
+function coordinates! end

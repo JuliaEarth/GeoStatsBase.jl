@@ -19,10 +19,10 @@ BlockWeighter(sides::NTuple{N,T}) where {N,T} =
 
 BlockWeighter(sides::Vararg) = BlockWeighter(sides)
 
-weight(::GeoData, object, weighter::BlockWeighter) =
+weight(object, weighter::BlockWeighter) =
   weight(domain(object), weighter)
 
-function weight(::GeoDomain, object, weighter::BlockWeighter)
+function weight(object::AbstractDomain, weighter::BlockWeighter)
   p = partition(object, BlockPartitioner(weighter.sides))
 
   weights = Vector{Float64}(undef, nelms(object))

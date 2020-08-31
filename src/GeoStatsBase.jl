@@ -55,11 +55,6 @@ include("domains.jl")
 include("domainview.jl")
 include("data.jl")
 include("dataview.jl")
-
-# workaround while traits are not sorted out in the language
-const AbstractData = Union{SpatialData,SpatialDataView}
-const AbstractDomain = Union{SpatialDomain,SpatialDomainView}
-
 include("georef.jl")
 include("macros.jl")
 include("paths.jl")
@@ -91,10 +86,6 @@ export
   name, mactype,
 
   # geotraits
-  GeoCollection,
-  GeoDomain,
-  GeoData,
-  geotrait,
   nelms,
   ncoords,
   coordtype,
