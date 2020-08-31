@@ -37,8 +37,6 @@ end
 
 Base.getindex(sdata::AbstractData, var::Symbol) =
   Tables.getcolumn(sdata, var)
-Base.setindex!(sdata::AbstractData, vals, var::Symbol) =
-  setindex!(values(sdata), vals, :, var)
 
 # ---------
 # VIEW API

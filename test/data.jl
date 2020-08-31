@@ -1,17 +1,5 @@
 @testset "Data" begin
   @testset "Basics" begin
-    # views and mutation
-    d = georef((z=rand(3),))
-    v = view(d, [1,3])
-    d[:z][1] = 1.
-    d[:z][2] = 2.
-    v[:z][2] = 3.
-    @test d[:z] == [1.,2.,3.]
-    @test v[:z] == [1.,3.]
-    v[:z] = [3.,1.]
-    @test d[:z] == [3.,2.,1.]
-    @test v[:z] == [3.,1.]
-
     # underlying table
     d = georef((z=rand(10,10),))
     t = values(d)
