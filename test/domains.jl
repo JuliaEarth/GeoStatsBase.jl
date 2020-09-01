@@ -6,7 +6,7 @@
     @test coordinates(ps, 2) == [0., 1.]
 
     @test sprint(show, ps) == "2 PointSet{Float64,2}"
-    @test sprint(show, MIME"text/plain"(), ps) == "2 PointSet{Float64,2}\n 1.0  0.0\n 0.0  1.0"
+    @test sprint(show, MIME"text/plain"(), ps) == "2 PointSet{Float64,2}\n [1.0, 0.0]\n [0.0, 1.0]"
 
     if visualtests
       Random.seed!(2019)

@@ -5,10 +5,12 @@
 """
     PointSet(coords)
 
-A set of points with coordinate matrix `coords`. The number of rows
-of the matrix is the dimensionality of the domain whereas the number
-of columns is the number of points in the set. Alternatively, `coords`
-can be a vector of tuples (i.e. points).
+A set of points with coordinates vector `coords`. The vector
+contains many coordinates (number of points), where each coordinate
+is implemented by a static array of length same as the dimensionality.
+To build the PointSet a Matrix can be use. The matrix is the dimensionality 
+of the domain whereas the number of columns is the number of points in the set
+or a Vector of tuples that will be converted to a Vector of static array.
 
 ## Examples
 
@@ -25,7 +27,8 @@ julia> PointSet([(rand(),rand()) for i in 1:100])
 ```
 """
 struct PointSet{T,N} <: SpatialDomain{T,N}
-  coords::Matrix{T}
+  # coords::Matrix{T}
+  coords::Vector{SVector{N,T}} 
 
   function PointSet{T,N}(coords) where {N,T}
     @assert !isempty(coords) "coordinates must be non-empty"
@@ -33,26 +36,36 @@ struct PointSet{T,N} <: SpatialDomain{T,N}
   end
 end
 
-PointSet(coords::AbstractMatrix{T}) where {T} =
-  PointSet{T,size(coords,1)}(coords)
+function PointSet(coords::AbstractMatrix{T}) where {T}
+  N = size(coords, 1)
+  points = Vector{SVector{N,T}}()
+  for row in eachcol(coords)
+    push!(points,SVector{N,T}(row))
+  end
+  PointSet{T,N}(points)
+end
 
-PointSet(coords::AbstractVector{NTuple{N,T}}) where {N,T} =
-  PointSet([c[i] for i in 1:N, c in coords])
+function PointSet(coords::AbstractVector{NTuple{N,T}}) where {N,T}
+  points = Vector{SVector{N,T}}()
+  for row in coords
+    push!(points,SVector{N,T}(row))
+  end
+  PointSet{T,N}(points)
+end
 
-nelms(ps::PointSet) = size(ps.coords, 2)
+nelms(ps::PointSet) = size(ps.coords,1)
 
 function coordinates!(buff::AbstractVector{T}, ps::PointSet{T,N},
                       location::Int) where {N,T}
   @inbounds for i in 1:N
-    buff[i] = ps.coords[i,location]
+    buff[i] = ps.coords[location][i]
   end
 end
-
 # ------------
 # IO methods
 # ------------
 function Base.show(io::IO, ps::PointSet{T,N}) where {N,T}
-  npts = size(ps.coords, 2)
+  npts = nelms(ps)
   print(io, "$npts PointSet{$T,$N}")
 end
 
