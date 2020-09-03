@@ -26,15 +26,8 @@ struct PointSet{T,N} <: SpatialDomain{T,N}
   coords::Vector{SVector{N,T}} 
 end
 
-PointSet(coords::AbstractMatrix) = PointSet(collect(eachcol(coords)))
+PointSet(coords::AbstractMatrix) = PointSet(collect(SVector{size(coords,1)}.(eachcol(coords))))
 PointSet(coords::AbstractVector{<:NTuple}) = PointSet(SVector.(coords))
-
-function PointSet(coords::AbstractVector{<:AbstractVector})
-  @assert !isempty(coords) "coordinates must be non-empty"
-  @assert length(coords) > 0 "coordinates must contain one point at least"
-  N = length(coords[1]) #getting the dimensionality of the point
-  PointSet(SVector{N}.(coords))
-end
 
 nelms(ps::PointSet) = length(ps.coords)
 
