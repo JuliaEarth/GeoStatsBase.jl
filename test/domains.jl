@@ -1,21 +1,25 @@
 @testset "Domains" begin
   @testset "PointSet" begin
-    ps = PointSet([1. 0.; 0. 1.])
-    @test nelms(ps) == 2
-    @test coordinates(ps, 1) == [1., 0.]
-    @test coordinates(ps, 2) == [0., 1.]
+    # same values, different representations
+    ps1 = PointSet([1. 0.; 0. 1.])            # as matrix
+    ps2 = PointSet([(1.0, 0.0), (0.0, 1.0)])  # as vector of tuples
+    for ps in [ps1, ps2]
+      @test nelms(ps) == 2
+      @test coordinates(ps, 1) == [1., 0.]
+      @test coordinates(ps, 2) == [0., 1.]
 
-    @test sprint(show, ps) == "2 PointSet{Float64,2}"
-    @test sprint(show, MIME"text/plain"(), ps) == "2 PointSet{Float64,2}\n [1.0, 0.0]\n [0.0, 1.0]"
+      @test sprint(show, ps) == "2 PointSet{Float64,2}"
+      @test sprint(show, MIME"text/plain"(), ps) == "2 PointSet{Float64,2}\n 1.0  0.0\n 0.0  1.0"
 
-    if visualtests
-      Random.seed!(2019)
-      @plottest plot(PointSet(rand(1,10))) joinpath(datadir,"pset1D.png") !istravis
-      @plottest plot(PointSet(rand(2,10))) joinpath(datadir,"pset2D.png") !istravis
-      @plottest plot(PointSet(rand(3,10))) joinpath(datadir,"pset3D.png") !istravis
-      @plottest plot(PointSet(rand(1,10)),1:10) joinpath(datadir,"pset1D-data.png") !istravis
-      @plottest plot(PointSet(rand(2,10)),1:10) joinpath(datadir,"pset2D-data.png") !istravis
-      @plottest plot(PointSet(rand(3,10)),1:10) joinpath(datadir,"pset3D-data.png") !istravis
+      if visualtests
+        Random.seed!(2019)
+        @plottest plot(PointSet(rand(1,10))) joinpath(datadir,"pset1D.png") !istravis
+        @plottest plot(PointSet(rand(2,10))) joinpath(datadir,"pset2D.png") !istravis
+        @plottest plot(PointSet(rand(3,10))) joinpath(datadir,"pset3D.png") !istravis
+        @plottest plot(PointSet(rand(1,10)),1:10) joinpath(datadir,"pset1D-data.png") !istravis
+        @plottest plot(PointSet(rand(2,10)),1:10) joinpath(datadir,"pset2D-data.png") !istravis
+        @plottest plot(PointSet(rand(3,10)),1:10) joinpath(datadir,"pset3D-data.png") !istravis
+      end
     end
   end
 
