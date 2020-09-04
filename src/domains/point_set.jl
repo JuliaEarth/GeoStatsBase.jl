@@ -3,11 +3,12 @@
 # ------------------------------------------------------------------
 
 """
-PointSet(coords)
+    PointSet(coords)
 
-A set of points with coordinates coords. Each point is represented by a static vector
-or tuple. Alternatively, coords can be a matrix where the number of rows equals the
+A set of points with coordinates `coords`. Each point is represented by a static vector
+or tuple. Alternatively, `coords` can be a matrix where the number of rows equals the
 number of dimensions.
+
 ## Examples
 
 Create a 2D point set with 100 points:
@@ -47,6 +48,6 @@ end
 
 function Base.show(io::IO, ::MIME"text/plain", ps::PointSet{T,N}) where {N,T}
   println(io, ps)
-  m = hcat(ps.coords...)
+  m = reduce(hcat, ps.coords) #hcat(ps.coords...)
   Base.print_array(io, m)
 end
