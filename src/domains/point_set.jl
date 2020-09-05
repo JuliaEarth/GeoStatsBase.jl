@@ -5,9 +5,9 @@
 """
     PointSet(coords)
 
-A set of points with coordinates `coords`. Each point is represented by a static vector
-or tuple. Alternatively, `coords` can be a matrix where the number of rows equals the
-number of dimensions.
+A set of points with coordinates `coords`. Each point is represented by
+a static vector or tuple. Alternatively, `coords` can be a matrix where
+the number of rows equals the number of dimensions.
 
 ## Examples
 
@@ -27,17 +27,17 @@ struct PointSet{T,N} <: SpatialDomain{T,N}
   coords::Vector{SVector{N,T}} 
 end
 
-PointSet(coords::AbstractMatrix) = PointSet(collect(SVector{size(coords,1)}.(eachcol(coords))))
-PointSet(coords::AbstractVector{<:NTuple}) = PointSet(SVector.(coords))
+PointSet(coords::AbstractVector{<:NTuple}) =
+  PointSet(SVector.(coords))
+
+PointSet(coords::AbstractMatrix) =
+  PointSet(SVector{size(coords,1)}.(eachcol(coords)))
 
 nelms(ps::PointSet) = length(ps.coords)
 
-function coordinates!(buff::AbstractVector{T}, ps::PointSet{T,N},
-                      ind::Int) where {N,T}
-  @inbounds for i in 1:N
-    buff[i] = ps.coords[ind][i]
-  end
-end
+coordinates!(buff, ps::PointSet, ind::Int) =
+  @inbounds buff .= ps.coords[ind]
+
 # ------------
 # IO methods
 # ------------
@@ -48,6 +48,5 @@ end
 
 function Base.show(io::IO, ::MIME"text/plain", ps::PointSet{T,N}) where {N,T}
   println(io, ps)
-  m = reduce(hcat, ps.coords) #hcat(ps.coords...)
-  Base.print_array(io, m)
+  Base.print_array(io, reduce(hcat, ps.coords))
 end
