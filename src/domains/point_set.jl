@@ -5,10 +5,9 @@
 """
     PointSet(coords)
 
-A set of points with coordinate matrix `coords`. The number of rows
-of the matrix is the dimensionality of the domain whereas the number
-of columns is the number of points in the set. Alternatively, `coords`
-can be a vector of tuples (i.e. points).
+A set of points with coordinates `coords`. Each point is represented by a static vector
+or tuple. Alternatively, `coords` can be a matrix where the number of rows equals the
+number of dimensions.
 
 ## Examples
 
@@ -25,38 +24,30 @@ julia> PointSet([(rand(),rand()) for i in 1:100])
 ```
 """
 struct PointSet{T,N} <: SpatialDomain{T,N}
-  coords::Matrix{T}
-
-  function PointSet{T,N}(coords) where {N,T}
-    @assert !isempty(coords) "coordinates must be non-empty"
-    new(coords)
-  end
+  coords::Vector{SVector{N,T}} 
 end
 
-PointSet(coords::AbstractMatrix{T}) where {T} =
-  PointSet{T,size(coords,1)}(coords)
+PointSet(coords::AbstractMatrix) = PointSet(collect(SVector{size(coords,1)}.(eachcol(coords))))
+PointSet(coords::AbstractVector{<:NTuple}) = PointSet(SVector.(coords))
 
-PointSet(coords::AbstractVector{NTuple{N,T}}) where {N,T} =
-  PointSet([c[i] for i in 1:N, c in coords])
-
-nelms(ps::PointSet) = size(ps.coords, 2)
+nelms(ps::PointSet) = length(ps.coords)
 
 function coordinates!(buff::AbstractVector{T}, ps::PointSet{T,N},
-                      location::Int) where {N,T}
+                      ind::Int) where {N,T}
   @inbounds for i in 1:N
-    buff[i] = ps.coords[i,location]
+    buff[i] = ps.coords[ind][i]
   end
 end
-
 # ------------
 # IO methods
 # ------------
 function Base.show(io::IO, ps::PointSet{T,N}) where {N,T}
-  npts = size(ps.coords, 2)
+  npts = length(ps.coords)
   print(io, "$npts PointSet{$T,$N}")
 end
 
 function Base.show(io::IO, ::MIME"text/plain", ps::PointSet{T,N}) where {N,T}
   println(io, ps)
-  Base.print_array(io, ps.coords)
+  m = reduce(hcat, ps.coords) #hcat(ps.coords...)
+  Base.print_array(io, m)
 end

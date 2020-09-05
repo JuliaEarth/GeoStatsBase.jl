@@ -1,12 +1,24 @@
 @testset "Domains" begin
   @testset "PointSet" begin
+    # testing different ways to build a PointSet results in the same PointSet
+    ps1 = PointSet([1. 0.; 0. 1.])            # as matrix
+    ps2 = PointSet([(1.0, 0.0), (0.0, 1.0)])  # as vector of tuples
+    
+    @test ps1.coords == ps2.coords
+
+    # building a PointSet of tuples with different lengths should fail
+    @test_throws MethodError PointSet([(1.0, 0.0), (0.0, 1.0 , 4.0)])
+
+    # more tests 
     ps = PointSet([1. 0.; 0. 1.])
+
     @test nelms(ps) == 2
     @test coordinates(ps, 1) == [1., 0.]
     @test coordinates(ps, 2) == [0., 1.]
 
     @test sprint(show, ps) == "2 PointSet{Float64,2}"
     @test sprint(show, MIME"text/plain"(), ps) == "2 PointSet{Float64,2}\n 1.0  0.0\n 0.0  1.0"
+
 
     if visualtests
       Random.seed!(2019)
