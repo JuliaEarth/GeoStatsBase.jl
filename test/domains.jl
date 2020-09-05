@@ -19,7 +19,6 @@
     @test sprint(show, ps) == "2 PointSet{Float64,2}"
     @test sprint(show, MIME"text/plain"(), ps) == "2 PointSet{Float64,2}\n 1.0  0.0\n 0.0  1.0"
 
-
     if visualtests
       Random.seed!(2019)
       @plottest plot(PointSet(rand(1,10))) joinpath(datadir,"pset1D.png") !istravis
