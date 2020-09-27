@@ -17,7 +17,7 @@ using CategoricalArrays: CategoricalValue, CategoricalArray
 using CategoricalArrays: levels, isordered, pool, levelcode
 using NearestNeighbors: KDTree, knn, inrange
 using DataFrames: DataFrame, DataFrame!
-using StaticArrays: SVector, MVector
+using StaticArrays: SVector, MVector, @SMatrix
 using AverageShiftedHistograms: ash
 using Transducers: Map, foldxt
 using SpecialFunctions: gamma

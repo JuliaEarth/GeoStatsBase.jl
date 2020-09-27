@@ -24,10 +24,26 @@ julia> Ellipsoidal([1.0,0.5], [π/2])
 julia> Ellipsoidal([1.0,0.5,0.5], [π/2,0.0,0.0])
 ```
 """
+
+# Right-hand rule; signs when looking in the negative direction of the axis
+struct RotationRules
+  axes::Vector{Symbol}
+  rot::Vector{Symbol}
+end
+
+conventions = Dict(
+  :TaitBryan => RotationRules([:z,:x,:y],[:CCW,:CCW,:CCW]),
+  :Euler => RotationRules([:z,:x,:z],[:CCW,:CCW,:CCW]),
+  :GSLIB => RotationRules([:z,:x,:y],[:CW,:CCW,:CCW]),
+  :Leapfrog => RotationRules([:z,:y,:z],[:CW,:CCW,:CCW]),
+  :Vulcan => RotationRules([:z,:y,:x],[:CW,:CCW,:CW]),
+  :Datamine => RotationRules([:z,:x,:z],[:CW,:CW,:CW]) # assumes 3,1,3
+)
+
 struct Ellipsoidal{N,T} <: Metric
   dist::Mahalanobis{T}
 
-  function Ellipsoidal{N,T}(semiaxes, angles) where {N,T}
+  function Ellipsoidal{N,T}(semiaxes, angles; order=:TaitBryan) where {N,T}
     @assert length(semiaxes) == N "number of semiaxes must match spatial dimension"
     @assert all(semiaxes .> zero(T)) "semiaxes must be positive"
     @assert N ∈ [2,3] "dimension must be either 2 or 3"
@@ -37,41 +53,46 @@ struct Ellipsoidal{N,T} <: Metric
 
     # rotation matrix
     if N == 2
-      θ = angles[1]
+      θ = conventions[order].rot[1] == :CCW ? angles[1] : -1*angles[1]
 
       cosθ = cos(θ)
       sinθ = sin(θ)
 
-      P = [cosθ -sinθ
+      P = @SMatrix [cosθ -sinθ
            sinθ  cosθ]
     end
     if N == 3
-      θxy, θyz, θzx = angles
+      R = []
+      println(conventions[order].axes)
 
-      cosxy = cos(θxy)
-      sinxy = sin(θxy)
-      cosyz = cos(θyz)
-      sinyz = sin(θyz)
-      coszx = cos(θzx)
-      sinzx = sin(θzx)
+      for (i,ax) in enumerate(conventions[order].axes)
 
-      _1 = one(T)
-      _0 = zero(T)
+        θ = conventions[order].rot[i] == :CCW ? angles[i] : -1*angles[i]
 
-      Rxy = [cosxy -sinxy _0
-             sinxy  cosxy _0
-             _0     _0 _1]
+        cosx = cos(θ)
+        sinx = sin(θ)
+        _1 = one(T)
+        _0 = zero(T)
 
-      Ryz = [_1    _0     _0
-             _0 cosyz -sinyz
-             _0 sinyz  cosyz]
-
-      Rzx = [ coszx _0 sinzx
-             _0 _1    _0
-             -sinzx _0 coszx]
-
-      P = Rzx*Ryz*Rxy
+        if ax == :z
+          Ri = @SMatrix [cosx -sinx _0
+                 sinx  cosx _0
+                 _0     _0 _1]
+        elseif ax == :x
+          Ri = @SMatrix [_1    _0     _0
+                 _0 cosx -sinx
+                 _0 sinx  cosx]
+        else
+          Ri = @SMatrix [ cosx _0 sinx
+                 _0 _1    _0
+                 -sinx _0 cosx]
+        end
+        push!(R,Ri)
+      end
+      P = R[3]*R[2]*R[1]
     end
+
+    println(P)
 
     # ellipsoid matrix
     Q = P*Λ*P'
@@ -80,8 +101,8 @@ struct Ellipsoidal{N,T} <: Metric
   end
 end
 
-Ellipsoidal(semiaxes::AbstractVector{T}, angles::AbstractVector{T}) where {T} =
-  Ellipsoidal{length(semiaxes),T}(semiaxes, angles)
+Ellipsoidal(semiaxes::AbstractVector{T}, angles::AbstractVector{T}; kwargs...) where {T} =
+  Ellipsoidal{length(semiaxes),T}(semiaxes, angles; kwargs...)
 
 evaluate(dist::Ellipsoidal{N,T}, a::AbstractVector, b::AbstractVector) where {N,T} =
   evaluate(dist.dist, a, b)
