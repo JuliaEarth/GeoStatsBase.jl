@@ -3,12 +3,20 @@
 # ------------------------------------------------------------------
 
 """
-    Ellipsoidal(semiaxes, angles)
+    Ellipsoidal(semiaxes, angles; convention=:TaitBryanExtr)
 
 A distance defined by an ellipsoid with given `semiaxes` and rotation `angles`.
+Default angle convention is Tait-Bryan ZXY, extrinsic right-handed rotation
+Other conventions available: :TaitBryanIntr, :EulerExtr, :EulerIntr,
+                             :GSLIB, :Leapfrog, :Datamine
+* :EulerExtr, :EulerIntr and :Datamine assumes ZXZ rotation sequence
 
 - For 2D ellipsoids, there are two semiaxes and one rotation angle.
 - For 3D ellipsoids, there are three semiaxes and three rotation angles.
+
+    Ellipsoidal(semiaxes, quaternion)
+
+Alternatively, give the `semiaxes` and the orientation as a `quaternion`
 
 ## Examples
 
@@ -25,25 +33,63 @@ julia> Ellipsoidal([1.0,0.5,0.5], [π/2,0.0,0.0])
 ```
 """
 
-# Right-hand rule; signs when looking in the negative direction of the axis
+# Right-hand rule; motion defined looking to the negative direction of the axis
 struct RotationRules
-  axes::Vector{Symbol}
-  rot::Vector{Symbol}
+  rot_seq::Symbol
+  motion::Vector{Symbol}
+  radian::Bool
+  main::Symbol
+  extrinsic::Bool
 end
 
-conventions = Dict(
-  :TaitBryan => RotationRules([:z,:x,:y],[:CCW,:CCW,:CCW]),
-  :Euler => RotationRules([:z,:x,:z],[:CCW,:CCW,:CCW]),
-  :GSLIB => RotationRules([:z,:x,:y],[:CW,:CCW,:CCW]),
-  :Leapfrog => RotationRules([:z,:y,:z],[:CW,:CCW,:CCW]),
-  :Vulcan => RotationRules([:z,:y,:x],[:CW,:CCW,:CW]),
-  :Datamine => RotationRules([:z,:x,:z],[:CW,:CW,:CW]) # assumes 3,1,3
+themes = Dict(
+  :TaitBryanExtr => RotationRules(:ZXY,[:CCW,:CCW,:CCW],true,:x,true),
+  :TaitBryanIntr => RotationRules(:ZXY,[:CCW,:CCW,:CCW],true,:x,false),
+  :EulerExtr => RotationRules(:ZXZ,[:CCW,:CCW,:CCW],true,:x,true),
+  :EulerIntr => RotationRules(:ZXZ,[:CCW,:CCW,:CCW],true,:x,false),
+  :GSLIB => RotationRules(:ZXY,[:CW,:CCW,:CCW],false,:y,false),
+  :Leapfrog => RotationRules(:ZYZ,[:CW,:CW,:CW],false,:x,false),
+  :Datamine => RotationRules(:ZXZ,[:CW,:CW,:CW],false,:x,false)
 )
 
 struct Ellipsoidal{N,T} <: Metric
   dist::Mahalanobis{T}
 
-  function Ellipsoidal{N,T}(semiaxes, angles; order=:TaitBryan) where {N,T}
+  function Ellipsoidal{N,T}(semiaxes, angles; convention=:TaitBryanExtr) where {N,T}
+    @assert length(semiaxes) == N "number of semiaxes must match spatial dimension"
+    @assert all(semiaxes .> zero(T)) "semiaxes must be positive"
+    @assert N ∈ [2,3] "dimension must be either 2 or 3"
+
+    # invert x and y if necessary
+    if themes[convention].main == :y
+       semiaxes[1], semiaxes[2] = semiaxes[2], semiaxes[1]
+    end
+
+    # scaling matrix
+    Λ = Diagonal(one(T)./semiaxes.^2)
+
+    # convert to radian if necessary
+    angles = themes[convention].radian ? angles : deg2rad.(angles)
+
+    # rotation matrix
+    if N == 2
+      θ = themes[convention].motion[1] == :CCW ? angles[1] : -1*angles[1]
+      P = angle_to_dcm(θ, 0, 0, themes[convention].rot_seq)[1:2,1:2]
+
+    else # N == 3
+      for (i,sign) in enumerate(themes[convention].motion)
+        angles[i] = sign == :CCW ? angles[i] : -1*angles[i]
+      end
+      P = angle_to_dcm(angles[1], angles[2], angles[3], themes[convention].rot_seq)
+    end
+
+    # ellipsoid matrix
+    Q = themes[convention].extrinsic ? P*Λ*P' : P'*Λ*P
+
+    new(Mahalanobis(Q))
+  end
+
+  function Ellipsoidal{N,T}(semiaxes, quaternion::Quaternion) where {N,T}
     @assert length(semiaxes) == N "number of semiaxes must match spatial dimension"
     @assert all(semiaxes .> zero(T)) "semiaxes must be positive"
     @assert N ∈ [2,3] "dimension must be either 2 or 3"
@@ -53,46 +99,10 @@ struct Ellipsoidal{N,T} <: Metric
 
     # rotation matrix
     if N == 2
-      θ = conventions[order].rot[1] == :CCW ? angles[1] : -1*angles[1]
-
-      cosθ = cos(θ)
-      sinθ = sin(θ)
-
-      P = @SMatrix [cosθ -sinθ
-           sinθ  cosθ]
+      P = quat_to_dcm(quaternion)[1:2,1:2]
+    else # N == 3
+      P = quat_to_dcm(quaternion)
     end
-    if N == 3
-      R = []
-      println(conventions[order].axes)
-
-      for (i,ax) in enumerate(conventions[order].axes)
-
-        θ = conventions[order].rot[i] == :CCW ? angles[i] : -1*angles[i]
-
-        cosx = cos(θ)
-        sinx = sin(θ)
-        _1 = one(T)
-        _0 = zero(T)
-
-        if ax == :z
-          Ri = @SMatrix [cosx -sinx _0
-                 sinx  cosx _0
-                 _0     _0 _1]
-        elseif ax == :x
-          Ri = @SMatrix [_1    _0     _0
-                 _0 cosx -sinx
-                 _0 sinx  cosx]
-        else
-          Ri = @SMatrix [ cosx _0 sinx
-                 _0 _1    _0
-                 -sinx _0 cosx]
-        end
-        push!(R,Ri)
-      end
-      P = R[3]*R[2]*R[1]
-    end
-
-    println(P)
 
     # ellipsoid matrix
     Q = P*Λ*P'
@@ -103,6 +113,9 @@ end
 
 Ellipsoidal(semiaxes::AbstractVector{T}, angles::AbstractVector{T}; kwargs...) where {T} =
   Ellipsoidal{length(semiaxes),T}(semiaxes, angles; kwargs...)
+
+Ellipsoidal(semiaxes::AbstractVector{T}, quaternion::Quaternion) where {T} =
+  Ellipsoidal{length(semiaxes),T}(semiaxes, quaternion)
 
 evaluate(dist::Ellipsoidal{N,T}, a::AbstractVector, b::AbstractVector) where {N,T} =
   evaluate(dist.dist, a, b)
