@@ -16,6 +16,7 @@ using Distributions: ContinuousUnivariateDistribution, median, mode
 using CategoricalArrays: CategoricalValue, CategoricalArray
 using CategoricalArrays: levels, isordered, pool, levelcode
 using NearestNeighbors: KDTree, knn, inrange
+using ReferenceFrameRotations: angle_to_dcm
 using DataFrames: DataFrame, DataFrame!
 using StaticArrays: SVector, MVector
 using AverageShiftedHistograms: ash
@@ -26,7 +27,6 @@ using ScientificTypes
 using LossFunctions
 using RecipesBase
 using Parameters
-using ReferenceFrameRotations: angle_to_dcm, quat_to_dcm, Quaternion
 
 import Tables
 import MLJModelInterface
