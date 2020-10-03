@@ -102,22 +102,19 @@ struct Ellipsoidal{N,T} <: Metric
 
     # scaling matrix
     Λ = Diagonal(one(T)./semiaxes.^2)
+    #Λ = SMatrix{N,N}(Diagonal(one(T)./semiaxes.^2))
 
-    # convert to radian if necessary
-    angles = rule.radian ? angles : deg2rad.(angles)
+    # convert to radian and invert sign if necessary
+    !rule.radian && (angles = deg2rad.(angles))
+    _0 = zero(eltype(angles))
+    N == 2 && (angles = [angles[1], _0, _0])
+    intr = @. (rule.motion == :CW) & !rule.extrinsic
+    extr = @. (rule.motion == :CCW) & rule.extrinsic
+    angles[intr .| extr] *= -1
 
     # rotation matrix
-    if N == 2
-      invert = (rule.motion[1]==:CW && !rule.extrinsic) || (rule.motion[1]==:CCW && rule.extrinsic)
-      θ = invert ? -angles[1] : angles[1]
-      P = angle_to_dcm(θ, 0.0, 0.0, rule.order)[1:2,1:2]
-    else # N == 3
-      for (i,sign) in enumerate(rule.motion)
-        invert = (sign==:CW && !rule.extrinsic) || (sign==:CCW && rule.extrinsic)
-        angles[i] = invert ? -angles[i] : angles[i]
-      end
-      P = angle_to_dcm(angles[1], angles[2], angles[3], rule.order)
-    end
+    P = angle_to_dcm(angles..., rule.order)[1:N,1:N]
+    #P = SMatrix{N,N}(angle_to_dcm(angles..., rule.order)[1:N,1:N])
 
     # ellipsoid matrix
     Q = rule.extrinsic ? P*Λ*P' : P'*Λ*P
