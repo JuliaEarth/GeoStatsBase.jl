@@ -101,8 +101,7 @@ struct Ellipsoidal{N,T} <: Metric
     end
 
     # scaling matrix
-    Λ = Diagonal(one(T)./semiaxes.^2)
-    #Λ = SMatrix{N,N}(Diagonal(one(T)./semiaxes.^2))
+    Λ = Diagonal(SVector{N}(one(T)./semiaxes.^2))
 
     # convert to radian and invert sign if necessary
     !rule.radian && (angles = deg2rad.(angles))
@@ -113,8 +112,7 @@ struct Ellipsoidal{N,T} <: Metric
     angles[intr .| extr] *= -1
 
     # rotation matrix
-    P = angle_to_dcm(angles..., rule.order)[1:N,1:N]
-    #P = SMatrix{N,N}(angle_to_dcm(angles..., rule.order)[1:N,1:N])
+    P = angle_to_dcm(angles..., rule.order)[SOneTo(N),SOneTo(N)]
 
     # ellipsoid matrix
     Q = rule.extrinsic ? P*Λ*P' : P'*Λ*P
