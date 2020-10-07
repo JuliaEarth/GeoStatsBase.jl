@@ -86,7 +86,7 @@ julia> Ellipsoidal([1.0,0.5,0.5], [π/2,0.0,0.0])
 """
 
 struct Ellipsoidal{N,T} <: Metric
-  dist::Mahalanobis{T}
+  dist::Mahalanobis
 
   function Ellipsoidal{N,T}(semiaxes, angles; convention=:TaitBryanExtr) where {N,T}
     @assert length(semiaxes) == N "number of semiaxes must match spatial dimension"
