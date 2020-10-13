@@ -199,7 +199,7 @@ export
   volume,
 
   # distances
-  Ellipsoidal,
+  aniso2distance,
   evaluate,
 
   # neighborhoods

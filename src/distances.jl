@@ -46,7 +46,7 @@ rules = Dict(
 )
 
 """
-Ellipsoidal(semiaxes, angles; convention=:TaitBryanExtr)
+aniso2distance(semiaxes, angles; convention=:TaitBryanExtr)
 
 A distance defined by an ellipsoid with given `semiaxes` and rotation `angles`.
 
@@ -75,54 +75,47 @@ The other conventions expect them in degrees.
 2D ellipsoid making 45ᵒ with the horizontal axis:
 
 ```julia
-julia> Ellipsoidal([1.0,0.5], [π/2])
+julia> aniso2distance([1.0,0.5], [π/2])
 ```
 
 3D ellipsoid rotated by 45ᵒ in the xy plane:
 
 ```julia
-julia> Ellipsoidal([1.0,0.5,0.5], [π/2,0.0,0.0])
+julia> aniso2distance([1.0,0.5,0.5], [π/2,0.0,0.0])
 ```
 """
 
-struct Ellipsoidal{N,M<:Mahalanobis} <: Metric
-  dist::M
 
-  function Ellipsoidal{N,T}(semiaxes, angles; convention=:TaitBryanExtr) where {N,T}
-    @assert length(semiaxes) == N "number of semiaxes must match spatial dimension"
-    @assert all(semiaxes .> zero(T)) "semiaxes must be positive"
-    @assert N ∈ [2,3] "dimension must be either 2 or 3"
+function aniso2distance(semiaxes::AbstractVector, angles::AbstractVector;
+  convention::Symbol=:TaitBryanExtr)
 
-    rule = rules[convention]
+  N = length(semiaxes)
+  @assert all(semiaxes .> 0) "semiaxes must be positive"
+  @assert N ∈ [2,3] "dimension must be either 2 or 3"
 
-    # invert x and y if necessary
-    if rule.main == :y
-       semiaxes[1], semiaxes[2] = semiaxes[2], semiaxes[1]
-    end
+  rule = rules[convention]
 
-    # scaling matrix
-    Λ = Diagonal(SVector{N}(one(T)./semiaxes.^2))
-
-    # convert to radian and invert sign if necessary
-    !rule.radian && (angles = deg2rad.(angles))
-    _0 = zero(eltype(angles))
-    N == 2 && (angles = [angles[1], _0, _0])
-    intr = @. (rule.motion == :CW) & !rule.extrinsic
-    extr = @. (rule.motion == :CCW) & rule.extrinsic
-    angles[intr .| extr] *= -1
-
-    # rotation matrix
-    P = angle_to_dcm(angles..., rule.order)[SOneTo(N),SOneTo(N)]
-
-    # ellipsoid matrix
-    Q = rule.extrinsic ? P*Λ*P' : P'*Λ*P
-
-    new(Mahalanobis(Q))
+  # invert x and y if necessary
+  if rule.main == :y
+     semiaxes[1], semiaxes[2] = semiaxes[2], semiaxes[1]
   end
+
+  # scaling matrix
+  Λ = Diagonal(SVector{N}(one(eltype(semiaxes))./semiaxes.^2))
+
+  # convert to radian and invert sign if necessary
+  !rule.radian && (angles = deg2rad.(angles))
+  _0 = zero(eltype(angles))
+  N == 2 && (angles = [angles[1], _0, _0])
+  intr = @. (rule.motion == :CW) & !rule.extrinsic
+  extr = @. (rule.motion == :CCW) & rule.extrinsic
+  angles[intr .| extr] *= -1
+
+  # rotation matrix
+  P = angle_to_dcm(angles..., rule.order)[SOneTo(N),SOneTo(N)]
+
+  # ellipsoid matrix
+  Q = rule.extrinsic ? P*Λ*P' : P'*Λ*P
+
+  Mahalanobis(Q)
 end
-
-Ellipsoidal(semiaxes::AbstractVector{T}, angles::AbstractVector{T}; kwargs...) where {T} =
-  Ellipsoidal{length(semiaxes),T}(semiaxes, angles; kwargs...)
-
-evaluate(dist::Ellipsoidal{N,T}, a::AbstractVector, b::AbstractVector) where {N,T} =
-  evaluate(dist.dist, a, b)
