@@ -16,8 +16,9 @@ using Distributions: ContinuousUnivariateDistribution, median, mode
 using CategoricalArrays: CategoricalValue, CategoricalArray
 using CategoricalArrays: levels, isordered, pool, levelcode
 using NearestNeighbors: KDTree, knn, inrange
+using ReferenceFrameRotations: angle_to_dcm
 using DataFrames: DataFrame, DataFrame!
-using StaticArrays: SVector, MVector
+using StaticArrays: SVector, MVector, SOneTo
 using AverageShiftedHistograms: ash
 using Transducers: Map, foldxt
 using SpecialFunctions: gamma
@@ -198,7 +199,7 @@ export
   volume,
 
   # distances
-  Ellipsoidal,
+  aniso2distance,
   evaluate,
 
   # neighborhoods
