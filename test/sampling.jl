@@ -27,6 +27,7 @@
 
   @testset "WeightedSampler" begin
     # uniform weights => uniform sampler
+    Random.seed!(2020)
     d = RegularGrid(100,100)
     s = sample(d, WeightedSampler(100))
     μ = mean(coordinates(s), dims=2)
