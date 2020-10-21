@@ -30,11 +30,16 @@ LeaveBallOut(ball::BallNeighborhood; loss=Dict()) =
 LeaveBallOut(radius::Number; loss=Dict()) =
   LeaveBallOut(BallNeighborhood(radius), loss=loss)
 
-function error(solver::AbstractLearningSolver,
-               problem::LearningProblem,
+function error(solver::AbstractSolver,
+               problem::AbstractProblem,
                eestimator::LeaveBallOut)
-  sdata = sourcedata(problem)
-  ovars = outputvars(task(problem))
+
+  @assert !isa(problem, SimulationProblem) "not available for SimulationProblem"
+  # problem info
+  probtype = typeof(problem)
+  EP = probtype <: EstimationProblem ? true : false
+  sdata = EP ? data(problem) : sourcedata(problem)
+  ovars = EP ? [v for (v,V) in variables(problem)] : outputvars(task(problem))
   ball  = eestimator.ball
   loss  = eestimator.loss
   for var in ovars
@@ -48,6 +53,8 @@ function error(solver::AbstractLearningSolver,
 
   # number of folds
   nfolds = nelms(sdata)
+  probcall = getfield(Main, nameof(probtype))
+  thirdarg = EP ? Tuple(ovars) : task(problem)
 
   # error for a ball b
   function ε(b)
@@ -65,7 +72,7 @@ function error(solver::AbstractLearningSolver,
     hold  = view(sdata, tinds)
 
     # setup and solve sub-problem
-    subproblem = LearningProblem(train, hold, task(problem))
+    subproblem = probcall(train, hold, thirdarg)
     solution   = solve(subproblem, solver)
 
     # loss for each variable

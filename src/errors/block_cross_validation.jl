@@ -27,11 +27,16 @@ end
 BlockCrossValidation(sides; loss=Dict()) =
   BlockCrossValidation{typeof(sides)}(sides, loss)
 
-function error(solver::AbstractLearningSolver,
-               problem::LearningProblem,
+function error(solver::AbstractSolver,
+               problem::AbstractProblem,
                eestimator::BlockCrossValidation)
-  sdata = sourcedata(problem)
-  ovars = outputvars(task(problem))
+
+  @assert !isa(problem, SimulationProblem) "not available for SimulationProblem"
+  # problem info
+  probtype = typeof(problem)
+  EP = probtype <: EstimationProblem ? true : false
+  sdata = EP ? data(problem) : sourcedata(problem)
+  ovars = EP ? [v for (v,V) in variables(problem)] : outputvars(task(problem))
   loss  = eestimator.loss
   sides = eestimator.sides
   for var in ovars
@@ -45,6 +50,8 @@ function error(solver::AbstractLearningSolver,
   neighbors = metadata(blocks)[:neighbors]
   bsubsets  = subsets(blocks)
   allblocks = 1:length(blocks)
+  probcall = getfield(Main, nameof(probtype))
+  thirdarg = EP ? Tuple(ovars) : task(problem)
 
   # error for a block b
   function ε(b)
@@ -61,7 +68,7 @@ function error(solver::AbstractLearningSolver,
     hold  = view(sdata, tinds)
 
     # setup and solve sub-problem
-    subproblem = LearningProblem(train, hold, task(problem))
+    subproblem = probcall(train, hold, thirdarg)
     solution   = solve(subproblem, solver)
 
     # loss for each variable

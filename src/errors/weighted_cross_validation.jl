@@ -47,12 +47,16 @@ WeightedCrossValidation(weighter::W, k::Int; shuffle=true,
                         lambda=1.0, loss=Dict()) where {W<:AbstractWeighter} =
   WeightedCrossValidation(weighter, UniformPartitioner(k, shuffle), lambda=lambda, loss=loss)
 
-function error(solver::AbstractLearningSolver,
-               problem::LearningProblem,
+function error(solver::AbstractSolver,
+               problem::AbstractProblem,
                eestimator::WeightedCrossValidation)
-  # retrieve problem info
-  sdata = sourcedata(problem)
-  ovars = outputvars(task(problem))
+
+  @assert !isa(problem, SimulationProblem) "not available for SimulationProblem"
+  # problem info
+  probtype = typeof(problem)
+  EP = probtype <: EstimationProblem ? true : false
+  sdata = EP ? data(problem) : sourcedata(problem)
+  ovars = EP ? [v for (v,V) in variables(problem)] : outputvars(task(problem))
   partitioner = eestimator.partitioner
   weighter = eestimator.weighter
   lambda = eestimator.lambda
@@ -69,6 +73,8 @@ function error(solver::AbstractLearningSolver,
   # folds for cross-validation
   folds  = subsets(partition(sdata, partitioner))
   nfolds = length(folds)
+  probcall = getfield(Main, nameof(probtype))
+  thirdarg = EP ? Tuple(ovars) : task(problem)
 
   # error for a fold k
   function ε(k)
@@ -81,7 +87,7 @@ function error(solver::AbstractLearningSolver,
     hold  = view(sdata, tinds)
 
     # setup and solve sub-problem
-    subproblem = LearningProblem(train, hold, task(problem))
+    subproblem = probcall(train, hold, thirdarg)
     solution   = solve(subproblem, solver)
 
     # loss for each variable
