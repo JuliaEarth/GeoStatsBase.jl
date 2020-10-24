@@ -45,7 +45,7 @@ rules = Dict(
 )
 
 """
-aniso2distance(semiaxes, angles; convention=:TaitBryanExtr)
+    aniso2distance(semiaxes, angles; convention=:TaitBryanExtr)
 
 A distance defined by an ellipsoid with given `semiaxes` and rotation `angles`.
 
