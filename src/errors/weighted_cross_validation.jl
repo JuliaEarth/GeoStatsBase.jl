@@ -50,11 +50,11 @@ WeightedCrossValidation(weighter::W, k::Int; shuffle=true,
 function error(solver::AbstractSolver,
                problem::AbstractProblem,
                eestimator::WeightedCrossValidation)
-
-  @assert !isa(problem, SimulationProblem) "not available for SimulationProblem"
   # problem info
+  @assert !isa(problem, SimulationProblem) "not available for SimulationProblem"
   probtype = typeof(problem)
   EP = probtype <: EstimationProblem ? true : false
+  
   sdata = EP ? data(problem) : sourcedata(problem)
   ovars = EP ? [v for (v,V) in variables(problem)] : outputvars(task(problem))
   partitioner = eestimator.partitioner
