@@ -54,9 +54,7 @@ A distance defined by an ellipsoid with given `semiaxes` and rotation `angles`.
 
 ## Conventions
 
-Different rotation conventions can be passed via `convention` keyword
-Default convention is Tait-Bryan, extrinsic right-handed rotation by the ZXY axes
-The currently available conventions are:
+Different rotation conventions can be passed via the `convention` option:
 
 - :TaitBryanExtr => Extrinsic right-handed rotation by the ZXY axes
 - :TaitBryanIntr => Intrinsic right-handed rotation by the ZXY axes
@@ -68,6 +66,8 @@ The currently available conventions are:
 
 Tait-Bryan and Euler conventions expect angles in radians.
 The other conventions expect them in degrees.
+
+Default convention is `:TaitBryanExtr`.
 
 ## Examples
 
