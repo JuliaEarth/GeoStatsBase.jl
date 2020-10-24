@@ -25,7 +25,6 @@ Rotation rule to reproduce GSLIB rotation:
 julia> rule = RotationRule(:ZXY,[:CW,:CCW,:CCW],false,:y,false)
 ```
 """
-
 struct RotationRule
   order::Symbol
   motion::Vector{Symbol}
@@ -84,8 +83,6 @@ julia> aniso2distance([1.0,0.5], [π/2])
 julia> aniso2distance([1.0,0.5,0.5], [π/2,0.0,0.0])
 ```
 """
-
-
 function aniso2distance(semiaxes::AbstractVector, angles::AbstractVector;
   convention::Symbol=:TaitBryanExtr)
 
