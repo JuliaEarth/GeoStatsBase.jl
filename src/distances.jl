@@ -56,13 +56,13 @@ A distance defined by an ellipsoid with given `semiaxes` and rotation `angles`.
 
 Different rotation conventions can be passed via the `convention` option:
 
-- :TaitBryanExtr => Extrinsic right-handed rotation by the ZXY axes
-- :TaitBryanIntr => Intrinsic right-handed rotation by the ZXY axes
-- :EulerExtr     => Extrinsic right-handed rotation by the ZXZ axes
-- :EulerIntr     => Intrinsic right-handed rotation by the ZXZ axes
-- :GSLIB         => GSLIB software rotation convention
-- :Leapfrog      => LeapFrog software rotation convention
-- :Datamine      => Datamine software rotation convention (fixed to ZXZ axes)
+- `:TaitBryanExtr` => Extrinsic right-handed rotation by the ZXY axes
+- `:TaitBryanIntr` => Intrinsic right-handed rotation by the ZXY axes
+- `:EulerExtr`     => Extrinsic right-handed rotation by the ZXZ axes
+- `:EulerIntr`     => Intrinsic right-handed rotation by the ZXZ axes
+- `:GSLIB`         => GSLIB software rotation convention
+- `:Leapfrog`      => Leapfrog software rotation convention
+- `:Datamine`      => Datamine software rotation convention (fixed to ZXZ axes)
 
 Tait-Bryan and Euler conventions expect angles in radians.
 The other conventions expect them in degrees.
