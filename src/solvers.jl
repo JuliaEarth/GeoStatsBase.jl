@@ -31,33 +31,38 @@ A solver for a geostatistical learning problem.
 abstract type AbstractLearningSolver <: AbstractSolver end
 
 """
-    solve(problem, solver)
+    solve(problem, solver; [options])
 
-Solve the `problem` with the `solver`.
+Solve the `problem` with the `solver`, optionally
+passing `options`.
 """
 function solve end
 
 """
-    solve(problem, solver)
+    solve(problem, solver; procs=[1])
 
-Solve the simulation `problem` with the simulation `solver`.
+Solve the simulation `problem` with the simulation `solver`,
+optionally using multiple processes `procs`.
 
 ### Notes
 
 Default implementation calls `solvesingle` in parallel.
 """
-function solve(problem::SimulationProblem, solver::AbstractSimulationSolver)
+function solve(problem::SimulationProblem, solver::AbstractSimulationSolver; procs=[1])
   # sanity checks
   @assert variables(solver) ⊆ keys(variables(problem)) "invalid variables in solver"
 
   # optional preprocessing
   preproc = preprocess(problem, solver)
 
+  # pool of worker processes
+  pool = CachingPool(procs)
+
   # simulation loop
   results = []
   for covars in covariables(problem, solver)
     # simulate covariables
-    reals = pmap(1:nreals(problem)) do _
+    reals = pmap(pool, 1:nreals(problem)) do _
       solvesingle(problem, covars, solver, preproc)
     end
 
