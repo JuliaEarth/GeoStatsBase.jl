@@ -8,7 +8,7 @@ using CSV
 using Optim
 using Random: randperm, shuffle
 using Combinatorics: multiexponents
-using Distributed: CachingPool, pmap
+using Distributed: CachingPool, pmap, myid
 using LinearAlgebra: Diagonal, normalize, norm, ⋅
 using StatsBase: Histogram, Weights, AbstractWeights
 using Distances: Metric, Euclidean, Mahalanobis, pairwise

@@ -39,7 +39,7 @@ passing `options`.
 function solve end
 
 """
-    solve(problem, solver; procs=[1])
+    solve(problem, solver; procs=[myid()])
 
 Solve the simulation `problem` with the simulation `solver`,
 optionally using multiple processes `procs`.
@@ -48,7 +48,7 @@ optionally using multiple processes `procs`.
 
 Default implementation calls `solvesingle` in parallel.
 """
-function solve(problem::SimulationProblem, solver::AbstractSimulationSolver; procs=[1])
+function solve(problem::SimulationProblem, solver::AbstractSimulationSolver; procs=[myid()])
   # sanity checks
   @assert variables(solver) ⊆ keys(variables(problem)) "invalid variables in solver"
 
