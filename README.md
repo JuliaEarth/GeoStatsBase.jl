@@ -14,8 +14,8 @@ provided in the GeoStats.jl documentation.
 
 If you have any questions, please contact our community on the [gitter channel](https://gitter.im/JuliaEarth/GeoStats.jl).
 
-[travis-img]: https://travis-ci.org/JuliaEarth/GeoStatsBase.jl.svg?branch=master
-[travis-url]: https://travis-ci.org/JuliaEarth/GeoStatsBase.jl
+[travis-img]: https://travis-ci.com/JuliaEarth/GeoStatsBase.jl.svg?branch=master
+[travis-url]: https://travis-ci.com/JuliaEarth/GeoStatsBase.jl
 
 [codecov-img]: https://codecov.io/gh/JuliaEarth/GeoStatsBase.jl/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/JuliaEarth/GeoStatsBase.jl
