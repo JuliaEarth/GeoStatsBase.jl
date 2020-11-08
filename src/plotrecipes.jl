@@ -28,3 +28,6 @@ include("plotrecipes/weighting.jl")
 include("plotrecipes/distplot1D.jl")
 include("plotrecipes/distplot2D.jl")
 include("plotrecipes/cornerplot.jl")
+
+# other plots
+include("plotrecipes/hscatter.jl")
