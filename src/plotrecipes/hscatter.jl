@@ -36,6 +36,9 @@
   x = z₁[first.(mpairs)]
   y = z₂[last.(mpairs)]
 
+  x̄ = mean(x)
+  ȳ = mean(y)
+
   xguide --> var₁
   yguide --> var₂
 
@@ -77,17 +80,23 @@
 
   # plot mean lines
   @series begin
-    seriestype --> :vline
-    seriescolor --> :grey
-    linestyle --> :dash
     primary --> false
-    [mean(x)]
+    seriestype --> :vline
+    seriescolor --> :green
+    [x̄]
   end
   @series begin
-    seriestype --> :hline
-    seriescolor --> :grey
-    linestyle --> :dash
     primary --> false
-    [mean(y)]
+    seriestype --> :hline
+    seriescolor --> :green
+    [ȳ]
+  end
+  @series begin
+    primary --> false
+    seriestype --> :scatter
+    seriescolor --> :green
+    marker --> :square
+    markersize --> 4
+    [(x̄, ȳ)]
   end
 end
