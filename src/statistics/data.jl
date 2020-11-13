@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------
-# Licensed under the ISC License. See LICENSE in the project root.
+# Licensed under the MIT License. See LICENSE in the project root.
 # ------------------------------------------------------------------
 
 mean(d, v::Symbol, w::AbstractWeighter) = mean(d[v], weight(d, w))
