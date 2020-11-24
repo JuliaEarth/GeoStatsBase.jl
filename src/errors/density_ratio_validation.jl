@@ -22,7 +22,7 @@ for a list of supported estimators.
 
 * TODO
 """
-struct DensityRatioValidation{T,E,O} <: AbstractErrorEstimator
+struct DensityRatioValidation{T,E,O} <: ErrorEstimationMethod
   k::Int
   lambda::T
   dre::E
@@ -42,16 +42,16 @@ end
 
 function error(solver::AbstractLearningSolver,
                problem::LearningProblem,
-               eestimator::DensityRatioValidation)
+               method::DensityRatioValidation)
   # weight samples based on the features of target data
   tdata = targetdata(problem)
   vars = collect(features(task(problem)))
   weighter = DensityRatioWeighter(tdata, vars,
-                                  estimator=eestimator.dre,
-                                  optlib=eestimator.optlib)
+                                  estimator=method.dre,
+                                  optlib=method.optlib)
   wcv = WeightedCrossValidation(weighter,
-                                eestimator.k, shuffle=true,
-                                lambda=eestimator.lambda,
-                                loss=eestimator.loss)
+                                method.k, shuffle=true,
+                                lambda=method.lambda,
+                                loss=method.loss)
   error(solver, problem, wcv)
 end

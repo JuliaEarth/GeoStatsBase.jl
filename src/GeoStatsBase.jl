@@ -171,7 +171,7 @@ export
   solve, solvesingle,
 
   # errors
-  AbstractErrorEstimator,
+  ErrorEstimationMethod,
   LeaveBallOut,
   CrossValidation,
   BlockCrossValidation,

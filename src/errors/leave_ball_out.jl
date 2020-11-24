@@ -19,7 +19,7 @@ By default, use Euclidean ball of given `radius` in space.
   for variable selection in the presence of spatial autocorrelation]
   (https://onlinelibrary.wiley.com/doi/full/10.1111/geb.12161)
 """
-struct LeaveBallOut{B<:BallNeighborhood} <: AbstractErrorEstimator
+struct LeaveBallOut{B<:BallNeighborhood} <: ErrorEstimationMethod
   ball::B
   loss::Dict{Symbol,SupervisedLoss}
 end
@@ -32,11 +32,11 @@ LeaveBallOut(radius::Number; loss=Dict()) =
 
 function error(solver::AbstractLearningSolver,
                problem::LearningProblem,
-               eestimator::LeaveBallOut)
+               method::LeaveBallOut)
   sdata = sourcedata(problem)
   ovars = outputvars(task(problem))
-  ball  = eestimator.ball
-  loss  = eestimator.loss
+  ball  = method.ball
+  loss  = method.loss
   for var in ovars
     if var ∉ keys(loss)
       loss[var] = defaultloss(sdata[var][1])

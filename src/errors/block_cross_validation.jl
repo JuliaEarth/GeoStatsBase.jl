@@ -19,7 +19,7 @@ become cubes.
   of spatial models via spatial k-fold cross-validation]
   (https://www.tandfonline.com/doi/full/10.1080/13658816.2017.1346255)
 """
-struct BlockCrossValidation{S} <: AbstractErrorEstimator
+struct BlockCrossValidation{S} <: ErrorEstimationMethod
   sides::S
   loss::Dict{Symbol,SupervisedLoss}
 end
@@ -29,11 +29,11 @@ BlockCrossValidation(sides; loss=Dict()) =
 
 function error(solver::AbstractLearningSolver,
                problem::LearningProblem,
-               eestimator::BlockCrossValidation)
+               method::BlockCrossValidation)
   sdata = sourcedata(problem)
   ovars = outputvars(task(problem))
-  loss  = eestimator.loss
-  sides = eestimator.sides
+  loss  = method.loss
+  sides = method.sides
   for var in ovars
     if var ∉ keys(loss)
       loss[var] = defaultloss(sdata[var][1])

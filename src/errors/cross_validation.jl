@@ -22,7 +22,7 @@ the data is split using `partitioner`.
   cross-validation and the repeated learning-testing methods]
   (https://www.jstor.org/stable/2336116)
 """
-struct CrossValidation{P<:AbstractPartitioner} <: AbstractErrorEstimator
+struct CrossValidation{P<:AbstractPartitioner} <: ErrorEstimationMethod
   partitioner::P
   loss::Dict{Symbol,SupervisedLoss}
 end
@@ -35,12 +35,12 @@ CrossValidation(k::Int; shuffle=true, loss=Dict()) =
 
 function error(solver::AbstractLearningSolver,
                problem::LearningProblem,
-               eestimator::CrossValidation)
+               method::CrossValidation)
   # retrieve problem info
   sdata = sourcedata(problem)
   ovars = outputvars(task(problem))
-  partitioner = eestimator.partitioner
-  loss  = eestimator.loss
+  partitioner = method.partitioner
+  loss  = method.loss
   for var in ovars
     if var ∉ keys(loss)
       loss[var] = defaultloss(sdata[var][1])

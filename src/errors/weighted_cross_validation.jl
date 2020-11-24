@@ -26,7 +26,7 @@ options for a `UniformPartitioner`.
 """
 struct WeightedCrossValidation{W<:AbstractWeighter,
                                P<:AbstractPartitioner,
-                               T<:Real} <: AbstractErrorEstimator
+                               T<:Real} <: ErrorEstimationMethod
   weighter::W
   partitioner::P
   lambda::T
@@ -49,14 +49,14 @@ WeightedCrossValidation(weighter::W, k::Int; shuffle=true,
 
 function error(solver::AbstractLearningSolver,
                problem::LearningProblem,
-               eestimator::WeightedCrossValidation)
+               method::WeightedCrossValidation)
   # retrieve problem info
   sdata = sourcedata(problem)
   ovars = outputvars(task(problem))
-  partitioner = eestimator.partitioner
-  weighter = eestimator.weighter
-  lambda = eestimator.lambda
-  loss  = eestimator.loss
+  partitioner = method.partitioner
+  weighter = method.weighter
+  lambda = method.lambda
+  loss  = method.loss
   for var in ovars
     if var ∉ keys(loss)
       loss[var] = defaultloss(sdata[var][1])

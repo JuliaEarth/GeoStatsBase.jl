@@ -3,17 +3,17 @@
 # ------------------------------------------------------------------
 
 """
-    AbstractErrorEstimator
+    ErrorEstimationMethod
 
 A method for estimating error of geostatistical solvers.
 """
-abstract type AbstractErrorEstimator end
+abstract type ErrorEstimationMethod end
 
 """
-    error(solver, problem, eestimator)
+    error(solver, problem, method)
 
 Estimate error of `solver` in a given `problem` with
-`eestimator` error estimation method.
+error estimation `method`.
 """
 function error end
 
