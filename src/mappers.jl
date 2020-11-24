@@ -19,5 +19,5 @@ function map end
 # ----------------
 # IMPLEMENTATIONS
 # ----------------
-include("mappers/nearest_mapper.jl")
-include("mappers/copy_mapper.jl")
+include("mappers/nearest.jl")
+include("mappers/copy.jl")
