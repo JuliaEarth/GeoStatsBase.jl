@@ -259,8 +259,8 @@ export
   weight,
 
   # discretizing
-  AbstractDiscretizer,
-  RegularGridDiscretizer,
+  DiscretizationMethod,
+  BlockDiscretization,
   discretize,
 
   # sampling

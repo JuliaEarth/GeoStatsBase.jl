@@ -3,20 +3,20 @@
 # ------------------------------------------------------------------
 
 """
-    AbstractDiscretizer
+    DiscretizationMethod
 
 A method for discretizing spatial regions.
 """
-abstract type AbstractDiscretizer end
+abstract type DiscretizationMethod end
 
 """
-    discretize(region, discretizer)
+    discretize(region, method)
 
-Discretize spatial `region` with `discretizer` method.
+Discretize spatial `region` with discretization `method`.
 """
 function discretize end
 
 # ----------------
 # IMPLEMENTATIONS
 # ----------------
-include("discretizing/regular_grid.jl")
+include("discretizing/block.jl")
