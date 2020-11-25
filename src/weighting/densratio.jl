@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------
 
 """
-    DensityRatioWeighter(tdata, [vars]; [options])
+    DensityRatioWeighting(tdata, [vars]; [options])
 
 Density ratio weights based on empirical distribution of
 variables in target data `tdata`. Default to all variables.
@@ -17,27 +17,27 @@ variables in target data `tdata`. Default to all variables.
 
 Estimators from `DensityRatioEstimation.jl` are supported.
 """
-struct DensityRatioWeighter <: AbstractWeighter
+struct DensityRatioWeighting <: WeightingMethod
   tdata
   vars
   dre
   optlib
 end
 
-function DensityRatioWeighter(tdata, vars=nothing; estimator=LSIF(),
-                              optlib=default_optlib(estimator))
+function DensityRatioWeighting(tdata, vars=nothing; estimator=LSIF(),
+                               optlib=default_optlib(estimator))
   validvars = collect(name.(variables(tdata)))
   wvars = isnothing(vars) ? validvars : vars
   @assert wvars ⊆ validvars "invalid variables ($wvars) for spatial data"
-  DensityRatioWeighter(tdata, wvars, estimator, optlib)
+  DensityRatioWeighting(tdata, wvars, estimator, optlib)
 end
 
-function weight(sdata, weighter::DensityRatioWeighter)
+function weight(sdata, method::DensityRatioWeighting)
   # retrieve method parameters
-  tdata  = weighter.tdata
-  vars   = weighter.vars
-  dre    = weighter.dre
-  optlib = weighter.optlib
+  tdata  = method.tdata
+  vars   = method.vars
+  dre    = method.dre
+  optlib = method.optlib
 
   @assert vars ⊆ name.(variables(sdata)) "invalid variables ($vars) for spatial data"
 

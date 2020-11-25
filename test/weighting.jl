@@ -1,15 +1,15 @@
 @testset "Weighting" begin
-  @testset "BlockWeighter" begin
+  @testset "BlockWeighting" begin
     sdomain = RegularGrid(100,100)
     sdata = georef(DataFrame(z=rand(10000)), RegularGrid(100,100))
     for d in [sdomain, sdata]
-      w = weight(d, BlockWeighter(10,10))
+      w = weight(d, BlockWeighting(10,10))
       @test length(unique(w)) == 1
       @test w[1] == 1 / 100
     end
   end
 
-  @testset "DensityRatioWeighter" begin
+  @testset "DensityRatioWeighting" begin
     n = 1000; Random.seed!(123)
 
     r1 = Normal(0, 2)
@@ -21,7 +21,7 @@
     d1 = georef(DataFrame(z=z1), PointSet(reshape(1:n,1,:)))
     d2 = georef(DataFrame(z=z2), PointSet(reshape(1:n,1,:)))
 
-    w = weight(d1, DensityRatioWeighter(d2))
+    w = weight(d1, DensityRatioWeighting(d2))
 
     if visualtests
       @plottest begin

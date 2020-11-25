@@ -253,9 +253,9 @@ export
 
   # weighting
   SpatialWeights,
-  AbstractWeighter,
-  BlockWeighter,
-  DensityRatioWeighter,
+  WeightingMethod,
+  BlockWeighting,
+  DensityRatioWeighting,
   weight,
 
   # discretizing

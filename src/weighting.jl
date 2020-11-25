@@ -41,22 +41,22 @@ function Base.show(io::IO, ::MIME"text/plain", w::SpatialWeights)
 end
 
 """
-    AbstractWeighter
+    WeightingMethod
 
 A method to weight spatial data.
 """
-abstract type AbstractWeighter end
+abstract type WeightingMethod end
 
 """
-    weight(object, weighter)
+    weight(object, method)
 
-Weight spatial `object` with `weighter` method.
+Weight spatial `object` with `method`.
 """
-weight(object, weighter::AbstractWeighter) =
-  weight(geotrait(object), object, weighter)
+weight(object, method::WeightingMethod) =
+  weight(geotrait(object), object, method)
 
 # ----------------
 # IMPLEMENTATIONS
 # ----------------
 include("weighting/block.jl")
-include("weighting/density_ratio.jl")
+include("weighting/densratio.jl")

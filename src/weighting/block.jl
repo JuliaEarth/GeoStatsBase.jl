@@ -3,27 +3,27 @@
 # ------------------------------------------------------------------
 
 """
-    BlockWeighter(sides)
-    BlockWeighter(side₁, side₂, ...)
+    BlockWeighting(sides)
+    BlockWeighting(side₁, side₂, ...)
 
 A weighting method that assigns weights to points in spatial object
 based on blocks of given `sides`. The number `n` of points inside a
 block determines the weights `1/n` of these points.
 """
-struct BlockWeighter{T,N} <: AbstractWeighter
+struct BlockWeighting{T,N} <: WeightingMethod
   sides::SVector{N,T}
 end
 
-BlockWeighter(sides::NTuple{N,T}) where {N,T} =
-  BlockWeighter{T,N}(sides)
+BlockWeighting(sides::NTuple{N,T}) where {N,T} =
+  BlockWeighting{T,N}(sides)
 
-BlockWeighter(sides::Vararg) = BlockWeighter(sides)
+BlockWeighting(sides::Vararg) = BlockWeighting(sides)
 
-weight(object, weighter::BlockWeighter) =
-  weight(domain(object), weighter)
+weight(object, method::BlockWeighting) =
+  weight(domain(object), method)
 
-function weight(object::AbstractDomain, weighter::BlockWeighter)
-  p = partition(object, BlockPartition(weighter.sides))
+function weight(object::AbstractDomain, method::BlockWeighting)
+  p = partition(object, BlockPartition(method.sides))
 
   weights = Vector{Float64}(undef, nelms(object))
   for s in subsets(p)

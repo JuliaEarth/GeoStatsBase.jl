@@ -24,7 +24,7 @@ options for a `UniformPartition`.
 * Sugiyama et al. 2007. [Covariate shift adaptation by importance weighted
   cross validation](http://www.jmlr.org/papers/volume8/sugiyama07a/sugiyama07a.pdf)
 """
-struct WeightedCrossValidation{W<:AbstractWeighter,
+struct WeightedCrossValidation{W<:WeightingMethod,
                                P<:PartitionMethod,
                                T<:Real} <: ErrorEstimationMethod
   weighter::W
@@ -39,12 +39,12 @@ struct WeightedCrossValidation{W<:AbstractWeighter,
 end
 
 WeightedCrossValidation(weighter::W, partitioner::P;
-                        lambda=1.0, loss=Dict()) where {W<:AbstractWeighter,
+                        lambda=1.0, loss=Dict()) where {W<:WeightingMethod,
                                                         P<:PartitionMethod} =
   WeightedCrossValidation{W,P,typeof(lambda)}(weighter, partitioner, lambda, loss)
 
 WeightedCrossValidation(weighter::W, k::Int; shuffle=true,
-                        lambda=1.0, loss=Dict()) where {W<:AbstractWeighter} =
+                        lambda=1.0, loss=Dict()) where {W<:WeightingMethod} =
   WeightedCrossValidation(weighter, UniformPartition(k, shuffle), lambda=lambda, loss=loss)
 
 function error(solver::AbstractLearningSolver,
