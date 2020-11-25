@@ -3,26 +3,24 @@
 # ------------------------------------------------------------------
 
 """
-    BlockPartitioner(sides)
-    BlockPartitioner(side₁, side₂, ...)
+    BlockPartition(sides)
+    BlockPartition(side₁, side₂, ...)
 
 A method for partitioning spatial objects into blocks of given `sides`.
 """
-struct BlockPartitioner{T,N} <: AbstractPartitioner
+struct BlockPartition{T,N} <: PartitionMethod
   sides::SVector{N,T}
 end
 
-BlockPartitioner(sides::NTuple{N,T}) where {N,T} =
-  BlockPartitioner{T,N}(sides)
+BlockPartition(sides::NTuple{N,T}) where {N,T} = BlockPartition{T,N}(sides)
 
-BlockPartitioner(sides::Vararg{T,N}) where {N,T} =
-  BlockPartitioner(sides)
+BlockPartition(sides::Vararg{T,N}) where {N,T} = BlockPartition(sides)
 
-function partition(object, partitioner::BlockPartitioner)
+function partition(object, method::BlockPartition)
   N = ncoords(object)
   T = coordtype(object)
 
-  psides = partitioner.sides
+  psides = method.sides
   bbox = boundbox(object)
 
   @assert all(psides .≤ sides(bbox)) "invalid block sides"

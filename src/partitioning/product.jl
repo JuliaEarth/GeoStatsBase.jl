@@ -3,22 +3,21 @@
 # ------------------------------------------------------------------
 
 """
-    ProductPartitioner(p₁, p₂)
+    ProductPartition(p₁, p₂)
 
 A method for partitioning spatial objects using the product of two
 partitioners `p₁` and `p₂`.
 """
-struct ProductPartitioner{P1<:AbstractPartitioner,
-                          P2<:AbstractPartitioner} <: AbstractPartitioner
+struct ProductPartition{P1,P2} <: PartitionMethod
   p₁::P1
   p₂::P2
 end
 
 # general case
-function partition(object, partitioner::ProductPartitioner)
+function partition(object, method::ProductPartition)
   # individual partition results
-  s₁ = subsets(partition(object, partitioner.p₁))
-  s₂ = subsets(partition(object, partitioner.p₂))
+  s₁ = subsets(partition(object, method.p₁))
+  s₂ = subsets(partition(object, method.p₂))
 
   # label-based representation
   l₁ = Vector{Int}(undef, nelms(object))
@@ -45,22 +44,21 @@ function partition(object, partitioner::ProductPartitioner)
 
   # return partition using label predicate
   pred(i, j) = l[i] == l[j]
-  partition(object, PredicatePartitioner(pred))
+  partition(object, PredicatePartition(pred))
 end
 
-# predicate partitioner
-function partition(object, partitioner::ProductPartitioner{P1,P2}) where {P1<:AbstractPredicatePartitioner,
-                                                                          P2<:AbstractPredicatePartitioner}
-  pred(i, j) = partitioner.p₁(i, j) * partitioner.p₂(i, j)
-  partition(object, PredicatePartitioner(pred))
+# predicate partition method
+function partition(object, method::ProductPartition{P1,P2}) where {P1<:PredicatePartitionMethod,
+                                                                   P2<:PredicatePartitionMethod}
+  pred(i, j) = method.p₁(i, j) * method.p₂(i, j)
+  partition(object, PredicatePartition(pred))
 end
 
-# spatial predicate partitioner
-function partition(object, partitioner::ProductPartitioner{P1,P2}) where {P1<:AbstractSpatialPredicatePartitioner,
-                                                                          P2<:AbstractSpatialPredicatePartitioner}
-  pred(x, y) = partitioner.p₁(x, y) * partitioner.p₂(x, y)
-  partition(object, SpatialPredicatePartitioner(pred))
+# spatial predicate partition method
+function partition(object, method::ProductPartition{P1,P2}) where {P1<:SPredicatePartitionMethod,
+                                                                   P2<:SPredicatePartitionMethod}
+  pred(x, y) = method.p₁(x, y) * method.p₂(x, y)
+  partition(object, SPredicatePartition(pred))
 end
 
-Base.:*(p₁::AbstractPartitioner, p₂::AbstractPartitioner) =
-  ProductPartitioner(p₁, p₂)
+Base.:*(p₁::PartitionMethod, p₂::PartitionMethod) = ProductPartition(p₁, p₂)

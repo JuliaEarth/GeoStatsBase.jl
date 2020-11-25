@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------
 
 """
-    SLICPartitioner(k, m; tol=1e-4, maxiter=10, vars=nothing)
+    SLICPartition(k, m; tol=1e-4, maxiter=10, vars=nothing)
 
 A method for partitioning spatial data into approximately `k`
 clusters using Simple Linear Iterative Clustering (SLIC).
@@ -26,7 +26,7 @@ The tradeoff is controlled with a hyperparameter parameter
 * Achanta et al. 2011. [SLIC superpixels compared to state-of-the-art
   superpixel methods](https://ieeexplore.ieee.org/document/6205760)
 """
-struct SLICPartitioner <: AbstractPartitioner
+struct SLICPartition <: PartitionMethod
   k::Int
   m::Float64
   tol::Float64
@@ -34,21 +34,21 @@ struct SLICPartitioner <: AbstractPartitioner
   vars::Union{Vector{Symbol},Nothing}
 end
 
-SLICPartitioner(k::Int, m::Real; tol=1e-4, maxiter=10, vars=nothing) =
-  SLICPartitioner(k, m, tol, maxiter, vars)
+SLICPartition(k::Int, m::Real; tol=1e-4, maxiter=10, vars=nothing) =
+  SLICPartition(k, m, tol, maxiter, vars)
 
-function partition(sdata, partitioner::SLICPartitioner)
+function partition(sdata, method::SLICPartition)
   # variables used for clustering
   datavars = collect(name.(variables(sdata)))
-  vars = isnothing(partitioner.vars) ? datavars : partitioner.vars
+  vars = isnothing(method.vars) ? datavars : method.vars
 
   @assert vars ⊆ datavars "SLIC features not found in spatial data"
 
   # SLIC hyperparameter
-  m = partitioner.m
+  m = method.m
 
   # initial spacing of clusters
-  s = slic_spacing(sdata, partitioner)
+  s = slic_spacing(sdata, method)
 
   # initialize cluster centers
   c = slic_initialization(sdata, s)
@@ -61,8 +61,8 @@ function partition(sdata, partitioner::SLICPartitioner)
   d = fill(Inf, nelms(sdata))
 
   # performance parameters
-  tol     = partitioner.tol
-  maxiter = partitioner.maxiter
+  tol     = method.tol
+  maxiter = method.maxiter
 
   # k-means algorithm
   err, iter = Inf, 0
@@ -81,10 +81,10 @@ function partition(sdata, partitioner::SLICPartitioner)
   SpatialPartition(sdata, subsets)
 end
 
-function slic_spacing(sdata, partitioner)
+function slic_spacing(sdata, method)
   V = volume(boundbox(sdata))
   d = ncoords(sdata)
-  k = partitioner.k
+  k = method.k
   (V/k) ^ (1/d)
 end
 

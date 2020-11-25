@@ -3,13 +3,13 @@
 # ------------------------------------------------------------------
 
 """
-    SpatialPredicatePartitioner(pred)
+    SPredicatePartition(pred)
 
 A method for partitioning spatial objects with a given spatial
 predicate function `pred(x, y)`.
 """
-struct SpatialPredicatePartitioner <: AbstractSpatialPredicatePartitioner
+struct SPredicatePartition <: SPredicatePartitionMethod
   pred::Function
 end
 
-(p::SpatialPredicatePartitioner)(x, y) = p.pred(x, y)
+(p::SPredicatePartition)(x, y) = p.pred(x, y)

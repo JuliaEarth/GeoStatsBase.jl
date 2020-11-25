@@ -3,13 +3,13 @@
 # ------------------------------------------------------------------
 
 """
-    PredicatePartitioner(pred)
+    PredicatePartition(pred)
 
 A method for partitioning spatial objects with a given predicate
 function `pred(i, j)`.
 """
-struct PredicatePartitioner <: AbstractPredicatePartitioner
+struct PredicatePartition <: PredicatePartitionMethod
   pred::Function
 end
 
-(p::PredicatePartitioner)(i, j) = p.pred(i, j)
+(p::PredicatePartition)(i, j) = p.pred(i, j)

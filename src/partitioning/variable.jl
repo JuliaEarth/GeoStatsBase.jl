@@ -3,17 +3,17 @@
 # ------------------------------------------------------------------
 
 """
-    VariablePartitioner(var)
+    VariablePartition(var)
 
 A method for partitioning spatial data into subsets of
 constant value for variable `var`.
 """
-struct VariablePartitioner <: AbstractPartitioner
+struct VariablePartition <: PartitionMethod
   var::Symbol
 end
 
-function partition(sdata, partitioner::VariablePartitioner)
-  var = partitioner.var
+function partition(sdata, method::VariablePartition)
+  var = method.var
 
   @assert var ∈ name.(variables(sdata)) "invalid variable name"
 
@@ -34,7 +34,7 @@ function partition(sdata, partitioner::VariablePartitioner)
   pred = Missing <: eltype(vdata) ? f : g
 
   # perform partition
-  p = partition(sdata, PredicatePartitioner(pred))
+  p = partition(sdata, PredicatePartition(pred))
 
   # retrieve value from each subset
   vals = [vdata[s[1]] for s in subsets(p)]

@@ -3,27 +3,27 @@
 # ------------------------------------------------------------------
 
 """
-    HierarchicalPartitioner(first, second)
+    HierarchicalPartition(first, second)
 
 A partitioning method in which a `first` partition is applied
 and then a `second` partition is applied to each subset of the
 `first`.
 """
-struct HierarchicalPartitioner <: AbstractPartitioner
-  first::AbstractPartitioner
-  second::AbstractPartitioner
+struct HierarchicalPartition <: PartitionMethod
+  first::PartitionMethod
+  second::PartitionMethod
 end
 
-function partition(object, partitioner::HierarchicalPartitioner)
+function partition(object, method::HierarchicalPartition)
   result = Vector{Vector{Int}}()
 
   # use first partition method
-  p = partition(object, partitioner.first)
+  p = partition(object, method.first)
 
   # use second method to partition the first
   s = subsets(p)
   for (i, d) in Iterators.enumerate(p)
-    q = partition(d, partitioner.second)
+    q = partition(d, method.second)
 
     for js in subsets(q)
       push!(result, s[i][js])
@@ -33,4 +33,4 @@ function partition(object, partitioner::HierarchicalPartitioner)
   SpatialPartition(object, result)
 end
 
-→(first, second) = HierarchicalPartitioner(first, second)
+→(first, second) = HierarchicalPartition(first, second)

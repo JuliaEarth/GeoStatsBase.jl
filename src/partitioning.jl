@@ -69,40 +69,33 @@ function Base.show(io::IO, ::MIME"text/plain", partition::SpatialPartition)
 end
 
 """
-    AbstractPartitioner
+    PartitionMethod
 
 A method for partitioning spatial objects.
 """
-abstract type AbstractPartitioner end
+abstract type PartitionMethod end
 
 """
-    AbstractPredicatePartitioner
+    partition(object, method)
 
-A method for partitioning spatial objects with predicate functions.
-"""
-abstract type AbstractPredicatePartitioner <: AbstractPartitioner end
-
-"""
-    AbstractSpatialPredicatePartitioner
-
-A method for partitioning spatial objects with spatial predicate functions.
-"""
-abstract type AbstractSpatialPredicatePartitioner <: AbstractPartitioner end
-
-"""
-    partition(object, partitioner)
-
-Partition `object` with partition method `partitioner`.
+Partition `object` with partition `method`.
 """
 function partition end
 
-function partition(object, partitioner::AbstractPredicatePartitioner)
+"""
+    PredicatePartitionMethod
+
+A method for partitioning spatial objects with predicate functions.
+"""
+abstract type PredicatePartitionMethod <: PartitionMethod end
+
+function partition(object, method::PredicatePartitionMethod)
   subsets = Vector{Vector{Int}}()
   for i in randperm(nelms(object))
     inserted = false
     for subset in subsets
       j = subset[1]
-      if partitioner(i, j)
+      if method(i, j)
         push!(subset, i)
         inserted = true
         break
@@ -117,7 +110,14 @@ function partition(object, partitioner::AbstractPredicatePartitioner)
   SpatialPartition(object, subsets)
 end
 
-function partition(object, partitioner::AbstractSpatialPredicatePartitioner)
+"""
+    SPredicatePartitionMethod
+
+A method for partitioning spatial objects with spatial predicate functions.
+"""
+abstract type SPredicatePartitionMethod <: PartitionMethod end
+
+function partition(object, method::SPredicatePartitionMethod)
   N = ncoords(object)
   T = coordtype(object)
 
@@ -133,7 +133,7 @@ function partition(object, partitioner::AbstractSpatialPredicatePartitioner)
     for subset in subsets
       coordinates!(y, object, subset[1])
 
-      if partitioner(x, y)
+      if method(x, y)
         push!(subset, i)
         inserted = true
         break

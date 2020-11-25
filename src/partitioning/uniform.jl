@@ -3,20 +3,20 @@
 # ------------------------------------------------------------------
 
 """
-    UniformPartitioner(k, [shuffle])
+    UniformPartition(k, [shuffle])
 
 A method for partitioning spatial data uniformly into `k` subsets
 of approximately equal size. Optionally `shuffle` the data (default
 to true).
 """
-struct UniformPartitioner <: AbstractPartitioner
+struct UniformPartition <: PartitionMethod
   k::Int
   shuffle::Bool
 end
 
-UniformPartitioner(k::Int) = UniformPartitioner(k, true)
+UniformPartition(k::Int) = UniformPartition(k, true)
 
-function partition(object, partitioner::UniformPartitioner)
+function partition(object, partitioner::UniformPartition)
   n = nelms(object)
   k = partitioner.k
 

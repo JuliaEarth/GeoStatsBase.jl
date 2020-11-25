@@ -11,8 +11,8 @@ split is performed perpendicular to a `normal` direction.
 """
 function split(object, fraction::Real, normal=nothing)
   if isnothing(normal)
-    partition(object, FractionPartitioner(fraction))
+    partition(object, FractionPartition(fraction))
   else
-    partition(object, BisectFractionPartitioner(normal, fraction))
+    partition(object, BisectFractionPartition(normal, fraction))
   end
 end

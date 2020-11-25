@@ -23,7 +23,7 @@ weight(object, weighter::BlockWeighter) =
   weight(domain(object), weighter)
 
 function weight(object::AbstractDomain, weighter::BlockWeighter)
-  p = partition(object, BlockPartitioner(weighter.sides))
+  p = partition(object, BlockPartition(weighter.sides))
 
   weights = Vector{Float64}(undef, nelms(object))
   for s in subsets(p)

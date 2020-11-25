@@ -3,32 +3,32 @@
 # ------------------------------------------------------------------
 
 """
-    BisectPointPartitioner(normal, point)
+    BisectPointPartition(normal, point)
 
 A method for partitioning spatial data into two half spaces
 defined by a `normal` direction and a reference `point`.
 """
-struct BisectPointPartitioner{T,N} <: AbstractPartitioner
+struct BisectPointPartition{T,N} <: PartitionMethod
   normal::SVector{N,T}
   point::SVector{N,T}
 
-  function BisectPointPartitioner{T,N}(normal, point) where {N,T}
+  function BisectPointPartition{T,N}(normal, point) where {N,T}
     new(normalize(normal), point)
   end
 end
 
-BisectPointPartitioner(normal::SVector{N,T}, point::SVector{N,T}) where {T,N} =
-  BisectPointPartitioner{T,N}(normal, point)
+BisectPointPartition(normal::SVector{N,T}, point::SVector{N,T}) where {T,N} =
+  BisectPointPartition{T,N}(normal, point)
 
-BisectPointPartitioner(normal::NTuple{N,T}, point::NTuple{N,T}) where {T,N} =
- BisectPointPartitioner(SVector(normal), SVector(point))
+BisectPointPartition(normal::NTuple{N,T}, point::NTuple{N,T}) where {T,N} =
+ BisectPointPartition(SVector(normal), SVector(point))
 
-function partition(object, partitioner::BisectPointPartitioner)
+function partition(object, method::BisectPointPartition)
   N = ncoords(object)
   T = coordtype(object)
   
-  n = partitioner.normal
-  p = partitioner.point
+  n = method.normal
+  p = method.point
 
   x = MVector{N,T}(undef)
 

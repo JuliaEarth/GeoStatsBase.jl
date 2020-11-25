@@ -13,4 +13,4 @@ for spatial variable `var`.
 Missing values are grouped into a separate group.
 """
 groupby(sdata::AbstractData, var::Symbol) =
-  partition(sdata, VariablePartitioner(var))
+  partition(sdata, VariablePartition(var))

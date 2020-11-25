@@ -3,28 +3,28 @@
 # ------------------------------------------------------------------
 
 """
-    FractionPartitioner(fraction, shuffle=true)
+    FractionPartition(fraction, shuffle=true)
 
 A method for partitioning spatial objects according to a given `fraction`.
 Optionally `shuffle` elements before partitioning.
 """
-struct FractionPartitioner <: AbstractPartitioner
+struct FractionPartition <: PartitionMethod
   fraction::Float64
   shuffle::Bool
 
-  function FractionPartitioner(fraction, shuffle)
+  function FractionPartition(fraction, shuffle)
     @assert 0 < fraction < 1 "fraction must be in interval (0,1)"
     new(fraction, shuffle)
   end
 end
 
-FractionPartitioner(fraction) = FractionPartitioner(fraction, true)
+FractionPartition(fraction) = FractionPartition(fraction, true)
 
-function partition(object, p::FractionPartitioner)
+function partition(object, method::FractionPartition)
   n = nelms(object)
-  f = round(Int, p.fraction * n)
+  f = round(Int, method.fraction * n)
 
-  locs = p.shuffle ? randperm(n) : 1:n
+  locs = method.shuffle ? randperm(n) : 1:n
   subsets = [locs[1:f], locs[f+1:n]]
 
   SpatialPartition(object, subsets)
