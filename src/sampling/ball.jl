@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------
 
 """
-    BallSampler(radius; [options])
+    BallSampling(radius; [options])
 
 A method for sampling isolated points from spatial objects using
 a ball neighborhood of given `radius`.
@@ -13,21 +13,21 @@ a ball neighborhood of given `radius`.
 * `metric`  - Metric for the ball (default to `Euclidean()`)
 * `maxsize` - Maximum size of the resulting sample (default to none)
 """
-struct BallSampler{T,M} <: AbstractSampler
+struct BallSampling{T,M} <: SamplingMethod
   radius::T
   metric::M
   maxsize::Union{Int,Nothing}
 end
 
-BallSampler(radius; metric=Euclidean(), maxsize=nothing) =
-  BallSampler(radius, metric, maxsize)
+BallSampling(radius; metric=Euclidean(), maxsize=nothing) =
+  BallSampling(radius, metric, maxsize)
 
-function sample(object, sampler::BallSampler)
+function sample(object, method::BallSampling)
   N = ncoords(object)
   T = coordtype(object)
-  radius = sampler.radius
-  metric = sampler.metric
-  msize  = sampler.maxsize ≠ nothing ? sampler.maxsize : Inf
+  radius = method.radius
+  metric = method.metric
+  msize  = method.maxsize ≠ nothing ? method.maxsize : Inf
 
   # neighborhood search method with ball
   ball = BallNeighborhood(radius, metric)

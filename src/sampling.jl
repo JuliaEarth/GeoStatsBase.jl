@@ -3,22 +3,22 @@
 # ------------------------------------------------------------------
 
 """
-    AbstractSampler
+    SamplingMethod
 
 A method for sampling from spatial objects.
 """
-abstract type AbstractSampler end
+abstract type SamplingMethod end
 
 """
-    sample(object, sampler)
+    sample(object, method)
 
-Sample elements from `object` with `sampler`.
+Sample elements from `object` with `method`.
 """
 function sample end
 
 #------------------
 # IMPLEMENTATIONS
 #------------------
-include("sampling/uniform_sampler.jl")
-include("sampling/ball_sampler.jl")
-include("sampling/weighted_sampler.jl")
+include("sampling/uniform.jl")
+include("sampling/ball.jl")
+include("sampling/weighted.jl")

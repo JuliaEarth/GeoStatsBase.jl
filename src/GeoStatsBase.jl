@@ -264,10 +264,10 @@ export
   discretize,
 
   # sampling
-  AbstractSampler,
-  UniformSampler,
-  WeightedSampler,
-  BallSampler,
+  SamplingMethod,
+  UniformSampling,
+  WeightedSampling,
+  BallSampling,
   sample,
 
   # operations

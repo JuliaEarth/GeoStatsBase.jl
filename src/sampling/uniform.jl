@@ -3,23 +3,23 @@
 # ------------------------------------------------------------------
 
 """
-    UniformSampler(size, replace=false)
+    UniformSampling(size, replace=false)
 
 A method for uniform sampling from spatial objects that produces
 samples of given `size` with or without replacement depending on
 the option `replace`.
 """
-struct UniformSampler <: AbstractSampler
+struct UniformSampling <: SamplingMethod
   size::Int
   replace::Bool
 end
 
-UniformSampler(size::Int) = UniformSampler(size, false)
+UniformSampling(size::Int) = UniformSampling(size, false)
 
-function sample(object, sampler::UniformSampler)
+function sample(object, method::UniformSampling)
   n = nelms(object)
-  s = sampler.size
-  r = sampler.replace
+  s = method.size
+  r = method.replace
   if s > n && r == false
     @error "invalid sample size for sampling without replacement"
   end
