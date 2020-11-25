@@ -151,7 +151,7 @@ end
 #------------------
 # IMPLEMENTATIONS
 #------------------
-include("partitioning/uniform.jl")
+include("partitioning/random.jl")
 include("partitioning/fraction.jl")
 include("partitioning/slic.jl")
 include("partitioning/block.jl")

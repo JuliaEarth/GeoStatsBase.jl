@@ -2,21 +2,21 @@
   setify(lists) = Set(Set.(lists))
 
   d = RegularGrid(10,10)
-  p = partition(d, UniformPartition(100))
+  p = partition(d, RandomPartition(100))
   @test sprint(show, p) == "100 SpatialPartition"
   @test sprint(show, MIME"text/plain"(), p) == "100 SpatialPartition\n  N° points\n  └─1\n  └─1\n  └─1\n  └─1\n  └─1\n  ⋮\n  └─1\n  └─1\n  └─1\n  └─1\n  └─1"
 
-  @testset "UniformPartition" begin
+  @testset "RandomPartition" begin
     grid = RegularGrid(3,3)
 
     Random.seed!(123)
-    p = partition(grid, UniformPartition(3, false))
+    p = partition(grid, RandomPartition(3, false))
     @test setify(subsets(p)) == setify([[1,2,3], [4,5,6], [7,8,9]])
-    p = partition(grid, UniformPartition(3))
+    p = partition(grid, RandomPartition(3))
     @test setify(subsets(p)) == setify([[8,6,9], [4,1,7], [2,3,5]])
 
     grid = RegularGrid(2,3)
-    p = partition(grid, UniformPartition(3, false))
+    p = partition(grid, RandomPartition(3, false))
     @test setify(subsets(p)) == setify([[1,2], [3,4], [5,6]])
   end
 

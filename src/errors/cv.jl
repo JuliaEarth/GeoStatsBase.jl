@@ -31,7 +31,7 @@ CrossValidation(partitioner::PartitionMethod; loss=Dict()) =
   CrossValidation{typeof(partitioner)}(partitioner, loss)
 
 CrossValidation(k::Int; shuffle=true, loss=Dict()) =
-  CrossValidation(UniformPartition(k, shuffle), loss=loss)
+  CrossValidation(RandomPartition(k, shuffle), loss=loss)
 
 function error(solver::AbstractLearningSolver,
                problem::LearningProblem,

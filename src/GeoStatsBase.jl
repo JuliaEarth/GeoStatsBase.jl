@@ -232,7 +232,7 @@ export
   PartitionMethod,
   PredicatePartitionMethod,
   SPredicatePartitionMethod,
-  UniformPartition,
+  RandomPartition,
   FractionPartition,
   SLICPartition,
   BlockPartition,

@@ -15,7 +15,7 @@ function from `LossFunctions.jl` for some of the variables.
                             lambda=1.0, loss=Dict())
 
 Alternatively, specify the desired number of folds `k` and `shuffle`
-options for a `UniformPartition`.
+options for a `RandomPartition`.
 
 ## References
 
@@ -45,7 +45,7 @@ WeightedCrossValidation(weighter::W, partitioner::P;
 
 WeightedCrossValidation(weighter::W, k::Int; shuffle=true,
                         lambda=1.0, loss=Dict()) where {W<:WeightingMethod} =
-  WeightedCrossValidation(weighter, UniformPartition(k, shuffle), lambda=lambda, loss=loss)
+  WeightedCrossValidation(weighter, RandomPartition(k, shuffle), lambda=lambda, loss=loss)
 
 function error(solver::AbstractLearningSolver,
                problem::LearningProblem,
