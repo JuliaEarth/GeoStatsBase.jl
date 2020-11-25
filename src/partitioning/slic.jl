@@ -54,7 +54,7 @@ function partition(sdata, partitioner::SLICPartitioner)
   c = slic_initialization(sdata, s)
 
   # ball neighborhood search
-  searcher = NeighborhoodSearcher(sdata, BallNeighborhood(s))
+  searcher = NeighborhoodSearch(sdata, BallNeighborhood(s))
 
   # pre-allocate memory for label and distance
   l = fill(0, nelms(sdata))
@@ -90,7 +90,7 @@ end
 
 function slic_initialization(sdata, s)
   # efficient neighbor search
-  searcher = KNearestSearcher(sdata, 1)
+  searcher = KNearestSearch(sdata, 1)
 
   # bounding box properties
   bbox = boundbox(sdata)

@@ -3,12 +3,12 @@
 # ------------------------------------------------------------------
 
 """
-    KNearestSearcher(object, k; metric=Euclidean())
+    KNearestSearch(object, k; metric=Euclidean())
 
 A method for searching `k` nearest neighbors in spatial `object`
 according to `metric`.
 """
-struct KNearestSearcher{O,K} <: AbstractBoundedNeighborSearcher
+struct KNearestSearch{O,K} <: BoundedNeighborSearchMethod
   # input fields
   object::O
   k::Int
@@ -17,17 +17,17 @@ struct KNearestSearcher{O,K} <: AbstractBoundedNeighborSearcher
   kdtree::K
 end
 
-function KNearestSearcher(object::O, k::Int; metric=Euclidean()) where {O}
+function KNearestSearch(object::O, k::Int; metric=Euclidean()) where {O}
   kdtree = KDTree(coordinates(object), metric)
-  KNearestSearcher{O,typeof(kdtree)}(object, k, kdtree)
+  KNearestSearch{O,typeof(kdtree)}(object, k, kdtree)
 end
 
-maxneighbors(searcher::KNearestSearcher) = searcher.k
+maxneighbors(method::KNearestSearch) = method.k
 
 function search!(neighbors, xₒ::AbstractVector,
-                 searcher::KNearestSearcher; mask=nothing)
-  k       = searcher.k
-  inds, _ = knn(searcher.kdtree, xₒ, k, true)
+                 method::KNearestSearch; mask=nothing)
+  k       = method.k
+  inds, _ = knn(method.kdtree, xₒ, k, true)
 
   if mask ≠ nothing
     nneigh = 0

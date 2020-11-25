@@ -210,12 +210,12 @@ export
   metric,
 
   # neighborhood search
-  AbstractNeighborSearcher,
-  AbstractBoundedNeighborSearcher,
-  KNearestSearcher,
-  NeighborhoodSearcher,
-  BoundedSearcher,
-  KBallSearcher,
+  NeighborSearchMethod,
+  BoundedNeighborSearchMethod,
+  KNearestSearch,
+  NeighborhoodSearch,
+  BoundedSearch,
+  KBallSearch,
   search!, search,
   maxneighbors,
   object,

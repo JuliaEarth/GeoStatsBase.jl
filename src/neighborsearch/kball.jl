@@ -3,12 +3,12 @@
 # ------------------------------------------------------------------
 
 """
-    KBallSearcher(object, k, ball)
+    KBallSearch(object, k, ball)
 
 A method that searches `k` nearest neighbors and then filters
 these neighbors using a norm `ball`.
 """
-struct KBallSearcher{O,B,K} <: AbstractBoundedNeighborSearcher
+struct KBallSearch{O,B,K} <: BoundedNeighborSearchMethod
   # input fields
   object::O
   k::Int
@@ -19,19 +19,19 @@ struct KBallSearcher{O,B,K} <: AbstractBoundedNeighborSearcher
 end
 
 
-function KBallSearcher(object::O, k::Int, ball::B) where {O,B}
+function KBallSearch(object::O, k::Int, ball::B) where {O,B}
   kdtree = KDTree(coordinates(object), metric(ball))
-  KBallSearcher{O,B,typeof(kdtree)}(object, k, ball, kdtree)
+  KBallSearch{O,B,typeof(kdtree)}(object, k, ball, kdtree)
 end
 
-maxneighbors(searcher::KBallSearcher) = searcher.k
+maxneighbors(method::KBallSearch) = method.k
 
 function search!(neighbors, xₒ::AbstractVector,
-                 searcher::KBallSearcher; mask=nothing)
-  k = searcher.k
-  r = radius(searcher.ball)
+                 method::KBallSearch; mask=nothing)
+  k = method.k
+  r = radius(method.ball)
 
-  inds, dists = knn(searcher.kdtree, xₒ, k, true)
+  inds, dists = knn(method.kdtree, xₒ, k, true)
 
   # keep neighbors inside ball
   keep = dists .≤ r

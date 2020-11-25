@@ -3,23 +3,23 @@
 # ------------------------------------------------------------------
 
 """
-    BoundedSearcher(searcher, nmax)
+    BoundedSearch(method, nmax)
 
-A method for searching at most `nmax` neighbors using `searcher`.
+A method for searching at most `nmax` neighbors using `method`.
 """
-struct BoundedSearcher{S<:AbstractNeighborSearcher} <: AbstractBoundedNeighborSearcher
-  searcher::S
+struct BoundedSearch{M<:NeighborSearchMethod} <: BoundedNeighborSearchMethod
+  method::M
   nmax::Int
 end
 
-object(searcher::BoundedSearcher) = object(searcher.searcher)
+object(method::BoundedSearch) = object(method.method)
 
-maxneighbors(searcher::BoundedSearcher) = searcher.nmax
+maxneighbors(method::BoundedSearch) = method.nmax
 
 function search!(neighbors, xₒ::AbstractVector,
-                 searcher::BoundedSearcher; mask=nothing)
-  inds = search(xₒ, searcher.searcher)
-  nmax = searcher.nmax
+                 method::BoundedSearch; mask=nothing)
+  inds = search(xₒ, method.method)
+  nmax = method.nmax
 
   if isnothing(mask)
     nneigh = min(length(inds), nmax)

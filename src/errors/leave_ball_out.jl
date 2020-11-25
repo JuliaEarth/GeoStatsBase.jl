@@ -44,7 +44,7 @@ function error(solver::AbstractLearningSolver,
   end
 
   # efficient neighborhood search
-  searcher = NeighborhoodSearcher(sdata, ball)
+  searcher = NeighborhoodSearch(sdata, ball)
 
   # number of folds
   nfolds = nelms(sdata)

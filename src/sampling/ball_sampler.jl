@@ -31,7 +31,7 @@ function sample(object, sampler::BallSampler)
 
   # neighborhood search method with ball
   ball = BallNeighborhood(radius, metric)
-  searcher = NeighborhoodSearcher(object, ball)
+  searcher = NeighborhoodSearch(object, ball)
 
   # pre-allocate memory for coordinates
   coords = MVector{N,T}(undef)

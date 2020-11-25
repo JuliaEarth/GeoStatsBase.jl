@@ -3,11 +3,11 @@
 # ------------------------------------------------------------------
 
 """
-    NeighborhoodSearcher(object, neighborhood)
+    NeighborhoodSearch(object, neighborhood)
 
 A method for searching neighbors in spatial `object` inside `neighborhood`.
 """
-struct NeighborhoodSearcher{O,N,K} <: AbstractNeighborSearcher
+struct NeighborhoodSearch{O,N,K} <: NeighborSearchMethod
   # input fields
   object::O
   neigh::N
@@ -16,19 +16,19 @@ struct NeighborhoodSearcher{O,N,K} <: AbstractNeighborSearcher
   kdtree::K
 end
 
-function NeighborhoodSearcher(object::O, neigh::N) where {O,N}
+function NeighborhoodSearch(object::O, neigh::N) where {O,N}
   kdtree = if neigh isa BallNeighborhood
     KDTree(coordinates(object), metric(neigh))
   else
     nothing
   end
-  NeighborhoodSearcher{O,N,typeof(kdtree)}(object, neigh, kdtree)
+  NeighborhoodSearch{O,N,typeof(kdtree)}(object, neigh, kdtree)
 end
 
 # search method for any neighborhood
-function search(xₒ::AbstractVector, searcher::NeighborhoodSearcher; mask=nothing)
-  object = searcher.object
-  neigh  = searcher.neigh
+function search(xₒ::AbstractVector, method::NeighborhoodSearch; mask=nothing)
+  object = method.object
+  neigh  = method.neigh
   N = ncoords(object)
   T = coordtype(object)
   n = nelms(object)
@@ -49,9 +49,9 @@ function search(xₒ::AbstractVector, searcher::NeighborhoodSearcher; mask=nothi
 end
 
 # search method for ball neighborhood
-function search(xₒ::AbstractVector, searcher::NeighborhoodSearcher{O,N,K};
+function search(xₒ::AbstractVector, method::NeighborhoodSearch{O,N,K};
                 mask=nothing) where {O,N<:BallNeighborhood,K}
-  inds = inrange(searcher.kdtree, xₒ, radius(searcher.neigh))
+  inds = inrange(method.kdtree, xₒ, radius(method.neigh))
   if mask ≠ nothing
     neighbors = Vector{Int}()
     @inbounds for ind in inds

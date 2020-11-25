@@ -24,7 +24,7 @@ function map(sdata, sdomain, targetvars, mapper::NearestMapper)
 
   # nearest neighbor search method
   neighbor = Vector{Int}(undef, 1)
-  searcher = KNearestSearcher(sdomain, 1)
+  searcher = KNearestSearch(sdomain, 1)
 
   for ind in 1:nelms(sdata)
     # update datum coordinates

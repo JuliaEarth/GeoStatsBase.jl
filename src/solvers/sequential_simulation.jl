@@ -46,8 +46,8 @@ function preprocess(problem::SimulationProblem, solver::SeqSim)
 
       # determine neighbor search method
       neigh     = varparams.neighborhood
-      searcher  = NeighborhoodSearcher(pdomain, neigh)
-      bsearcher = BoundedSearcher(searcher, maxneighbors)
+      searcher  = NeighborhoodSearch(pdomain, neigh)
+      bsearcher = BoundedSearch(searcher, maxneighbors)
 
       # save preprocessed input
       preproc[var] = (estimator=varparams.estimator,

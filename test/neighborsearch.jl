@@ -1,8 +1,8 @@
 @testset "Neighborsearch" begin
-  @testset "NeighborhoodSearcher" begin
+  @testset "NeighborhoodSearch" begin
     𝒟 = RegularGrid(10,10)
 
-    S = NeighborhoodSearcher(𝒟, BallNeighborhood(1.0))
+    S = NeighborhoodSearch(𝒟, BallNeighborhood(1.0))
     n = GeoStatsBase.search([0.,0.], S)
     @test Set(n) == Set([1,2,11])
     n = GeoStatsBase.search([9.,0.], S)
@@ -12,7 +12,7 @@
     n = GeoStatsBase.search([9.,9.], S)
     @test Set(n) == Set([100,99,90])
 
-    S = NeighborhoodSearcher(𝒟, BallNeighborhood(√2))
+    S = NeighborhoodSearch(𝒟, BallNeighborhood(√2))
     n = GeoStatsBase.search([0.,0.], S)
     @test Set(n) == Set([1,2,11,12])
     n = GeoStatsBase.search([9.,0.], S)
@@ -23,9 +23,9 @@
     @test Set(n) == Set([89,90,99,100])
   end
 
-  @testset "KNearestSearcher" begin
+  @testset "KNearestSearch" begin
     𝒟 = RegularGrid(10,10)
-    S = KNearestSearcher(𝒟, 3)
+    S = KNearestSearch(𝒟, 3)
     n = GeoStatsBase.search([0.,0.], S)
     @test Set(n) == Set([1,2,11])
     n = GeoStatsBase.search([9.,0.], S)
@@ -36,14 +36,14 @@
     @test Set(n) == Set([100,99,90])
   end
 
-  @testset "KBallSearcher" begin
+  @testset "KBallSearch" begin
     #create a regular grid to test
     𝒟 = RegularGrid(10,10)
 
     #test 1: all points should be found
     k = 10
     ball = BallNeighborhood(100.0)
-    searcher = KBallSearcher(𝒟, k, ball)
+    searcher = KBallSearch(𝒟, k, ball)
 
     xₒ = [5.0,5.0]
     neighbors = GeoStatsBase.search(xₒ, searcher)
@@ -53,7 +53,7 @@
     #test 2: radius of 1.0 m 5 points should be found
     k = 10
     ball = BallNeighborhood(1.0)
-    searcher = KBallSearcher(𝒟, k, ball)
+    searcher = KBallSearch(𝒟, k, ball)
 
     xₒ = [5.0,5.0]
     neighbors = GeoStatsBase.search(xₒ, searcher)
@@ -69,7 +69,7 @@
     #test 3: radius of 1.0 m but far just to find 1 point
     k = 10
     ball = BallNeighborhood(1.0)
-    searcher = KBallSearcher(𝒟, k, ball)
+    searcher = KBallSearch(𝒟, k, ball)
 
     xₒ = [-0.2,-0.2]
     neighbors = GeoStatsBase.search(xₒ, searcher)
@@ -79,7 +79,7 @@
     #test 4: radius of 1.0 m but far just to find no points
     k = 10
     ball = BallNeighborhood(1.0)
-    searcher = KBallSearcher(𝒟, k, ball)
+    searcher = KBallSearch(𝒟, k, ball)
 
     xₒ = [-10.0,-10.0]
     neighbors = GeoStatsBase.search(xₒ, searcher)
@@ -87,12 +87,12 @@
     @test length(neighbors) == 0
   end
 
-  @testset "BoundedSearcher" begin
+  @testset "BoundedSearch" begin
     𝒟 = RegularGrid(10,10)
-    S1 = NeighborhoodSearcher(𝒟, BallNeighborhood(5.0))
-    S2 = KNearestSearcher(𝒟, 10)
-    B1 = BoundedSearcher(S1, 5)
-    B2 = BoundedSearcher(S2, 5)
+    S1 = NeighborhoodSearch(𝒟, BallNeighborhood(5.0))
+    S2 = KNearestSearch(𝒟, 10)
+    B1 = BoundedSearch(S1, 5)
+    B2 = BoundedSearch(S2, 5)
     n = GeoStatsBase.search(coordinates(𝒟, rand(1:100)), B1)
     @test length(n) == 5
     n = GeoStatsBase.search(coordinates(𝒟, rand(1:100)), B2)

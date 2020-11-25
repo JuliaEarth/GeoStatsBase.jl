@@ -3,70 +3,70 @@
 # ------------------------------------------------------------------
 
 """
-    AbstractNeighborSearcher
+    NeighborSearchMethod
 
 A method for searching neighbors in a spatial object given a reference point.
 """
-abstract type AbstractNeighborSearcher end
+abstract type NeighborSearchMethod end
 
 """
-    object(searcher)
+    object(method)
 
 Return the spatial object containing all possible neighbors.
 """
-object(searcher::AbstractNeighborSearcher) = searcher.object
+object(method::NeighborSearchMethod) = method.object
 
 """
-    search(xₒ, searcher, mask=nothing)
+    search(xₒ, method, mask=nothing)
 
-Return neighbors of coordinates `xₒ` using `searcher` and a `mask` over
+Return neighbors of coordinates `xₒ` using `method` and a `mask` over
 the spatial object.
 """
 function search end
 
 """
-    search(ind, searcher, mask=nothing)
+    search(ind, method, mask=nothing)
 
-Return neighbors of index `ind` in spatial object using `searcher` and a `mask`.
+Return neighbors of index `ind` in spatial object using `method` and a `mask`.
 """
-search(ind::Int, searcher::AbstractNeighborSearcher; mask=nothing) =
-  search(coordinates(object(searcher), ind), searcher; mask=mask)
+search(ind::Int, method::NeighborSearchMethod; mask=nothing) =
+  search(coordinates(object(method), ind), method; mask=mask)
 
 """
-    AbstractBoundedNeighborSearcher
+    BoundedNeighborSearchMethod
 
 A method for searching neighbors with the property that the number of neighbors
 is bounded above by a known constant (e.g. k-nearest neighbors).
 """
-abstract type AbstractBoundedNeighborSearcher <: AbstractNeighborSearcher end
+abstract type BoundedNeighborSearchMethod <: NeighborSearchMethod end
 
 """
-    maxneighbors(searcher)
+    maxneighbors(method)
 
-Return the maximum number of neighbors obtained with `searcher`.
+Return the maximum number of neighbors obtained with `method`.
 """
 function maxneighbors end
 
 """
-    search!(neighbors, xₒ, searcher, mask)
+    search!(neighbors, xₒ, method, mask)
 
-Update `neighbors` of coordinates `xₒ` using `searcher` and `mask`,
+Update `neighbors` of coordinates `xₒ` using `method` and `mask`,
 and return number of neighbors found.
 """
 function search! end
 
 """
-    search!(neighbors, ind, searcher, mask)
+    search!(neighbors, ind, method, mask)
 
-Update `neighbors` of index `ind` in spatial object using `searcher` and `mask`,
+Update `neighbors` of index `ind` in spatial object using `method` and `mask`,
 and return number of neighbors found.
 """
-search!(neighbors, ind::Int, searcher::AbstractBoundedNeighborSearcher; mask=nothing) =
-  search!(neighbors, coordinates(object(searcher), ind), searcher; mask=mask)
+search!(neighbors, ind::Int, method::BoundedNeighborSearchMethod; mask=nothing) =
+  search!(neighbors, coordinates(object(method), ind), method; mask=mask)
 
-function search(xₒ::AbstractVector, searcher::AbstractBoundedNeighborSearcher; mask=nothing)
-  neighbors = Vector{Int}(undef, maxneighbors(searcher))
-  nneigh = search!(neighbors, xₒ, searcher; mask=mask)
+function search(xₒ::AbstractVector, method::BoundedNeighborSearchMethod; mask=nothing)
+  neighbors = Vector{Int}(undef, maxneighbors(method))
+  nneigh = search!(neighbors, xₒ, method; mask=mask)
   view(neighbors, 1:nneigh)
 end
 
