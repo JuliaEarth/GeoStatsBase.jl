@@ -20,8 +20,8 @@ function error end
 # ----------------
 # IMPLEMENTATIONS
 # ----------------
-include("errors/leave_ball_out.jl")
-include("errors/cross_validation.jl")
-include("errors/block_cross_validation.jl")
-include("errors/weighted_cross_validation.jl")
-include("errors/density_ratio_validation.jl")
+include("errors/lbo.jl")
+include("errors/cv.jl")
+include("errors/bcv.jl")
+include("errors/wcv.jl")
+include("errors/drv.jl")
