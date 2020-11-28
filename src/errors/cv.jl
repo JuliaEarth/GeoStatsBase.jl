@@ -9,11 +9,6 @@
 data, and specify `loss` function  from `LossFunctions.jl`
 for some of the variables.
 
-    CrossValidation(partitioner; loss=Dict())
-
-Generalization of k-fold cross-validation in which
-the data is split using `partitioner`.
-
 ## References
 
 * Geisser, S. 1975. [The predictive sample reuse method with applications]
@@ -22,16 +17,14 @@ the data is split using `partitioner`.
   cross-validation and the repeated learning-testing methods]
   (https://www.jstor.org/stable/2336116)
 """
-struct CrossValidation{P<:PartitionMethod} <: ErrorEstimationMethod
-  partitioner::P
+struct CrossValidation <: ErrorEstimationMethod
+  k::Int
+  shuffle::Bool
   loss::Dict{Symbol,SupervisedLoss}
 end
 
-CrossValidation(partitioner::PartitionMethod; loss=Dict()) =
-  CrossValidation{typeof(partitioner)}(partitioner, loss)
-
 CrossValidation(k::Int; shuffle=true, loss=Dict()) =
-  CrossValidation(RandomPartition(k, shuffle), loss=loss)
+  CrossValidation(k, shuffle, loss)
 
 function error(solver::AbstractLearningSolver,
                problem::LearningProblem,
@@ -39,8 +32,9 @@ function error(solver::AbstractLearningSolver,
   # retrieve problem info
   sdata = sourcedata(problem)
   ovars = outputvars(task(problem))
-  partitioner = method.partitioner
-  loss  = method.loss
+  nfolds  = method.k
+  shuffle = method.shuffle
+  loss    = method.loss
   for var in ovars
     if var ∉ keys(loss)
       loss[var] = defaultloss(sdata[var][1])
@@ -48,26 +42,21 @@ function error(solver::AbstractLearningSolver,
   end
 
   # folds for cross-validation
-  folds  = subsets(partition(sdata, partitioner))
-  nfolds = length(folds)
+  fs = folds(sdata, RandomFolding(nfolds, shuffle))
 
-  # error for a fold k
-  function ε(k)
-    # source and target indices
-    sinds = [ind for i in [1:k-1; k+1:nfolds] for ind in folds[i]]
-    tinds = folds[k]
-
+  # error for a fold
+  function ε(f)
     # source and target data
-    train = view(sdata, sinds)
-    hold  = view(sdata, tinds)
+    source = view(sdata, first(f))
+    target = view(sdata, last(f))
 
     # setup and solve sub-problem
-    subproblem = LearningProblem(train, hold, task(problem))
+    subproblem = LearningProblem(source, target, task(problem))
     solution   = solve(subproblem, solver)
 
     # loss for each variable
     losses = map(ovars) do var
-      y = hold[var]
+      y = target[var]
       ŷ = solution[var]
       ℒ = value(loss[var], y, ŷ, AggMode.Mean())
       var => ℒ
@@ -77,7 +66,7 @@ function error(solver::AbstractLearningSolver,
   end
 
   # compute error for each fold in parallel
-  εs = foldxt(vcat, Map(ε), 1:nfolds)
+  εs = foldxt(vcat, Map(ε), fs)
 
   # combine error from different folds
   Dict(var => mean(get.(εs, var, 0)) for var in ovars)

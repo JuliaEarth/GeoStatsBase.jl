@@ -43,34 +43,22 @@ function error(solver::AbstractLearningSolver,
     end
   end
 
-  # efficient neighborhood search
-  searcher = NeighborhoodSearch(sdata, ball)
+  # folds for cross-validation
+  fs = folds(sdata, BallFolding(ball))
 
-  # number of folds
-  nfolds = nelms(sdata)
-
-  # error for a ball b
-  function ε(b)
-    # points inside and outside ball
-    coords  = coordinates(sdata, b)
-    inside  = search(coords, searcher)
-    outside = setdiff(1:nelms(sdata), inside)
-
-    # source and target indices
-    sinds = outside
-    tinds = [b]
-
+  # error for a fold
+  function ε(f)
     # source and target data
-    train = view(sdata, sinds)
-    hold  = view(sdata, tinds)
+    source = view(sdata, first(f))
+    target = view(sdata, last(f))
 
     # setup and solve sub-problem
-    subproblem = LearningProblem(train, hold, task(problem))
+    subproblem = LearningProblem(source, target, task(problem))
     solution   = solve(subproblem, solver)
 
     # loss for each variable
     losses = map(ovars) do var
-      y = sdata[var][b]
+      y = target[var][1]
       ŷ = solution[var][1]
       var => value(loss[var], y, ŷ)
     end
@@ -79,7 +67,7 @@ function error(solver::AbstractLearningSolver,
   end
 
   # compute error for each fold in parallel
-  εs = foldxt(vcat, Map(ε), 1:nfolds)
+  εs = foldxt(vcat, Map(ε), fs)
 
   # combine error from different folds
   Dict(var => mean(get.(εs, var, 0)) for var in ovars)

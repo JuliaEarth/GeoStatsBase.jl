@@ -32,41 +32,31 @@ function error(solver::AbstractLearningSolver,
                method::BlockCrossValidation)
   sdata = sourcedata(problem)
   ovars = outputvars(task(problem))
-  loss  = method.loss
   sides = method.sides
+  loss  = method.loss
   for var in ovars
     if var ∉ keys(loss)
       loss[var] = defaultloss(sdata[var][1])
     end
   end
 
-  bsides    = length(sides) > 1 ? sides : ntuple(i->sides, ncoords(sdata))
-  blocks    = partition(sdata, BlockPartition(bsides))
-  neighbors = metadata(blocks)[:neighbors]
-  bsubsets  = subsets(blocks)
-  allblocks = 1:length(blocks)
+  # folds for cross-validation
+  bsides = length(sides) > 1 ? sides : ntuple(i->sides, ncoords(sdata))
+  fs = folds(sdata, BlockFolding(bsides))
 
-  # error for a block b
-  function ε(b)
-    # source and target blocks
-    sblocks = setdiff(allblocks, [neighbors[b]; b])
-    tblocks = [b]
-
-    # source and target indices
-    sinds = reduce(vcat, bsubsets[sblocks])
-    tinds = reduce(vcat, bsubsets[tblocks])
-
+  # error for a fold
+  function ε(f)
     # source and target data
-    train = view(sdata, sinds)
-    hold  = view(sdata, tinds)
+    source = view(sdata, first(f))
+    target = view(sdata, last(f))
 
     # setup and solve sub-problem
-    subproblem = LearningProblem(train, hold, task(problem))
+    subproblem = LearningProblem(source, target, task(problem))
     solution   = solve(subproblem, solver)
 
     # loss for each variable
     losses = map(ovars) do var
-      y = hold[var]
+      y = target[var]
       ŷ = solution[var]
       ℒ = value(loss[var], y, ŷ, AggMode.Mean())
       var => ℒ
@@ -76,7 +66,7 @@ function error(solver::AbstractLearningSolver,
   end
 
   # compute error for each fold in parallel
-  εs = foldxt(vcat, Map(ε), allblocks)
+  εs = foldxt(vcat, Map(ε), fs)
 
   # combine error from different folds
   Dict(var => mean(get.(εs, var, 0)) for var in ovars)
