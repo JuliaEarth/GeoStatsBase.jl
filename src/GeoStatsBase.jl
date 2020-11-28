@@ -176,6 +176,7 @@ export
   RandomFolding,
   BlockFolding,
   BallFolding,
+  folds,
 
   # errors
   ErrorEstimationMethod,

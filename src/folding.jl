@@ -7,16 +7,15 @@
 
 A method for creating folds out of a spatial object for
 cross-validatory error estimation methods.
-
-Folding methods implement the iterator interface for lazy
-construction of folds.
 """
 abstract type FoldingMethod end
 
-Base.iterate(method::FoldingMethod, state=1) =
-  state > length(method) ? nothing : (method[state], state + 1)
+"""
+    folds(object, method)
 
-Base.length(method::FoldingMethod) = length(method.subsets)
+Return iterator of folds of `object` according to `method`.
+"""
+function folds end
 
 #------------------
 # IMPLEMENTATIONS

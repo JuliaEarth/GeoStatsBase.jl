@@ -1,31 +1,31 @@
 @testset "Folding" begin
   @testset "Random" begin
     d = RegularGrid(100,100)
-    folds = RandomFolding(d, 10)
-    @test length(folds) == 10
-    for (train, test) in folds
-      @test nelms(train) == 9000
-      @test nelms(test) == 1000
+    f = folds(d, RandomFolding(10))
+    for (source, target) in f
+      @test length(source) == 9000
+      @test length(target) == 1000
     end
+    @test length(collect(f)) == 10
   end
 
   @testset "Block" begin
     d = RegularGrid(100,100)
-    folds = BlockFolding(d, (10.,10.))
-    @test length(folds) == 100
-    for (train, test) in folds
-      @test nelms(train) ∈ [9100,9400,9600]
-      @test nelms(test) == 100
+    f = folds(d, BlockFolding((10.,10.)))
+    for (source, target) in f
+      @test length(source) ∈ [9100,9400,9600]
+      @test length(target) == 100
     end
+    @test length(collect(f)) == 100
   end
 
   @testset "Ball" begin
     d = RegularGrid(50,50)
-    folds = BallFolding(d, BallNeighborhood(10.))
-    @test length(folds) == 2500
-    fs = collect(folds)
-    ms = nelms.(first.(fs))
-    ns = nelms.(last.(fs))
+    f = folds(d, BallFolding(BallNeighborhood(10.)))
+    @test length(collect(f)) == 2500
+    ps = collect(f)
+    ms = length.(first.(ps))
+    ns = length.(last.(ps))
     @test all(2183 .≤ ms .≤ 2410)
     @test all(ns .== 1)
   end

@@ -3,38 +3,38 @@
 # ------------------------------------------------------------------
 
 """
-    RandomFolding(object, k, shuffle=true)
+    RandomFolding(k, shuffle=true)
 
-A method for creating `k` random folds from a spatial `object`.
-Optionally `shuffle` the `object` before creating the folds.
+A method for creating `k` random folds from a spatial object.
+Optionally `shuffle` the object before creating the folds.
 """
-struct RandomFolding{O} <: FoldingMethod
-  # input fields
-  object::O
+struct RandomFolding <: FoldingMethod
   k::Int
   shuffle::Bool
-
-  # state fields
-  subsets::Vector{Vector{Int}}
 end
 
-function RandomFolding(object, k::Int, shuffle::Bool=true)
+RandomFolding(k::Int) = RandomFolding(k, true)
+
+function folds(object, method::RandomFolding)
+  # retrieve parameters
+  k, shuffle = method.k, method.shuffle
+
+  # partition object
   p = partition(object, RandomPartition(k, shuffle))
-  RandomFolding{typeof(object)}(object, k, shuffle, subsets(p))
-end
+  s = subsets(p)
+  n = length(p)
 
-function Base.getindex(method::RandomFolding, ind::Int)
-  # source and target subsets
-  nfolds = length(method.subsets)
-  source = [1:ind-1; ind+1:nfolds]
-  target = [ind]
+  function pair(i)
+    # source and target subsets
+    source = [1:i-1; i+1:n]
+    target = [i]
 
-  # indices within subsets
-  sinds = reduce(vcat, method.subsets[source])
-  tinds = reduce(vcat, method.subsets[target])
+    # indices within subsets
+    sinds = reduce(vcat, s[source])
+    tinds = reduce(vcat, s[target])
 
-  # return views
-  train = view(method.object, sinds)
-  test  = view(method.object, tinds)
-  train, test
+    sinds, tinds
+  end
+
+  (pair(i) for i in 1:n)
 end

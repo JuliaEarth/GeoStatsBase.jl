@@ -3,39 +3,36 @@
 # ------------------------------------------------------------------
 
 """
-    BlockFolding(object, sides)
+    BlockFolding(sides)
 
-A method for creating folds from a spatial `object` that are blocks
-with given `sides`.
+A method for creating folds from a spatial object that
+are blocks with given `sides`.
 """
-struct BlockFolding{O,S} <: FoldingMethod
-  # input fields
-  object::O
+struct BlockFolding{S} <: FoldingMethod
   sides::S
-
-  # state fields
-  subsets::Vector{Vector{Int}}
-  neighbors::Vector{Vector{Int}}
 end
 
-function BlockFolding(object, sides)
+function folds(object, method::BlockFolding)
+  # retrieve parameters
+  sides = method.sides
+
+  # partition object
   p = partition(object, BlockPartition(sides))
-  s, n = subsets(p), metadata(p)[:neighbors]
-  BlockFolding{typeof(object),typeof(sides)}(object, sides, s, n)
-end
+  m = metadata(p)[:neighbors]
+  s = subsets(p)
+  n = length(p)
 
-function Base.getindex(method::BlockFolding, ind::Int)
-  # source and target subsets
-  nfolds = length(method.subsets)
-  source = setdiff(1:nfolds, [method.neighbors[ind]; ind])
-  target = [ind]
+  function pair(i)
+    # source and target subsets
+    source = setdiff(1:n, [m[i]; i])
+    target = [i]
 
-  # indices within subsets
-  sinds = reduce(vcat, method.subsets[source])
-  tinds = reduce(vcat, method.subsets[target])
+    # indices within subsets
+    sinds = reduce(vcat, s[source])
+    tinds = reduce(vcat, s[target])
 
-  # return views
-  train = view(method.object, sinds)
-  test  = view(method.object, tinds)
-  train, test
+    sinds, tinds
+  end
+
+  (pair(i) for i in 1:n)
 end
