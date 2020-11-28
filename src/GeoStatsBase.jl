@@ -76,6 +76,7 @@ include("mappers.jl")
 include("problems.jl")
 include("solvers.jl")
 include("solutions.jl")
+include("folding.jl")
 include("errors.jl")
 include("statistics.jl")
 include("plotrecipes.jl")
@@ -169,6 +170,12 @@ export
   covariables,
   preprocess,
   solve, solvesingle,
+
+  # folding
+  FoldingMethod,
+  RandomFolding,
+  BlockFolding,
+  BallFolding,
 
   # errors
   ErrorEstimationMethod,

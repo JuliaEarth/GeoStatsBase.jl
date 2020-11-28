@@ -51,6 +51,7 @@ testfiles = [
   "problems.jl",
   "solvers.jl",
   "solutions.jl",
+  "folding.jl",
   "errors.jl",
   "statistics.jl",
   "plotrecipes.jl",
