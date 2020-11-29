@@ -21,5 +21,6 @@ function folds end
 # IMPLEMENTATIONS
 #------------------
 include("folding/random.jl")
+include("folding/point.jl")
 include("folding/block.jl")
 include("folding/ball.jl")

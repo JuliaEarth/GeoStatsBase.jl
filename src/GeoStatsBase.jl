@@ -174,6 +174,7 @@ export
   # folding
   FoldingMethod,
   RandomFolding,
+  PointFolding,
   BlockFolding,
   BallFolding,
   folds,

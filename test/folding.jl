@@ -9,6 +9,16 @@
     @test length(collect(f)) == 10
   end
 
+  @testset "Point" begin
+    d = RegularGrid(10,10)
+    f = folds(d, PointFolding())
+    for (source, target) in f
+      @test length(source) == 99
+      @test length(target) == 1
+    end
+    @test length(collect(f)) == 100
+  end
+
   @testset "Block" begin
     d = RegularGrid(100,100)
     f = folds(d, BlockFolding((10.,10.)))
