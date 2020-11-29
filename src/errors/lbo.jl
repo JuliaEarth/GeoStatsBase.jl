@@ -33,42 +33,14 @@ LeaveBallOut(radius::Number; loss=Dict()) =
 function error(solver::AbstractLearningSolver,
                problem::LearningProblem,
                method::LeaveBallOut)
-  sdata = sourcedata(problem)
-  ovars = outputvars(task(problem))
-  ball  = method.ball
-  loss  = method.loss
-  for var in ovars
-    if var ∉ keys(loss)
-      loss[var] = defaultloss(sdata[var][1])
-    end
-  end
+  # uniform weights
+  weighting = UniformWeighting()
 
-  # folds for cross-validation
-  fs = folds(sdata, BallFolding(ball))
+  # ball folds
+  folding = BallFolding(method.ball)
 
-  # error for a fold
-  function ε(f)
-    # source and target data
-    source = view(sdata, first(f))
-    target = view(sdata, last(f))
+  wcv = WeightedCrossValidation(weighting, folding,
+                                lambda=1, loss=method.loss)
 
-    # setup and solve sub-problem
-    subproblem = LearningProblem(source, target, task(problem))
-    solution   = solve(subproblem, solver)
-
-    # loss for each variable
-    losses = map(ovars) do var
-      y = target[var][1]
-      ŷ = solution[var][1]
-      var => value(loss[var], y, ŷ)
-    end
-
-    Dict(losses)
-  end
-
-  # compute error for each fold in parallel
-  εs = foldxt(vcat, Map(ε), fs)
-
-  # combine error from different folds
-  Dict(var => mean(get.(εs, var, 0)) for var in ovars)
+  error(solver, problem, wcv)
 end

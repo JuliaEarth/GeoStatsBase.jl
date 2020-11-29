@@ -49,16 +49,17 @@ function error(solver::AbstractLearningSolver,
   tdata = targetdata(problem)
   vars = collect(features(task(problem)))
 
-  # weight samples based on the features of target data
+  # density-ratio weights
   weighting = DensityRatioWeighting(tdata, vars,
                                     estimator=method.dre,
                                     optlib=method.optlib)
 
-  # random folds without any geospatial constraint
+  # random folds
   folding = RandomFolding(method.k, method.shuffle)
 
   wcv = WeightedCrossValidation(weighting, folding,
                                 lambda=method.lambda,
                                 loss=method.loss)
+
   error(solver, problem, wcv)
 end

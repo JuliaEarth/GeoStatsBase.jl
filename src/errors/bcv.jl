@@ -30,44 +30,18 @@ BlockCrossValidation(sides; loss=Dict()) =
 function error(solver::AbstractLearningSolver,
                problem::LearningProblem,
                method::BlockCrossValidation)
-  sdata = sourcedata(problem)
-  ovars = outputvars(task(problem))
-  sides = method.sides
-  loss  = method.loss
-  for var in ovars
-    if var ∉ keys(loss)
-      loss[var] = defaultloss(sdata[var][1])
-    end
-  end
+  s = method.sides
+  n = ncoords(sourcedata(problem))
+  l = length(s) > 1 ? s : ntuple(i->s, n)
 
-  # folds for cross-validation
-  bsides = length(sides) > 1 ? sides : ntuple(i->sides, ncoords(sdata))
-  fs = folds(sdata, BlockFolding(bsides))
+  # uniform weights
+  weighting = UniformWeighting()
 
-  # error for a fold
-  function ε(f)
-    # source and target data
-    source = view(sdata, first(f))
-    target = view(sdata, last(f))
+  # block folds
+  folding = BlockFolding(l)
 
-    # setup and solve sub-problem
-    subproblem = LearningProblem(source, target, task(problem))
-    solution   = solve(subproblem, solver)
+  wcv = WeightedCrossValidation(weighting, folding,
+                                lambda=1, loss=method.loss)
 
-    # loss for each variable
-    losses = map(ovars) do var
-      y = target[var]
-      ŷ = solution[var]
-      ℒ = value(loss[var], y, ŷ, AggMode.Mean())
-      var => ℒ
-    end
-
-    Dict(losses)
-  end
-
-  # compute error for each fold in parallel
-  εs = foldxt(vcat, Map(ε), fs)
-
-  # combine error from different folds
-  Dict(var => mean(get.(εs, var, 0)) for var in ovars)
+  error(solver, problem, wcv)
 end
