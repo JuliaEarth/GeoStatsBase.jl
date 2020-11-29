@@ -58,5 +58,6 @@ weight(object, method::WeightingMethod) =
 # ----------------
 # IMPLEMENTATIONS
 # ----------------
+include("weighting/uniform.jl")
 include("weighting/block.jl")
 include("weighting/densratio.jl")

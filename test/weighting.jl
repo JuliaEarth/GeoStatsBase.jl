@@ -1,9 +1,19 @@
 @testset "Weighting" begin
+  @testset "UniformWeighting" begin
+    d = RegularGrid(100,100)
+    s = georef((z=rand(100,100),))
+    for o in [d, s]
+      w = weight(o, UniformWeighting())
+      @test length(w) == nelms(o)
+      @test all(w .== 1)
+    end
+  end
+
   @testset "BlockWeighting" begin
-    sdomain = RegularGrid(100,100)
-    sdata = georef(DataFrame(z=rand(10000)), RegularGrid(100,100))
-    for d in [sdomain, sdata]
-      w = weight(d, BlockWeighting(10,10))
+    d = RegularGrid(100,100)
+    s = georef((z=rand(100,100),))
+    for o in [d, s]
+      w = weight(o, BlockWeighting(10,10))
       @test length(unique(w)) == 1
       @test w[1] == 1 / 100
     end

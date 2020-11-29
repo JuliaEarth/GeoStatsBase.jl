@@ -262,6 +262,7 @@ export
   # weighting
   SpatialWeights,
   WeightingMethod,
+  UniformWeighting,
   BlockWeighting,
   DensityRatioWeighting,
   weight,
