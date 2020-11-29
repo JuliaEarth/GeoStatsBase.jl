@@ -181,6 +181,7 @@ export
 
   # errors
   ErrorEstimationMethod,
+  LeaveOneOut,
   LeaveBallOut,
   CrossValidation,
   BlockCrossValidation,

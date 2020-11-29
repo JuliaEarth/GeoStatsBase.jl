@@ -20,6 +20,7 @@ function error end
 # ----------------
 # IMPLEMENTATIONS
 # ----------------
+include("errors/loo.jl")
 include("errors/lbo.jl")
 include("errors/cv.jl")
 include("errors/bcv.jl")
