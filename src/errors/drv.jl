@@ -10,6 +10,7 @@ ratio estimation, and then used in `k`-fold weighted cross-validation.
 
 ## Parameters
 
+* `shuffle`   - Shuffle the data before folding (default to `true`)
 * `estimator` - Density ratio estimator (default to `LSIF()`)
 * `optlib`    - Optimization library (default to `default_optlib(estimator)`)
 * `lambda`    - Power of density ratios (default to `1.0`)
@@ -20,37 +21,43 @@ for a list of supported estimators.
 
 ## References
 
-* TODO
+* Hoffimann et al. 2020. [Geostatistical Learning: Challenges and Opportunities]
+  (TODO-LINK)
 """
 struct DensityRatioValidation{T,E,O} <: ErrorEstimationMethod
   k::Int
+  shuffle::Bool
   lambda::T
   dre::E
   optlib::O
   loss::Dict{Symbol,SupervisedLoss}
 end
 
-function DensityRatioValidation(k::Int; lambda=1.0, loss=Dict(),
+function DensityRatioValidation(k::Int; shuffle=true, lambda=1.0, loss=Dict(),
                                 estimator=LSIF(), optlib=default_optlib(estimator))
   @assert k > 0 "number of folds must be positive"
   @assert 0 ≤ lambda ≤ 1 "lambda must lie in [0,1]"
   T = typeof(lambda)
   E = typeof(estimator)
   O = typeof(optlib)
-  DensityRatioValidation{T,E,O}(k, lambda, estimator, optlib, loss)
+  DensityRatioValidation{T,E,O}(k, shuffle, lambda, estimator, optlib, loss)
 end
 
 function error(solver::AbstractLearningSolver,
                problem::LearningProblem,
                method::DensityRatioValidation)
-  # weight samples based on the features of target data
   tdata = targetdata(problem)
   vars = collect(features(task(problem)))
-  weighter = DensityRatioWeighting(tdata, vars,
-                                   estimator=method.dre,
-                                   optlib=method.optlib)
-  wcv = WeightedCrossValidation(weighter,
-                                method.k, shuffle=true,
+
+  # weight samples based on the features of target data
+  weighting = DensityRatioWeighting(tdata, vars,
+                                    estimator=method.dre,
+                                    optlib=method.optlib)
+
+  # random folds without any geospatial constraint
+  folding = RandomFolding(method.k, method.shuffle)
+
+  wcv = WeightedCrossValidation(weighting, folding,
                                 lambda=method.lambda,
                                 loss=method.loss)
   error(solver, problem, wcv)

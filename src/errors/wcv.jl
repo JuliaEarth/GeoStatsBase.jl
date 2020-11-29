@@ -3,13 +3,13 @@
 # ------------------------------------------------------------------
 
 """
-    WeightedCrossValidation(weighter, k; shuffle=true,
-                            lambda=1.0, loss=Dict())
+    WeightedCrossValidation(weigthing, folding; lambda=1.0, loss=Dict())
 
-Weighted cross-validation in which samples are split into `k` folds
-and are weighted with `weighter` method. Weights are raised to `lambda`
-power in `[0,1]`. Optionally, `shuffle` the samples in folds and specify
-`loss` function from `LossFunctions.jl` for some of the variables.
+An error estimation method which samples are weighted with
+`weighting` method and split into folds with `folding` method.
+Weights are raised to `lambda` power in `[0,1]`. Optionally,
+specify `loss` function from `LossFunctions.jl` for some of
+the variables.
 
 ## References
 
@@ -18,22 +18,24 @@ power in `[0,1]`. Optionally, `shuffle` the samples in folds and specify
 * Sugiyama et al. 2007. [Covariate shift adaptation by importance weighted
   cross validation](http://www.jmlr.org/papers/volume8/sugiyama07a/sugiyama07a.pdf)
 """
-struct WeightedCrossValidation{W<:WeightingMethod,T<:Real} <: ErrorEstimationMethod
-  weighter::W
-  k::Int
-  shuffle::Bool
+struct WeightedCrossValidation{W<:WeightingMethod,
+                               F<:FoldingMethod,
+                               T<:Real} <: ErrorEstimationMethod
+  weighting::W
+  folding::F
   lambda::T
   loss::Dict{Symbol,SupervisedLoss}
 
-  function WeightedCrossValidation{W,T}(weighter, k, shuffle, lambda, loss) where {W,T}
+  function WeightedCrossValidation{W,F,T}(weighting, folding,
+                                          lambda, loss) where {W,F,T}
     @assert 0 ≤ lambda ≤ 1 "lambda must lie in [0,1]"
-    new(weighter, k, shuffle, lambda, loss)
+    new(weighting, folding, lambda, loss)
   end
 end
 
-WeightedCrossValidation(weighter::W, k::Int; shuffle=true,
-                        lambda::T=one(T), loss=Dict()) where {W,T} =
-  WeightedCrossValidation{W,T}(weighter, k, shuffle, lambda, loss)
+WeightedCrossValidation(weighting::W, folding::F;
+                        lambda::T=one(T), loss=Dict()) where {W,F,T} =
+  WeightedCrossValidation{W,F,T}(weighting, folding, lambda, loss)
 
 function error(solver::AbstractLearningSolver,
                problem::LearningProblem,
@@ -41,11 +43,10 @@ function error(solver::AbstractLearningSolver,
   # retrieve problem info
   sdata = sourcedata(problem)
   ovars = outputvars(task(problem))
-  weighter = method.weighter
-  nfolds   = method.k
-  shuffle  = method.shuffle
-  lambda   = method.lambda
-  loss     = method.loss
+  weighting = method.weighting
+  folding   = method.folding
+  lambda    = method.lambda
+  loss      = method.loss
   for var in ovars
     if var ∉ keys(loss)
       loss[var] = defaultloss(sdata[var][1])
@@ -53,10 +54,10 @@ function error(solver::AbstractLearningSolver,
   end
 
   # weight all samples
-  ws = weight(sdata, weighter) .^ lambda
+  ws = weight(sdata, weighting) .^ lambda
 
   # folds for cross-validation
-  fs = folds(sdata, RandomFolding(nfolds, shuffle))
+  fs = folds(sdata, folding)
 
   # error for a fold
   function ε(f)
