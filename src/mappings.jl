@@ -3,21 +3,21 @@
 # ------------------------------------------------------------------
 
 """
-    AbstractMapper
+    MappingMethod
 
-A mapping strategy for mapping spatial data onto a domain.
+A method for mapping spatial data onto a domain.
 """
-abstract type AbstractMapper end
+abstract type MappingMethod end
 
 """
-    map(spatialdata, domain, targetvars, mapper)
+    map(sdata, sdomain, targetvars, method)
 
-Map the `targetvars` in `spatialdata` to `domain` with `mapper`.
+Map the `targetvars` in `sdata` to `sdomain` with mapping `method`.
 """
 function map end
 
 # ----------------
 # IMPLEMENTATIONS
 # ----------------
-include("mappers/nearest.jl")
-include("mappers/copy.jl")
+include("mappings/nearest.jl")
+include("mappings/copy.jl")

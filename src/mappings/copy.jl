@@ -3,28 +3,28 @@
 # ------------------------------------------------------------------
 
 """
-    CopyMapper
+    CopyMapping
 
-A mapping strategy in which data points are copied directly to the
+A mapping method in which data points are copied directly to the
 domain at specified locations.
 """
-struct CopyMapper{V1,V2} <: AbstractMapper
+struct CopyMapping{V1,V2} <: MappingMethod
   orig::V1
   dest::V2
 end
 
-CopyMapper(dest) = CopyMapper(nothing, dest)
-CopyMapper() = CopyMapper(nothing, nothing)
+CopyMapping(dest) = CopyMapping(nothing, dest)
+CopyMapping() = CopyMapping(nothing, nothing)
 
-function map(sdata, sdomain, targetvars, mapper::CopyMapper)
+function map(sdata, sdomain, targetvars, method::CopyMapping)
   @assert targetvars ⊆ name.(variables(sdata)) "target variables must be present in spatial data"
 
   # dictionary with mappings
   mappings = Dict(var => Dict{Int,Int}() for var in targetvars)
 
   # retrieve origin and destination indices
-  orig = isnothing(mapper.orig) ? (1:nelms(sdata)) : mapper.orig
-  dest = isnothing(mapper.dest) ? (1:nelms(sdata)) : mapper.dest
+  orig = isnothing(method.orig) ? (1:nelms(sdata)) : method.orig
+  dest = isnothing(method.dest) ? (1:nelms(sdata)) : method.dest
 
   @assert length(orig) == length(dest) "invalid mapping specification"
 

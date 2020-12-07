@@ -3,14 +3,14 @@
 # ------------------------------------------------------------------
 
 """
-    NearestMapper
+    NearestMapping
 
-A mapping strategy in which data points are assigned to their nearest
+A mapping method in which data points are assigned to their nearest
 point in the domain.
 """
-struct NearestMapper <: AbstractMapper end
+struct NearestMapping <: MappingMethod end
 
-function map(sdata, sdomain, targetvars, mapper::NearestMapper)
+function map(sdata, sdomain, targetvars, ::NearestMapping)
   N = ncoords(sdata)
   T = coordtype(sdata)
 

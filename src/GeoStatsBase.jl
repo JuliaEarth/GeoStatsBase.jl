@@ -72,7 +72,7 @@ include("discretizing.jl")
 include("sampling.jl")
 include("geoops.jl")
 include("learning.jl")
-include("mappers.jl")
+include("mappings.jl")
 include("problems.jl")
 include("solvers.jl")
 include("solutions.jl")
@@ -96,7 +96,7 @@ export
   domain,
   values,
 
-  # domains
+  # spatial domains
   AbstractDomain,
   PointSet,
   RegularGrid,
@@ -109,10 +109,10 @@ export
   variables,
   georef,
 
-  # mappers
-  AbstractMapper,
-  NearestMapper,
-  CopyMapper,
+  # mapping
+  MappingMethod,
+  NearestMapping,
+  CopyMapping,
 
   # learning tasks
   AbstractLearningTask,

@@ -27,7 +27,7 @@
                            neighborhood=BallNeighborhood(10.),
                            minneighbors=1, maxneighbors=10,
                            marginal=Normal(), path=LinearPath(),
-                           mapper=NearestMapper()))
+                           mapping=NearestMapping()))
 
     Random.seed!(1234)
     usol = solve(prob1, solver)

@@ -19,7 +19,7 @@ and in case there are none, use a `marginal` distribution.
 * `maxneighbors` - Maximum number of neighbors
 * `marginal`     - Marginal distribution
 * `path`         - Simulation path
-* `mapper`       - Data mapping method
+* `mapping`      - Data mapping method
 """
 @simsolver SeqSim begin
   @param estimator
@@ -28,7 +28,7 @@ and in case there are none, use a `marginal` distribution.
   @param maxneighbors
   @param marginal
   @param path
-  @param mapper
+  @param mapping
 end
 
 function preprocess(problem::SimulationProblem, solver::SeqSim)
@@ -53,9 +53,8 @@ function preprocess(problem::SimulationProblem, solver::SeqSim)
       bsearcher = BoundedSearch(searcher, maxneighbors)
 
       # determine data mappings
-      mapper   = varparams.mapper
-      mappings = if hasdata(problem)
-        map(pdata, pdomain, (var,), mapper)[var]
+      vmappings = if hasdata(problem)
+        map(pdata, pdomain, (var,), varparams.mapping)[var]
       else
         Dict()
       end
@@ -67,7 +66,7 @@ function preprocess(problem::SimulationProblem, solver::SeqSim)
                       marginal=varparams.marginal,
                       path=varparams.path,
                       bsearcher=bsearcher,
-                      mappings=mappings)
+                      mappings=vmappings)
     end
   end
 
