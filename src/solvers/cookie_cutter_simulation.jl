@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------
 # Licensed under the MIT License. See LICENSE in the project root.
 # ------------------------------------------------------------------
-# TODO: review
+
 """
     CookieCutter(master, others)
 
@@ -35,7 +35,6 @@ function solve(problem::SimulationProblem, solver::CookieCutter)
   pdomain = domain(problem)
   pvars   = variables(problem)
   preals  = nreals(problem)
-  pmapper = mapper(problem)
 
   # master variable
   mvars = variables(solver.master)
@@ -50,11 +49,11 @@ function solve(problem::SimulationProblem, solver::CookieCutter)
 
   # define master and others problem
   if hasdata(problem)
-    mproblem = SimulationProblem(pdata, pdomain, mvar, preals, mapper=pmapper)
-    oproblem = SimulationProblem(pdata, pdomain, first.(ovars), preals, mapper=pmapper)
+    mproblem = SimulationProblem(pdata, pdomain, mvar, preals)
+    oproblem = SimulationProblem(pdata, pdomain, first.(ovars), preals)
   else
-    mproblem = SimulationProblem(pdomain, mvar => mtype, preals, mapper=pmapper)
-    oproblem = SimulationProblem(pdomain, ovars, preals, mapper=pmapper)
+    mproblem = SimulationProblem(pdomain, mvar => mtype, preals)
+    oproblem = SimulationProblem(pdomain, ovars, preals)
   end
 
   # realizations of master variable

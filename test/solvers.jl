@@ -26,7 +26,8 @@
     solver = SeqSim(:z => (estimator=DummyEstimator(),
                            neighborhood=BallNeighborhood(10.),
                            minneighbors=1, maxneighbors=10,
-                           marginal=Normal(), path=LinearPath()))
+                           marginal=Normal(), path=LinearPath(),
+                           mapper=NearestMapper()))
 
     Random.seed!(1234)
     usol = solve(prob1, solver)

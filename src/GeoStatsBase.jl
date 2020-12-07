@@ -145,10 +145,8 @@ export
   sourcedata,
   targetdata,
   task,
-  mapper,
   variables,
   coordinates,
-  datamap,
   hasdata,
   nreals,
 

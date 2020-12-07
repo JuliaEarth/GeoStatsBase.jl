@@ -19,6 +19,7 @@ and in case there are none, use a `marginal` distribution.
 * `maxneighbors` - Maximum number of neighbors
 * `marginal`     - Marginal distribution
 * `path`         - Simulation path
+* `mapper`       - Data mapping method
 """
 @simsolver SeqSim begin
   @param estimator
@@ -27,10 +28,12 @@ and in case there are none, use a `marginal` distribution.
   @param maxneighbors
   @param marginal
   @param path
+  @param mapper
 end
 
 function preprocess(problem::SimulationProblem, solver::SeqSim)
   # retrieve problem info
+  pdata = data(problem)
   pdomain = domain(problem)
 
   # result of preprocessing
@@ -49,13 +52,22 @@ function preprocess(problem::SimulationProblem, solver::SeqSim)
       searcher  = NeighborhoodSearch(pdomain, neigh)
       bsearcher = BoundedSearch(searcher, maxneighbors)
 
+      # determine data mappings
+      mapper   = varparams.mapper
+      mappings = if hasdata(problem)
+        map(pdata, pdomain, (var,), mapper)[var]
+      else
+        Dict()
+      end
+
       # save preprocessed input
       preproc[var] = (estimator=varparams.estimator,
                       minneighbors=varparams.minneighbors,
                       maxneighbors=varparams.maxneighbors,
                       marginal=varparams.marginal,
                       path=varparams.path,
-                      bsearcher=bsearcher)
+                      bsearcher=bsearcher,
+                      mappings=mappings)
     end
   end
 
@@ -72,7 +84,8 @@ function solvesingle(problem::SimulationProblem, covars::NamedTuple,
 
   varreals = map(covars.names) do var
     # unpack preprocessed parameters
-    estimator, minneighbors, maxneighbors, marginal, path, bsearcher = preproc[var]
+    estimator, minneighbors, maxneighbors,
+    marginal, path, bsearcher, mappings = preproc[var]
 
     # determine value type
     V = variables(problem)[var]
@@ -89,7 +102,7 @@ function solvesingle(problem::SimulationProblem, covars::NamedTuple,
 
     # keep track of simulated locations
     simulated = falses(nelms(pdomain))
-    for (loc, datloc) in datamap(problem, var)
+    for (loc, datloc) in mappings
       realization[loc] = pdata[var][datloc]
       simulated[loc] = true
     end

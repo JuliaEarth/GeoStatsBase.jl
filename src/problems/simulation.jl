@@ -33,41 +33,26 @@ with 100 realizations:
 julia> SimulationProblem(sdomain, (:porosity => Float64, :facies => Int), 100)
 ```
 """
-struct SimulationProblem{S,D,M} <: AbstractProblem
-  # input fields
+struct SimulationProblem{S,D} <: AbstractProblem
   sdata::S
   sdomain::D
-  mapper::M
   targetvars::Dict{Symbol,DataType}
   nreals::Int
 
-  # state fields
-  maps::Dict{Symbol,Dict{Int,Int}}
-
-  function SimulationProblem{S,D,M}(sdata, sdomain, targetvars, nreals, mapper) where {S,D,M}
+  function SimulationProblem{S,D}(sdata, sdomain, targetvars, nreals) where {S,D}
     pnames = Tuple(keys(targetvars))
 
     @assert !isempty(pnames) "target variables must be specified"
     @assert nreals > 0 "number of realizations must be positive"
 
-    if isnothing(sdata)
-      maps   = Dict(var => Dict() for var in pnames)
-    else
-      vnames = name.(variables(sdata))
-      dmaps  = map(sdata, sdomain, vnames, mapper)
-      omaps  = Dict(var => Dict() for var in pnames if var ∉ vnames)
-      maps   = merge(dmaps, omaps)
-    end
-
-    new(sdata, sdomain, mapper, targetvars, nreals, maps)
+    new(sdata, sdomain, targetvars, nreals)
   end
 end
 
 const VarType      = Pair{Symbol,DataType}
 const VarOrVarType = Union{Symbol,VarType}
 
-function SimulationProblem(sdata::S, sdomain::D, vars::NTuple{N,VarOrVarType}, nreals::Int;
-                           mapper::M=NearestMapper()) where {S,D,M,N}
+function SimulationProblem(sdata::S, sdomain::D, vars::NTuple{N,VarOrVarType}, nreals::Int) where {S,D,N}
   datavars = Dict(name(var) => mactype(var) for var in variables(sdata))
 
   # pairs with variable names and types
@@ -93,20 +78,17 @@ function SimulationProblem(sdata::S, sdomain::D, vars::NTuple{N,VarOrVarType}, n
 
   @assert coordtype(sdata) == coordtype(sdomain) "data and domain must have the same coordinate type"
 
-  SimulationProblem{S,D,M}(sdata, sdomain, targetvars, nreals, mapper)
+  SimulationProblem{S,D}(sdata, sdomain, targetvars, nreals)
 end
 
-SimulationProblem(sdata::S, sdomain::D, var::VarOrVarType, nreals::Int;
-                  mapper::M=NearestMapper()) where {S,D,M} =
-  SimulationProblem(sdata, sdomain, (var,), nreals; mapper=mapper)
+SimulationProblem(sdata::S, sdomain::D, var::VarOrVarType, nreals::Int) where {S,D} =
+  SimulationProblem(sdata, sdomain, (var,), nreals)
 
-SimulationProblem(sdomain::D, vars::NTuple{N,VarType}, nreals::Int;
-                  mapper::M=NearestMapper()) where {D,M,N} =
-  SimulationProblem{Nothing,D,M}(nothing, sdomain, Dict(vars), nreals, mapper)
+SimulationProblem(sdomain::D, vars::NTuple{N,VarType}, nreals::Int) where {D,N} =
+  SimulationProblem{Nothing,D}(nothing, sdomain, Dict(vars), nreals)
 
-SimulationProblem(sdomain::D, var::VarType, nreals::Int;
-                  mapper::M=NearestMapper()) where {D,M} =
-  SimulationProblem(sdomain, (var,), nreals; mapper=mapper)
+SimulationProblem(sdomain::D, var::VarType, nreals::Int) where {D} =
+  SimulationProblem(sdomain, (var,), nreals)
 
 """
     data(problem)
@@ -123,34 +105,11 @@ Return the spatial domain of the simulation `problem`.
 domain(problem::SimulationProblem) = problem.sdomain
 
 """
-    mapper(problem)
-
-Return the mapper of the simulation `problem`.
-"""
-mapper(problem::SimulationProblem) = problem.mapper
-
-"""
     variables(problem)
 
 Return the target variables of the simulation `problem` and their types.
 """
 variables(problem::SimulationProblem) = problem.targetvars
-
-"""
-    datamap(problem, targetvar)
-
-Return the mapping from domain locations to data locations for the
-`targetvar` of the `problem`.
-"""
-datamap(problem::SimulationProblem, var::Symbol) = problem.maps[var]
-
-"""
-    datamap(problem)
-
-Return the mappings from domain locations to data locations for all
-the variables of the `problem`.
-"""
-datamap(problem::SimulationProblem) = problem.maps
 
 """
     hasdata(problem)
