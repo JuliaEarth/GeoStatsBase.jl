@@ -24,7 +24,6 @@ julia> EstimationProblem(sdata, sdomain, (:precipitation,:CO₂))
 ```
 """
 struct EstimationProblem{S,D} <: AbstractProblem
-  # input fields
   sdata::S
   sdomain::D
   targetvars::Dict{Symbol,DataType}
