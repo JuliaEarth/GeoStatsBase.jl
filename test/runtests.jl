@@ -9,7 +9,9 @@ using LinearAlgebra
 using Plots, VisualRegressionTests
 using Test, Pkg, Random
 
+# load some learning models from MLJ
 using MLJ: @load
+dtree = @load DecisionTreeClassifier verbosity=0
 
 # workaround GR warnings
 ENV["GKSwstype"] = "100"

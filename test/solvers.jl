@@ -65,8 +65,7 @@
     𝒫₂ = LearningProblem(Sv, Tv, 𝓉)
 
     # pointwise solver
-    m = @load DecisionTreeClassifier
-    ℒ = PointwiseLearn(m)
+    ℒ = PointwiseLearn(dtree)
 
     R₁ = solve(𝒫₁, ℒ)
     R₂ = solve(𝒫₂, ℒ)
