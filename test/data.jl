@@ -6,6 +6,14 @@
     @test size(t) == (100,1)
     @test propertynames(t) == [:z]
 
+    # data equality
+    d1 = georef((z=[1,2,3],))
+    d2 = georef((z=[1,2,3],))
+    d3 = georef((z=[4,5,6],))
+    @test d1 == d2
+    @test d1 != d3
+    @test d2 != d3
+
     # bidimensional views
     d = georef((z=rand(10,10),))
     v = view(d, 1:3, [:z])

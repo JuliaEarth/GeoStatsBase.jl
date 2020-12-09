@@ -11,6 +11,10 @@ subtype their domains from this type, and implement the methods in
 """
 abstract type AbstractData end
 
+==(sdata₁::AbstractData, sdata₂::AbstractData) =
+  domain(sdata₁) == domain(sdata₂) &&
+  values(sdata₁) == values(sdata₂)
+
 # -----------
 # TABLES API
 # -----------

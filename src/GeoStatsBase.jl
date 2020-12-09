@@ -30,7 +30,7 @@ using Parameters
 
 import Tables
 import MLJModelInterface
-import Base: values
+import Base: values, ==
 import Base: in, filter, map, split, error
 import StatsBase: fit, sample, varcorrection
 import Statistics: mean, var, quantile
