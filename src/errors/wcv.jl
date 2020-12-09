@@ -61,21 +61,19 @@ function error(solver::AbstractLearningSolver,
 
   # error for a fold
   function ε(f)
-    # source and target data
-    sinds, tinds = f
-    source = view(sdata, sinds)
-    target = view(sdata, tinds)
-
     # setup and solve sub-problem
-    subproblem = LearningProblem(source, target, task(problem))
+    subproblem = _subproblem(problem, f)
     solution   = solve(subproblem, solver)
+
+    # holdout set and weights
+    holdout = _holdout(problem, f)
+    weights = view(ws, f[2])
 
     # loss for each variable
     losses = map(ovars) do var
-      y = target[var]
+      y = holdout[var]
       ŷ = solution[var]
-      w = view(ws, tinds)
-      ℒ = value(loss[var], y, ŷ, AggMode.WeightedSum(w)) / length(y)
+      ℒ = value(loss[var], y, ŷ, AggMode.WeightedSum(weights)) / length(y)
       var => ℒ
     end
 
@@ -88,3 +86,11 @@ function error(solver::AbstractLearningSolver,
   # combine error from different folds
   Dict(var => mean(get.(εs, var, 0)) for var in ovars)
 end
+
+function _subproblem(p::LearningProblem, f)
+  source = view(sourcedata(p), f[1])
+  target = view(sourcedata(p), f[2])
+  LearningProblem(source, target, task(p))
+end
+
+_holdout(p::LearningProblem, f) = view(sourcedata(p), f[2])
