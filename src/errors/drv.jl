@@ -47,7 +47,7 @@ function error(solver::AbstractLearningSolver,
                problem::LearningProblem,
                method::DensityRatioValidation)
   tdata = targetdata(problem)
-  vars = collect(features(task(problem)))
+  vars = collect(inputvars(task(problem)))
 
   # density-ratio weights
   weighting = DensityRatioWeighting(tdata, vars,

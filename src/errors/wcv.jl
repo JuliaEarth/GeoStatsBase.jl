@@ -37,16 +37,11 @@ WeightedCrossValidation(weighting::W, folding::F;
                         lambda::T=one(T), loss=Dict()) where {W,F,T} =
   WeightedCrossValidation{W,F,T}(weighting, folding, lambda, loss)
 
-function error(solver::AbstractLearningSolver,
-               problem::LearningProblem,
-               method::WeightedCrossValidation)
+function error(solver, problem, method::WeightedCrossValidation)
   # retrieve problem info
-  sdata = sourcedata(problem)
-  ovars = outputvars(task(problem))
-  weighting = method.weighting
-  folding   = method.folding
-  lambda    = method.lambda
-  loss      = method.loss
+  sdata = _foldable(problem)
+  ovars = _outputvars(problem)
+  loss  = method.loss
   for var in ovars
     if var ∉ keys(loss)
       loss[var] = defaultloss(sdata[var][1])
@@ -54,16 +49,16 @@ function error(solver::AbstractLearningSolver,
   end
 
   # weight all samples
-  ws = weight(sdata, weighting) .^ lambda
+  ws = weight(sdata, method.weighting) .^ method.lambda
 
   # folds for cross-validation
-  fs = folds(sdata, folding)
+  fs = folds(sdata, method.folding)
 
   # error for a fold
   function ε(f)
     # setup and solve sub-problem
     subproblem = _subproblem(problem, f)
-    solution   = solve(subproblem, solver)
+    solution   = _solve(subproblem, solver)
 
     # holdout set and weights
     holdout = _holdout(problem, f)
@@ -87,10 +82,35 @@ function error(solver::AbstractLearningSolver,
   Dict(var => mean(get.(εs, var, 0)) for var in ovars)
 end
 
+# foldable data of the problem
+_foldable(p::EstimationProblem) = data(p)
+_foldable(p::LearningProblem) = sourcedata(p)
+
+# output variables of the problem
+_outputvars(p::EstimationProblem) = name.(variables(p))
+_outputvars(p::LearningProblem) = outputvars(task(p))
+
+# subproblem for a given fold
+function _subproblem(p::EstimationProblem, f)
+  sdat = view(data(p), f[1])
+  sdom = view(domain(data(p)), f[2])
+  vars = name.(variables(p))
+  EstimationProblem(sdat, sdom, vars)
+end
 function _subproblem(p::LearningProblem, f)
   source = view(sourcedata(p), f[1])
   target = view(sourcedata(p), f[2])
   LearningProblem(source, target, task(p))
 end
 
+# solution for a given fold
+function _solve(p::EstimationProblem, solver)
+  vars = name.(variables(p))
+  sol  = solve(p, solver)
+  reduce(hcat, [sol[v] for v in vars])
+end
+_solve(p::LearningProblem, solver) = solve(p, solver)
+
+# holdout set for a given fold
+_holdout(p::EstimationProblem, f) = view(data(p), f[2])
 _holdout(p::LearningProblem, f) = view(sourcedata(p), f[2])

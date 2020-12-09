@@ -30,9 +30,7 @@ LeaveBallOut(ball::BallNeighborhood; loss=Dict()) =
 LeaveBallOut(radius::Number; loss=Dict()) =
   LeaveBallOut(BallNeighborhood(radius), loss=loss)
 
-function error(solver::AbstractLearningSolver,
-               problem::LearningProblem,
-               method::LeaveBallOut)
+function error(solver, problem, method::LeaveBallOut)
   # uniform weights
   weighting = UniformWeighting()
 

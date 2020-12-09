@@ -27,11 +27,9 @@ end
 BlockCrossValidation(sides; loss=Dict()) =
   BlockCrossValidation{typeof(sides)}(sides, loss)
 
-function error(solver::AbstractLearningSolver,
-               problem::LearningProblem,
-               method::BlockCrossValidation)
+function error(solver, problem, method::BlockCrossValidation)
   s = method.sides
-  n = ncoords(sourcedata(problem))
+  n = ncoords(_foldable(problem))
   l = length(s) > 1 ? s : ntuple(i->s, n)
 
   # uniform weights

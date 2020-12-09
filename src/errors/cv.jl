@@ -26,9 +26,7 @@ end
 CrossValidation(k::Int; shuffle=true, loss=Dict()) =
   CrossValidation(k, shuffle, loss)
 
-function error(solver::AbstractLearningSolver,
-               problem::LearningProblem,
-               method::CrossValidation)
+function error(solver, problem, method::CrossValidation)
   # uniform weights
   weighting = UniformWeighting()
 

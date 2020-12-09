@@ -19,9 +19,7 @@ end
 
 LeaveOneOut(; loss=Dict()) = LeaveOneOut(loss)
 
-function error(solver::AbstractLearningSolver,
-               problem::LearningProblem,
-               method::LeaveOneOut)
+function error(solver, problem, method::LeaveOneOut)
   # uniform weights
   weighting = UniformWeighting()
 
