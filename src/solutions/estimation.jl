@@ -7,18 +7,21 @@
 
 A solution to a spatial estimation problem.
 """
-struct EstimationSolution{𝒟,ℳ,𝒱}
-  domain::𝒟
-  mean::ℳ
-  variance::𝒱
+struct EstimationSolution{D,M,V}
+  domain::D
+  mean::M
+  variance::V
 end
 
 # -------------
 # VARIABLE API
 # -------------
 
-Base.getindex(solution::EstimationSolution, var::Symbol) =
-  (mean=solution.mean[var], variance=solution.variance[var])
+function Base.getindex(solution::EstimationSolution, var::Symbol)
+  vars = (var, Symbol(var,"var"))
+  vals = (solution.mean[var], solution.variance[var])
+  georef((; zip(vars, vals)...), solution.domain)
+end
 
 # ------------
 # IO methods
