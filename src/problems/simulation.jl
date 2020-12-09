@@ -2,17 +2,20 @@
 # Licensed under the MIT License. See LICENSE in the project root.
 # ------------------------------------------------------------------
 
+const VarType      = Pair{Symbol,DataType}
+const VarOrVarType = Union{Symbol,VarType}
+
 """
-    SimulationProblem(sdata, sdomain, targetvars, nreals)
-    SimulationProblem(sdomain, targetvars, nreals)
+    SimulationProblem(sdata, sdomain, vars, nreals)
+    SimulationProblem(sdomain, vars, nreals)
 
 A spatial simulation problem on a given spatial domain `sdomain`
-in which the variables to be simulated are listed in `targetvars`.
+in which the variables to be simulated are listed in `vars`.
 
 For conditional simulation, the data of the problem is stored in
 spatial data `sdata`.
 
-For unconditional simulation, a list of pairs `targetvars` must be
+For unconditional simulation, a list of pairs `vars` must be
 provided mapping variable names to their types.
 
 In both cases, a number `nreals` of realizations is requested.
@@ -33,26 +36,25 @@ with 100 realizations:
 julia> SimulationProblem(sdomain, (:porosity => Float64, :facies => Int), 100)
 ```
 """
-struct SimulationProblem{S,D} <: AbstractProblem
+struct SimulationProblem{S,D,N} <: AbstractProblem
   sdata::S
   sdomain::D
-  targetvars::Dict{Symbol,DataType}
+  vars::NTuple{N,Variable}
   nreals::Int
 
-  function SimulationProblem{S,D}(sdata, sdomain, targetvars, nreals) where {S,D}
-    pnames = Tuple(keys(targetvars))
+  function SimulationProblem{S,D,N}(sdata, sdomain, vars, nreals) where {S,D,N}
+    pnames = name.(vars)
 
     @assert !isempty(pnames) "target variables must be specified"
     @assert nreals > 0 "number of realizations must be positive"
 
-    new(sdata, sdomain, targetvars, nreals)
+    new(sdata, sdomain, vars, nreals)
   end
 end
 
-const VarType      = Pair{Symbol,DataType}
-const VarOrVarType = Union{Symbol,VarType}
-
 function SimulationProblem(sdata::S, sdomain::D, vars::NTuple{N,VarOrVarType}, nreals::Int) where {S,D,N}
+  @assert coordtype(sdata) == coordtype(sdomain) "data and domain must have the same coordinate type"
+
   datavars = Dict(name(var) => mactype(var) for var in variables(sdata))
 
   # pairs with variable names and types
@@ -74,18 +76,16 @@ function SimulationProblem(sdata::S, sdomain::D, vars::NTuple{N,VarOrVarType}, n
     end
   end
 
-  targetvars = Dict(varstypes)
+  vars = Tuple(Variable(var, V) for (var, V) in varstypes)
 
-  @assert coordtype(sdata) == coordtype(sdomain) "data and domain must have the same coordinate type"
-
-  SimulationProblem{S,D}(sdata, sdomain, targetvars, nreals)
+  SimulationProblem{S,D,N}(sdata, sdomain, vars, nreals)
 end
 
 SimulationProblem(sdata::S, sdomain::D, var::VarOrVarType, nreals::Int) where {S,D} =
   SimulationProblem(sdata, sdomain, (var,), nreals)
 
 SimulationProblem(sdomain::D, vars::NTuple{N,VarType}, nreals::Int) where {D,N} =
-  SimulationProblem{Nothing,D}(nothing, sdomain, Dict(vars), nreals)
+  SimulationProblem{Nothing,D,N}(nothing, sdomain, Tuple(Variable(n, t) for (n, t) in vars), nreals)
 
 SimulationProblem(sdomain::D, var::VarType, nreals::Int) where {D} =
   SimulationProblem(sdomain, (var,), nreals)
@@ -109,7 +109,7 @@ domain(problem::SimulationProblem) = problem.sdomain
 
 Return the target variables of the simulation `problem` and their types.
 """
-variables(problem::SimulationProblem) = problem.targetvars
+variables(problem::SimulationProblem) = problem.vars
 
 """
     hasdata(problem)
@@ -135,7 +135,7 @@ function Base.show(io::IO, problem::SimulationProblem)
 end
 
 function Base.show(io::IO, ::MIME"text/plain", problem::SimulationProblem)
-  vars = ["$var ($T)" for (var,T) in problem.targetvars]
+  vars = ["$(name(v)) ($(mactype(v)))" for v in problem.vars]
   println(io, problem)
   if problem.sdata ≠ nothing
     println(io, "  data:      ", problem.sdata)

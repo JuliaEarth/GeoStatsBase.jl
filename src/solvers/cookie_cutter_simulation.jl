@@ -10,18 +10,18 @@ A cookie-cutter simulation solver.
 ## Parameters
 
 * `master` - Master simulation solver (a.k.a. facies solver)
-* `others` - A list of pairs mapping categories to solvers
+* `others` - Solvers for each value of the master realization
 
 ## Examples
 
-Simulate lithology facies with image quilting and fill property
-with direct Gaussian simulation:
+Simulate lithofacies with image quilting and fill porosity
+values with LU Gaussian simulation:
 
 ```julia
-julia> fsolver  = ImgQuilt(:facies => (TI=Strebelle, template=(30,30,1)))
-julia> psolver₀ = DirectGaussSim(:property => (variogram=SphericalVariogram(range=10.),))
-julia> psolver₁ = DirectGaussSim(:property => (variogram=SphericalVariogram(range=20.),))
-julia> solver   = CookieCutter(fsolver, [0 => psolver₀, 1 => psolver₁])
+julia> f  = IQ(:facies => (TI=IMG, template=(30,30,1)))
+julia> p₀ = LUGS(:poro => (variogram=SphericalVariogram(range=10.),))
+julia> p₁ = LUGS(:poro => (variogram=SphericalVariogram(range=20.),))
+julia> CookieCutter(f, Dict(0=>p₀, 1=>p₁))
 ```
 """
 struct CookieCutter <: AbstractSimulationSolver
@@ -33,10 +33,10 @@ function solve(problem::SimulationProblem, solver::CookieCutter)
   # retrieve problem info
   pdata   = data(problem)
   pdomain = domain(problem)
-  pvars   = variables(problem)
   preals  = nreals(problem)
 
   # master variable
+  pvars = Dict(name(v) => mactype(v) for v in variables(problem))
   mvars = variables(solver.master)
   @assert length(mvars) == 1 "one single variable must be specified in master solver"
   mvar = mvars[1]

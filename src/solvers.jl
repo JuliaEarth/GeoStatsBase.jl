@@ -50,7 +50,10 @@ Default implementation calls `solvesingle` in parallel.
 """
 function solve(problem::SimulationProblem, solver::AbstractSimulationSolver; procs=[myid()])
   # sanity checks
-  @assert variables(solver) ⊆ keys(variables(problem)) "invalid variables in solver"
+  @assert variables(solver) ⊆ name.(variables(problem)) "invalid variables in solver"
+
+  # dictionary with variable types
+  mactypeof = Dict(name(v) => mactype(v) for v in variables(problem))
 
   # optional preprocessing
   preproc = preprocess(problem, solver)
@@ -68,7 +71,7 @@ function solve(problem::SimulationProblem, solver::AbstractSimulationSolver; pro
 
     # rearrange realizations
     vnames = covars.names
-    vtypes = [variables(problem)[var] for var in vnames]
+    vtypes = [mactypeof[var] for var in vnames]
     rdict  = Dict(vnames .=> [Vector{V}[] for V in vtypes])
     for real in reals
       for var in vnames
@@ -129,12 +132,12 @@ Return all covariables in the `solver` based on list of
 variables in the `problem`.
 """
 function covariables(problem::AbstractProblem, solver::AbstractSolver)
-  vars = Set(keys(variables(problem)))
+  pvars = Set(name.(variables(problem)))
 
   result = []
-  while !isempty(vars)
+  while !isempty(pvars)
     # choose a variable from the problem
-    var = pop!(vars)
+    var = pop!(pvars)
 
     # find covariables of the variable
     covars = covariables(var, solver)
@@ -144,7 +147,7 @@ function covariables(problem::AbstractProblem, solver::AbstractSolver)
 
     # update remaining variables
     for v in setdiff(covars.names, [var])
-      pop!(vars, v)
+      pop!(pvars, v)
     end
   end
 

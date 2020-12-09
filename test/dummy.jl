@@ -8,7 +8,7 @@ function solve(problem::EstimationProblem, solver::DummyEstimSolver)
   sdat = data(problem)
   sdom = domain(problem)
   npts = nelms(sdom)
-  vars = [v for (v,V) in variables(problem)]
+  vars = name.(variables(problem))
   μvar = Dict(v => fill(mean(sdat[v]),npts) for v in vars)
   σvar = Dict(v => fill(var(sdat[v]),npts) for v in vars)
   EstimationSolution(sdom, μvar, σvar)
@@ -17,9 +17,10 @@ end
 @simsolver DummySimSolver begin end
 function solvesingle(problem::SimulationProblem, covars::NamedTuple,
                      solver::DummySimSolver, preproc)
+  npts = nelms(domain(problem))
+  mactypeof = Dict(name(v) => mactype(v) for v in variables(problem))
   reals = map(covars.names) do var
-    npts = nelms(domain(problem))
-    V    = variables(problem)[var]
+    V    = mactypeof[var]
     real = vcat(fill(zero(V), npts÷2), fill(one(V), npts÷2))
     var => real
   end

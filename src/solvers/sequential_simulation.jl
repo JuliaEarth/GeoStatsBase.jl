@@ -81,13 +81,15 @@ function solvesingle(problem::SimulationProblem, covars::NamedTuple,
   N = ncoords(pdomain)
   T = coordtype(pdomain)
 
+  mactypeof = Dict(name(v) => mactype(v) for v in variables(problem))
+
   varreals = map(covars.names) do var
     # unpack preprocessed parameters
     estimator, minneighbors, maxneighbors,
     marginal, path, bsearcher, mappings = preproc[var]
 
     # determine value type
-    V = variables(problem)[var]
+    V = mactypeof[var]
 
     # pre-allocate memory for result
     realization = Vector{V}(undef, nelms(pdomain))
