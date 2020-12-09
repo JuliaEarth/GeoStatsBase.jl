@@ -9,13 +9,13 @@
     problem3D = EstimationProblem(data3D, grid3D, :value)
     @test data(problem3D) == data3D
     @test domain(problem3D) == grid3D
-    @test variables(problem3D) == Dict(:value => Float64)
+    @test variables(problem3D) == (Variable(:value, Float64),)
 
     # problems with missing data have types inferred correctly
     img = Array{Union{Float64,Missing}}(rand(10,10))
     mdata = georef((var=img,))
     problem = EstimationProblem(mdata, grid2D, :var)
-    @test variables(problem) == Dict(:var => Float64)
+    @test variables(problem) == (Variable(:var, Float64),)
 
     # show methods
     problem2D = EstimationProblem(data2D, grid2D, :value)
