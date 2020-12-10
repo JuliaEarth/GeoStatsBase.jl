@@ -11,6 +11,11 @@ subtype their domains from this type, and implement the methods in
 """
 abstract type AbstractData end
 
+"""
+    sdata₁ == sdata₂
+
+Tells whether or not the spatial `sdata₁` and `sdata₂` are equal.
+"""
 ==(sdata₁::AbstractData, sdata₂::AbstractData) =
   domain(sdata₁) == domain(sdata₂) &&
   values(sdata₁) == values(sdata₂)
