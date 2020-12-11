@@ -17,7 +17,7 @@
     @test sprint(show, MIME"text/plain"(), s) == "2D EstimationSolution\n  domain: 10×10 RegularGrid{Float64,2}\n  variables: z"
 
     if visualtests
-      @plottest plot(s,size=(800,400)) joinpath(datadir,"estimsol.png") !istravis
+      @plottest plot(s,size=(800,400)) joinpath(datadir,"estimsol.png") !isCI
     end
   end
 
@@ -37,7 +37,7 @@
     @test sprint(show, MIME"text/plain"(), s) == "2D SimulationSolution\n  domain: 10×10 RegularGrid{Float64,2}\n  variables: z\n  N° reals:  10"
 
     if visualtests
-      @plottest plot(s,size=(800,300)) joinpath(datadir,"simsol.png") !istravis
+      @plottest plot(s,size=(800,300)) joinpath(datadir,"simsol.png") !isCI
     end
   end
 end

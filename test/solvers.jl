@@ -11,7 +11,7 @@
     solution = solve(problem, solver)
 
     if visualtests
-      @plottest plot(solution,size=(800,600)) joinpath(datadir,"cookiecutter.png") !istravis
+      @plottest plot(solution,size=(800,600)) joinpath(datadir,"cookiecutter.png") !isCI
     end
   end
 
@@ -34,7 +34,7 @@
     csol = solve(prob2, solver)
 
     if visualtests
-      @plottest plot(usol,size=(900,300)) joinpath(datadir,"seqsim.png") !istravis
+      @plottest plot(usol,size=(900,300)) joinpath(datadir,"seqsim.png") !isCI
     end
   end
 
@@ -80,7 +80,7 @@
           p1 = plot(s[1], (:Z,))
           p2 = plot(s[2])
           plot(p1, p2, size=(800,400))
-        end joinpath(datadir,"pointlearn$i.png") !istravis
+        end joinpath(datadir,"pointlearn$i.png") !isCI
       end
     end
   end

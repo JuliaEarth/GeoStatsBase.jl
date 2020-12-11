@@ -56,7 +56,7 @@
     if visualtests
       df = DataFrame(x=[25.,50.,75.],y=[25.,75.,50.],z=[1.,0.,1.])
       sdata = georef(df, (:x,:y))
-      @plottest plot(sdata) joinpath(datadir,"geodf.png") !istravis
+      @plottest plot(sdata) joinpath(datadir,"geodf.png") !isCI
     end
   end
 
@@ -73,7 +73,7 @@
 
     if visualtests
       sdata = georef((z=[1.,0.,1.],), [25. 50. 75.; 25. 75. 50.])
-      @plottest plot(sdata) joinpath(datadir,"pset-data.png") !istravis
+      @plottest plot(sdata) joinpath(datadir,"pset-data.png") !isCI
     end
   end
 
@@ -90,9 +90,9 @@
 
     if visualtests
       sdata = georef((z=[1 2; 3 4],))
-      @plottest plot(sdata) joinpath(datadir,"grid2D-data1.png") !istravis
+      @plottest plot(sdata) joinpath(datadir,"grid2D-data1.png") !isCI
       sdata = georef((z=[1 2; 3 4],), (-10.,-10.), (10.,10.))
-      @plottest plot(sdata) joinpath(datadir,"grid2D-data2.png") !istravis
+      @plottest plot(sdata) joinpath(datadir,"grid2D-data2.png") !isCI
     end
   end
 

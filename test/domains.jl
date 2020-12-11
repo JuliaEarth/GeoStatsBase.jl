@@ -21,12 +21,12 @@
 
     if visualtests
       Random.seed!(2019)
-      @plottest plot(PointSet(rand(1,10))) joinpath(datadir,"pset1D.png") !istravis
-      @plottest plot(PointSet(rand(2,10))) joinpath(datadir,"pset2D.png") !istravis
-      @plottest plot(PointSet(rand(3,10))) joinpath(datadir,"pset3D.png") !istravis
-      @plottest plot(PointSet(rand(1,10)),1:10) joinpath(datadir,"pset1D-data.png") !istravis
-      @plottest plot(PointSet(rand(2,10)),1:10) joinpath(datadir,"pset2D-data.png") !istravis
-      @plottest plot(PointSet(rand(3,10)),1:10) joinpath(datadir,"pset3D-data.png") !istravis
+      @plottest plot(PointSet(rand(1,10))) joinpath(datadir,"pset1D.png") !isCI
+      @plottest plot(PointSet(rand(2,10))) joinpath(datadir,"pset2D.png") !isCI
+      @plottest plot(PointSet(rand(3,10))) joinpath(datadir,"pset3D.png") !isCI
+      @plottest plot(PointSet(rand(1,10)),1:10) joinpath(datadir,"pset1D-data.png") !isCI
+      @plottest plot(PointSet(rand(2,10)),1:10) joinpath(datadir,"pset2D-data.png") !isCI
+      @plottest plot(PointSet(rand(3,10)),1:10) joinpath(datadir,"pset3D-data.png") !isCI
     end
   end
 
@@ -63,12 +63,12 @@
     @test sprint(show, MIME"text/plain"(), grid) == "100×200 RegularGrid{Float64,2}\n  origin:  (0.0, 0.0)\n  spacing: (1.0, 1.0)"
 
     if visualtests
-      @plottest plot(RegularGrid(10)) joinpath(datadir,"grid1D.png") !istravis
-      @plottest plot(RegularGrid(10,20)) joinpath(datadir,"grid2D.png") !istravis
-      @plottest plot(RegularGrid(10,20,30)) joinpath(datadir,"grid3D.png") !istravis
-      @plottest plot(RegularGrid(10),[1,2,3,4,5,5,4,3,2,1]) joinpath(datadir,"grid1D-data.png") !istravis
-      @plottest plot(RegularGrid(10,10),1:100) joinpath(datadir,"grid2D-data.png") !istravis
-      # @plottest plot(RegularGrid(10,10,10),collect(1:1.0:1000)) joinpath(datadir,"grid3D-data.png") !istravis
+      @plottest plot(RegularGrid(10)) joinpath(datadir,"grid1D.png") !isCI
+      @plottest plot(RegularGrid(10,20)) joinpath(datadir,"grid2D.png") !isCI
+      @plottest plot(RegularGrid(10,20,30)) joinpath(datadir,"grid3D.png") !isCI
+      @plottest plot(RegularGrid(10),[1,2,3,4,5,5,4,3,2,1]) joinpath(datadir,"grid1D-data.png") !isCI
+      @plottest plot(RegularGrid(10,10),1:100) joinpath(datadir,"grid2D-data.png") !isCI
+      # @plottest plot(RegularGrid(10,10,10),collect(1:1.0:1000)) joinpath(datadir,"grid3D-data.png") !isCI
     end
   end
 
@@ -103,12 +103,12 @@
     @test sprint(show, g3) == "20×10×10 StructuredGrid{Float64,3}"
 
     if visualtests
-      @plottest plot(g1) joinpath(datadir,"sgrid1D.png") !istravis
-      @plottest plot(g2) joinpath(datadir,"sgrid2D.png") !istravis
-      @plottest plot(g3,camera=(30,60)) joinpath(datadir,"sgrid3D.png") !istravis
-      @plottest plot(g1,[1.,2.,2.,1]) joinpath(datadir,"sgrid1D-data.png") !istravis
-      @plottest plot(g2,1:nx*ny) joinpath(datadir,"sgrid2D-data.png") !istravis
-      @plottest plot(g3,1:nx*ny*nz) joinpath(datadir,"sgrid3D-data.png") !istravis
+      @plottest plot(g1) joinpath(datadir,"sgrid1D.png") !isCI
+      @plottest plot(g2) joinpath(datadir,"sgrid2D.png") !isCI
+      @plottest plot(g3,camera=(30,60)) joinpath(datadir,"sgrid3D.png") !isCI
+      @plottest plot(g1,[1.,2.,2.,1]) joinpath(datadir,"sgrid1D-data.png") !isCI
+      @plottest plot(g2,1:nx*ny) joinpath(datadir,"sgrid2D-data.png") !isCI
+      @plottest plot(g3,1:nx*ny*nz) joinpath(datadir,"sgrid3D-data.png") !isCI
     end
   end
 end

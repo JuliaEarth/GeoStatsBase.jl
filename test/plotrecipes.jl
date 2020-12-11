@@ -6,19 +6,19 @@
 
   @testset "DistPlot1D" begin
     if visualtests
-      @plottest distplot1d(d,:z₁) joinpath(datadir,"distplot1D.png") !istravis
+      @plottest distplot1d(d,:z₁) joinpath(datadir,"distplot1D.png") !isCI
     end
   end
 
   @testset "DistPlot2D" begin
     if visualtests
-      @plottest distplot2d(d,:z₁,:z₂) joinpath(datadir,"distplot2D.png") !istravis
+      @plottest distplot2d(d,:z₁,:z₂) joinpath(datadir,"distplot2D.png") !isCI
     end
   end
 
   @testset "CornerPlot" begin
     if visualtests
-      @plottest cornerplot(d) joinpath(datadir,"cornerplot.png") !istravis
+      @plottest cornerplot(d) joinpath(datadir,"cornerplot.png") !isCI
     end
   end
 
@@ -31,7 +31,7 @@
         p2 = hscatter(sdata, :value, lag=2)
         p3 = hscatter(sdata, :value, lag=3)
         plot(p0, p1, p2, p3, layout=(2,2), size=(600,600))
-      end joinpath(datadir,"hscatter.png") !istravis
+      end joinpath(datadir,"hscatter.png") !isCI
     end
   end
 end

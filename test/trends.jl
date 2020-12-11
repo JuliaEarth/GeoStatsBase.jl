@@ -27,6 +27,6 @@
       p₁ = heatmap(μ+ϵ, title="z")
       p₂ = heatmap(z̄, title="z trend")
       plot(p₁, p₂, size=(900,300))
-    end joinpath(datadir,"trends.png") !istravis
+    end joinpath(datadir,"trends.png") !isCI
   end
 end
