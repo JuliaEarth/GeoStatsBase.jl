@@ -1,6 +1,6 @@
 # GeoStatsBase.jl
 
-[![][travis-img]][travis-url] [![][codecov-img]][codecov-url]
+[![][build-img]][build-url] [![][codecov-img]][codecov-url]
 
 This package contains problem and solution specifications, as well
 as development tools for the [GeoStats.jl](https://github.com/juliohm/GeoStats.jl)
@@ -14,8 +14,8 @@ provided in the GeoStats.jl documentation.
 
 If you have any questions, please contact our community on the [gitter channel](https://gitter.im/JuliaEarth/GeoStats.jl).
 
-[travis-img]: https://travis-ci.com/JuliaEarth/GeoStatsBase.jl.svg?branch=master
-[travis-url]: https://travis-ci.com/JuliaEarth/GeoStatsBase.jl
+[build-img]: https://img.shields.io/github/workflow/status/JuliaEarth/GeoStatsBase.jl/CI?style=flat-square
+[build-url]: https://github.com/JuliaEarth/GeoStatsBase.jl/actions
 
 [codecov-img]: https://codecov.io/gh/JuliaEarth/GeoStatsBase.jl/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/JuliaEarth/GeoStatsBase.jl
