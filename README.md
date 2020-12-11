@@ -14,7 +14,7 @@ provided in the GeoStats.jl documentation.
 
 If you have any questions, please contact our community on the [gitter channel](https://gitter.im/JuliaEarth/GeoStats.jl).
 
-[build-img]: https://img.shields.io/github/workflow/status/JuliaEarth/GeoStatsBase.jl/CI?style=flat-square
+[build-img]: https://img.shields.io/github/workflow/status/JuliaEarth/GeoStatsBase.jl/CI
 [build-url]: https://github.com/JuliaEarth/GeoStatsBase.jl/actions
 
 [codecov-img]: https://codecov.io/gh/JuliaEarth/GeoStatsBase.jl/branch/master/graph/badge.svg
