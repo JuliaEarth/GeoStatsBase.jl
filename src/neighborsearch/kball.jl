@@ -8,20 +8,23 @@
 A method that searches `k` nearest neighbors and then filters
 these neighbors using a norm `ball`.
 """
-struct KBallSearch{O,B,K} <: BoundedNeighborSearchMethod
+struct KBallSearch{O,B,T} <: BoundedNeighborSearchMethod
   # input fields
   object::O
   k::Int
   ball::B
 
   # state fields
-  kdtree::K
+  tree::T
 end
 
-
 function KBallSearch(object::O, k::Int, ball::B) where {O,B}
-  kdtree = KDTree(coordinates(object), metric(ball))
-  KBallSearch{O,B,typeof(kdtree)}(object, k, ball, kdtree)
+  tree = if metric(ball) isa MinkowskiMetric
+    KDTree(coordinates(object), metric(ball))
+  else
+    BallTree(coordinates(object), metric(ball))
+  end
+  KBallSearch{O,B,typeof(tree)}(object, k, ball, tree)
 end
 
 maxneighbors(method::KBallSearch) = method.k
@@ -31,7 +34,7 @@ function search!(neighbors, xₒ::AbstractVector,
   k = method.k
   r = radius(method.ball)
 
-  inds, dists = knn(method.kdtree, xₒ, k, true)
+  inds, dists = knn(method.tree, xₒ, k, true)
 
   # keep neighbors inside ball
   keep = dists .≤ r
