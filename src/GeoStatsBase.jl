@@ -15,7 +15,7 @@ using Distances: Metric, Euclidean, Mahalanobis, pairwise
 using Distributions: ContinuousUnivariateDistribution, median, mode
 using CategoricalArrays: CategoricalValue, CategoricalArray
 using CategoricalArrays: levels, isordered, pool, levelcode
-using NearestNeighbors: KDTree, knn, inrange
+using NearestNeighbors: KDTree, knn, inrange, BallTree
 using ReferenceFrameRotations: angle_to_dcm
 using DataFrames: DataFrame, DataFrame!
 using StaticArrays: SVector, MVector, SOneTo
@@ -38,6 +38,7 @@ import Distributions: quantile, cdf
 import ScientificTypes: Scitype, scitype
 import Distances: evaluate
 import DataFrames: groupby
+import NearestNeighbors: MinkowskiMetric
 
 # aliases
 const MI = MLJModelInterface

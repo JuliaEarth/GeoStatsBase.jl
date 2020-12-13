@@ -21,6 +21,12 @@
     @test Set(n) == Set([81,82,91,92])
     n = GeoStatsBase.search([9.,9.], S)
     @test Set(n) == Set([89,90,99,100])
+
+# Non-MinkowskiMetric example
+    𝒟 = RegularGrid((360, 180), (0., -90.), (1., 1.))
+    S = NeighborhoodSearch(𝒟, BallNeighborhood(150., Haversine(6371.0)))
+    n = GeoStatsBase.search([0.,0.], S)
+    @test Set(n) == Set([32041, 32402, 32401, 32761, 32760])
   end
 
   @testset "KNearestSearch" begin
