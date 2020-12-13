@@ -15,7 +15,7 @@ using Distances: Metric, Euclidean, Mahalanobis, pairwise
 using Distributions: ContinuousUnivariateDistribution, median, mode
 using CategoricalArrays: CategoricalValue, CategoricalArray
 using CategoricalArrays: levels, isordered, pool, levelcode
-using NearestNeighbors: KDTree, knn, inrange, BallTree
+using NearestNeighbors: KDTree, BallTree, knn, inrange
 using ReferenceFrameRotations: angle_to_dcm
 using DataFrames: DataFrame, DataFrame!
 using StaticArrays: SVector, MVector, SOneTo

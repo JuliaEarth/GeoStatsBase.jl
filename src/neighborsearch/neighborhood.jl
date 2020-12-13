@@ -19,7 +19,7 @@ end
 function NeighborhoodSearch(object::O, neigh::N) where {O,N}
   tree = if neigh isa BallNeighborhood
     metric(neigh) isa MinkowskiMetric ? KDTree(coordinates(object), metric(neigh)) :
-        BallTree(coordinates(object), metric(neigh))
+                                        BallTree(coordinates(object), metric(neigh))
   else
     nothing
   end
