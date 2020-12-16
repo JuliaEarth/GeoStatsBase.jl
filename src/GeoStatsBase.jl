@@ -36,7 +36,7 @@ import StatsBase: fit, sample, varcorrection
 import Statistics: mean, var, quantile
 import Distributions: quantile, cdf
 import ScientificTypes: Scitype, scitype
-import Distances: evaluate
+import Distances: colwise, evaluate
 import DataFrames: groupby
 import NearestNeighbors: MinkowskiMetric
 

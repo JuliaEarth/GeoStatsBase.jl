@@ -38,14 +38,13 @@ isneighbor(ball::BallNeighborhood, xₒ::AbstractVector, x::AbstractVector) =
   evaluate(ball.metric, xₒ, x) ≤ ball.radius
 
 """
-    EllipsoidNeighborhood(semiaxes::AbstractVector, angles::AbstractVector;
-      convention::Symbol=:TaitBryanExtr)
+    EllipsoidNeighborhood(semiaxes, angles; convention=:TaitBryanExtr)
 
 An ellipsoid neighborhood with `semiaxes` and `angles`. For 2D ellipses,
 there are two semiaxes and one rotation angle. For 3D ellipsoids, there are
 three semiaxes and three rotation angles. Different rotation conventions can be
 passed via the `convention` keyword argument. The list of conventions is
-available in the `aniso2distance` documentation.
+available in the [ aniso2distance ](@ref) documentation.
 """
 function EllipsoidNeighborhood(semiaxes, angles; convention=:TaitBryanExtr)
   metric = aniso2distance(semiaxes, angles, convention=convention)
