@@ -37,6 +37,11 @@ metric(ball::BallNeighborhood) = ball.metric
 isneighbor(ball::BallNeighborhood, xₒ::AbstractVector, x::AbstractVector) =
   evaluate(ball.metric, xₒ, x) ≤ ball.radius
 
+function EllipsoidNeighborhood(semiaxes, angles; convention=:TaitBryanExtr)
+  metric = aniso2distance(semiaxes, angles, convention=convention)
+  BallNeighborhood(1.0, metric)
+end
+
 # ------------
 # IO methods
 # ------------
