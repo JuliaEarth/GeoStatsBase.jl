@@ -48,7 +48,7 @@ available in the [ aniso2distance ](@ref) documentation.
 """
 function EllipsoidNeighborhood(semiaxes, angles; convention=:TaitBryanExtr)
   metric = aniso2distance(semiaxes, angles, convention=convention)
-  BallNeighborhood(1.0, metric)
+  BallNeighborhood(one(eltype(semiaxes)), metric)
 end
 
 # ------------

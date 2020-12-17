@@ -11,18 +11,17 @@ struct NeighborhoodSearch{O,N,T} <: NeighborSearchMethod
   # input fields
   object::O
   neigh::N
-  maxneighs::Int
-  maxperoct::Int
-  maxperkey::Tuple{Symbol,Int}
-  ordermetric
+  maxneighbors::Int
+  maxperoctant::Int
+  maxpercategory::Dict{Symbol,Int}
+  ordermetric::Metric
 
   # state fields
   tree::T
-  restrictions::Bool
 end
 
-function NeighborhoodSearch(object::O, neigh::N; maxneighs=0, maxperoct=0,
-  maxperkey=(:_,0), ordermetric=Euclidean()) where {O,N}
+function NeighborhoodSearch(object::O, neigh::N; maxneighbors=0, maxperoctant=0,
+  maxpercategory=Dict(), ordermetric=Euclidean()) where {O,N}
   tree = if neigh isa BallNeighborhood
     if metric(neigh) isa MinkowskiMetric
       KDTree(coordinates(object), metric(neigh))
@@ -33,13 +32,8 @@ function NeighborhoodSearch(object::O, neigh::N; maxneighs=0, maxperoct=0,
     nothing
   end
 
-  usek       = maxneighs    > 0
-  useoct     = maxperoct    > 0
-  usekey     = maxperkey[2] > 0
-  filterinds = usek || useoct || usekey
-
-  NeighborhoodSearch{O,N,typeof(tree)}(object, neigh, maxneighs, maxperoct,
-  maxperkey, ordermetric, tree, filterinds)
+  NeighborhoodSearch{O,N,typeof(tree)}(object, neigh, maxneighbors,
+  maxperoctant, maxpercategory, ordermetric, tree)
 end
 
 # search method for any neighborhood
@@ -69,6 +63,13 @@ end
 function search(xₒ::AbstractVector, method::NeighborhoodSearch{O,N,T};
                 mask=nothing) where {O,N<:BallNeighborhood,T}
   inds = inrange(method.tree, xₒ, radius(method.neigh))
+
+  # check if there is some restriction requested in the constructor
+  usek       = method.maxneighbors > 0
+  useoct     = method.maxperoctant > 0
+  usecat     = length(method.maxpercategory) > 0
+  restrict   = usek || useoct || usecat
+
   if mask ≠ nothing
     neighbors = Vector{Int}()
     @inbounds for ind in inds
@@ -76,10 +77,10 @@ function search(xₒ::AbstractVector, method::NeighborhoodSearch{O,N,T};
         push!(neighbors, ind)
       end
     end
-    method.restrictions && (neighbors = filterneighs(neighbors, method, xₒ))
+    restrict && (neighbors = filterneighs(neighbors, method, xₒ))
     neighbors
   else
-    method.restrictions && (inds = filterneighs(inds, method, xₒ))
+    restrict && (inds = filterneighs(inds, method, xₒ))
     inds
   end
 end
@@ -87,43 +88,66 @@ end
 function filterneighs(inds::AbstractVector, method::NeighborhoodSearch{O,N,T},
   xₒ::AbstractVector) where {O,N<:BallNeighborhood,T}
 
-  object   = method.object
-  neigh    = method.neigh
-  rotmat   = neigh.metric isa Mahalanobis ? neigh.metric.qmat : I
-  ometric  = method.ordermetric
-  maxk     = method.maxneighs
-  maxoct   = method.maxperoct
-  maxkey   = method.maxperkey
-  usek     = 0 < maxk < length(inds)
-  useoct   = maxoct > 0
-  usekey   = maxkey[2] > 0
+  # get reference objects
+  obj   = method.object
+  neigh = method.neigh
 
   # get distances and give priority to closest neighbors according to ordermetric
-  dists   = colwise(ometric, xₒ, coordinates(object,inds))
+  ometric = method.ordermetric
+  dists   = colwise(ometric, xₒ, coordinates(obj,inds))
   sortids = sortperm(dists)
   inds    = inds[sortids]
 
-  # key and octant constraints
-  keys   = usekey ? unique(view(values(object), inds, maxkey[1])) : nothing
-  dkeys  = usekey ? Dict(zip(keys, 1:length(keys)))               : nothing
-  ctkeys = usekey ? zeros(Int, length(keys))                      : nothing
-  octs   = useoct ? zeros(Int, 8)                                 : nothing
+  # read constraints
+  maxk   = method.maxneighbors
+  maxoct = method.maxperoctant
+  maxcat = method.maxpercategory
+  usek   = 0 < maxk < length(inds)
+  useoct = maxoct > 0
+  usecat = length(maxcat) > 0
+
+  # initialize octant restriction
+  if useoct
+    rotmat = neigh.metric isa Mahalanobis ? neigh.metric.qmat : I
+    octs   = zeros(Int, 8)
+  end
+
+  # initialize category restriction
+  if usecat
+    table   = values(obj)
+    catgs   = Dict(k => unique(view(table, inds, k)) for k in keys(maxcat))
+    ctcatgs = Dict(k => Dict(zip(v, zeros(Int,length(v)))) for (k, v) in catgs)
+  end
 
   neighbors = Vector{Int}()
   ctneighs  = 0
 
   @inbounds for ind in inds
-    key = usekey ? values(object)[ind,maxkey[1]]                    : nothing
-    oct = useoct ? getoct(rotmat * (coordinates(object,ind) .- xₒ)) : nothing
+    # get octant of current neighbor if necesary
+    if useoct
+      oct = getoct(rotmat * (coordinates(obj,ind) .- xₒ))
+      octs[oct] >= maxoct && continue
+    end
 
-    usekey && ctkeys[dkeys[key]] >= maxkey[2] && continue
-    useoct && octs[oct] >= maxoct             && continue
+    # get category of current neighbor if necesary
+    if usecat
+      cat, pass = Dict(), false
+      for col in keys(maxcat)
+        cat[col] = table[ind,col]
+        ctcatgs[col][cat[col]] >= maxcat[col] && (pass = true)
+      end
+    end
+    pass && continue
 
-    # if valid, add as a neighbor
+    # if ind was not ignored, add it as a neighbor and increment +1 to the counters
     push!(neighbors, ind)
     ctneighs += 1
-    usekey && (ctkeys[dkeys[key]] += 1)
     useoct && (octs[oct] += 1)
+    if usecat
+      for col in keys(maxcat)
+        ctcatgs[col][cat[col]] += 1
+       end
+     end
 
     # if maxneigh reached, stop
     usek && ctneighs >= maxk && break
@@ -135,10 +159,14 @@ end
 
 # get octant code of transformed coordinates
 function getoct(coords::AbstractVector)
-  N = size(coords,1)
-  i = (coords .< 0) .+ 1
+  # get dimensions
+  N    = size(coords,1)
+  dims = Tuple([2 for x in 1:N])
 
-  octid = N == 2 ? reshape(1:4,(2,2)) : reshape(1:8,(2,2,2))
-  oct   = N == 2 ? octid[i[1],i[2]]   : octid[i[1],i[2],i[3]]
-  oct
+  # get which coord is negative. assign an id to each octant
+  signcoord = (coords .< 0) .+ 1
+  octid     = reshape(1:2^N, dims)
+
+  # return octant id to combination of coordinates signs
+  octid[signcoord...]
 end
