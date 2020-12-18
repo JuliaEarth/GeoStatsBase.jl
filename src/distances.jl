@@ -86,6 +86,15 @@ julia> aniso2distance([1.0,0.5,0.5], [π/2,0.0,0.0])
 function aniso2distance(semiaxes::AbstractVector, angles::AbstractVector;
   convention::Symbol=:TaitBryanExtr)
 
+  P, Λ = rotmat(semiaxes, angles, convention)
+  rule = rules[convention]
+  Q = P*Λ*P'
+  Mahalanobis(Q)
+end
+
+function rotmat(semiaxes::AbstractVector, angles::AbstractVector,
+  convention::Symbol=:TaitBryanExtr)
+
   N = length(semiaxes)
   @assert all(semiaxes .> 0) "semiaxes must be positive"
   @assert N ∈ [2,3] "dimension must be either 2 or 3"
@@ -110,9 +119,6 @@ function aniso2distance(semiaxes::AbstractVector, angles::AbstractVector;
 
   # rotation matrix
   P = angle_to_dcm(angles..., rule.order)[SOneTo(N),SOneTo(N)]
-
-  # ellipsoid matrix
-  Q = rule.extrinsic ? P*Λ*P' : P'*Λ*P
-
-  Mahalanobis(Q)
+  !rule.extrinsic && (P = P')
+  P, Λ
 end

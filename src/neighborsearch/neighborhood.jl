@@ -22,7 +22,7 @@ end
 
 function NeighborhoodSearch(object::O, neigh::N; maxneighbors=0, maxperoctant=0,
   maxpercategory=Dict(), ordermetric=Euclidean()) where {O,N}
-  tree = if neigh isa BallNeighborhood
+  tree = if neigh isa AbstractBallNeighborhood
     if metric(neigh) isa MinkowskiMetric
       KDTree(coordinates(object), metric(neigh))
     else
@@ -61,7 +61,7 @@ end
 
 # search method for ball neighborhood
 function search(xₒ::AbstractVector, method::NeighborhoodSearch{O,N,T};
-                mask=nothing) where {O,N<:BallNeighborhood,T}
+                mask=nothing) where {O,N<:AbstractBallNeighborhood,T}
   inds = inrange(method.tree, xₒ, radius(method.neigh))
 
   # check if there is some restriction requested in the constructor
@@ -86,11 +86,11 @@ function search(xₒ::AbstractVector, method::NeighborhoodSearch{O,N,T};
 end
 
 function filterneighs(inds::AbstractVector, method::NeighborhoodSearch{O,N,T},
-  xₒ::AbstractVector) where {O,N<:BallNeighborhood,T}
+  xₒ::AbstractVector) where {O,N<:AbstractBallNeighborhood,T}
 
   # get reference objects
-  obj   = method.object
-  neigh = method.neigh
+  obj = method.object
+  ngh = method.neigh
 
   # get distances and give priority to closest neighbors according to ordermetric
   ometric = method.ordermetric
@@ -108,8 +108,9 @@ function filterneighs(inds::AbstractVector, method::NeighborhoodSearch{O,N,T},
 
   # initialize octant restriction
   if useoct
-    rotmat = neigh.metric isa Mahalanobis ? neigh.metric.qmat : I
-    octs   = zeros(Int, 8)
+    ellp = ngh isa EllipsoidNeighborhood
+    P, _ = ellp ? rotmat(ngh.semiaxes, ngh.angles, ngh.convention) : (I, nothing)
+    octs = zeros(Int, 8)
   end
 
   # initialize category restriction
@@ -125,7 +126,7 @@ function filterneighs(inds::AbstractVector, method::NeighborhoodSearch{O,N,T},
   @inbounds for ind in inds
     # get octant of current neighbor if necesary
     if useoct
-      oct = getoct(rotmat * (coordinates(obj,ind) .- xₒ))
+      oct = getoct(P' * (coordinates(obj,ind) .- xₒ))
       octs[oct] >= maxoct && continue
     end
 
@@ -136,8 +137,8 @@ function filterneighs(inds::AbstractVector, method::NeighborhoodSearch{O,N,T},
         cat[col] = table[ind,col]
         ctcatgs[col][cat[col]] >= maxcat[col] && (pass = true)
       end
+      pass && continue
     end
-    pass && continue
 
     # if ind was not ignored, add it as a neighbor and increment +1 to the counters
     push!(neighbors, ind)
@@ -157,7 +158,7 @@ function filterneighs(inds::AbstractVector, method::NeighborhoodSearch{O,N,T},
 end
 
 
-# get octant code of transformed coordinates
+# get octant code of centered coordinates
 function getoct(coords::AbstractVector)
   # get dimensions
   N    = size(coords,1)
