@@ -32,11 +32,11 @@ maxneighbors(method::BoundedSearch) = method.maxneighbors
 
 function search!(neighbors, xₒ::AbstractVector,
                  method::BoundedSearch; mask=nothing)
-  # get neighbors and reference objects
+  # get reference objects and initial neighbors
   meth = method.method
-  inds = search(xₒ, meth, mask=mask)
   obj  = object(method)
   N    = ncoords(obj)
+  inds = search(xₒ, meth, mask=mask)
 
   # get distances and give priority to closest neighbors according to ordermetric
   ometric = method.ordermetric
@@ -48,7 +48,7 @@ function search!(neighbors, xₒ::AbstractVector,
   maxk   = method.maxneighbors
   maxoct = method.maxperoctant
   maxcat = method.maxpercategory
-  usek   = 0 < maxk < length(inds)
+  usek   = maxk   > 0
   useoct = maxoct > 0
   usecat = length(maxcat) > 0
 
