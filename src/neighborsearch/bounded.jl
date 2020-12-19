@@ -3,12 +3,12 @@
 # ------------------------------------------------------------------
 
 """
-    BoundedSearch(method, maxneighbors; maxpercategory=Dict(),
-    maxperoctant=0, ordermetric=Euclidean())
+    BoundedSearch(method, maxneighbors=Inf; maxpercategory,
+    maxperoctant, ordermetric=Euclidean())
 
 A method for searching at most `maxneighbors` neighbors using `method`. Extra
 restrictions available: `maxpercategory` and `maxperoctant`. The priority is
-given   to the nearest neighbor using `ordermetric`.
+given to the nearest neighbor using `ordermetric`.
 """
 struct BoundedSearch{M<:NeighborSearchMethod} <: BoundedNeighborSearchMethod
   method::M
@@ -18,7 +18,7 @@ struct BoundedSearch{M<:NeighborSearchMethod} <: BoundedNeighborSearchMethod
   ordermetric::Metric
 
   function BoundedSearch{M}(method::M, maxneighbors=0; maxpercategory=Dict(),
-                         maxperoctant=0, ordermetric=Euclidean()) where {M}
+                            maxperoctant=0, ordermetric=Euclidean()) where {M}
     new(method, maxneighbors, maxpercategory, maxperoctant, ordermetric)
   end
 end
@@ -36,6 +36,7 @@ function search!(neighbors, xₒ::AbstractVector,
   meth = method.method
   inds = search(xₒ, meth, mask=mask)
   obj  = object(method)
+  N    = ncoords(obj)
 
   # get distances and give priority to closest neighbors according to ordermetric
   ometric = method.ordermetric
@@ -56,7 +57,7 @@ function search!(neighbors, xₒ::AbstractVector,
     ellp = meth isa NeighborhoodSearch && meth.neigh isa EllipsoidNeighborhood
     P, _ = ellp ? rotmat(meth.neigh.semiaxes, meth.neigh.angles,
            meth.neigh.convention) : (I, nothing)
-    octs = zeros(Int, 8)
+    octs = zeros(Int, 2^N)
   end
 
   # initialize category restriction
@@ -66,7 +67,7 @@ function search!(neighbors, xₒ::AbstractVector,
     ctcatgs = Dict(k => Dict(zip(v, zeros(Int,length(v)))) for (k, v) in catgs)
   end
 
-  nneigh    = 0
+  nneigh = 0
 
   @inbounds for ind in inds
     # get octant of current neighbor if necesary
