@@ -91,7 +91,7 @@ function aniso2distance(semiaxes::AbstractVector, angles::AbstractVector;
 end
 
 function rotmat(semiaxes::AbstractVector, angles::AbstractVector,
-                convention::Symbol=:TaitBryanExtr)
+                convention::Symbol=:TaitBryanExtr; rev=false)
   N = length(semiaxes)
   @assert all(semiaxes .> 0) "semiaxes must be positive"
   @assert N ∈ [2,3] "dimension must be either 2 or 3"
@@ -110,9 +110,12 @@ function rotmat(semiaxes::AbstractVector, angles::AbstractVector,
   !rule.radian && (angles = deg2rad.(angles))
   _0 = zero(eltype(angles))
   N == 2 && (angles = [angles[1], _0, _0])
-  intr = @. (rule.motion == :CW) & !rule.extrinsic
+  intr = @. (rule.motion == :CW)  & !rule.extrinsic
   extr = @. (rule.motion == :CCW) & rule.extrinsic
   angles[intr .| extr] *= -1
+
+  # for reverse extrinsic transformation
+  rule.extrinsic && rev && (angles *= -1)
 
   # rotation matrix
   P = angle_to_dcm(angles..., rule.order)[SOneTo(N),SOneTo(N)]

@@ -56,7 +56,7 @@ function search!(neighbors, xₒ::AbstractVector,
   if useoct
     methn = meth isa NeighborhoodSearch ? meth.neigh : nothing
     ellp  = methn isa EllipsoidNeighborhood
-    P, _  = ellp ? rotmat(methn.semiaxes, methn.angles, methn.convention) : (0,0)
+    P, _  = ellp ? rotmat(methn.semiaxes, methn.angles, methn.convention, rev=true) : (0,0)
     octs  = zeros(Int, 2^N)
   end
 
