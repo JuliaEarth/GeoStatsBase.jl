@@ -54,10 +54,10 @@ function search!(neighbors, xₒ::AbstractVector,
 
   # initialize octant restriction
   if useoct
-    ellp = meth isa NeighborhoodSearch && meth.neigh isa EllipsoidNeighborhood
-    P, _ = ellp ? rotmat(meth.neigh.semiaxes, meth.neigh.angles,
-           meth.neigh.convention) : (I, nothing)
-    octs = zeros(Int, 2^N)
+    methn = meth isa NeighborhoodSearch ? meth.neigh : nothing
+    ellp  = methn isa EllipsoidNeighborhood
+    P, _  = ellp ? rotmat(methn.semiaxes, methn.angles, methn.convention) : (0,0)
+    octs  = zeros(Int, 2^N)
   end
 
   # initialize category restriction
@@ -72,7 +72,9 @@ function search!(neighbors, xₒ::AbstractVector,
   @inbounds for ind in inds
     # get octant of current neighbor if necesary
     if useoct
-      oct = getoct(P' * (coordinates(obj,ind) .- xₒ))
+      centered = coordinates(obj,ind) .- xₒ
+      P isa AbstractMatrix && (centered = P' * centered)
+      oct = getoct(centered)
       octs[oct] >= maxoct && continue
     end
 
@@ -97,8 +99,8 @@ function search!(neighbors, xₒ::AbstractVector,
     if usecat
       for col in keys(maxcat)
         ctcatgs[col][cat[col]] += 1
-       end
-     end
+      end
+    end
 
     # if maxneigh reached, stop
     usek && nneigh >= maxk && break

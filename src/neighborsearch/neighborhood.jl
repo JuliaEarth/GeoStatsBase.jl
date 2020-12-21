@@ -17,6 +17,10 @@ struct NeighborhoodSearch{O,N,T} <: NeighborSearchMethod
 end
 
 function NeighborhoodSearch(object::O, neigh::N) where {O,N}
+  if neigh isa EllipsoidNeighborhood
+    N1, N2 = ncoords(object), size(metric(neigh).qmat,1)
+    @assert  N1 == N2  "data and ellipse/ellipsoid must have the same dimensions"
+ end
   tree = if neigh isa AbstractBallNeighborhood
     if metric(neigh) isa MinkowskiMetric
       KDTree(coordinates(object), metric(neigh))
