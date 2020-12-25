@@ -54,14 +54,3 @@ function Base.show(io::IO, dv::DataView)
   n = nelms(dv)
   print(io, "$n DataView{$T,$N}")
 end
-
-function Base.show(io::IO, ::MIME"text/plain", dv::DataView)
-  𝒟 = domain(dv)
-  𝒯 = values(dv)
-  s = Tables.schema(𝒯)
-  vars = zip(s.names, s.types)
-  println(io, 𝒟)
-  println(io, "  variables")
-  varlines = ["    └─$var ($V)" for (var,V) in vars]
-  print(io, join(sort(varlines), "\n"))
-end

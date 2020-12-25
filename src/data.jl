@@ -58,6 +58,31 @@ Base.view(sdata::AbstractData, vars::AbstractVector{Symbol}) =
 Base.view(sdata::AbstractData, inds, vars) =
   DataView(sdata, inds, vars)
 
+# ------------
+# IO methods
+# ------------
+function Base.show(io::IO, ::MIME"text/plain", sdata::AbstractData)
+  𝒟 = domain(sdata)
+  𝒯 = values(sdata)
+  s = Tables.schema(𝒯)
+  vars = zip(s.names, s.types)
+  println(io, 𝒟)
+  println(io, "  variables")
+  varlines = ["    └─$var ($V)" for (var,V) in vars]
+  print(io, join(sort(varlines), "\n"))
+end
+
+function Base.show(io::IO, ::MIME"text/html", sdata::AbstractData)
+  𝒟 = domain(sdata)
+  𝒯 = values(sdata)
+  s = Tables.schema(𝒯)
+  vars = zip(s.names, s.types)
+  println(io, 𝒟)
+  println(io, "  variables")
+  varlines = ["    └─$var ($V)" for (var,V) in vars]
+  print(io, join(sort(varlines), "\n"))
+end
+
 #------------------
 # IMPLEMENTATIONS
 #------------------
@@ -92,15 +117,4 @@ function Base.show(io::IO, sdata::SpatialData)
   T = coordtype(sdata)
   n = nelms(sdata)
   print(io, "$n SpatialData{$T,$N}")
-end
-
-function Base.show(io::IO, ::MIME"text/plain", sdata::SpatialData)
-  𝒟 = domain(sdata)
-  𝒯 = values(sdata)
-  s = Tables.schema(𝒯)
-  vars = zip(s.names, s.types)
-  println(io, 𝒟)
-  println(io, "  variables")
-  varlines = ["    └─$var ($V)" for (var,V) in vars]
-  print(io, join(sort(varlines), "\n"))
 end
