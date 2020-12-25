@@ -2,6 +2,16 @@
 # Licensed under the MIT License. See LICENSE in the project root.
 # ------------------------------------------------------------------
 
+# helper function for table view
+function viewtable(table, rows, cols)
+  t = Tables.columns(table)
+  v = map(cols) do c
+    col = Tables.getcolumn(t, c)
+    c => view(col, rows)
+  end
+  (; v...)
+end
+
 """
     AbstractData
 
@@ -61,6 +71,13 @@ Base.view(sdata::AbstractData, inds, vars) =
 # ------------
 # IO methods
 # ------------
+function Base.show(io::IO, sdata::AbstractData)
+  N = ncoords(sdata)
+  T = coordtype(sdata)
+  n = nelms(sdata)
+  print(io, "$n SpatialData{$T,$N}")
+end
+
 function Base.show(io::IO, ::MIME"text/plain", sdata::AbstractData)
   𝒟 = domain(sdata)
   𝒯 = values(sdata)
@@ -109,12 +126,42 @@ SpatialData(domain::𝒟, table::𝒯) where {𝒟,𝒯} =
 domain(sdata::SpatialData) = sdata.domain
 values(sdata::SpatialData) = sdata.table
 
-# ------------
-# IO methods
-# ------------
-function Base.show(io::IO, sdata::SpatialData)
-  N = ncoords(sdata)
-  T = coordtype(sdata)
-  n = nelms(sdata)
-  print(io, "$n SpatialData{$T,$N}")
+"""
+    DataView(sdata, inds, vars)
+
+Return a view of spatial data `sdata` at `inds` and `vars`.
+"""
+struct DataView{𝒮,I,V} <: AbstractData
+  data::𝒮
+  inds::I
+  vars::V
+end
+
+domain(dv::DataView) = view(domain(dv.data), dv.inds)
+values(dv::DataView) = viewtable(values(dv.data), dv.inds, dv.vars)
+
+# specialization for performance purposes
+coordinates!(buff::AbstractVector, dv::DataView, ind::Int) =
+  coordinates!(buff, dv.data, dv.inds[ind])
+
+# specialization for correct nested views
+Base.view(dv::DataView, inds::AbstractVector{Int}) =
+  DataView(dv.data, dv.inds[inds], dv.vars)
+Base.view(dv::DataView, vars::AbstractVector{Symbol}) =
+  DataView(dv.data, dv.inds, vars)
+Base.view(dv::DataView, inds, vars) =
+  DataView(dv.data, dv.inds[inds], vars)
+
+"""
+    collect(dataview)
+
+Materialize spatial `dataview` into a new block of memory.
+"""
+Base.collect(dv::DataView) = georef(values(dv), coordinates(dv))
+
+function Base.show(io::IO, dv::DataView)
+  N = ncoords(dv)
+  T = coordtype(dv)
+  n = nelms(dv)
+  print(io, "$n DataView{$T,$N}")
 end
