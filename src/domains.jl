@@ -52,6 +52,9 @@ coordtype(dv::DomainView) = coordtype(dv.domain)
 coordinates!(buff::AbstractVector, dv::DomainView, ind::Int) =
   coordinates!(buff, dv.domain, dv.inds[ind])
 
+==(dv₁::DomainView, dv₂::DomainView) =
+  dv₁.domain == dv₂.domain && dv₁.inds == dv₂.inds
+
 Base.collect(dv::DomainView) = PointSet(coordinates(dv))
 
 function Base.show(io::IO, dv::DomainView)

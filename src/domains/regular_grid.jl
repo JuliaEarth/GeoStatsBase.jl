@@ -89,6 +89,11 @@ function coordinates!(buff::AbstractVector{T}, grid::RegularGrid{T,N},
   end
 end
 
+==(grid₁::RegularGrid, grid₂::RegularGrid) =
+  grid₁.dims == grid₂.dims &&
+  grid₁.origin == grid₂.origin &&
+  grid₁.spacing == grid₂.spacing
+
 # ------------
 # IO methods
 # ------------

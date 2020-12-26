@@ -43,6 +43,9 @@ function coordinates!(buff::AbstractVector{T}, grid::StructuredGrid{T,N},
   buff .= grid.coords[:,location]
 end
 
+==(grid₁::StructuredGrid, grid₂::StructuredGrid) =
+  grid₁.coords == grid₂.coords && grid₁.dims == grid₂.dims
+
 # ------------
 # IO methods
 # ------------

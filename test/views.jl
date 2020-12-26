@@ -2,6 +2,14 @@
   @testset "Domain" begin
     d = RegularGrid(10, 10)
     X = coordinates(d)
+
+    v1 = view(d, 1:10)
+    v2 = view(d, 1:10)
+    v3 = view(d, 1:20)
+    @test v1 == v2
+    @test v1 != v3
+    @test v2 != v3
+
     v = view(d, 1:10)
     @test nelms(v) == 10
     @test coordinates(v) == X[:,1:10]
@@ -15,6 +23,14 @@
     d = georef((z=rand(100), w=rand(100)))
     T = values(d)
     X = coordinates(d)
+
+    v1 = view(d, 1:10)
+    v2 = view(d, 1:10)
+    v3 = view(d, 1:20)
+    @test v1 == v2
+    @test v1 != v3
+    @test v2 != v3
+
     v = view(d, 1:10)
     @test nelms(v) == 10
     @test coordinates(v) == X[:,1:10]

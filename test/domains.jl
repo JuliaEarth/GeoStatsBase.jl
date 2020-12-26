@@ -1,10 +1,16 @@
 @testset "Domains" begin
   @testset "PointSet" begin
-    # testing different ways to build a PointSet results in the same PointSet
+    # different ways to build a PointSet
     ps1 = PointSet([1. 0.; 0. 1.])            # as matrix
     ps2 = PointSet([(1.0, 0.0), (0.0, 1.0)])  # as vector of tuples
-    
     @test ps1.coords == ps2.coords
+
+    ps1 = PointSet([1. 0.; 0. 1.])
+    ps2 = PointSet([1. 0.; 0. 1.])
+    ps3 = PointSet([0. 0.; 0. 1.])
+    @test ps1 == ps2
+    @test ps1 != ps3
+    @test ps2 != ps3
 
     # building a PointSet of tuples with different lengths should fail
     @test_throws MethodError PointSet([(1.0, 0.0), (0.0, 1.0 , 4.0)])
@@ -58,6 +64,13 @@
     @test coordinates(grid, 200*100) == [1.,1.]
     @test origin(grid) == [-1.,-1.]
 
+    grid1 = RegularGrid(100,100)
+    grid2 = RegularGrid(100,100)
+    grid3 = RegularGrid(100,50)
+    @test grid1 == grid2
+    @test grid1 != grid3
+    @test grid2 != grid3
+
     grid = RegularGrid(100,200)
     @test sprint(show, grid) == "100×200 RegularGrid{Float64,2}"
     @test sprint(show, MIME"text/plain"(), grid) == "100×200 RegularGrid{Float64,2}\n  origin:  (0.0, 0.0)\n  spacing: (1.0, 1.0)"
@@ -99,6 +112,10 @@
     @test nelms(g3) == nx*ny*nz
     @test size(g3) == (nx, ny, nz)
     @test size(coordinates(g3)) == (3, nx*ny*nz)
+
+    @test g1 != g2
+    @test g2 != g3
+    @test g1 != g3
 
     @test sprint(show, g3) == "20×10×10 StructuredGrid{Float64,3}"
 

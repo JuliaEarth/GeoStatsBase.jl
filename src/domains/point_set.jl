@@ -38,6 +38,8 @@ nelms(ps::PointSet) = length(ps.coords)
 coordinates!(buff, ps::PointSet, ind::Int) =
   @inbounds buff .= ps.coords[ind]
 
+==(ps₁::PointSet, ps₂::PointSet) = ps₁.coords == ps₂.coords
+
 # ------------
 # IO methods
 # ------------
