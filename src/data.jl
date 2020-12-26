@@ -78,26 +78,19 @@ function Base.show(io::IO, sdata::AbstractData)
   print(io, "$n SpatialData{$T,$N}")
 end
 
-function Base.show(io::IO, ::MIME"text/plain", sdata::AbstractData)
-  𝒟 = domain(sdata)
-  𝒯 = values(sdata)
-  s = Tables.schema(𝒯)
-  vars = zip(s.names, s.types)
-  println(io, 𝒟)
-  println(io, "  variables")
-  varlines = ["    └─$var ($V)" for (var,V) in vars]
-  print(io, join(sort(varlines), "\n"))
-end
+MIMES = [MIME"text/plain", MIME"text/html"]
 
-function Base.show(io::IO, ::MIME"text/html", sdata::AbstractData)
-  𝒟 = domain(sdata)
-  𝒯 = values(sdata)
-  s = Tables.schema(𝒯)
-  vars = zip(s.names, s.types)
-  println(io, 𝒟)
-  println(io, "  variables")
-  varlines = ["    └─$var ($V)" for (var,V) in vars]
-  print(io, join(sort(varlines), "\n"))
+for MIME in MIMES
+  @eval function Base.show(io::IO, ::$MIME, sdata::AbstractData)
+    𝒟 = domain(sdata)
+    𝒯 = values(sdata)
+    s = Tables.schema(𝒯)
+    vars = zip(s.names, s.types)
+    println(io, 𝒟)
+    println(io, "  variables")
+    varlines = ["    └─$var ($V)" for (var,V) in vars]
+    print(io, join(sort(varlines), "\n"))
+  end
 end
 
 #------------------
@@ -140,11 +133,14 @@ end
 domain(dv::DataView) = view(domain(dv.data), dv.inds)
 values(dv::DataView) = viewtable(values(dv.data), dv.inds, dv.vars)
 
-# specialization for performance purposes
 coordinates!(buff::AbstractVector, dv::DataView, ind::Int) =
   coordinates!(buff, dv.data, dv.inds[ind])
 
-# specialization for correct nested views
+==(dv₁::DataView, dv₂::DataView) =
+  dv₁.data == dv₂.data &&
+  dv₁.inds == dv₂.inds &&
+  dv₁.vars == dv₂.vars
+
 Base.view(dv::DataView, inds::AbstractVector{Int}) =
   DataView(dv.data, dv.inds[inds], dv.vars)
 Base.view(dv::DataView, vars::AbstractVector{Symbol}) =
