@@ -5,5 +5,4 @@
 # ----------------
 # IMPLEMENTATIONS
 # ----------------
-include("solutions/estimation.jl")
 include("solutions/simulation.jl")

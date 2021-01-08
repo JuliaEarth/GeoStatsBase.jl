@@ -9,9 +9,9 @@ function solve(problem::EstimationProblem, solver::DummyEstimSolver)
   sdom = domain(problem)
   npts = nelms(sdom)
   vars = name.(variables(problem))
-  μvar = Dict(v => fill(mean(sdat[v]),npts) for v in vars)
-  σvar = Dict(v => fill(var(sdat[v]),npts) for v in vars)
-  EstimationSolution(sdom, μvar, σvar)
+  μs = [v => fill(mean(sdat[v]), npts) for v in vars]
+  σs = [Symbol(v,:Var) => fill(var(sdat[v]), npts) for v in vars]
+  georef((; μs..., σs...), sdom)
 end
 
 @simsolver DummySimSolver begin end

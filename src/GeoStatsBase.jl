@@ -150,7 +150,6 @@ export
   nreals,
 
   # solutions
-  EstimationSolution,
   SimulationSolution,
 
   # solvers

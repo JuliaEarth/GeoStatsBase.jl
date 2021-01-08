@@ -17,7 +17,6 @@ include("plotrecipes/problems/simulation.jl")
 include("plotrecipes/problems/learning.jl")
 
 # solutions
-include("plotrecipes/solutions/estimation.jl")
 include("plotrecipes/solutions/simulation.jl")
 
 # partitions and weights

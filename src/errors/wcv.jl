@@ -58,7 +58,7 @@ function error(solver, problem, method::WeightedCrossValidation)
   function ε(f)
     # setup and solve sub-problem
     subproblem = _subproblem(problem, f)
-    solution   = _solve(subproblem, solver)
+    solution   = solve(subproblem, solver)
 
     # holdout set and weights
     holdout = _holdout(problem, f)
@@ -102,14 +102,6 @@ function _subproblem(p::LearningProblem, f)
   target = view(sourcedata(p), f[2])
   LearningProblem(source, target, task(p))
 end
-
-# solution for a given fold
-function _solve(p::EstimationProblem, solver)
-  vars = name.(variables(p))
-  sol  = solve(p, solver)
-  reduce(hcat, [sol[v] for v in vars])
-end
-_solve(p::LearningProblem, solver) = solve(p, solver)
 
 # holdout set for a given fold
 _holdout(p::EstimationProblem, f) = view(data(p), f[2])
