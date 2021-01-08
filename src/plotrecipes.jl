@@ -11,13 +11,13 @@ include("plotrecipes/domains/view.jl")
 # data
 include("plotrecipes/data.jl")
 
+# ensembles
+include("plotrecipes/ensembles.jl")
+
 # problems
 include("plotrecipes/problems/estimation.jl")
 include("plotrecipes/problems/simulation.jl")
 include("plotrecipes/problems/learning.jl")
-
-# solutions
-include("plotrecipes/solutions/simulation.jl")
 
 # partitions and weights
 include("plotrecipes/partitions.jl")

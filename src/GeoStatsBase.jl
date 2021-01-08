@@ -55,6 +55,7 @@ include("variables.jl")
 include("geotraits.jl")
 include("domains.jl")
 include("data.jl")
+include("ensembles.jl")
 include("georef.jl")
 include("macros.jl")
 include("paths.jl")
@@ -74,7 +75,6 @@ include("learning.jl")
 include("mappings.jl")
 include("problems.jl")
 include("solvers.jl")
-include("solutions.jl")
 include("folding.jl")
 include("errors.jl")
 include("statistics.jl")
@@ -107,6 +107,9 @@ export
   SpatialData,
   variables,
   georef,
+
+  # spatial ensembles
+  Ensemble,
 
   # mapping
   MappingMethod,
@@ -148,9 +151,6 @@ export
   coordinates,
   hasdata,
   nreals,
-
-  # solutions
-  SimulationSolution,
 
   # solvers
   AbstractSolver,

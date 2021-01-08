@@ -2,19 +2,19 @@
 # Licensed under the MIT License. See LICENSE in the project root.
 # ------------------------------------------------------------------
 
-@recipe function f(solution::SimulationSolution, vars=nothing)
+@recipe function f(ensemble::Ensemble, vars=nothing)
   # retrieve underlying domain
-  sdomain = solution.domain
+  sdomain = ensemble.domain
 
   # valid variables
-  validvars = sort(collect(keys(solution.realizations)))
+  validvars = sort(collect(keys(ensemble.reals)))
 
   # plot all variables by default
   isnothing(vars) && (vars = validvars)
   @assert vars ⊆ validvars "invalid variable name"
 
   # number of realizations
-  nreals = length(solution.realizations[vars[1]])
+  nreals = length(ensemble.reals[vars[1]])
 
   # plot at most 3 realizations per variable
   N = min(nreals, 3)
@@ -25,7 +25,7 @@
   inds = sample(1:nreals, N, replace=false)
 
   for (i, var) in enumerate(vars)
-    reals = solution.realizations[var][inds]
+    reals = ensemble.reals[var][inds]
 
     # find value limits across realizations
     minmax = extrema.(reals)

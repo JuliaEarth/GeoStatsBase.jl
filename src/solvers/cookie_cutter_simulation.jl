@@ -79,7 +79,7 @@ function solve(problem::SimulationProblem, solver::CookieCutter)
 
   realizations = merge(reals, Dict(mvar => mreals))
 
-  SimulationSolution(pdomain, realizations)
+  Ensemble(pdomain, realizations)
 end
 
 # ------------

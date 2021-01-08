@@ -3,40 +3,40 @@
 # ------------------------------------------------------------------
 
 """
-    mean(solution)
+    mean(ensemble)
 
-Mean of simulation `solution`.
+Mean of `ensemble`.
 """
-function mean(solution::SimulationSolution)
-  data = DataFrame([variable => mean(reals) for (variable, reals) in solution.realizations])
-  georef(data, solution.domain)
+function mean(ensemble::Ensemble)
+  data = DataFrame([variable => mean(reals) for (variable, reals) in ensemble.reals])
+  georef(data, ensemble.domain)
 end
 
 """
-    var(solution)
+    var(ensemble)
 
-Variance of simulation `solution`.
+Variance of `ensemble`.
 """
-function var(solution::SimulationSolution)
-  data = DataFrame([variable => var(reals) for (variable, reals) in solution.realizations])
-  georef(data, solution.domain)
+function var(ensemble::Ensemble)
+  data = DataFrame([variable => var(reals) for (variable, reals) in ensemble.reals])
+  georef(data, ensemble.domain)
 end
 
 """
-    quantile(solution, p)
+    quantile(ensemble, p)
 
-p-quantile of simulation `solution`.
+`p`-quantile of `ensemble`.
 """
-function quantile(solution::SimulationSolution, p::Number)
+function quantile(ensemble::Ensemble, p::Number)
   cols = []
-  for (variable, reals) in solution.realizations
-    quantiles = map(1:nelms(solution.domain)) do location
+  for (variable, reals) in ensemble.reals
+    quantiles = map(1:nelms(ensemble.domain)) do location
       slice = getindex.(reals, location)
       quantile(slice, p)
     end
     push!(cols, variable => quantiles)
   end
-  georef(DataFrame(cols), solution.domain)
+  georef(DataFrame(cols), ensemble.domain)
 end
 
-quantile(solution::SimulationSolution, ps::AbstractVector) = [quantile(solution, p) for p in ps]
+quantile(ensemble::Ensemble, ps::AbstractVector) = [quantile(ensemble, p) for p in ps]

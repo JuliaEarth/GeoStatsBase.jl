@@ -1,29 +1,29 @@
 @testset "Statistics" begin
-  @testset "Solution" begin
-    grid2D = RegularGrid(3,3)
-    realizations = Dict(:value => [i*ones(nelms(grid2D)) for i in 1:3])
-    solution2D = SimulationSolution(grid2D, realizations)
+  @testset "Ensemble" begin
+    grid = RegularGrid(3,3)
+    reals = Dict(:value => [i*ones(nelms(grid)) for i in 1:3])
+    ensemble = Ensemble(grid, reals)
 
     # mean
-    mean2D = mean(solution2D)
+    mean2D = mean(ensemble)
     @test mean2D[:value] == 2.0*ones(nelms(mean2D))
-    @test domain(mean2D) == solution2D.domain
+    @test domain(mean2D) == ensemble.domain
 
     # variance
-    variance2D = var(solution2D)
-    @test variance2D[:value] == 1.0*ones(nelms(variance2D))
-    @test domain(variance2D) == solution2D.domain
+    var2D = var(ensemble)
+    @test var2D[:value] == 1.0*ones(nelms(var2D))
+    @test domain(var2D) == ensemble.domain
 
     # quantile (scalar)
     p = 0.5
-    quantile2D = quantile(solution2D, p)
-    @test quantile2D[:value] == 2.0*ones(nelms(quantile2D))
-    @test domain(quantile2D) == solution2D.domain
+    quant2D = quantile(ensemble, p)
+    @test quant2D[:value] == 2.0*ones(nelms(quant2D))
+    @test domain(quant2D) == ensemble.domain
 
     # quantile (vector)
     ps = [0.0, 0.5, 1.0]
-    quantiles2D = quantile(solution2D, ps)
-    @test quantiles2D[2][:value] == quantile2D[:value]
+    quants2D = quantile(ensemble, ps)
+    @test quants2D[2][:value] == quant2D[:value]
   end
 
   @testset "Data" begin

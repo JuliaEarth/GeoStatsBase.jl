@@ -86,7 +86,7 @@ function solve(problem::SimulationProblem, solver::AbstractSimulationSolver; pro
   pdomain = domain(problem)
   preals  = reduce(merge, results)
 
-  SimulationSolution(pdomain, preals)
+  Ensemble(pdomain, preals)
 end
 
 """
