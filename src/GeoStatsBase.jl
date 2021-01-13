@@ -107,6 +107,7 @@ export
   SpatialData,
   variables,
   georef,
+  asarray,
 
   # spatial ensembles
   Ensemble,
