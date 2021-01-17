@@ -31,11 +31,11 @@ Tells whether or not the spatial `sdata₁` and `sdata₂` are equal.
   values(sdata₁) == values(sdata₂)
 
 """
-    asarray(sdata::AbstractData, var::Symbol)
+    asarray(sdata, var)
 
-Returns the variable var as a Julia array with size equal to
-- the size of the underlying domain, for a `RegularGrid`
-- as a vector otherwise
+Returns the data for the variable `var` in spatial data `sdata` as a Julia
+array with size equal to the size of the underlying domain if the size is
+defined, otherwise returns a vector.
 """
 function asarray(sdata::AbstractData, var::Symbol)
   D = domain(sdata)
