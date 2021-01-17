@@ -1,10 +1,12 @@
 @testset "Data" begin
   @testset "Basics" begin
     # underlying table
-    d = georef((z=rand(10,10),))
+    z = rand(10,10)
+    d = georef((z=z,))
     t = values(d)
     @test size(t) == (100,1)
     @test propertynames(t) == [:z]
+    @test asarray(d, :z) == z
 
     # data equality
     d1 = georef((z=[1,2,3],))
@@ -26,7 +28,13 @@
     x, y, z = rand(100), rand(100), rand(100)
     t = DataFrame(x=x,y=y,z=z)
     d = georef((x=x,y=y,z=z))
+    @test asarray(d, :x) == x
+    @test asarray(d, :y) == y
+    @test asarray(d, :z) == z
     v = view(d, 1:3)
+    @test asarray(v, :x) == x[1:3]
+    @test asarray(v, :y) == y[1:3]
+    @test asarray(v, :z) == z[1:3]
     @test Tables.istable(d) == true
     @test Tables.istable(v) == true
     @test Tables.rowaccess(d) == Tables.rowaccess(t)
@@ -79,9 +87,11 @@
 
   @testset "RegularGrid" begin
     # basic checks
-    g = georef((Z=rand(100,100),))
+    Z = rand(100,100)
+    g = georef((Z=Z,))
     @test variables(g) == (Variable(:Z, Float64),)
     @test nelms(g) == 10000
+    @test asarray(g, :Z) == Z
 
     # show methods
     g = georef((z=[1,2,3,4],), RegularGrid(2,2))

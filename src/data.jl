@@ -30,6 +30,18 @@ Tells whether or not the spatial `sdata₁` and `sdata₂` are equal.
   domain(sdata₁) == domain(sdata₂) &&
   values(sdata₁) == values(sdata₂)
 
+"""
+    asarray(sdata, var)
+
+Returns the data for the variable `var` in spatial data `sdata` as a Julia
+array with size equal to the size of the underlying domain if the size is
+defined, otherwise returns a vector.
+"""
+function asarray(sdata::AbstractData, var::Symbol)
+  D = domain(sdata)
+  D isa RegularGrid ? reshape(sdata[var], size(D)) : sdata[var]
+end
+
 # -----------
 # TABLES API
 # -----------
