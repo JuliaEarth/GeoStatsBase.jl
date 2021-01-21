@@ -6,4 +6,4 @@
 # IMPLEMENTATIONS
 # ----------------
 include("statistics/data.jl")
-include("statistics/solutions.jl")
+include("statistics/ensembles.jl")
