@@ -47,6 +47,12 @@
     ct = DataFrame(Tables.columns(t[1:3,:]))
     @test rv == rt
     @test cv == ct
+
+    # kwargs
+    d = georef((z=rand(10,10),))
+    v = view(d, 1:3)
+    s = 3
+    @test EmpiricalHistogram(d, v, s; bins=10) == fit(DummyEstimator, d[v], weight(d, w); bins=10)
   end
 
   @testset "GeoTable" begin

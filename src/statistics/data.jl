@@ -52,19 +52,22 @@ quantile(d::AbstractData, p) = quantile(d, p, median_heuristic(d))
 
 EmpiricalHistogram(d, v::Symbol, w::WeightingMethod; kwargs...) = fit(Histogram, d[v], weight(d, w); kwargs...)
 EmpiricalHistogram(d, v::Symbol, s::Number; kwargs...) = EmpiricalHistogram(d, v, BlockWeighting(ntuple(i->s,ncoords(d))); kwargs...)
-EmpiricalHistogram(d, v::Symbol) = EmpiricalHistogram(d, v, median_heuristic(d))
-EmpiricalHistogram(d, w::WeightingMethod) = Dict(v => EmpiricalHistogram(d, v, w) for v in name.(variables(d)))
-EmpiricalHistogram(d, s::Number) = EmpiricalHistogram(d, BlockWeighting(ntuple(i->s,ncoords(d))))
+EmpiricalHistogram(d, v::Symbol; kwargs...) = EmpiricalHistogram(d, v, median_heuristic(d); kwargs...)
+EmpiricalHistogram(d, w::WeightingMethod; kwargs...) = Dict(v => EmpiricalHistogram(d, v, w; kwargs...) for v in name.(variables(d)))
+EmpiricalHistogram(d, s::Number; kwargs...) = EmpiricalHistogram(d, BlockWeighting(ntuple(i->s,ncoords(d))); kwargs...)
 
 """
     EmpiricalHistogram(sdata)
     EmpiricalHistogram(sdata, v)
     EmpiricalHistogram(sdata, v, s)
     EmpiricalHistogram(sdata, v, s; kwargs...)
+    EmpiricalHistogram(sdata, v; kwargs...)
+    EmpiricalHistogram(sdata, w; kwargs...)
+    EmpiricalHistogram(sdata, s; kwargs...)
 
 Spatial histogram of spatial data `sdata`. Optionally,
-specify the variable `v` and the block side `s`.
-Keyword arguments can also be specified.
+specify the variable `v`, the block side `s`, and the
+keyword arguments `kwargs` for `fit(Histotogram, ...)`.
 """
 EmpiricalHistogram(d) = EmpiricalHistogram(d, median_heuristic(d))
 
