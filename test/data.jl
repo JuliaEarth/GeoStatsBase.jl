@@ -49,11 +49,8 @@
     @test cv == ct
 
     # kwargs
-    d = georef((z=rand(10,10),))
-    v = view(d, 1:3)
-    s = 3
-    @test EmpiricalHistogram(d, v; bins=10) == EmpiricalHistogram(d, v, median_heuristic(d); bins=10)
-    @test EmpiricalHistogram(d, v, median_heuristic(d); bins=10) == fit(DummyEstimator, d[v], weight(d, w); bins=10)
+    sdata = georef((z=[1, 2],))
+    EmpiricalHistogram(sdata, :z; nbins=10)
   end
 
   @testset "GeoTable" begin

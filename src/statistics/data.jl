@@ -58,12 +58,8 @@ EmpiricalHistogram(d, s::Number; kwargs...) = EmpiricalHistogram(d, BlockWeighti
 
 """
     EmpiricalHistogram(sdata)
-    EmpiricalHistogram(sdata, v)
-    EmpiricalHistogram(sdata, v, s)
-    EmpiricalHistogram(sdata, v, s; kwargs...)
     EmpiricalHistogram(sdata, v; kwargs...)
-    EmpiricalHistogram(sdata, w; kwargs...)
-    EmpiricalHistogram(sdata, s; kwargs...)
+    EmpiricalHistogram(sdata, v, s; kwargs...)
 
 Spatial histogram of spatial data `sdata`. Optionally,
 specify the variable `v`, the block side `s`, and the
