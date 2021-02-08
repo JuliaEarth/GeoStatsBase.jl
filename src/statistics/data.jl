@@ -65,7 +65,7 @@ Spatial histogram of spatial data `sdata`. Optionally,
 specify the variable `v`, the block side `s`, and the
 keyword arguments `kwargs` for `fit(Histotogram, ...)`.
 """
-EmpiricalHistogram(d) = EmpiricalHistogram(d, median_heuristic(d))
+EmpiricalHistogram(d; kwargs...) = EmpiricalHistogram(d, median_heuristic(d); kwargs...)
 
 function median_heuristic(d)
   # select at most 1000 points at random
