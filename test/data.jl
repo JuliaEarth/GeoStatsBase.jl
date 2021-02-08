@@ -50,7 +50,8 @@
 
     # kwargs
     sdata = georef((z=rand(100),))
-    @test length(EmpiricalHistogram(sdata, :z; nbins=10).weights) == 10
+    h = EmpiricalHistogram(sdata, :z; nbins=10)
+    @test length(h.weights) == 10
   end
 
   @testset "GeoTable" begin
