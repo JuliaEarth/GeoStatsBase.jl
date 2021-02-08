@@ -10,6 +10,13 @@ A neighborhood of points in a spatial object.
 abstract type AbstractNeighborhood end
 
 """
+    AbstractBallNeighborhood
+
+A ball-like neighborhood of points in a spatial object.
+"""
+abstract type AbstractBallNeighborhood <: AbstractNeighborhood end
+
+"""
     isneighbor(neigh, xₒ, x)
 
 Tells whether or not the coordinates `x` are in the neighborhood
@@ -21,3 +28,4 @@ function isneighbor end
 # IMPLEMENTATIONS
 # ----------------
 include("neighborhoods/ball.jl")
+include("neighborhoods/ellipsoid.jl")
