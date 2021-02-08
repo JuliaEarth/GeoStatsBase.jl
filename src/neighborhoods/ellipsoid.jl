@@ -9,7 +9,7 @@ An ellipsoid neighborhood with `semiaxes` and `angles`. For 2D ellipses,
 there are two semiaxes and one rotation angle. For 3D ellipsoids, there are
 three semiaxes and three rotation angles. Different rotation conventions can be
 passed via the `convention` keyword argument. The list of conventions is
-available in the [ aniso2distance ](@ref) documentation.
+available in the [aniso2distance](@ref) documentation.
 """
 struct EllipsoidNeighborhood <: AbstractBallNeighborhood
   semiaxes::AbstractVector
