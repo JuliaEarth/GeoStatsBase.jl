@@ -56,7 +56,9 @@ end
 # search method for ball neighborhood
 function search(xₒ::AbstractVector, method::NeighborhoodSearch{O,N,T};
                 mask=nothing) where {O,N<:AbstractBallNeighborhood,T}
-  inds = inrange(method.tree, xₒ, radius(method.neigh))
+  neigh = method.neigh
+  range = N <: BallNeighborhood ? radius(neigh) : one(eltype(neigh.semiaxes))
+  inds  = inrange(method.tree, xₒ, range)
 
   if mask ≠ nothing
     neighbors = Vector{Int}()

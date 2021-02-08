@@ -11,24 +11,25 @@ three semiaxes and three rotation angles. Different rotation conventions can be
 passed via the `convention` keyword argument. The list of conventions is
 available in the [aniso2distance](@ref) documentation.
 """
-struct EllipsoidNeighborhood <: AbstractBallNeighborhood
-  semiaxes::AbstractVector
-  angles::AbstractVector
-  convention::Symbol
-  metric::Mahalanobis
+struct EllipsoidNeighborhood{S,A,C,M} <: AbstractBallNeighborhood
+  semiaxes::S
+  angles::A
+  convention::C
+  metric::M
 
-  function EllipsoidNeighborhood(semiaxes, angles; convention=:TaitBryanExtr)
+  function EllipsoidNeighborhood{S,A,C,M}(semiaxes, angles; convention) where {S,A,C,M}
     metric = aniso2distance(semiaxes, angles, convention=convention)
     new(semiaxes, angles, convention, metric)
   end
 end
 
-radius(ellips::EllipsoidNeighborhood) = one(eltype(ellips.semiaxes))
+EllipsoidNeighborhood(semiaxes::S, angles::A; convention::C=:TaitBryanExtr) where {S,A,C} =
+  EllipsoidNeighborhood{S,A,C,Mahalanobis}(semiaxes, angles; convention)
 
 metric(ellips::EllipsoidNeighborhood) = ellips.metric
 
 isneighbor(ellips::EllipsoidNeighborhood, xₒ::AbstractVector, x::AbstractVector) =
-  evaluate(ellips.metric, xₒ, x) ≤ radius(ellips)
+  evaluate(ellips.metric, xₒ, x) ≤ one(eltype(ellips.semiaxes))
 
 # ------------
 # IO methods
@@ -41,5 +42,5 @@ function Base.show(io::IO, ::MIME"text/plain", ellips::EllipsoidNeighborhood)
   println(io, "EllipsoidNeighborhood")
   println(io, "  semiaxes: ", ellips.semiaxes)
   println(io, "  angles: ", ellips.angles)
-  print(  io, "  rotation convention: ", ellips.convention)
+  print(  io, "  convention: ", ellips.convention)
 end
