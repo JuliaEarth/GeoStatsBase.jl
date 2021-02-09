@@ -7,7 +7,7 @@ using DensityRatioEstimation
 using CategoricalArrays
 using LinearAlgebra
 using Plots, VisualRegressionTests
-using Test, Pkg, Random
+using Test, Random
 
 # load some learning models from MLJ
 using MLJ: @load
@@ -20,10 +20,6 @@ ENV["GKSwstype"] = "100"
 isCI = "CI" ∈ keys(ENV)
 islinux = Sys.islinux()
 visualtests = !isCI || (isCI && islinux)
-if !isCI
-  Pkg.add("Gtk")
-  using Gtk
-end
 datadir = joinpath(@__DIR__,"data")
 
 # dummy variables for testing
