@@ -14,6 +14,6 @@
   @test sprint(show, MIME"text/plain"(), s) == "2D Ensemble\n  domain: 10×10 RegularGrid{Float64,2}\n  variables: z\n  N° reals:  10"
 
   if visualtests
-    @plottest plot(s,size=(800,300)) joinpath(datadir,"ensemble.png") !isCI
+    @test_ref_plot "data/ensemble.png" plot(s,size=(800,300))
   end
 end

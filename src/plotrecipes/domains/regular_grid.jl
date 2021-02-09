@@ -20,7 +20,7 @@
     y = range(or[2], step=sp[2], length=sz[2])
     x, y, reverse(rotr90(Z), dims=2)
   elseif N == 3
-    seriestype --> :volume
+    seriestype --> :heatmap
     aspect_ratio --> :equal
     colorbar --> true
     Z

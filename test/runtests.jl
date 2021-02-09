@@ -1,13 +1,13 @@
 using GeoStatsBase
-using DelimitedFiles
 using Distances
 using Distributions
 using Tables, DataFrames
 using DensityRatioEstimation
 using CategoricalArrays
 using LinearAlgebra
-using Plots, VisualRegressionTests
-using Test, Random
+using DelimitedFiles
+using Test, Random, Plots
+using ReferenceTests, PNGFiles
 
 # load some learning models from MLJ
 using MLJ: @load
@@ -21,6 +21,19 @@ isCI = "CI" ∈ keys(ENV)
 islinux = Sys.islinux()
 visualtests = !isCI || (isCI && islinux)
 datadir = joinpath(@__DIR__,"data")
+
+# helper functions for visual regression tests
+function asimage(plt)
+  io = IOBuffer()
+  show(io, "image/png", plt)
+  seekstart(io)
+  PNGFiles.load(io)
+end
+macro test_ref_plot(fname, plt)
+  esc(quote
+    @test_reference $fname asimage($plt)
+  end)
+end
 
 # dummy variables for testing
 include("dummy.jl")
@@ -57,6 +70,7 @@ testfiles = [
 
 @testset "GeoStatsBase.jl" begin
   for testfile in testfiles
+    @info "Processing $testfile..."
     include(testfile)
   end
 end

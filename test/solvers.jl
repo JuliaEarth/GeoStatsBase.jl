@@ -11,7 +11,7 @@
     solution = solve(problem, solver)
 
     if visualtests
-      @plottest plot(solution,size=(800,600)) joinpath(datadir,"cookiecutter.png") !isCI
+      @test_ref_plot "data/cookiecutter.png" plot(solution,size=(800,600))
     end
   end
 
@@ -34,7 +34,7 @@
     csol = solve(prob2, solver)
 
     if visualtests
-      @plottest plot(usol,size=(900,300)) joinpath(datadir,"seqsim.png") !isCI
+      @test_ref_plot "data/seqsim.png" plot(usol,size=(900,300))
     end
   end
 
@@ -76,11 +76,10 @@
 
     if visualtests
       for (i,s) in enumerate([(S,R₁), (Sv,R₂)])
-        @plottest begin
-          p1 = plot(s[1], (:Z,))
-          p2 = plot(s[2])
-          plot(p1, p2, size=(800,400))
-        end joinpath(datadir,"pointlearn$i.png") !isCI
+        p1 = plot(s[1], (:Z,))
+        p2 = plot(s[2])
+        plt = plot(p1, p2, size=(800,400))
+        @test_ref_plot "data/pointlearn$i.png" plt
       end
     end
   end
