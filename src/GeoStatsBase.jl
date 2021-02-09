@@ -80,6 +80,7 @@ include("errors.jl")
 include("statistics.jl")
 include("plotrecipes.jl")
 include("utils.jl")
+include("histograms.jl")
 
 export
   # spatial variable
@@ -291,7 +292,7 @@ export
   mean, var, quantile,
 
   # plot recipes
-  cornerplot,
+  cornerplot, histograms,
 
   # utilities
   readgeotable,
