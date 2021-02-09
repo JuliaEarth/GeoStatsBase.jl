@@ -65,7 +65,7 @@
     𝒫₂ = LearningProblem(Sv, Tv, 𝓉)
 
     # pointwise solver
-    ℒ = PointwiseLearn(dtree)
+    ℒ = PointwiseLearn(dtree())
 
     R₁ = solve(𝒫₁, ℒ)
     R₂ = solve(𝒫₂, ℒ)
