@@ -34,11 +34,10 @@
     w = weight(d1, DensityRatioWeighting(d2))
 
     if visualtests
-      @plottest begin
-        plot( z1, pdf.(r1, z1), size=(800,400), label="source")
-        plot!(z1, pdf.(r2, z1), label="target")
-        plot!(z1, w .* pdf.(r1, z1), label="approx")
-      end joinpath(datadir,"density-ratio.png") !isCI
+      plt = plot(z1, pdf.(r1, z1), size=(800,400), label="source")
+      plot!(z1, pdf.(r2, z1), label="target")
+      plot!(z1, w .* pdf.(r1, z1), label="approx")
+      @test_reference "data/densratio.png" asimage(plt)
     end
   end
 end

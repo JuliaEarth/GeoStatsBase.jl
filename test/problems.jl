@@ -23,7 +23,8 @@
     @test sprint(show, MIME"text/plain"(), problem2D) == "2D EstimationProblem\n  data:      3 SpatialData{Float64,2}\n  domain:    100×100 RegularGrid{Float64,2}\n  variables: value (Float64)"
 
     if visualtests
-      @plottest plot(problem2D,ms=2) joinpath(datadir,"estimation.png") !isCI
+      plt = plot(problem2D,ms=2)
+      @test_reference "data/estimation.png" asimage(plt)
     end
   end
 
@@ -65,7 +66,8 @@
     @test sprint(show, MIME"text/plain"(), problem2D) == "2D SimulationProblem (conditional)\n  data:      3 SpatialData{Float64,2}\n  domain:    100×100 RegularGrid{Float64,2}\n  variables: value (Float64)\n  N° reals:  100"
 
     if visualtests
-      @plottest plot(problem2D,ms=2) joinpath(datadir,"simulation.png") !isCI
+      plt = plot(problem2D,ms=2)
+      @test_reference "data/simulation.png" asimage(plt)
     end
   end
 
@@ -88,7 +90,8 @@
     @test sprint(show, MIME"text/plain"(), problem) == "2D LearningProblem\n  source: 10 SpatialData{Float64,2}\n  target: 100 SpatialData{Float64,2}\n  task:   Clustering x → c"
 
     if visualtests
-      @plottest plot(problem,ms=2) joinpath(datadir,"learning.png") !isCI
+      plt = plot(problem,ms=2)
+      @test_reference "data/learning.png" asimage(plt)
     end
   end
 end
