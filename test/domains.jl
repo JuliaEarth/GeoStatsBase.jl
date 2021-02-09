@@ -81,7 +81,7 @@
       @test_ref_plot "data/grid3D.png" plot(RegularGrid(10,20,30))
       @test_ref_plot "data/grid1D-data.png" plot(RegularGrid(10),[1,2,3,4,5,5,4,3,2,1])
       @test_ref_plot "data/grid2D-data.png" plot(RegularGrid(10,10),1:100)
-      # @test_ref_plot "data/grid3D-data.png" plot(RegularGrid(10,10,10),collect(1:1.0:1000))
+      # @test_ref_plot "data/grid3D-data.png" plot(RegularGrid(10,10,10),1:1000)
     end
   end
 
