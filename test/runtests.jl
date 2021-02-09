@@ -7,7 +7,7 @@ using CategoricalArrays
 using LinearAlgebra
 using DelimitedFiles
 using Test, Random, Plots
-using ReferenceTests, PNGFiles
+using ReferenceTests, ImageIO
 
 # load some learning models from MLJ
 using MLJ: @load
@@ -27,7 +27,7 @@ function asimage(plt)
   io = IOBuffer()
   show(io, "image/png", plt)
   seekstart(io)
-  PNGFiles.load(io)
+  ImageIO.load(io)
 end
 macro test_ref_plot(fname, plt)
   esc(quote
