@@ -37,7 +37,7 @@
       plt = plot(z1, pdf.(r1, z1), size=(800,400), label="source")
       plot!(z1, pdf.(r2, z1), label="target")
       plot!(z1, w .* pdf.(r1, z1), label="approx")
-      @test_reference "data/densratio.png" asimage(plt)
+      @test_ref_plot "data/densratio.png" plt
     end
   end
 end

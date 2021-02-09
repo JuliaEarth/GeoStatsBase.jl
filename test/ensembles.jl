@@ -14,7 +14,6 @@
   @test sprint(show, MIME"text/plain"(), s) == "2D Ensemble\n  domain: 10×10 RegularGrid{Float64,2}\n  variables: z\n  N° reals:  10"
 
   if visualtests
-    plt = plot(s,size=(800,300))
-    @test_reference "data/ensemble.png" asimage(plt)
+    @test_ref_plot "data/ensemble.png" plot(s,size=(800,300))
   end
 end

@@ -11,8 +11,7 @@
     solution = solve(problem, solver)
 
     if visualtests
-      plt = plot(solution,size=(800,600))
-      @test_reference "data/cookiecutter.png" asimage(plt)
+      @test_ref_plot "data/cookiecutter.png" plot(solution,size=(800,600))
     end
   end
 
@@ -35,8 +34,7 @@
     csol = solve(prob2, solver)
 
     if visualtests
-      plt = plot(usol,size=(900,300))
-      @test_reference "data/seqsim.png" asimage(plt)
+      @test_ref_plot "data/seqsim.png" plot(usol,size=(900,300))
     end
   end
 
@@ -81,7 +79,7 @@
         p1 = plot(s[1], (:Z,))
         p2 = plot(s[2])
         plt = plot(p1, p2, size=(800,400))
-        @test_reference "data/pointlearn$i.png" asimage(plt)
+        @test_ref_plot "data/pointlearn$i.png" plt
       end
     end
   end

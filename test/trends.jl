@@ -26,6 +26,6 @@
     p₁ = heatmap(μ+ϵ, title="z")
     p₂ = heatmap(z̄, title="z trend")
     plt = plot(p₁, p₂, size=(900,300))
-    @test_reference "data/trends.png" asimage(plt)
+    @test_ref_plot "data/trends.png" plt
   end
 end
