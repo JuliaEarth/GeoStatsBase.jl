@@ -17,7 +17,7 @@
   framestyle --> :box
   grid --> false
   xguide --> var
-  
+
   # plot histogram
   @series begin
     EmpiricalHistogram(sdata, var)
