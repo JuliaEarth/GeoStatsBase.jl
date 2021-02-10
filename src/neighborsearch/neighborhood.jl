@@ -30,10 +30,10 @@ function NeighborhoodSearch(object::O, neigh::N) where {O,N}
   NeighborhoodSearch{O,N,typeof(tree)}(object, neigh, tree)
 end
 
-searchinds(xₒ::AbstractVector, method::NeighborhoodSearch{O,N,T}) where {O,N<:BallNeighborhood,T} =
+searchinds(xₒ, method::NeighborhoodSearch{O,N,T}) where {O,N<:BallNeighborhood,T} =
   inrange(method.tree, xₒ, radius(method.neigh))
 
-searchinds(xₒ::AbstractVector, method::NeighborhoodSearch{O,N,T}) where {O,N<:EllipsoidNeighborhood,T} =
+searchinds(xₒ, method::NeighborhoodSearch{O,N,T}) where {O,N<:EllipsoidNeighborhood,T} =
   inrange(method.tree, xₒ, one(eltype(xₒ)))
 
 # search method for any neighborhood

@@ -17,14 +17,14 @@ struct EllipsoidNeighborhood{S,A,C,M} <: AbstractBallNeighborhood
   convention::C
   metric::M
 
-  function EllipsoidNeighborhood{S,A,C,M}(semiaxes, angles; convention) where {S,A,C,M}
+  function EllipsoidNeighborhood{S,A,C,M}(semiaxes, angles, convention) where {S,A,C,M}
     metric = aniso2distance(semiaxes, angles, convention=convention)
     new(semiaxes, angles, convention, metric)
   end
 end
 
 EllipsoidNeighborhood(semiaxes::S, angles::A; convention::C=:TaitBryanExtr) where {S,A,C} =
-  EllipsoidNeighborhood{S,A,C,Mahalanobis}(semiaxes, angles; convention)
+  EllipsoidNeighborhood{S,A,C,Mahalanobis}(semiaxes, angles, convention)
 
 metric(ellips::EllipsoidNeighborhood) = ellips.metric
 
