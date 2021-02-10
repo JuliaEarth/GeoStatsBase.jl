@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------
 
 """
-EmpiricalHistogram(sdata)
+EmpiricalHistogram(sdata; kwargs...)
 EmpiricalHistogram(sdata, v; kwargs...)
 EmpiricalHistogram(sdata, v, s; kwargs...)
 
