@@ -212,6 +212,7 @@ export
   # neighborhoods
   AbstractNeighborhood,
   BallNeighborhood,
+  EllipsoidNeighborhood,
   isneighbor,
   radius,
   metric,

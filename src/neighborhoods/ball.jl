@@ -7,7 +7,7 @@
 
 A ball neighborhood with `radius` and `metric`.
 """
-struct BallNeighborhood{T,M} <: AbstractNeighborhood
+struct BallNeighborhood{T,M} <: AbstractBallNeighborhood
   radius::T
   metric::M
 
