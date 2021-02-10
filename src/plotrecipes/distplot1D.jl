@@ -22,7 +22,7 @@
   # plot histogram
   @series begin
     h
-   end
+  end
 
   # plot quantiles
   @series begin
