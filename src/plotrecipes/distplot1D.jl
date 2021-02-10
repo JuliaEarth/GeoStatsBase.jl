@@ -10,6 +10,7 @@
   var   = dp.args[2]
 
   # fit spatial statistics
+  h = normalize(EmpiricalHistogram(sdata, var))
   q = quantile(sdata, var, quantiles)
   μ = mean(sdata, var)
 
@@ -20,7 +21,7 @@
 
   # plot histogram
   @series begin
-    EmpiricalHistogram(sdata, var)
+    h
    end
 
   # plot quantiles
