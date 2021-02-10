@@ -17,7 +17,7 @@ struct NeighborhoodSearch{O,N,T} <: NeighborSearchMethod
 end
 
 function NeighborhoodSearch(object::O, neigh::N) where {O,N}
-  tree = if neigh isa BallNeighborhood
+  tree = if neigh isa AbstractBallNeighborhood
     if metric(neigh) isa MinkowskiMetric
       KDTree(coordinates(object), metric(neigh))
     else
@@ -26,8 +26,15 @@ function NeighborhoodSearch(object::O, neigh::N) where {O,N}
   else
     nothing
   end
+
   NeighborhoodSearch{O,N,typeof(tree)}(object, neigh, tree)
 end
+
+searchinds(xₒ, method::NeighborhoodSearch{O,N,T}) where {O,N<:BallNeighborhood,T} =
+  inrange(method.tree, xₒ, radius(method.neigh))
+
+searchinds(xₒ, method::NeighborhoodSearch{O,N,T}) where {O,N<:EllipsoidNeighborhood,T} =
+  inrange(method.tree, xₒ, one(eltype(xₒ)))
 
 # search method for any neighborhood
 function search(xₒ::AbstractVector, method::NeighborhoodSearch; mask=nothing)
@@ -54,8 +61,9 @@ end
 
 # search method for ball neighborhood
 function search(xₒ::AbstractVector, method::NeighborhoodSearch{O,N,T};
-                mask=nothing) where {O,N<:BallNeighborhood,T}
-  inds = inrange(method.tree, xₒ, radius(method.neigh))
+                mask=nothing) where {O,N<:AbstractBallNeighborhood,T}
+  inds = searchinds(xₒ, method)
+
   if mask ≠ nothing
     neighbors = Vector{Int}()
     @inbounds for ind in inds

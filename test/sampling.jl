@@ -1,5 +1,6 @@
 @testset "Sampling" begin
   @testset "UniformSampling" begin
+    Random.seed!(2021)
     d = RegularGrid(100,100)
     s = sample(d, UniformSampling(100))
     μ = mean(coordinates(s), dims=2)

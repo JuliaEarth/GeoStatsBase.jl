@@ -23,10 +23,9 @@
   @test all([abs(z̄[i] - μ[i]) < 0.1 for i in 1:length(z̄)])
 
   if visualtests
-    @plottest begin
-      p₁ = heatmap(μ+ϵ, title="z")
-      p₂ = heatmap(z̄, title="z trend")
-      plot(p₁, p₂, size=(900,300))
-    end joinpath(datadir,"trends.png") !isCI
+    p₁ = heatmap(μ+ϵ, title="z")
+    p₂ = heatmap(z̄, title="z trend")
+    plt = plot(p₁, p₂, size=(900,300))
+    @test_ref_plot "data/trends.png" plt
   end
 end

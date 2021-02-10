@@ -90,7 +90,7 @@
     @test length(p) == 49
 
     if visualtests
-      @plottest plot(p) joinpath(datadir,"slic.png") !isCI
+      @test_ref_plot "data/slic.png" plot(p)
     end
   end
 

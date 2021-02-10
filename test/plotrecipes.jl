@@ -6,32 +6,31 @@
 
   @testset "DistPlot1D" begin
     if visualtests
-      @plottest distplot1d(d,:z₁) joinpath(datadir,"distplot1D.png") !isCI
+      @test_ref_plot "data/distplot1D.png" distplot1d(d,:z₁)
     end
   end
 
   @testset "DistPlot2D" begin
     if visualtests
-      @plottest distplot2d(d,:z₁,:z₂) joinpath(datadir,"distplot2D.png") !isCI
+      @test_ref_plot "data/distplot2D.png" distplot2d(d,:z₁,:z₂)
     end
   end
 
   @testset "CornerPlot" begin
     if visualtests
-      @plottest cornerplot(d) joinpath(datadir,"cornerplot.png") !isCI
+      @test_ref_plot "data/cornerplot.png" cornerplot(d)
     end
   end
 
   @testset "HScatter" begin
     if visualtests
-      @plottest begin
-        sdata = readgeotable(joinpath(datadir,"samples2D.tsv"), coordnames=(:x,:y))
-        p0 = hscatter(sdata, :value, lag=0)
-        p1 = hscatter(sdata, :value, lag=1)
-        p2 = hscatter(sdata, :value, lag=2)
-        p3 = hscatter(sdata, :value, lag=3)
-        plot(p0, p1, p2, p3, layout=(2,2), size=(600,600))
-      end joinpath(datadir,"hscatter.png") !isCI
+      sdata = readgeotable(joinpath(datadir,"samples2D.tsv"), coordnames=(:x,:y))
+      p0 = hscatter(sdata, :value, lag=0)
+      p1 = hscatter(sdata, :value, lag=1)
+      p2 = hscatter(sdata, :value, lag=2)
+      p3 = hscatter(sdata, :value, lag=3)
+      plt = plot(p0, p1, p2, p3, layout=(2,2), size=(600,600))
+      @test_ref_plot "data/hscatter.png" plt
     end
   end
 end
