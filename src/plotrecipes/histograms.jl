@@ -2,12 +2,10 @@
 # Licensed under the MIT License. See LICENSE in the project root.
 # ------------------------------------------------------------------
 
-@userplot MyPlot
-
-@recipe function f(eh::MyPlot; quantiles=[0.25,0.50,0.75])
+@recipe function f(hist::EmpiricalHistogram)
   # retrieve inputs
-  sdata = eh.args[1]
-  var   = eh.args[2]
+  sdata = hist.args[1]
+  var   = hist.args[2]
 
   # fit spatial statistics
   h = normalize(EmpiricalHistogram(sdata, var))

@@ -9,37 +9,6 @@
   sdata = dp.args[1]
   var   = dp.args[2]
 
-  # fit spatial statistics
-  h = normalize(EmpiricalHistogram(sdata, var))
-  q = quantile(sdata, var, quantiles)
-  μ = mean(sdata, var)
-
-  legend --> false
-  framestyle --> :box
-  grid --> false
-  xguide --> var
-
-  # plot histogram
-  @series begin
-    seriestype --> :step
-    seriescolor --> :black
-    h
-  end
-
-  # plot quantiles
-  @series begin
-    seriestype --> :vline
-    primary --> false
-    seriescolor --> :black
-    linestyle --> :dash
-    q
-  end
-
-  # plot mean
-  @series begin
-    seriestype --> :vline
-    primary --> false
-    seriescolor --> :green
-    [μ]
-  end
+  hist = EmpiricalHistogram(sdata, var)
+  RecipesBase.plot(hist)
 end
