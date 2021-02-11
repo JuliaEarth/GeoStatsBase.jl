@@ -63,10 +63,10 @@ testfiles = [
   "folding.jl",
   "errors.jl",
   "statistics.jl",
+  "histograms.jl",
   "plotrecipes.jl",
   "utils.jl",
-  "macros.jl",
-  "histograms.jl"
+  "macros.jl"
 ]
 
 @testset "GeoStatsBase.jl" begin
