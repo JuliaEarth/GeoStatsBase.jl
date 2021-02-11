@@ -21,6 +21,8 @@
 
   # plot histogram
   @series begin
+    seriestype --> :step
+    seriescolor --> :black
     h
   end
 
