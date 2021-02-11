@@ -33,4 +33,10 @@
       @test_ref_plot "data/hscatter.png" plt
     end
   end
+
+  @testset "EmpiricalHistogram" begin
+    if visualtests
+      @test_ref_plot "data/empiricalhistogram.png" plot(EmpiricalHistogram(d, :z₁))
+    end
+  end
 end
