@@ -9,7 +9,7 @@ EmpiricalHistogram(sdata, v, s; kwargs...)
 
 Spatial histogram of spatial data `sdata`. Optionally,
 specify the variable `v`, the block side `s`, and the
-keyword arguments `kwargs` for `fit(Histotogram, ...)`.
+keyword arguments `kwargs` for `fit(Histogram, ...)`.
 """
 struct EmpiricalHistogram{H}
   hist::H
