@@ -47,13 +47,6 @@
     ct = DataFrame(Tables.columns(t[1:3,:]))
     @test rv == rt
     @test cv == ct
-
-    # kwargs
-    sdata = georef((z=rand(100),))
-    h = EmpiricalHistogram(sdata, :z; nbins=10)
-    c, w = values(h)
-    @test length(c) == 10
-    @test length(w) == 10
   end
 
   @testset "GeoTable" begin
