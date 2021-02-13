@@ -5,5 +5,9 @@
 @recipe function f(hist::EmpiricalHistogram)
   seriestype --> :step
   seriescolor --> :black
-  hist.hist
+  legend --> false
+  framestyle --> :box
+  grid --> false
+
+  normalize(hist.hist)
 end
