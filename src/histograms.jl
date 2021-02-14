@@ -19,4 +19,9 @@ EmpiricalHistogram(d, v::Symbol; kwargs...) = EmpiricalHistogram(d, v, median_he
 EmpiricalHistogram(d, w::WeightingMethod; kwargs...) = Dict(v => EmpiricalHistogram(d, v, w; kwargs...) for v in name.(variables(d)))
 EmpiricalHistogram(d, s::Number; kwargs...) = EmpiricalHistogram(d, BlockWeighting(ntuple(i->s,ncoords(d))); kwargs...)
 
+"""
+    values(histogram)
+    
+Return the abscissa and ordinates of empirical `histogram`.
+"""
 Base.values(h::EmpiricalHistogram) = midpoints(first(h.hist.edges)), h.hist.weights
