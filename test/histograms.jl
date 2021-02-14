@@ -14,7 +14,7 @@
   @test length(w) == 10
 
   if visualtests
-      @test_ref_plot "data/empiricalhistogram1.png" plot(h1)
-      @test_ref_plot "data/empiricalhistogram2.png" plot(h2)
+    @test_ref_plot "data/empiricalhistogram1.png" plot(h1)
+    @test_ref_plot "data/empiricalhistogram2.png" plot(h2)
   end
 end
