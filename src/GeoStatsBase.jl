@@ -10,7 +10,7 @@ using Random: randperm, shuffle
 using Combinatorics: multiexponents
 using Distributed: CachingPool, pmap, myid
 using LinearAlgebra: Diagonal, normalize, norm, ⋅
-using StatsBase: Histogram, Weights, AbstractWeights
+using StatsBase: Histogram, Weights, AbstractWeights, midpoints
 using Distances: Metric, Euclidean, Mahalanobis, pairwise
 using Distributions: ContinuousUnivariateDistribution, median, mode
 using CategoricalArrays: CategoricalValue, CategoricalArray
@@ -78,6 +78,7 @@ include("solvers.jl")
 include("folding.jl")
 include("errors.jl")
 include("statistics.jl")
+include("histograms.jl")
 include("plotrecipes.jl")
 include("utils.jl")
 
@@ -287,8 +288,10 @@ export
   polymat,
   trend,
 
-  # statistics
+  # histograms
   EmpiricalHistogram,
+
+  # statistics
   mean, var, quantile,
 
   # plot recipes
