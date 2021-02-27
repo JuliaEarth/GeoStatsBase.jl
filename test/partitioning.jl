@@ -90,7 +90,7 @@
     @test length(p) == 49
 
     if visualtests
-      @test_ref_plot "data/slic.png" plot(p)
+      @test_reference "data/slic.png" plot(p)
     end
   end
 

@@ -6,19 +6,19 @@
 
   @testset "DistPlot1D" begin
     if visualtests
-      @test_ref_plot "data/distplot1D.png" distplot1d(d,:z₁)
+      @test_reference "data/distplot1D.png" distplot1d(d,:z₁)
     end
   end
 
   @testset "DistPlot2D" begin
     if visualtests
-      @test_ref_plot "data/distplot2D.png" distplot2d(d,:z₁,:z₂)
+      @test_reference "data/distplot2D.png" distplot2d(d,:z₁,:z₂)
     end
   end
 
   @testset "CornerPlot" begin
     if visualtests
-      @test_ref_plot "data/cornerplot.png" cornerplot(d)
+      @test_reference "data/cornerplot.png" cornerplot(d)
     end
   end
 
@@ -30,7 +30,7 @@
       p2 = hscatter(sdata, :value, lag=2)
       p3 = hscatter(sdata, :value, lag=3)
       plt = plot(p0, p1, p2, p3, layout=(2,2), size=(600,600))
-      @test_ref_plot "data/hscatter.png" plt
+      @test_reference "data/hscatter.png" plt
     end
   end
 end

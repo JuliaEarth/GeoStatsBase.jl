@@ -63,7 +63,7 @@
 
     if visualtests
       df = DataFrame(x=[25.,50.,75.],y=[25.,75.,50.],z=[1.,0.,1.])
-      @test_ref_plot "data/geodf.png" plot(georef(df,(:x,:y)))
+      @test_reference "data/geodf.png" plot(georef(df,(:x,:y)))
     end
   end
 
@@ -80,7 +80,7 @@
 
     if visualtests
       ps = georef((z=[1.,0.,1.],),[25. 50. 75.; 25. 75. 50.])
-      @test_ref_plot "data/pset-data.png" plot(ps)
+      @test_reference "data/pset-data.png" plot(ps)
     end
   end
 
@@ -98,8 +98,8 @@
     @test sprint(show, MIME"text/plain"(), g) == "2×2 RegularGrid{Float64,2}\n  variables\n    └─z (Int64)"
 
     if visualtests
-      @test_ref_plot "data/grid2D-data1.png" plot(georef((z=[1 2; 3 4],)))
-      @test_ref_plot "data/grid2D-data2.png" plot(georef((z=[1 2; 3 4],),(-10.,-10.),(10.,10.)))
+      @test_reference "data/grid2D-data1.png" plot(georef((z=[1 2; 3 4],)))
+      @test_reference "data/grid2D-data2.png" plot(georef((z=[1 2; 3 4],),(-10.,-10.),(10.,10.)))
     end
   end
 
