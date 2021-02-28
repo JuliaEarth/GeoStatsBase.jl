@@ -1,5 +1,5 @@
 @testset "Georeferencing" begin
-  table = DataFrame(x=rand(3), y=[1,2,3], z=["a","b","c"])
+  table = Table(x=rand(3), y=[1,2,3], z=["a","b","c"])
   tuple = (x=rand(3), y=[1,2,3], z=["a","b","c"])
 
   # explicit domain types
