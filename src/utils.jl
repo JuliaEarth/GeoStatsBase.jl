@@ -13,7 +13,7 @@ forwarded to the `CSV.File` function, please check their
 documentation for more details.
 """
 readgeotable(args...; coordnames=(:x,:y,:z), kwargs...) =
-  georef(DataFrame(CSV.File(args...; kwargs...)), coordnames)
+  georef(TypedTables.Table(CSV.File(args...; kwargs...)), coordnames)
 
 """
     spheredir(θ, φ)

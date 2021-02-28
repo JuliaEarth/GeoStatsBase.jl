@@ -7,7 +7,6 @@ module GeoStatsBase
 using CSV
 using Meshes
 using Tables
-using DataFrames: DataFrame
 using Combinatorics: multiexponents
 using Distributed: CachingPool, pmap, myid
 using LinearAlgebra: normalize, norm
@@ -25,6 +24,7 @@ using LossFunctions
 using RecipesBase
 using Parameters
 
+using TypedTables # for a default table type
 using Optim # for LSIF estimation
 
 import Meshes

@@ -37,8 +37,10 @@ end
 
 Georeference named `tuple` on spatial `domain`.
 """
-georef(tuple::NamedTuple, domain) =
-  georef(DataFrame([var=>vec(val) for (var,val) in pairs(tuple)]), domain)
+function georef(tuple::NamedTuple, domain)
+  flat = (; (var=>vec(val) for (var,val) in pairs(tuple))...)
+  georef(TypedTables.Table(flat), domain)
+end
 
 """
     georef(tuple, coords)

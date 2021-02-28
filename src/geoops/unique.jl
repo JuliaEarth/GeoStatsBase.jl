@@ -56,7 +56,7 @@ function uniquecoords(data::D; agg=Dict()) where {D<:Data}
 
   # construct new table
   ctor = Tables.materializer(tab)
-  newtab = ctor([var => vals[var] for var in vars])
+  newtab = ctor((; (var => vals[var] for var in vars)...))
 
   # construct new domain
   newdom = view(dom, locs)

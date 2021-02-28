@@ -8,8 +8,8 @@
 Mean of `ensemble`.
 """
 function mean(ensemble::Ensemble)
-  data = DataFrame([variable => mean(reals) for (variable, reals) in ensemble.reals])
-  georef(data, ensemble.domain)
+  μs = (; (variable => mean(reals) for (variable, reals) in ensemble.reals)...)
+  georef(μs, ensemble.domain)
 end
 
 """
@@ -18,8 +18,8 @@ end
 Variance of `ensemble`.
 """
 function var(ensemble::Ensemble)
-  data = DataFrame([variable => var(reals) for (variable, reals) in ensemble.reals])
-  georef(data, ensemble.domain)
+  σs = (; (variable => var(reals) for (variable, reals) in ensemble.reals)...)
+  georef(σs, ensemble.domain)
 end
 
 """
@@ -36,7 +36,7 @@ function quantile(ensemble::Ensemble, p::Number)
     end
     push!(cols, variable => quantiles)
   end
-  georef(DataFrame(cols), ensemble.domain)
+  georef((; cols...), ensemble.domain)
 end
 
 quantile(ensemble::Ensemble, ps::AbstractVector) = [quantile(ensemble, p) for p in ps]

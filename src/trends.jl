@@ -51,7 +51,7 @@ function trend(sdata, vars::AbstractVector{Symbol}; degree=1)
   end
 
   ctor  = Tables.materializer(𝒯)
-  table = ctor(vars .=> ŷs)
+  table = ctor((; zip(vars, ŷs)...))
 
   georef(table, 𝒟)
 end
