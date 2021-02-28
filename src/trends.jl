@@ -40,7 +40,7 @@ function trend(sdata, vars::AbstractVector{Symbol}; degree=1)
   𝒟 = domain(sdata)
 
   # build LHS of linear system
-  xs = eachcol(coordinates(𝒟))
+  xs = eachcol(coordinates(𝒟, 1:nelements(𝒟)))
   X  = polymat(xs, degree)
 
   # solve for each variable

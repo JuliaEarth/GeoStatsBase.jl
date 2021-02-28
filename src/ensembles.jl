@@ -54,7 +54,7 @@ Base.lastindex(ensemble::Ensemble) = length(ensemble)
 # IO methods
 # ------------
 function Base.show(io::IO, ensemble::Ensemble)
-  N = ncoords(ensemble.domain)
+  N = embeddim(ensemble.domain)
   print(io, "$(N)D Ensemble")
 end
 

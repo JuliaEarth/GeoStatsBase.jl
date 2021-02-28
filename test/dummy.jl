@@ -7,7 +7,7 @@ import GeoStatsBase: solve, solvesingle
 function solve(problem::EstimationProblem, solver::DummyEstimSolver)
   sdat = data(problem)
   sdom = domain(problem)
-  npts = nelms(sdom)
+  npts = nelements(sdom)
   vars = name.(variables(problem))
   μs = [v => fill(mean(sdat[v]), npts) for v in vars]
   σs = [Symbol(v,:Var) => fill(var(sdat[v]), npts) for v in vars]
@@ -17,7 +17,7 @@ end
 @simsolver DummySimSolver begin end
 function solvesingle(problem::SimulationProblem, covars::NamedTuple,
                      solver::DummySimSolver, preproc)
-  npts = nelms(domain(problem))
+  npts = nelements(domain(problem))
   mactypeof = Dict(name(v) => mactype(v) for v in variables(problem))
   reals = map(covars.names) do var
     V    = mactypeof[var]
@@ -25,6 +25,23 @@ function solvesingle(problem::SimulationProblem, covars::NamedTuple,
     var => real
   end
   Dict(reals)
+end
+
+###################
+# EXAMPLE SOLVERS
+###################
+@estimsolver ESolver begin
+  @param A=1.0
+  @param B=2
+  @jparam J="foo"
+  @global C=true
+end
+
+@simsolver SSolver begin
+  @param A=1.0
+  @param B=2
+  @jparam J="foo"
+  @global C=true
 end
 
 ###################
@@ -45,23 +62,6 @@ function predict(fitted::FittedDummyEstimator, xₒ)
   μ, σ²
 end
 status(fitted::FittedDummyEstimator) = true
-
-#########################
-# OTHER EXAMPLE SOLVERS
-#########################
-@estimsolver ESolver begin
-  @param A=1.0
-  @param B=2
-  @jparam J="foo"
-  @global C=true
-end
-
-@simsolver SSolver begin
-  @param A=1.0
-  @param B=2
-  @jparam J="foo"
-  @global C=true
-end
 
 ########################
 # DUMMY LEARNING MODEL

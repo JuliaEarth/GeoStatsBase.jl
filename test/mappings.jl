@@ -3,11 +3,11 @@
   data2D = readgeotable(joinpath(datadir,"data2D.tsv"), delim='\t', coordnames=(:x,:y))
 
   @testset "NearestMapping" begin
-    grid1D = RegularGrid(100)
+    grid1D = CartesianGrid((100,), (-0.5,), (1.0,))
     mappings = map(data1D, grid1D, (:value,), NearestMapping())
     @test mappings[:value] == Dict(100=>11,81=>9,11=>2,21=>3,91=>10,51=>6,61=>7,71=>8,31=>4,41=>5,1=>1)
 
-    grid2D = RegularGrid(100,100)
+    grid2D = CartesianGrid((100,100), (-0.5,-0.5), (1.0,1.0))
     mappings = map(data2D, grid2D, (:value,), NearestMapping())
     @test mappings[:value] == Dict(5076=>3,2526=>1,7551=>2)
 
@@ -18,7 +18,7 @@
 
   @testset "CopyMapping" begin
     d = georef((z=rand(10),), rand(2,10))
-    g = RegularGrid(10,10)
+    g = CartesianGrid(10,10)
 
     # copy data to first locations in domain
     mappings = map(d, g, (:z,), CopyMapping())

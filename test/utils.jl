@@ -7,4 +7,8 @@
     @test spheredir(90,90) ≈ [0,1,0]
     @test spheredir(0,  0) ≈ [0,0,1]
   end
+
+  @testset "aniso2distance" begin
+    # TODO
+  end
 end

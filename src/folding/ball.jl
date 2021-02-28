@@ -18,12 +18,12 @@ function folds(object, method::BallFolding)
 
   # create search method
   searcher = NeighborhoodSearch(object, ball)
-  n = nelms(object)
+  n = nelements(object)
 
   function pair(i)
     # source and target indices
     coords = coordinates(object, i)
-    inside = search(coords, searcher)
+    inside = search(Point(coords), searcher)
     sinds  = setdiff(1:n, inside)
     tinds  = [i]
 

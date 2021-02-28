@@ -3,8 +3,8 @@
 # ------------------------------------------------------------------
 
 @recipe function f(problem::SimulationProblem)
-  pdata   = data(problem)
   pdomain = domain(problem)
+  pdata   = data(problem)
   vars    = join(name.(variables(pdata)), ", ")
 
   title --> "Simulation Problem"

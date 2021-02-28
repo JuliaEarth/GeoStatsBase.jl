@@ -6,6 +6,8 @@ module GeoStatsBase
 
 using CSV
 using Optim
+using Meshes
+using Tables
 using Random: randperm, shuffle
 using Combinatorics: multiexponents
 using Distributed: CachingPool, pmap, myid
@@ -28,7 +30,7 @@ using LossFunctions
 using RecipesBase
 using Parameters
 
-import Tables
+import Meshes
 import MLJModelInterface
 import Base: values, ==
 import Base: in, filter, map, split, error
@@ -42,7 +44,6 @@ import NearestNeighbors: MinkowskiMetric
 
 # aliases
 const MI = MLJModelInterface
-const Vec{N,T} = Union{SVector{N,T},MVector{N,T}}
 
 # convention of scientific types
 include("convention.jl")
@@ -51,25 +52,15 @@ function __init__()
   ScientificTypes.set_convention(GeoStats())
 end
 
-include("variables.jl")
-include("geotraits.jl")
-include("domains.jl")
-include("data.jl")
+include("geodata.jl")
 include("ensembles.jl")
 include("georef.jl")
 include("macros.jl")
-include("paths.jl")
 include("trends.jl")
-include("geometries.jl")
-include("distances.jl")
-include("neighborhoods.jl")
-include("neighborsearch.jl")
 include("distributions.jl")
 include("estimators.jl")
 include("partitioning.jl")
 include("weighting.jl")
-include("discretizing.jl")
-include("sampling.jl")
 include("geoops.jl")
 include("learning.jl")
 include("mappings.jl")
@@ -83,32 +74,9 @@ include("plotrecipes.jl")
 include("utils.jl")
 
 export
-  # spatial variable
-  Variable,
-  name, mactype,
-
-  # geotraits
-  nelms,
-  ncoords,
-  coordtype,
-  coordinates,
-  coordinates!,
-  domain,
-  values,
-
-  # spatial domains
-  AbstractDomain,
-  PointSet,
-  RegularGrid,
-  StructuredGrid,
-  origin, spacing,
-
-  # spatial data
-  AbstractData,
-  SpatialData,
-  variables,
+  # geospatial data
+  GeoData,
   georef,
-  asarray,
 
   # spatial ensembles
   Ensemble,
@@ -190,44 +158,9 @@ export
   @estimsolver,
   @simsolver,
 
-  # paths
-  AbstractPath,
-  LinearPath,
-  RandomPath,
-  SourcePath,
-  ShiftedPath,
-  traverse,
-
-  # geometries
-  AbstractGeometry,
-  Rectangle,
-  sides,
-  center,
-  diagonal,
-  volume,
-
   # distances
   aniso2distance,
   evaluate,
-
-  # neighborhoods
-  AbstractNeighborhood,
-  BallNeighborhood,
-  EllipsoidNeighborhood,
-  isneighbor,
-  radius,
-  metric,
-
-  # neighborhood search
-  NeighborSearchMethod,
-  BoundedNeighborSearchMethod,
-  KNearestSearch,
-  NeighborhoodSearch,
-  BoundedSearch,
-  KBallSearch,
-  search!, search,
-  maxneighbors,
-  object,
 
   # distributions
   EmpiricalDistribution,
@@ -237,52 +170,15 @@ export
   fit, predict, status,
 
   # partitioning
-  SpatialPartition,
-  PartitionMethod,
-  PredicatePartitionMethod,
-  SPredicatePartitionMethod,
-  RandomPartition,
-  FractionPartition,
-  SLICPartition,
-  BlockPartition,
-  BisectPointPartition,
-  BisectFractionPartition,
-  BallPartition,
-  PlanePartition,
-  DirectionPartition,
-  PredicatePartition,
-  SPredicatePartition,
-  VariablePartition,
-  ProductPartition,
-  HierarchicalPartition,
-  partition,
-  subsets,
-  metadata,
-  →,
+  SLIC,
 
   # weighting
-  SpatialWeights,
+  GeoWeights,
   WeightingMethod,
   UniformWeighting,
   BlockWeighting,
   DensityRatioWeighting,
   weight,
-
-  # discretizing
-  DiscretizationMethod,
-  BlockDiscretization,
-  discretize,
-
-  # sampling
-  SamplingMethod,
-  UniformSampling,
-  WeightedSampling,
-  BallSampling,
-  sample,
-
-  # operations
-  uniquecoords,
-  inside,
 
   # trends
   polymat,
@@ -299,9 +195,8 @@ export
 
   # utilities
   readgeotable,
+  uniquecoords,
   groupby,
-  boundbox,
-  slice,
   spheredir
 
 end

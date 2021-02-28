@@ -50,5 +50,4 @@ function Base.show(io::IO, ::MIME"text/plain", solver::PointwiseLearn)
   println(io, solver)
   print(io, "  └─model ⇨ ")
   show(IOContext(io, :compact => true), solver.model)
-  println(io, "")
 end

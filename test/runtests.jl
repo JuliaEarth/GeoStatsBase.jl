@@ -1,4 +1,5 @@
 using GeoStatsBase
+using Meshes
 using Distances
 using Distributions
 using Tables, DataFrames
@@ -27,22 +28,13 @@ include("dummy.jl")
 
 # list of tests
 testfiles = [
-  "distances.jl",
   "distributions.jl",
-  "data.jl",
-  "domains.jl",
-  "views.jl",
   "ensembles.jl",
   "georef.jl",
   "partitioning.jl",
   "weighting.jl",
-  "sampling.jl",
   "geoops.jl",
-  "paths.jl",
   "trends.jl",
-  "geometries.jl",
-  "neighborhoods.jl",
-  "neighborsearch.jl",
   "learning.jl",
   "mappings.jl",
   "problems.jl",

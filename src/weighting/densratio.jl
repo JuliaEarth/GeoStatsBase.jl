@@ -50,5 +50,5 @@ function weight(sdata, method::DensityRatioWeighting)
   # perform denstiy ratio estimation
   ratios = densratio(xnu, xde, dre, optlib=optlib)
 
-  SpatialWeights(domain(sdata), ratios)
+  GeoWeights(domain(sdata), ratios)
 end

@@ -60,20 +60,20 @@ data(problem::EstimationProblem) = problem.sdata
 
 Return the spatial domain of the estimation `problem`.
 """
-domain(problem::EstimationProblem) = problem.sdomain
+Meshes.domain(problem::EstimationProblem) = problem.sdomain
 
 """
     variables(problem)
 
 Return the variable names of the estimation `problem` and their types.
 """
-variables(problem::EstimationProblem) = problem.vars
+Meshes.variables(problem::EstimationProblem) = problem.vars
 
 # ------------
 # IO methods
 # ------------
 function Base.show(io::IO, problem::EstimationProblem)
-  N = ncoords(problem.sdomain)
+  N = embeddim(problem.sdomain)
   print(io, "$(N)D EstimationProblem")
 end
 

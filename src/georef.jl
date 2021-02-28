@@ -7,7 +7,7 @@
 
 Georeference `table` on spatial `domain`.
 """
-georef(table, domain) = SpatialData(domain, table)
+georef(table, domain) = GeoData(domain, table)
 
 """
     georef(table, coords)
@@ -50,11 +50,11 @@ georef(tuple::NamedTuple, coords::AbstractVecOrMat) = georef(tuple, PointSet(coo
 """
     georef(tuple; origin=(0.,0.,...), spacing=(1.,1.,...))
 
-Georeference named `tuple` on `RegularGrid(size(tuple[1]), origin, spacing)`.
+Georeference named `tuple` on `CartesianGrid(size(tuple[1]), origin, spacing)`.
 """
 georef(tuple;
        origin=ntuple(i->0., ndims(tuple[1])),
        spacing=ntuple(i->1., ndims(tuple[1]))) = georef(tuple, origin, spacing)
 
 georef(tuple, origin, spacing) =
-  georef(tuple, RegularGrid(size(tuple[1]), origin, spacing))
+  georef(tuple, CartesianGrid(size(tuple[1]), origin, spacing))

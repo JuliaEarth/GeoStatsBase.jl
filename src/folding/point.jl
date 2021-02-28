@@ -11,7 +11,7 @@ are single points.
 struct PointFolding <: FoldingMethod end
 
 function folds(object, ::PointFolding)
-  n = nelms(object)
+  n = nelements(object)
 
   function pair(i)
     # source and target indices

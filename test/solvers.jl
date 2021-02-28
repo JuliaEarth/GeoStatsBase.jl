@@ -1,11 +1,11 @@
 @testset "Solvers" begin
   @testset "CookieCutter" begin
-    problem = SimulationProblem(RegularGrid(100,100), (:facies => Int, :property => Float64), 3)
+    problem = SimulationProblem(CartesianGrid(100,100), (:facies => Int, :property => Float64), 3)
     solver = CookieCutter(DummySimSolver(:facies=>NamedTuple()),
                           Dict(0=>DummySimSolver(), 1=>DummySimSolver()))
 
     @test sprint(show, solver) == "CookieCutter"
-    @test sprint(show, MIME"text/plain"(), solver) == "CookieCutter\n  └─facies ⇨ DummySimSolver\n    └─0 ⇨ DummySimSolver\n    └─1 ⇨ DummySimSolver\n"
+    @test sprint(show, MIME"text/plain"(), solver) == "CookieCutter\n  └─facies ⇨ DummySimSolver\n    └─0 ⇨ DummySimSolver\n    └─1 ⇨ DummySimSolver"
 
     Random.seed!(1234)
     solution = solve(problem, solver)
@@ -18,13 +18,13 @@
   @testset "SeqSim" begin
     Random.seed!(1234)
     sdata = georef((z=rand(100),), 100*rand(2,100))
-    sgrid = RegularGrid(100,100)
+    sgrid = CartesianGrid(100,100)
 
     prob1 = SimulationProblem(sgrid, :z => Float64, 3)
     prob2 = SimulationProblem(sdata, sgrid, :z, 3)
 
     solver = SeqSim(:z => (estimator=DummyEstimator(),
-                           neighborhood=BallNeighborhood(10.),
+                           neighborhood=NormBall(10.),
                            minneighbors=1, maxneighbors=10,
                            marginal=Normal(), path=LinearPath(),
                            mapping=NearestMapping()))
@@ -53,7 +53,7 @@
     T = georef((X=X+ϵ₁,Y=Y+ϵ₂))
 
     # view versions
-    inds = shuffle(1:nelms(S))
+    inds = shuffle(1:nelements(S))
     Sv = view(S, inds)
     Tv = view(T, inds)
 

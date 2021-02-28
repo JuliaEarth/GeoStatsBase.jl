@@ -159,7 +159,7 @@ end
 
 Return flattened list of variable names in the `solver`.
 """
-function variables end
+Meshes.variables(::AbstractSolver)
 
 # ----------------
 # IMPLEMENTATIONS

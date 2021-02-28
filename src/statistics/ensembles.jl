@@ -30,7 +30,7 @@ end
 function quantile(ensemble::Ensemble, p::Number)
   cols = []
   for (variable, reals) in ensemble.reals
-    quantiles = map(1:nelms(ensemble.domain)) do location
+    quantiles = map(1:nelements(ensemble.domain)) do location
       slice = getindex.(reals, location)
       quantile(slice, p)
     end

@@ -3,57 +3,66 @@
 # ------------------------------------------------------------------
 
 """
-    uniquecoords(sdata, agg=Dict())
+    uniquecoords(data, agg=Dict())
 
-Retain locations in spatial objects with unique coordinates.
+Retain locations in `data` with unique coordinates.
 
 Duplicates of a variable `var` are aggregated with
 aggregation function `agg[var]`. Default aggregation
 function is `mean` for continuous variables and `first`
 otherwise.
 """
-function uniquecoords(sdata; agg=Dict())
-  # retrieve filtering info
-  vars = variables(sdata)
-  for var in name.(vars)
+function uniquecoords(data::D; agg=Dict()) where {D<:Data}
+  dom = domain(data)
+  tab = values(data)
+  sch = Tables.schema(tab)
+  vars, types = sch.names, sch.types
+  mactype = Dict(vars .=> types)
+
+  # filtering info
+  for var in vars
     if var ∉ keys(agg)
-      ST = scitype(sdata[var][1])
+      ST = scitype(data[var][1])
       agg[var] = ST <: Continuous ? _mean : _first
     end
   end
 
   # group locations with the same coordinates
-  gind = _uniqueinds(coordinates(sdata), 2)
-  groups = Dict(ind => Vector{Int}() for ind in unique(gind))
+  X = coordinates(dom, 1:nelements(dom))
+  gind = _uniqueinds(X, 2)
+  groups = Dict(ind => Int[] for ind in unique(gind))
   for (i, ind) in enumerate(gind)
     push!(groups[ind], i)
   end
 
-  # construct new point set data
-  locs = Vector{Int}()
-  vals = Dict(name(var) => Vector{mactype(var)}() for var in vars)
+  # perform aggregation with repeated indices
+  locs = Int[]
+  vals = Dict(var => mactype[var][] for var in vars)
   for g in values(groups)
     i = g[1] # select any location
     if length(g) > 1
       # aggregate variables
-      for var in name.(vars)
-        push!(vals[var], agg[var](sdata[var][g]))
+      for var in vars
+        push!(vals[var], agg[var](data[var][g]))
       end
     else
       # copy location
-      for var in name.(vars)
-        push!(vals[var], sdata[var][i])
+      for var in vars
+        push!(vals[var], data[var][i])
       end
     end
     push!(locs, i)
   end
 
-  # construct data with correct variable order
-  ctor = Tables.materializer(values(sdata))
-  data = ctor([var => vals[var] for var in name.(vars)])
-  coords = coordinates(sdata, locs)
+  # construct new table
+  ctor = Tables.materializer(tab)
+  newtab = ctor([var => vals[var] for var in vars])
 
-  georef(data, coords)
+  # construct new domain
+  newdom = view(dom, locs)
+
+  # return new spatial data
+  constructor(D)(newdom, newtab)
 end
 
 function _mean(xs)

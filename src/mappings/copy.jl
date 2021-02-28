@@ -23,8 +23,8 @@ function map(sdata, sdomain, targetvars, method::CopyMapping)
   mappings = Dict(var => Dict{Int,Int}() for var in targetvars)
 
   # retrieve origin and destination indices
-  orig = isnothing(method.orig) ? (1:nelms(sdata)) : method.orig
-  dest = isnothing(method.dest) ? (1:nelms(sdata)) : method.dest
+  orig = isnothing(method.orig) ? (1:nelements(sdata)) : method.orig
+  dest = isnothing(method.dest) ? (1:nelements(sdata)) : method.dest
 
   @assert length(orig) == length(dest) "invalid mapping specification"
 

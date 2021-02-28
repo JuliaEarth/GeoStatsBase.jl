@@ -22,14 +22,14 @@ BlockWeighting(sides::Vararg) = BlockWeighting(sides)
 weight(object, method::BlockWeighting) =
   weight(domain(object), method)
 
-function weight(object::AbstractDomain, method::BlockWeighting)
+function weight(object::Domain, method::BlockWeighting)
   p = partition(object, BlockPartition(method.sides))
 
-  weights = Vector{Float64}(undef, nelms(object))
+  weights = Vector{Float64}(undef, nelements(object))
   for s in subsets(p)
     n = length(s)
     weights[s] .= 1/n
   end
 
-  SpatialWeights(object, weights)
+  GeoWeights(object, weights)
 end

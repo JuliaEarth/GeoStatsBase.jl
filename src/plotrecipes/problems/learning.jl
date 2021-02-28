@@ -3,10 +3,10 @@
 # ------------------------------------------------------------------
 
 @recipe function f(problem::LearningProblem)
-  sdata   = sourcedata(problem)
-  tdata   = targetdata(problem)
-  svars   = join(sort(collect(name.(variables(sdata)))), ", ")
-  tvars   = join(sort(collect(name.(variables(tdata)))), ", ")
+  sdata = sourcedata(problem)
+  tdata = targetdata(problem)
+  svars = join(name.(variables(sdata)), ", ")
+  tvars = join(name.(variables(tdata)), ", ")
 
   title --> "Learning Problem"
   legend --> true

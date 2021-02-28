@@ -3,15 +3,15 @@
 # ------------------------------------------------------------------
 
 """
-    filter(pred, sdata)
+    filter(pred, data)
 
-Retain all locations in spatial data `sdata` according to
+Retain all locations in geospatial `data` according to
 a predicate function `pred`. A predicate function takes
 table rows as input, e.g. `pred(r) = r.state == "CA"`.
 """
-function filter(pred, sdata::AbstractData)
-  𝒯 = values(sdata)
-  𝒟 = domain(sdata)
+function filter(pred, data::D) where {D<:Data}
+  𝒯 = values(data)
+  𝒟 = domain(data)
 
   # row table view
   ctor = Tables.materializer(𝒯)
@@ -21,8 +21,8 @@ function filter(pred, sdata::AbstractData)
   inds = findall(pred, rows)
 
   # return point set
-  table = ctor(rows[inds])
-  coord = coordinates(𝒟, inds)
+  tab = ctor(rows[inds])
+  dom = view(𝒟, inds)
 
-  georef(table, coord)
+  constructor(D)(dom, tab)
 end

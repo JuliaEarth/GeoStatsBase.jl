@@ -170,7 +170,7 @@ macro metasolver(solver, solvertype, body)
       (names=vars, params=Dict(params))
     end
 
-    GeoStatsBase.variables(solver::$solver) = solver.varnames
+    Meshes.variables(solver::$solver) = solver.varnames
 
     # ------------
     # IO methods
