@@ -1,8 +1,8 @@
 @testset "Problems" begin
   data2D = readgeotable(joinpath(datadir,"data2D.tsv"), coordnames=(:x,:y))
   data3D = readgeotable(joinpath(datadir,"data3D.tsv"))
-  grid2D = RegularGrid(100,100)
-  grid3D = RegularGrid(100,100,100)
+  grid2D = CartesianGrid(100,100)
+  grid3D = CartesianGrid(100,100,100)
 
   @testset "Estimation" begin
     # test basic problem interface
@@ -12,15 +12,14 @@
     @test variables(problem3D) == (Variable(:value, Float64),)
 
     # problems with missing data have types inferred correctly
-    img = Array{Union{Float64,Missing}}(rand(10,10))
-    mdata = georef((var=img,))
-    problem = EstimationProblem(mdata, grid2D, :var)
-    @test variables(problem) == (Variable(:var, Float64),)
+    Z = Array{Union{Float64,Missing}}(rand(10,10))
+    problem = EstimationProblem(georef((Z=Z,)), grid2D, :Z)
+    @test variables(problem) == (Variable(:Z, Float64),)
 
     # show methods
     problem2D = EstimationProblem(data2D, grid2D, :value)
     @test sprint(show, problem2D) == "2D EstimationProblem"
-    @test sprint(show, MIME"text/plain"(), problem2D) == "2D EstimationProblem\n  data:      3 SpatialData{Float64,2}\n  domain:    100×100 RegularGrid{Float64,2}\n  variables: value (Float64)"
+    @test sprint(show, MIME"text/plain"(), problem2D) == "2D EstimationProblem\n  data:      3 GeoData{2,Float64}\n  domain:    100×100 CartesianGrid{2,Float64}\n  variables: value (Float64)"
 
     if visualtests
       @test_reference "data/estimation.png" plot(problem2D,ms=2)
@@ -37,10 +36,9 @@
     @test nreals(problem3D) == 100
 
     # problems with missing data have types inferred correctly
-    img = Array{Union{Float64,Missing}}(rand(10,10))
-    mdata = georef((var=img,))
-    problem = SimulationProblem(mdata, grid2D, :var, 3)
-    @test variables(problem) == (Variable(:var, Float64),)
+    Z = Array{Union{Float64,Missing}}(rand(10,10))
+    problem = SimulationProblem(georef((Z=Z,)), grid2D, :Z, 3)
+    @test variables(problem) == (Variable(:Z, Float64),)
 
     # specify type of variable explicitly
     problem = SimulationProblem(data3D, grid3D, :value => Float64, 100)
@@ -62,7 +60,7 @@
     # show methods
     problem2D = SimulationProblem(data2D, grid2D, :value, 100)
     @test sprint(show, problem2D) == "2D SimulationProblem (conditional)"
-    @test sprint(show, MIME"text/plain"(), problem2D) == "2D SimulationProblem (conditional)\n  data:      3 SpatialData{Float64,2}\n  domain:    100×100 RegularGrid{Float64,2}\n  variables: value (Float64)\n  N° reals:  100"
+    @test sprint(show, MIME"text/plain"(), problem2D) == "2D SimulationProblem (conditional)\n  data:      3 GeoData{2,Float64}\n  domain:    100×100 CartesianGrid{2,Float64}\n  variables: value (Float64)\n  N° reals:  100"
 
     if visualtests
       @test_reference "data/simulation.png" plot(problem2D,ms=2)
@@ -85,7 +83,7 @@
     # show methods
     problem = LearningProblem(sdata, tdata, ctask)
     @test sprint(show, problem) == "2D LearningProblem"
-    @test sprint(show, MIME"text/plain"(), problem) == "2D LearningProblem\n  source: 10 SpatialData{Float64,2}\n  target: 100 SpatialData{Float64,2}\n  task:   Clustering x → c"
+    @test sprint(show, MIME"text/plain"(), problem) == "2D LearningProblem\n  source: 10 GeoData{2,Float64}\n  target: 100 GeoData{2,Float64}\n  task:   Clustering x → c"
 
     if visualtests
       @test_reference "data/learning.png" plot(problem,ms=2)

@@ -15,8 +15,8 @@
   locs₂ = findall(!ismissing, sdata[var₂])
   𝒟₁ = view(sdata, locs₁)
   𝒟₂ = view(sdata, locs₂)
-  X₁, z₁ = coordinates(𝒟₁), 𝒟₁[var₁]
-  X₂, z₂ = coordinates(𝒟₂), 𝒟₂[var₂]
+  X₁, z₁ = coordinates(𝒟₁, 1:nelements(𝒟₁)), 𝒟₁[var₁]
+  X₂, z₂ = coordinates(𝒟₂, 1:nelements(𝒟₂)), 𝒟₂[var₂]
 
   # compute pairwise distance
   m, n = length(z₁), length(z₂)

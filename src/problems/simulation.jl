@@ -55,7 +55,8 @@ end
 function SimulationProblem(sdata::S, sdomain::D, vars::NTuple{N,VarOrVarType}, nreals::Int) where {S,D,N}
   @assert coordtype(sdata) == coordtype(sdomain) "data and domain must have the same coordinate type"
 
-  datavars = Dict(name(var) => mactype(var) for var in variables(sdata))
+  svars = variables(sdata)
+  datavars = Dict(name.(svars) .=> mactype.(svars))
 
   # pairs with variable names and types
   varstypes = map(vars) do vt
@@ -102,14 +103,14 @@ data(problem::SimulationProblem) = problem.sdata
 
 Return the spatial domain of the simulation `problem`.
 """
-domain(problem::SimulationProblem) = problem.sdomain
+Meshes.domain(problem::SimulationProblem) = problem.sdomain
 
 """
     variables(problem)
 
 Return the target variables of the simulation `problem` and their types.
 """
-variables(problem::SimulationProblem) = problem.vars
+Meshes.variables(problem::SimulationProblem) = problem.vars
 
 """
     hasdata(problem)
@@ -129,7 +130,7 @@ nreals(problem::SimulationProblem) = problem.nreals
 # IO methods
 # ------------
 function Base.show(io::IO, problem::SimulationProblem)
-  N = ncoords(problem.sdomain)
+  N = embeddim(problem.sdomain)
   kind = hasdata(problem) ? "conditional" : "unconditional"
   print(io, "$(N)D SimulationProblem ($kind)")
 end

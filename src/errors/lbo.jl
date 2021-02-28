@@ -19,18 +19,18 @@ By default, use Euclidean ball of given `radius` in space.
   for variable selection in the presence of spatial autocorrelation]
   (https://onlinelibrary.wiley.com/doi/full/10.1111/geb.12161)
 """
-struct LeaveBallOut{B<:BallNeighborhood} <: ErrorEstimationMethod
+struct LeaveBallOut{B<:MetricBall} <: ErrorEstimationMethod
   ball::B
   loss::Dict{Symbol,SupervisedLoss}
 end
 
-LeaveBallOut(ball::BallNeighborhood; loss=Dict()) =
+LeaveBallOut(ball; loss=Dict()) =
   LeaveBallOut{typeof(ball)}(ball, loss)
 
 LeaveBallOut(radius::Number; loss=Dict()) =
-  LeaveBallOut(BallNeighborhood(radius), loss=loss)
+  LeaveBallOut(NormBall(radius), loss=loss)
 
-function error(solver, problem, method::LeaveBallOut)
+function Base.error(solver, problem, method::LeaveBallOut)
   # uniform weights
   weighting = UniformWeighting()
 

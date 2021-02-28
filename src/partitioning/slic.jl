@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------
 
 """
-    SLICPartition(k, m; tol=1e-4, maxiter=10, vars=nothing)
+    SLIC(k, m; tol=1e-4, maxiter=10, vars=nothing)
 
 A method for partitioning spatial data into approximately `k`
 clusters using Simple Linear Iterative Clustering (SLIC).
@@ -26,7 +26,7 @@ The tradeoff is controlled with a hyperparameter parameter
 * Achanta et al. 2011. [SLIC superpixels compared to state-of-the-art
   superpixel methods](https://ieeexplore.ieee.org/document/6205760)
 """
-struct SLICPartition <: PartitionMethod
+struct SLIC <: Meshes.PartitionMethod
   k::Int
   m::Float64
   tol::Float64
@@ -34,12 +34,12 @@ struct SLICPartition <: PartitionMethod
   vars::Union{Vector{Symbol},Nothing}
 end
 
-SLICPartition(k::Int, m::Real; tol=1e-4, maxiter=10, vars=nothing) =
-  SLICPartition(k, m, tol, maxiter, vars)
+SLIC(k::Int, m::Real; tol=1e-4, maxiter=10, vars=nothing) =
+  SLIC(k, m, tol, maxiter, vars)
 
-function partition(sdata, method::SLICPartition)
+function Meshes.partition(data, method::SLIC)
   # variables used for clustering
-  datavars = collect(name.(variables(sdata)))
+  datavars = name.(variables(data))
   vars = isnothing(method.vars) ? datavars : method.vars
 
   @assert vars ⊆ datavars "SLIC features not found in spatial data"
@@ -48,17 +48,17 @@ function partition(sdata, method::SLICPartition)
   m = method.m
 
   # initial spacing of clusters
-  s = slic_spacing(sdata, method)
+  s = slic_spacing(data, method)
 
   # initialize cluster centers
-  c = slic_initialization(sdata, s)
+  c = slic_initialization(data, s)
 
   # ball neighborhood search
-  searcher = NeighborhoodSearch(sdata, BallNeighborhood(s))
+  searcher = NeighborhoodSearch(data, NormBall(s))
 
   # pre-allocate memory for label and distance
-  l = fill(0, nelms(sdata))
-  d = fill(Inf, nelms(sdata))
+  l = fill(0, nelements(data))
+  d = fill(Inf, nelements(data))
 
   # performance parameters
   tol     = method.tol
@@ -69,8 +69,8 @@ function partition(sdata, method::SLICPartition)
   while err > tol && iter < maxiter
     o = copy(c)
 
-    slic_assignment!(sdata, searcher, vars, m, s, c, l, d)
-    slic_update!(sdata, c, l)
+    slic_assignment!(data, searcher, vars, m, s, c, l, d)
+    slic_update!(data, c, l)
 
     err = norm(c - o) / norm(o)
     iter += 1
@@ -78,48 +78,48 @@ function partition(sdata, method::SLICPartition)
 
   subsets = [findall(isequal(k), l) for k in 1:length(c)]
 
-  SpatialPartition(sdata, subsets)
+  Partition(data, subsets)
 end
 
-function slic_spacing(sdata, method)
-  V = volume(boundbox(sdata))
-  d = ncoords(sdata)
+function slic_spacing(data, method)
+  V = measure(boundingbox(data))
+  d = embeddim(data)
   k = method.k
   (V/k) ^ (1/d)
 end
 
-function slic_initialization(sdata, s)
+function slic_initialization(data, s)
   # efficient neighbor search
-  searcher = KNearestSearch(sdata, 1)
+  searcher = KNearestSearch(data, 1)
 
   # bounding box properties
-  bbox = boundbox(sdata)
-  lo, up = extrema(bbox)
+  bbox = boundingbox(data)
+  lo, up = coordinates.(extrema(bbox))
 
   # cluster centers
   clusters = Vector{Int}()
   neighbor = Vector{Int}(undef, 1)
   ranges = [(l+s/2):s:u for (l, u) in zip(lo, up)]
   for x in Iterators.product(ranges...)
-    search!(neighbor, SVector(x), searcher)
+    search!(neighbor, Point(x), searcher)
     push!(clusters, neighbor[1])
   end
 
   unique(clusters)
 end
 
-function slic_assignment!(sdata, searcher, vars, m, s, c, l, d)
+function slic_assignment!(data, searcher, vars, m, s, c, l, d)
   for (k, cₖ) in enumerate(c)
-    xₖ = coordinates(sdata, [cₖ])
-    inds = search(vec(xₖ), searcher)
+    xₖ = coordinates(data, [cₖ])
+    inds = search(Point(vec(xₖ)), searcher)
 
     # distance between coordinates
-    X  = coordinates(sdata, inds)
+    X  = coordinates(data, inds)
     dₛ = pairwise(Euclidean(), X, xₖ, dims=2)
 
     # distance between variables
-    𝒮ᵢ = view(sdata, inds, vars)
-    𝒮ₖ = view(sdata, [cₖ], vars)
+    𝒮ᵢ = view(data, inds, vars)
+    𝒮ₖ = view(data, [cₖ], vars)
     V  = Tables.matrix(values(𝒮ᵢ))
     vₖ = Tables.matrix(values(𝒮ₖ))
     dᵥ = pairwise(Euclidean(), V, vₖ, dims=1)
@@ -136,10 +136,10 @@ function slic_assignment!(sdata, searcher, vars, m, s, c, l, d)
   end
 end
 
-function slic_update!(sdata, c, l)
+function slic_update!(data, c, l)
   for k in 1:length(c)
     inds = findall(isequal(k), l)
-    X  = coordinates(sdata, inds)
+    X  = coordinates(data, inds)
     μ  = mean(X, dims=2)
     dₛ = pairwise(Euclidean(), X, μ, dims=2)
     @inbounds c[k] = inds[argmin(vec(dₛ))]

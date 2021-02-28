@@ -7,7 +7,7 @@
 
 Georeference `table` on spatial `domain`.
 """
-georef(table, domain) = SpatialData(domain, table)
+georef(table, domain) = GeoData(domain, table)
 
 """
     georef(table, coords)
@@ -27,7 +27,7 @@ function georef(table, coordnames::NTuple)
   @assert coordnames ⊆ colnames "invalid coordinates for table"
   @assert !(colnames ⊆ coordnames) "table must have at least one variable"
   varnames = setdiff(colnames, coordnames)
-  vars = [v => Tables.getcolumn(table, v) for v in varnames]
+  vars = (; (v => Tables.getcolumn(table, v) for v in varnames)...)
   coords = reduce(hcat, [Tables.getcolumn(table, c) for c in coordnames])
   georef(ctor(vars), coords')
 end
@@ -37,8 +37,10 @@ end
 
 Georeference named `tuple` on spatial `domain`.
 """
-georef(tuple::NamedTuple, domain) =
-  georef(DataFrame([var=>vec(val) for (var,val) in pairs(tuple)]), domain)
+function georef(tuple::NamedTuple, domain)
+  flat = (; (var=>vec(val) for (var,val) in pairs(tuple))...)
+  georef(TypedTables.Table(flat), domain)
+end
 
 """
     georef(tuple, coords)
@@ -50,11 +52,11 @@ georef(tuple::NamedTuple, coords::AbstractVecOrMat) = georef(tuple, PointSet(coo
 """
     georef(tuple; origin=(0.,0.,...), spacing=(1.,1.,...))
 
-Georeference named `tuple` on `RegularGrid(size(tuple[1]), origin, spacing)`.
+Georeference named `tuple` on `CartesianGrid(size(tuple[1]), origin, spacing)`.
 """
 georef(tuple;
        origin=ntuple(i->0., ndims(tuple[1])),
        spacing=ntuple(i->1., ndims(tuple[1]))) = georef(tuple, origin, spacing)
 
 georef(tuple, origin, spacing) =
-  georef(tuple, RegularGrid(size(tuple[1]), origin, spacing))
+  georef(tuple, CartesianGrid(size(tuple[1]), origin, spacing))

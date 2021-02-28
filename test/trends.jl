@@ -2,14 +2,14 @@
   Random.seed!(123)
 
   # constant trend
-  d = georef(DataFrame(z=rand(100)), RegularGrid(100))
+  d = georef((z=rand(100),), CartesianGrid(100))
   z̄ = trend(d, :z)[:z]
   @test all(abs.(diff(z̄)) .< 0.01)
 
   # linear trend
   μ = range(0,stop=1,length=100)
   ϵ = 0.1rand(100)
-  d = georef(DataFrame(z=μ+ϵ), RegularGrid(100))
+  d = georef((z=μ+ϵ,), CartesianGrid(100))
   z̄ = trend(d, :z)[:z]
   @test all([abs(z̄[i] - μ[i]) < 0.1 for i in 1:length(z̄)])
 

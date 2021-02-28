@@ -13,7 +13,7 @@ forwarded to the `CSV.File` function, please check their
 documentation for more details.
 """
 readgeotable(args...; coordnames=(:x,:y,:z), kwargs...) =
-  georef(DataFrame(CSV.File(args...; kwargs...)), coordnames)
+  georef(TypedTables.Table(CSV.File(args...; kwargs...)), coordnames)
 
 """
     spheredir(θ, φ)
@@ -24,5 +24,14 @@ convention.
 """
 function spheredir(theta, phi)
   θ, φ = deg2rad(theta), deg2rad(phi)
-  SVector(sin(θ)*cos(φ), sin(θ)*sin(φ), cos(θ))
+  Vec(sin(θ)*cos(φ), sin(θ)*sin(φ), cos(θ))
 end
+
+"""
+    aniso2distance(semiaxes, angles; convention=TaitBryanExtr)
+
+Return the distance associated with the ellipsoid with given `semiaxes`,
+`angles` and `convention`. See [`Ellipsoid`](@ref).
+"""
+aniso2distance(semiaxes, angles; convention=TaitBryanExtr) =
+  metric(Ellipsoid(semiaxes, angles, convention=convention))

@@ -170,7 +170,7 @@ macro metasolver(solver, solvertype, body)
       (names=vars, params=Dict(params))
     end
 
-    GeoStatsBase.variables(solver::$solver) = solver.varnames
+    Meshes.variables(solver::$solver) = solver.varnames
 
     # ------------
     # IO methods
@@ -182,15 +182,12 @@ macro metasolver(solver, solvertype, body)
     function Base.show(io::IO, ::MIME"text/plain", solver::$solver)
       println(io, solver)
       for (var, varparams) in merge(solver.vparams, solver.jparams)
-        if var isa Symbol
-          println(io, "  └─", var)
-        else
-          println(io, "  └─", join(var, "—"))
-        end
+        header = var isa Symbol ? "  └─" * string(var) : "  └─" * join(var, "—")
         pnames = setdiff(fieldnames(typeof(varparams)), [:__dummy__])
+        println(io, header)
         for pname in pnames
           pval = getfield(varparams, pname)
-          if pval ≠ nothing
+          if !isnothing(pval)
             print(io, "    └─", pname, " ⇨ ")
             show(IOContext(io, :compact => true), pval)
             println(io, "")

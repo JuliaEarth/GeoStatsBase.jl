@@ -1,6 +1,6 @@
 @testset "Folding" begin
   @testset "Random" begin
-    d = RegularGrid(100,100)
+    d = CartesianGrid(100,100)
     f = folds(d, RandomFolding(10))
     for (source, target) in f
       @test length(source) == 9000
@@ -10,7 +10,7 @@
   end
 
   @testset "Point" begin
-    d = RegularGrid(10,10)
+    d = CartesianGrid(10,10)
     f = folds(d, PointFolding())
     for (source, target) in f
       @test length(source) == 99
@@ -20,7 +20,7 @@
   end
 
   @testset "Block" begin
-    d = RegularGrid(100,100)
+    d = CartesianGrid(100,100)
     f = folds(d, BlockFolding((10.,10.)))
     for (source, target) in f
       @test length(source) ∈ [9100,9400,9600]
@@ -30,8 +30,8 @@
   end
 
   @testset "Ball" begin
-    d = RegularGrid(50,50)
-    f = folds(d, BallFolding(BallNeighborhood(10.)))
+    d = CartesianGrid(50,50)
+    f = folds(d, BallFolding(NormBall(10.)))
     @test length(collect(f)) == 2500
     ps = collect(f)
     ms = length.(first.(ps))

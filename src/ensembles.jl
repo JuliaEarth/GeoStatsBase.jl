@@ -42,7 +42,7 @@ Base.length(ensemble::Ensemble) = ensemble.nreals
 function Base.getindex(ensemble::Ensemble, ind::Int)
   sdomain = ensemble.domain
   sreals  = ensemble.reals
-  idata   = DataFrame([var => reals[ind] for (var, reals) in sreals])
+  idata   = (; (var => reals[ind] for (var, reals) in sreals)...)
   georef(idata, sdomain)
 end
 Base.getindex(ensemble::Ensemble, inds::AbstractVector{Int}) =
@@ -54,7 +54,7 @@ Base.lastindex(ensemble::Ensemble) = length(ensemble)
 # IO methods
 # ------------
 function Base.show(io::IO, ensemble::Ensemble)
-  N = ncoords(ensemble.domain)
+  N = embeddim(ensemble.domain)
   print(io, "$(N)D Ensemble")
 end
 

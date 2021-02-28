@@ -15,7 +15,7 @@ abstract type ErrorEstimationMethod end
 Estimate error of `solver` in a given `problem` with
 error estimation `method`.
 """
-function error end
+Base.error(solver, problem, ::ErrorEstimationMethod)
 
 # ----------------
 # IMPLEMENTATIONS

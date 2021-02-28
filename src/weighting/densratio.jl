@@ -15,7 +15,9 @@ variables in target data `tdata`. Default to all variables.
 
 ### Notes
 
-Estimators from `DensityRatioEstimation.jl` are supported.
+Estimators from [DensityRatioEstimation.jl]
+(https://github.com/JuliaEarth/DensityRatioEstimation.jl)
+are supported.
 """
 struct DensityRatioWeighting <: WeightingMethod
   tdata
@@ -50,5 +52,5 @@ function weight(sdata, method::DensityRatioWeighting)
   # perform denstiy ratio estimation
   ratios = densratio(xnu, xde, dre, optlib=optlib)
 
-  SpatialWeights(domain(sdata), ratios)
+  GeoWeights(domain(sdata), ratios)
 end

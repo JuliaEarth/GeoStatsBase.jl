@@ -78,7 +78,7 @@ function solvesingle(problem::SimulationProblem, covars::NamedTuple,
   # retrieve problem info
   pdata = data(problem)
   pdomain = domain(problem)
-  N = ncoords(pdomain)
+  N = embeddim(pdomain)
   T = coordtype(pdomain)
 
   mactypeof = Dict(name(v) => mactype(v) for v in variables(problem))
@@ -92,7 +92,7 @@ function solvesingle(problem::SimulationProblem, covars::NamedTuple,
     V = mactypeof[var]
 
     # pre-allocate memory for result
-    realization = Vector{V}(undef, nelms(pdomain))
+    realization = Vector{V}(undef, nelements(pdomain))
 
     # pre-allocate memory for coordinates
     xₒ = MVector{N,T}(undef)
@@ -102,7 +102,7 @@ function solvesingle(problem::SimulationProblem, covars::NamedTuple,
     X = Matrix{T}(undef, N, maxneighbors)
 
     # keep track of simulated locations
-    simulated = falses(nelms(pdomain))
+    simulated = falses(nelements(pdomain))
     for (loc, datloc) in mappings
       realization[loc] = pdata[var][datloc]
       simulated[loc] = true
@@ -115,7 +115,7 @@ function solvesingle(problem::SimulationProblem, covars::NamedTuple,
         coordinates!(xₒ, pdomain, location)
 
         # find neighbors with previously simulated values
-        nneigh = search!(neighbors, xₒ, bsearcher, mask=simulated)
+        nneigh = search!(neighbors, Point(xₒ), bsearcher, mask=simulated)
 
         # choose between marginal and conditional distribution
         if nneigh < minneighbors

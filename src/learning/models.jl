@@ -20,11 +20,13 @@ Learn the `task` with `sdata` using a learning `model`.
 """
 function learn(task::AbstractLearningTask, sdata, model)
   if issupervised(task)
-    X = view(sdata, collect(features(task)))
+    v = view(sdata, collect(features(task)))
+    X = values(v)
     y = sdata[label(task)]
     θ, _, __ = MI.fit(model, 0, X, y)
   else
-    X = view(sdata, collect(features(task)))
+    v = view(sdata, collect(features(task)))
+    X = values(v)
     θ, _, __ = MI.fit(model, 0, X)
   end
 
@@ -41,7 +43,8 @@ function perform(task::AbstractLearningTask, sdata, lmodel)
   model, θ = lmodel.model, lmodel.θ
 
   # apply model to the data
-  X = view(sdata, collect(features(task)))
+  v = view(sdata, collect(features(task)))
+  X = values(v)
   ŷ = MI.predict(model, θ, X)
 
   # post-process result
@@ -52,5 +55,6 @@ function perform(task::AbstractLearningTask, sdata, lmodel)
     ŷ
   end
 
-  georef((; var=>val), domain(sdata))
+  ctor = constructor(typeof(sdata))
+  ctor(domain(sdata), (; var=>val))
 end

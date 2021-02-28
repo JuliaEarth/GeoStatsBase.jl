@@ -2,7 +2,7 @@
   Random.seed!(123)
   z₁ = randn(10000)
   z₂ = z₁ + randn(10000)
-  d = georef(DataFrame(z₁=z₁,z₂=z₂), RegularGrid(100,100))
+  d = georef((z₁=z₁,z₂=z₂), CartesianGrid(100,100))
 
   @testset "DistPlot1D" begin
     if visualtests

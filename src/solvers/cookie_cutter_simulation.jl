@@ -61,7 +61,7 @@ function solve(problem::SimulationProblem, solver::CookieCutter)
   mreals = msol[mvar]
 
   # pre-allocate memory for realizations
-  reals = Dict(var => [Vector{V}(undef, nelms(pdomain)) for i in 1:preals] for (var,V) in ovars)
+  reals = Dict(var => [Vector{V}(undef, nelements(pdomain)) for i in 1:preals] for (var,V) in ovars)
 
   # solve other problems
   for (mval, osolver) in solver.others
@@ -93,7 +93,6 @@ function Base.show(io::IO, ::MIME"text/plain", solver::CookieCutter)
   mvar = variables(solver.master)[1]
   println(io, solver)
   println(io, "  └─", mvar, " ⇨ ", solver.master)
-  for (val, osolver) in solver.others
-    println(io, "    └─", val, " ⇨ ", osolver)
-  end
+  lines = ["    └─$val ⇨ $osolver" for (val,osolver) in solver.others]
+  print(io, join(lines, "\n"))
 end

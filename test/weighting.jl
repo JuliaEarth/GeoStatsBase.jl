@@ -1,16 +1,16 @@
 @testset "Weighting" begin
   @testset "UniformWeighting" begin
-    d = RegularGrid(100,100)
+    d = CartesianGrid(100,100)
     s = georef((z=rand(100,100),))
     for o in [d, s]
       w = weight(o, UniformWeighting())
-      @test length(w) == nelms(o)
+      @test length(w) == nelements(o)
       @test all(w .== 1)
     end
   end
 
   @testset "BlockWeighting" begin
-    d = RegularGrid(100,100)
+    d = CartesianGrid(100,100)
     s = georef((z=rand(100,100),))
     for o in [d, s]
       w = weight(o, BlockWeighting(10,10))
@@ -28,8 +28,8 @@
     z1 = sort(rand(r1, n))
     z2 = sort(rand(r2, n))
 
-    d1 = georef(DataFrame(z=z1), PointSet(reshape(1:n,1,:)))
-    d2 = georef(DataFrame(z=z2), PointSet(reshape(1:n,1,:)))
+    d1 = georef((z=z1,), PointSet(reshape(1:n,1,:)))
+    d2 = georef((z=z2,), PointSet(reshape(1:n,1,:)))
 
     w = weight(d1, DensityRatioWeighting(d2))
 
