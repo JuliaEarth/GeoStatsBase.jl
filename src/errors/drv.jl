@@ -43,9 +43,9 @@ function DensityRatioValidation(k::Int; shuffle=true, lambda=1.0, loss=Dict(),
   DensityRatioValidation{T,E,O}(k, shuffle, lambda, estimator, optlib, loss)
 end
 
-function error(solver::AbstractLearningSolver,
-               problem::LearningProblem,
-               method::DensityRatioValidation)
+function Base.error(solver::AbstractLearningSolver,
+                    problem::LearningProblem,
+                    method::DensityRatioValidation)
   tdata = targetdata(problem)
   vars = collect(inputvars(task(problem)))
 

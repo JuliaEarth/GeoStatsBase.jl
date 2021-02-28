@@ -10,7 +10,7 @@ point in the domain.
 """
 struct NearestMapping <: MappingMethod end
 
-function map(sdata, sdomain, targetvars, ::NearestMapping)
+function Base.map(sdata, sdomain, targetvars, ::NearestMapping)
   N = embeddim(sdata)
   T = coordtype(sdata)
 

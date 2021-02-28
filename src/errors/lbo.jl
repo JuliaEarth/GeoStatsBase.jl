@@ -30,7 +30,7 @@ LeaveBallOut(ball; loss=Dict()) =
 LeaveBallOut(radius::Number; loss=Dict()) =
   LeaveBallOut(NormBall(radius), loss=loss)
 
-function error(solver, problem, method::LeaveBallOut)
+function Base.error(solver, problem, method::LeaveBallOut)
   # uniform weights
   weighting = UniformWeighting()
 

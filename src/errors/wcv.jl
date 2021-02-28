@@ -37,7 +37,7 @@ WeightedCrossValidation(weighting::W, folding::F;
                         lambda::T=one(T), loss=Dict()) where {W,F,T} =
   WeightedCrossValidation{W,F,T}(weighting, folding, lambda, loss)
 
-function error(solver, problem, method::WeightedCrossValidation)
+function Base.error(solver, problem, method::WeightedCrossValidation)
   # retrieve problem info
   sdata = _foldable(problem)
   ovars = _outputvars(problem)

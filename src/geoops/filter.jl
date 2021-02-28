@@ -9,7 +9,7 @@ Retain all locations in geospatial `data` according to
 a predicate function `pred`. A predicate function takes
 table rows as input, e.g. `pred(r) = r.state == "CA"`.
 """
-function filter(pred, data::D) where {D<:Data}
+function Base.filter(pred, data::D) where {D<:Data}
   𝒯 = values(data)
   𝒟 = domain(data)
 

@@ -14,7 +14,7 @@ abstract type MappingMethod end
 
 Map the `targetvars` in `sdata` to `sdomain` with mapping `method`.
 """
-function map end
+Base.map(data, domain, targetvars, ::MappingMethod)
 
 # ----------------
 # IMPLEMENTATIONS

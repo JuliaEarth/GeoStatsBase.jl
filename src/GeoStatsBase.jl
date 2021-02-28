@@ -11,8 +11,8 @@ using DataFrames: DataFrame
 using Combinatorics: multiexponents
 using Distributed: CachingPool, pmap, myid
 using LinearAlgebra: normalize, norm
-using StatsBase: Histogram, AbstractWeights, midpoints
 using Distances: Euclidean, evaluate, pairwise
+using StatsBase: Histogram, AbstractWeights, midpoints, sample
 using Distributions: ContinuousUnivariateDistribution, median, mode
 using CategoricalArrays: CategoricalValue, CategoricalArray
 using CategoricalArrays: levels, isordered, pool
@@ -29,11 +29,9 @@ using Optim # for LSIF estimation
 
 import Meshes
 import MLJModelInterface
-import Base: values, ==
-import Base: in, filter, map, error
-import StatsBase: fit, sample, varcorrection
-import Statistics: mean, var, quantile
 import Distributions: cdf
+import StatsBase: fit, varcorrection
+import Statistics: mean, var, quantile
 import ScientificTypes: Scitype, scitype
 
 # aliases

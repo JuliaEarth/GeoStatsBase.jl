@@ -16,7 +16,7 @@ end
 CopyMapping(dest) = CopyMapping(nothing, dest)
 CopyMapping() = CopyMapping(nothing, nothing)
 
-function map(sdata, sdomain, targetvars, method::CopyMapping)
+function Base.map(sdata, sdomain, targetvars, method::CopyMapping)
   @assert targetvars ⊆ name.(variables(sdata)) "target variables must be present in spatial data"
 
   # dictionary with mappings
