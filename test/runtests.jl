@@ -1,5 +1,6 @@
 using GeoStatsBase
 using Meshes
+using Distances
 using Distributions
 using Tables, TypedTables
 using CategoricalArrays

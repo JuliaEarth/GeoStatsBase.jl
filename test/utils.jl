@@ -9,6 +9,10 @@
   end
 
   @testset "aniso2distance" begin
-    # TODO
+    x, y = rand(2), rand(2)
+    d = aniso2distance([1.0,1.0], [0.0])
+    @test evaluate(d, [0,0], [1,0]) == 1
+    @test evaluate(d, [0,0], [0,1]) == 1
+    @test evaluate(d, x, y) == euclidean(x, y)
   end
 end
