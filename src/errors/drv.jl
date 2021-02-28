@@ -22,7 +22,7 @@ for a list of supported estimators.
 ## References
 
 * Hoffimann et al. 2020. [Geostatistical Learning: Challenges and Opportunities]
-  (TODO-LINK)
+  (https://arxiv.org/abs/2102.08791)
 """
 struct DensityRatioValidation{T,E,O} <: ErrorEstimationMethod
   k::Int

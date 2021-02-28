@@ -15,7 +15,9 @@ variables in target data `tdata`. Default to all variables.
 
 ### Notes
 
-Estimators from `DensityRatioEstimation.jl` are supported.
+Estimators from [DensityRatioEstimation.jl]
+(https://github.com/JuliaEarth/DensityRatioEstimation.jl)
+are supported.
 """
 struct DensityRatioWeighting <: WeightingMethod
   tdata
