@@ -5,42 +5,36 @@
 module GeoStatsBase
 
 using CSV
-using Optim
 using Meshes
 using Tables
-using Random: randperm, shuffle
+using DataFrames: DataFrame
 using Combinatorics: multiexponents
 using Distributed: CachingPool, pmap, myid
-using LinearAlgebra: Diagonal, normalize, norm, ⋅
-using StatsBase: Histogram, Weights, AbstractWeights, midpoints
-using Distances: Metric, Euclidean, Mahalanobis, pairwise
+using LinearAlgebra: normalize, norm
+using StatsBase: Histogram, AbstractWeights, midpoints
+using Distances: Euclidean, evaluate, pairwise
 using Distributions: ContinuousUnivariateDistribution, median, mode
 using CategoricalArrays: CategoricalValue, CategoricalArray
-using CategoricalArrays: levels, isordered, pool, levelcode
-using NearestNeighbors: KDTree, BallTree, knn, inrange
-using ReferenceFrameRotations: angle_to_dcm
-using DataFrames: DataFrame, DataFrame!
-using StaticArrays: SVector, MVector, SOneTo
+using CategoricalArrays: levels, isordered, pool
+using StaticArrays: SVector, MVector
 using AverageShiftedHistograms: ash
 using Transducers: Map, foldxt
-using SpecialFunctions: gamma
 using DensityRatioEstimation
 using ScientificTypes
 using LossFunctions
 using RecipesBase
 using Parameters
 
+using Optim # for LSIF estimation
+
 import Meshes
 import MLJModelInterface
 import Base: values, ==
-import Base: in, filter, map, split, error
+import Base: in, filter, map, error
 import StatsBase: fit, sample, varcorrection
 import Statistics: mean, var, quantile
-import Distributions: quantile, cdf
+import Distributions: cdf
 import ScientificTypes: Scitype, scitype
-import Distances: evaluate
-import DataFrames: groupby
-import NearestNeighbors: MinkowskiMetric
 
 # aliases
 const MI = MLJModelInterface
