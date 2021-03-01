@@ -3,11 +3,11 @@
 # ------------------------------------------------------------------
 
 """
-    AbstractProblem
+    Problem
 
 A generic problem in geostatistics.
 """
-abstract type AbstractProblem end
+abstract type Problem end
 
 #------------------
 # IMPLEMENTATIONS

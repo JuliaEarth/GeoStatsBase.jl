@@ -36,7 +36,7 @@ with 100 realizations:
 julia> SimulationProblem(sdomain, (:porosity => Float64, :facies => Int), 100)
 ```
 """
-struct SimulationProblem{S,D,N} <: AbstractProblem
+struct SimulationProblem{S,D,N} <: Problem
   sdata::S
   sdomain::D
   vars::NTuple{N,Variable}

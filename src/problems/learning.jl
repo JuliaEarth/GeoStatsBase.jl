@@ -17,7 +17,7 @@ julia> LearningProblem(sdata, tdata,
                        ClusteringTask((:moisture,:mineral)))
 ```
 """
-struct LearningProblem{Dₛ,Dₜ,T} <: AbstractProblem
+struct LearningProblem{Dₛ,Dₜ,T} <: Problem
   sdata::Dₛ
   tdata::Dₜ
   task::T

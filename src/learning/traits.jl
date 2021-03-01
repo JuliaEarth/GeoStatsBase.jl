@@ -8,7 +8,7 @@
 Check whether or not `model` can be used for
 learning `task`.
 """
-iscompatible(model::MI.Model, task::AbstractLearningTask) = false
+iscompatible(model::MI.Model, task::LearningTask) = false
 iscompatible(model::MI.Model, task::RegressionTask) =
   issupervised(model) && (MI.target_scitype(model) == AbstractVector{Continuous})
 iscompatible(model::MI.Model, task::ClassificationTask) =

@@ -23,7 +23,7 @@ Create an estimation problem for precipitation and CO₂:
 julia> EstimationProblem(sdata, sdomain, (:precipitation,:CO₂))
 ```
 """
-struct EstimationProblem{S,D,N} <: AbstractProblem
+struct EstimationProblem{S,D,N} <: Problem
   sdata::S
   sdomain::D
   vars::NTuple{N,Variable}

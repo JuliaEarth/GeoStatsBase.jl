@@ -24,9 +24,9 @@ julia> p₁ = LUGS(:poro => (variogram=SphericalVariogram(range=20.),))
 julia> CookieCutter(f, Dict(0=>p₀, 1=>p₁))
 ```
 """
-struct CookieCutter <: AbstractSimulationSolver
-  master::AbstractSimulationSolver
-  others::Dict{Number,AbstractSimulationSolver}
+struct CookieCutter <: SimulationSolver
+  master::SimulationSolver
+  others::Dict{Number,SimulationSolver}
 end
 
 function solve(problem::SimulationProblem, solver::CookieCutter)
@@ -37,7 +37,7 @@ function solve(problem::SimulationProblem, solver::CookieCutter)
 
   # master variable
   pvars = Dict(name(v) => mactype(v) for v in variables(problem))
-  mvars = variables(solver.master)
+  mvars = targets(solver.master)
   @assert length(mvars) == 1 "one single variable must be specified in master solver"
   mvar = mvars[1]
   @assert mvar ∈ keys(pvars) "invalid variable in master solver"
@@ -90,7 +90,7 @@ function Base.show(io::IO, solver::CookieCutter)
 end
 
 function Base.show(io::IO, ::MIME"text/plain", solver::CookieCutter)
-  mvar = variables(solver.master)[1]
+  mvar = targets(solver.master)[1]
   println(io, solver)
   println(io, "  └─", mvar, " ⇨ ", solver.master)
   lines = ["    └─$val ⇨ $osolver" for (val,osolver) in solver.others]

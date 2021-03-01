@@ -8,7 +8,7 @@
 A classification task consists of finding a function `f` such that `y ~ f(x)`
 for all training examples `(x,y)` with `y` a categorical variable.
 """
-struct ClassificationTask{N} <: AbstractLearningTask
+struct ClassificationTask{N} <: LearningTask
   features::NTuple{N,Symbol}
   label::Symbol
 end

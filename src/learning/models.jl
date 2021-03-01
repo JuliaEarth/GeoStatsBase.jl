@@ -18,7 +18,7 @@ end
 
 Learn the `task` with `sdata` using a learning `model`.
 """
-function learn(task::AbstractLearningTask, sdata, model)
+function learn(task::LearningTask, sdata, model)
   if issupervised(task)
     v = view(sdata, collect(features(task)))
     X = values(v)
@@ -38,7 +38,7 @@ end
 
 Perform the `task` with `sdata` using a *learned* `lmodel`.
 """
-function perform(task::AbstractLearningTask, sdata, lmodel)
+function perform(task::LearningTask, sdata, lmodel)
   # unpack model and learned parameters
   model, θ = lmodel.model, lmodel.θ
 

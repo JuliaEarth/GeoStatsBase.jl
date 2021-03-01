@@ -8,7 +8,7 @@
 A regression task consists of finding a function `f` such that `y ~ f(x)`
 for all training examples `(x,y)` with `y` a continuous variable.
 """
-struct RegressionTask{N} <: AbstractLearningTask
+struct RegressionTask{N} <: LearningTask
   features::NTuple{N,Symbol}
   label::Symbol
 end

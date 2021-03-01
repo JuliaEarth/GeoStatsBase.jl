@@ -3,32 +3,32 @@
 # ------------------------------------------------------------------
 
 """
-    AbstractSolver
+    Solver
 
 A solver for geostatistical problems.
 """
-abstract type AbstractSolver end
+abstract type Solver end
 
 """
-    AbstractEstimationSolver
+    EstimationSolver
 
 A solver for a geostatistical estimation problem.
 """
-abstract type AbstractEstimationSolver <: AbstractSolver end
+abstract type EstimationSolver <: Solver end
 
 """
-    AbstractSimulationSolver
+    SimulationSolver
 
 A solver for a geostatistical simulation problem.
 """
-abstract type AbstractSimulationSolver <: AbstractSolver end
+abstract type SimulationSolver <: Solver end
 
 """
-    AbstractLearningSolver
+    LearningSolver
 
 A solver for a geostatistical learning problem.
 """
-abstract type AbstractLearningSolver <: AbstractSolver end
+abstract type LearningSolver <: Solver end
 
 """
     solve(problem, solver; [options])
@@ -48,9 +48,9 @@ optionally using multiple processes `procs`.
 
 Default implementation calls `solvesingle` in parallel.
 """
-function solve(problem::SimulationProblem, solver::AbstractSimulationSolver; procs=[myid()])
+function solve(problem::SimulationProblem, solver::SimulationSolver; procs=[myid()])
   # sanity checks
-  @assert variables(solver) ⊆ name.(variables(problem)) "invalid variables in solver"
+  @assert targets(solver) ⊆ name.(variables(problem)) "invalid variables in solver"
 
   # dictionary with variable types
   mactypeof = Dict(name(v) => mactype(v) for v in variables(problem))
@@ -100,7 +100,7 @@ with simulation `solver`.
 The output of the function is defined by the solver developer.
 Default implementation returns nothing.
 """
-preprocess(::SimulationProblem, ::AbstractSimulationSolver) = nothing
+preprocess(::SimulationProblem, ::SimulationSolver) = nothing
 
 """
     solvesingle(problem, covariables, solver, preproc)
@@ -131,7 +131,7 @@ function covariables end
 Return all covariables in the `solver` based on list of
 variables in the `problem`.
 """
-function covariables(problem::AbstractProblem, solver::AbstractSolver)
+function covariables(problem::Problem, solver::Solver)
   pvars = Set(name.(variables(problem)))
 
   result = []
@@ -155,11 +155,11 @@ function covariables(problem::AbstractProblem, solver::AbstractSolver)
 end
 
 """
-    variables(solver)
+    targets(solver)
 
-Return flattened list of variable names in the `solver`.
+Return target variables in the `solver`.
 """
-Meshes.variables(::AbstractSolver)
+function targets end
 
 # ----------------
 # IMPLEMENTATIONS

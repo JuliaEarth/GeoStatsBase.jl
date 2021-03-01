@@ -79,7 +79,7 @@ export
   CopyMapping,
 
   # learning tasks
-  AbstractLearningTask,
+  LearningTask,
   SupervisedLearningTask,
   UnsupervisedLearningTask,
   RegressionTask,
@@ -100,12 +100,11 @@ export
   defaultloss,
 
   # problems
-  AbstractProblem,
+  Problem,
   EstimationProblem,
   SimulationProblem,
   LearningProblem,
-  data,
-  domain,
+  data, domain,
   sourcedata,
   targetdata,
   task,
@@ -115,16 +114,16 @@ export
   nreals,
 
   # solvers
-  AbstractSolver,
-  AbstractEstimationSolver,
-  AbstractSimulationSolver,
-  AbstractLearningSolver,
+  Solver,
+  EstimationSolver,
+  SimulationSolver,
+  LearningSolver,
   SeqSim,
   SeqSimParam,
   CookieCutter,
   CookieCutterParam,
   PointwiseLearn,
-  variables,
+  targets,
   covariables,
   preprocess,
   solve, solvesingle,

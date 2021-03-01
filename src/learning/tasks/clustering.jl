@@ -9,7 +9,7 @@ A clustering task consists of grouping training examples based on
 features `x ∈ Rⁿ`. The resulting clusters are saved in spatial
 variable `y`.
 """
-struct ClusteringTask{N} <: AbstractLearningTask
+struct ClusteringTask{N} <: LearningTask
   features::NTuple{N,Symbol}
   output::Symbol
 end

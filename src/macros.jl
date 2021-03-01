@@ -32,7 +32,7 @@ of the problem, and a global parameter that specifies whether or not
 to use the GPU:
 
 ```julia
-julia> @metasolver MySolver AbstractSimulationSolver begin
+julia> @metasolver MySolver SimulationSolver begin
   @param mean = 0.0
   @param variogram = GaussianVariogram()
   @jparam rho = 0.7
@@ -170,7 +170,7 @@ macro metasolver(solver, solvertype, body)
       (names=vars, params=Dict(params))
     end
 
-    Meshes.variables(solver::$solver) = solver.varnames
+    GeoStatsBase.targets(solver::$solver) = solver.varnames
 
     # ------------
     # IO methods
@@ -207,7 +207,7 @@ specified in `body`. For examples, please check the documentation for
 """
 macro estimsolver(solver, body)
   esc(quote
-    GeoStatsBase.@metasolver $solver GeoStatsBase.AbstractEstimationSolver $body
+    GeoStatsBase.@metasolver $solver GeoStatsBase.EstimationSolver $body
   end)
 end
 
@@ -220,6 +220,6 @@ specified in `body`. For examples, please check the documentation for
 """
 macro simsolver(solver, body)
   esc(quote
-    GeoStatsBase.@metasolver $solver GeoStatsBase.AbstractSimulationSolver $body
+    GeoStatsBase.@metasolver $solver GeoStatsBase.SimulationSolver $body
   end)
 end

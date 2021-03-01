@@ -3,32 +3,32 @@
 # ------------------------------------------------------------------
 
 """
-    AbstractLearningTask
+    LearningTask
 
 A statistical learning task (e.g. regression, clustering)
 """
-abstract type AbstractLearningTask end
+abstract type LearningTask end
 
 """
     inputvars(task)
 
 Return the input variables of learning `task`.
 """
-inputvars(task::AbstractLearningTask) = features(task)
+inputvars(task::LearningTask) = features(task)
 
 """
     outputvars(task)
 
 Return the output variables of learning `task`.
 """
-outputvars(task::AbstractLearningTask) = (label(task),)
+outputvars(task::LearningTask) = (label(task),)
 
 """
     issupervised(task)
 
 Check whether or not `task` is supervised.
 """
-issupervised(task::AbstractLearningTask) = false
+issupervised(task::LearningTask) = false
 
 # ----------------
 # IMPLEMENTATIONS
