@@ -31,7 +31,7 @@ end
     aniso2distance(semiaxes, angles; convention=TaitBryanExtr)
 
 Return the distance associated with the ellipsoid with given `semiaxes`,
-`angles` and `convention`. See [`Ellipsoid`](@ref).
+`angles` and `convention`. For more information, see `Meshes.Ellipsoid`.
 """
 aniso2distance(semiaxes, angles; convention=TaitBryanExtr) =
   metric(Ellipsoid(semiaxes, angles, convention=convention))
