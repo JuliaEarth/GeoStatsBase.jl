@@ -15,7 +15,7 @@ using StatsBase: Histogram, AbstractWeights, midpoints, sample
 using Distributions: ContinuousUnivariateDistribution, median, mode
 using CategoricalArrays: CategoricalValue, CategoricalArray
 using CategoricalArrays: levels, isordered, pool
-using StaticArrays: SVector, MVector
+using StaticArrays: SVector
 using AverageShiftedHistograms: ash
 using Transducers: Map, foldxt
 using DensityRatioEstimation
