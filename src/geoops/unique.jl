@@ -28,7 +28,8 @@ function uniquecoords(data::D; agg=Dict()) where {D<:Data}
   end
 
   # group locations with the same coordinates
-  X = coordinates(dom, 1:nelements(dom))
+  pts = [centroid(dom, i) for i in 1:nelements(dom)]
+  X = reduce(hcat, coordinates.(pts))
   gind = _uniqueinds(X, 2)
   groups = Dict(ind => Int[] for ind in unique(gind))
   for (i, ind) in enumerate(gind)

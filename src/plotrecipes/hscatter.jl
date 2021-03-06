@@ -15,13 +15,15 @@
   locs₂ = findall(!ismissing, sdata[var₂])
   𝒟₁ = view(sdata, locs₁)
   𝒟₂ = view(sdata, locs₂)
-  X₁, z₁ = coordinates(𝒟₁, 1:nelements(𝒟₁)), 𝒟₁[var₁]
-  X₂, z₂ = coordinates(𝒟₂, 1:nelements(𝒟₂)), 𝒟₂[var₂]
+  X₁ = [coordinates(centroid(𝒟₁, i)) for i in 1:nelements(𝒟₁)]
+  X₂ = [coordinates(centroid(𝒟₂, i)) for i in 1:nelements(𝒟₂)]
+  z₁ = 𝒟₁[var₁]
+  z₂ = 𝒟₂[var₂]
 
   # compute pairwise distance
   m, n = length(z₁), length(z₂)
   pairs = [(i,j) for j in 1:n for i in j:m]
-  ds = [evaluate(distance, view(X₁,:,i), view(X₂,:,j)) for (i,j) in pairs]
+  ds = [evaluate(distance, X₁[i], X₂[j]) for (i,j) in pairs]
 
   # find indices with given lag
   match = findall(abs.(ds .- lag) .< tol)

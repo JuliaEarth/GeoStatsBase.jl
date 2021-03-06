@@ -52,10 +52,10 @@ quantile(d::Data, p) = quantile(d, p, median_heuristic(d))
 
 function median_heuristic(d)
   # select at most 1000 points at random
-  nel = nelements(d)
+  nel= nelements(d)
   inds = sample(1:nel, min(nel, 1000), replace=false)
-  X = coordinates(d, inds)
-  D = pairwise(Euclidean(), X, dims=2)
+  X = (coordinates(centroid(d, ind)) for ind in inds)
+  D = pairwise(Euclidean(), X)
 
   # median heuristic
   n = size(D, 1)

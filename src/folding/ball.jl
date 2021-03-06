@@ -22,8 +22,8 @@ function folds(object, method::BallFolding)
 
   function pair(i)
     # source and target indices
-    coords = coordinates(object, i)
-    inside = search(Point(coords), searcher)
+    point  = centroid(object, i)
+    inside = search(point, searcher)
     sinds  = setdiff(1:n, inside)
     tinds  = [i]
 

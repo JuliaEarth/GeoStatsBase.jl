@@ -110,12 +110,13 @@ end
 
 function slic_assignment!(data, searcher, vars, m, s, c, l, d)
   for (k, cₖ) in enumerate(c)
-    xₖ = coordinates(data, [cₖ])
-    inds = search(Point(vec(xₖ)), searcher)
+    pₖ = centroid(data, cₖ)
+    inds = search(pₖ, searcher)
 
-    # distance between coordinates
-    X  = coordinates(data, inds)
-    dₛ = pairwise(Euclidean(), X, xₖ, dims=2)
+    # distance between points
+    X  = (coordinates(centroid(data, ind)) for ind in inds)
+    xₖ = [coordinates(pₖ)]
+    dₛ = pairwise(Euclidean(), X, xₖ)
 
     # distance between variables
     𝒮ᵢ = view(data, inds, vars)
@@ -139,9 +140,9 @@ end
 function slic_update!(data, c, l)
   for k in 1:length(c)
     inds = findall(isequal(k), l)
-    X  = coordinates(data, inds)
-    μ  = mean(X, dims=2)
-    dₛ = pairwise(Euclidean(), X, μ, dims=2)
+    X  = (coordinates(centroid(data, ind)) for ind in inds)
+    μ  = [mean(X)]
+    dₛ = pairwise(Euclidean(), X, μ)
     @inbounds c[k] = inds[argmin(vec(dₛ))]
   end
 end

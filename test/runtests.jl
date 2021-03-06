@@ -9,7 +9,7 @@ using ReferenceTests, ImageIO
 
 # learning models from MLJ
 using MLJ: @load
-dtree = @load DecisionTreeClassifier verbosity=0
+dtree = @load DecisionTreeClassifier pkg=DecisionTree verbosity=0
 
 # workaround GR warnings
 ENV["GKSwstype"] = "100"

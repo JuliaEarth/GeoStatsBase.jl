@@ -29,18 +29,18 @@ function polymat(xs, d)
 end
 
 """
-    trend(sdata, vars; degree=1)
+    trend(data, vars; degree=1)
 
 Return the deterministic spatial trend for the variables `vars`
-in the spatial `sdata`. Approximate the trend with a polynomial
+in the spatial `data`. Approximate the trend with a polynomial
 of given `degree`.
 """
-function trend(sdata, vars::AbstractVector{Symbol}; degree=1)
-  𝒯 = values(sdata)
-  𝒟 = domain(sdata)
+function trend(data, vars::AbstractVector{Symbol}; degree=1)
+  𝒯 = values(data)
+  𝒟 = domain(data)
 
   # build LHS of linear system
-  xs = eachcol(coordinates(𝒟, 1:nelements(𝒟)))
+  xs = (coordinates(centroid(𝒟, i)) for i in 1:nelements(𝒟))
   X  = polymat(xs, degree)
 
   # solve for each variable
@@ -56,4 +56,4 @@ function trend(sdata, vars::AbstractVector{Symbol}; degree=1)
   georef(table, 𝒟)
 end
 
-trend(sdata, var::Symbol; kwargs...) = trend(sdata, [var]; kwargs...)
+trend(data, var::Symbol; kwargs...) = trend(data, [var]; kwargs...)

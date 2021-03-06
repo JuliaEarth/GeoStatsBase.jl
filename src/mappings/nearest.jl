@@ -11,16 +11,10 @@ point in the domain.
 struct NearestMapping <: MappingMethod end
 
 function Base.map(sdata, sdomain, targetvars, ::NearestMapping)
-  N = embeddim(sdata)
-  T = coordtype(sdata)
-
   @assert targetvars ⊆ name.(variables(sdata)) "target variables must be present in spatial data"
 
   # dictionary with mappings
   mappings = Dict(var => Dict{Int,Int}() for var in targetvars)
-
-  # pre-allocate memory for coordinates
-  coords = MVector{N,T}(undef)
 
   # nearest neighbor search method
   neighbor = Vector{Int}(undef, 1)
@@ -28,10 +22,10 @@ function Base.map(sdata, sdomain, targetvars, ::NearestMapping)
 
   for ind in 1:nelements(sdata)
     # update datum coordinates
-    coordinates!(coords, sdata, ind)
+    pₒ = centroid(sdata, ind)
 
     # find nearest location in the domain
-    search!(neighbor, Point(coords), searcher)
+    search!(neighbor, pₒ, searcher)
 
     # save pair if there is data for variable
     for var in targetvars

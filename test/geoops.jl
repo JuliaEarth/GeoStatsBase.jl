@@ -4,7 +4,8 @@
     z = rand(1_000_000)
     d = georef((z=[z;z],), [X X])
     u = uniquecoords(d)
-    U = coordinates(u, 1:nelements(u))
+    p = [centroid(u, i) for i in 1:nelements(u)]
+    U = reduce(hcat, coordinates.(p))
     @test nelements(u) == 1_000_000
     @test Set(eachcol(U)) == Set(eachcol(X))
 

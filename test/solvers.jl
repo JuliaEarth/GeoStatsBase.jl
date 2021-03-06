@@ -1,43 +1,4 @@
 @testset "Solvers" begin
-  @testset "CookieCutter" begin
-    problem = SimulationProblem(CartesianGrid(100,100), (:facies => Int, :property => Float64), 3)
-    solver = CookieCutter(DummySimSolver(:facies=>NamedTuple()),
-                          Dict(0=>DummySimSolver(), 1=>DummySimSolver()))
-
-    @test sprint(show, solver) == "CookieCutter"
-    @test sprint(show, MIME"text/plain"(), solver) == "CookieCutter\n  └─facies ⇨ DummySimSolver\n    └─0 ⇨ DummySimSolver\n    └─1 ⇨ DummySimSolver"
-
-    Random.seed!(1234)
-    solution = solve(problem, solver)
-
-    if visualtests
-      @test_reference "data/cookiecutter.png" plot(solution,size=(800,600))
-    end
-  end
-
-  @testset "SeqSim" begin
-    Random.seed!(1234)
-    sdata = georef((z=rand(100),), 100*rand(2,100))
-    sgrid = CartesianGrid(100,100)
-
-    prob1 = SimulationProblem(sgrid, :z => Float64, 3)
-    prob2 = SimulationProblem(sdata, sgrid, :z, 3)
-
-    solver = SeqSim(:z => (estimator=DummyEstimator(),
-                           neighborhood=NormBall(10.),
-                           minneighbors=1, maxneighbors=10,
-                           marginal=Normal(), path=LinearPath(),
-                           mapping=NearestMapping()))
-
-    Random.seed!(1234)
-    usol = solve(prob1, solver)
-    csol = solve(prob2, solver)
-
-    if visualtests
-      @test_reference "data/seqsim.png" plot(usol,size=(900,300))
-    end
-  end
-
   @testset "PointwiseLearn" begin
     # synthetic data
     Random.seed!(1234)
