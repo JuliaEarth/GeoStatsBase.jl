@@ -14,19 +14,6 @@ function solve(problem::EstimationProblem, solver::DummyEstimSolver)
   georef((; μs..., σs...), sdom)
 end
 
-@simsolver DummySimSolver begin end
-function solvesingle(problem::SimulationProblem, covars::NamedTuple,
-                     solver::DummySimSolver, preproc)
-  npts = nelements(domain(problem))
-  mactypeof = Dict(name(v) => mactype(v) for v in variables(problem))
-  reals = map(covars.names) do var
-    V    = mactypeof[var]
-    real = vcat(fill(zero(V), npts÷2), fill(one(V), npts÷2))
-    var => real
-  end
-  Dict(reals)
-end
-
 ###################
 # EXAMPLE SOLVERS
 ###################
@@ -43,25 +30,6 @@ end
   @jparam J="foo"
   @global C=true
 end
-
-###################
-# DUMMY ESTIMATOR
-###################
-import GeoStatsBase: fit, predict, status
-
-struct DummyEstimator end
-struct FittedDummyEstimator
-  z
-end
-
-fit(estimator::DummyEstimator, X, z) = FittedDummyEstimator(z)
-function predict(fitted::FittedDummyEstimator, xₒ)
-  z  = fitted.z
-  μ  = sum(z) / length(z)
-  σ² = sum((v - μ)^2 for v in z) / length(z)
-  μ, σ²
-end
-status(fitted::FittedDummyEstimator) = true
 
 ########################
 # DUMMY LEARNING MODEL
