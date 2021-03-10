@@ -51,7 +51,6 @@ include("macros.jl")
 include("trends.jl")
 include("distributions.jl")
 include("estimators.jl")
-include("partitioning.jl")
 include("weighting.jl")
 include("geoops.jl")
 include("learning.jl")
@@ -155,9 +154,6 @@ export
 
   # estimators
   fit, predict, status,
-
-  # partitioning
-  SLIC,
 
   # weighting
   GeoWeights,

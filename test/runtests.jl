@@ -28,7 +28,6 @@ testfiles = [
   "distributions.jl",
   "ensembles.jl",
   "georef.jl",
-  "partitioning.jl",
   "weighting.jl",
   "geoops.jl",
   "trends.jl",
