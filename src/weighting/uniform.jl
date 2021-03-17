@@ -12,6 +12,6 @@ struct UniformWeighting <: WeightingMethod end
 weight(object, method::UniformWeighting) =
   weight(domain(object), method)
 
-weight(object::Domain, ::UniformWeighting) =
-  GeoWeights(object, ones(nelements(object)))
+weight(domain::Domain, ::UniformWeighting) =
+  GeoWeights(domain, ones(nelements(domain)))
 
