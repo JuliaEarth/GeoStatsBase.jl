@@ -13,7 +13,7 @@
     d = CartesianGrid(100,100)
     s = georef((z=rand(100,100),))
     for o in [d, s]
-      w = weight(o, BlockWeighting(10,10))
+      w = weight(o, BlockWeighting(10.,10.))
       @test length(unique(w)) == 1
       @test w[1] == 1 / 100
     end

@@ -52,8 +52,7 @@ abstract type WeightingMethod end
 
 Weight spatial `object` with `method`.
 """
-weight(object, method::WeightingMethod) =
-  weight(geotrait(object), object, method)
+function weight end
 
 # ----------------
 # IMPLEMENTATIONS

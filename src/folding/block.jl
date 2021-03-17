@@ -17,7 +17,7 @@ function folds(object, method::BlockFolding)
   sides = method.sides
 
   # partition object
-  p = partition(object, BlockPartition(sides))
+  p = partition(object, BlockPartition(sides, neighbors=true))
   m = metadata(p)[:neighbors]
   s = subsets(p)
   n = length(p)

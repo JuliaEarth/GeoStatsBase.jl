@@ -10,26 +10,23 @@ A weighting method that assigns weights to points in spatial object
 based on blocks of given `sides`. The number `n` of points inside a
 block determines the weights `1/n` of these points.
 """
-struct BlockWeighting{T,N} <: WeightingMethod
-  sides::SVector{N,T}
+struct BlockWeighting{Dim,T} <: WeightingMethod
+  sides::SVector{Dim,T}
 end
 
-BlockWeighting(sides::NTuple{N,T}) where {N,T} =
-  BlockWeighting{T,N}(sides)
-
-BlockWeighting(sides::Vararg) = BlockWeighting(sides)
+BlockWeighting(sides::NTuple) = BlockWeighting(SVector(sides))
+BlockWeighting(sides::Vararg) = BlockWeighting(SVector(sides))
 
 weight(object, method::BlockWeighting) =
   weight(domain(object), method)
 
-function weight(object::Domain, method::BlockWeighting)
-  p = partition(object, BlockPartition(method.sides))
+function weight(domain::Domain, method::BlockWeighting)
+  p = partition(domain, BlockPartition(method.sides))
 
-  weights = Vector{Float64}(undef, nelements(object))
+  weights = Vector{Float64}(undef, nelements(domain))
   for s in subsets(p)
-    n = length(s)
-    weights[s] .= 1/n
+    weights[s] .= 1 / length(s)
   end
 
-  GeoWeights(object, weights)
+  GeoWeights(domain, weights)
 end
