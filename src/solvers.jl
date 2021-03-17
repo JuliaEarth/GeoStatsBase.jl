@@ -160,9 +160,3 @@ end
 Return target variables in the `solver`.
 """
 function targets end
-
-# ----------------
-# IMPLEMENTATIONS
-# ----------------
-
-include("solvers/pointwise_learning.jl")

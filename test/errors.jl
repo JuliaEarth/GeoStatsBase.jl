@@ -6,7 +6,7 @@
     𝒮 = georef((x=x, y=y), X)
     𝒯 = ClassificationTask(:x, :y)
     p = LearningProblem(𝒮, 𝒮, 𝒯)
-    s = PointwiseLearn(DummyModel())
+    s = DummyLearnSolver(DummyModel())
 
     # dummy classifier → 0.5 misclassification rate
     for m in [LeaveOneOut(),

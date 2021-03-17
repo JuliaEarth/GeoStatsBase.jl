@@ -3,5 +3,4 @@
 # ------------------------------------------------------------------
 
 include("learning/tasks.jl")
-include("learning/models.jl")
 include("learning/traits.jl")

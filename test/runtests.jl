@@ -3,13 +3,8 @@ using Meshes
 using Distances
 using Distributions
 using Tables, TypedTables
-using CategoricalArrays
 using Test, Random, Plots
 using ReferenceTests, ImageIO
-
-# learning models from MLJ
-using MLJ: @load
-dtree = @load DecisionTreeClassifier pkg=DecisionTree verbosity=0
 
 # workaround GR warnings
 ENV["GKSwstype"] = "100"
@@ -34,7 +29,6 @@ testfiles = [
   "learning.jl",
   "mappings.jl",
   "problems.jl",
-  "solvers.jl",
   "folding.jl",
   "errors.jl",
   "statistics.jl",

@@ -7,17 +7,17 @@ module GeoStatsBase
 using CSV
 using Meshes
 using Tables
+using LinearAlgebra: normalize
 using Combinatorics: multiexponents
 using Distributed: CachingPool, pmap, myid
-using LinearAlgebra: normalize, norm
 using Distances: Euclidean, evaluate, pairwise
 using StatsBase: Histogram, AbstractWeights, midpoints, sample
 using Distributions: ContinuousUnivariateDistribution, median, mode
 using CategoricalArrays: CategoricalValue, CategoricalArray
 using CategoricalArrays: levels, isordered, pool
-using StaticArrays: SVector
 using AverageShiftedHistograms: ash
 using Transducers: Map, foldxt
+using StaticArrays: SVector
 using DensityRatioEstimation
 using ScientificTypes
 using LossFunctions
@@ -93,7 +93,7 @@ export
   # learning models
   issupervised,
   isprobabilistic,
-  learn, perform,
+  iscompatible,
 
   # learning losses
   defaultloss,
@@ -117,7 +117,6 @@ export
   EstimationSolver,
   SimulationSolver,
   LearningSolver,
-  PointwiseLearn,
   targets,
   covariables,
   preprocess,
