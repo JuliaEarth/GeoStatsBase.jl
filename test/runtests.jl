@@ -29,6 +29,7 @@ testfiles = [
   "learning.jl",
   "mappings.jl",
   "problems.jl",
+  "solvers.jl",
   "folding.jl",
   "errors.jl",
   "statistics.jl",

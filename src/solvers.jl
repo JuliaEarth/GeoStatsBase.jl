@@ -132,12 +132,12 @@ Return all covariables in the `solver` based on list of
 variables in the `problem`.
 """
 function covariables(problem::Problem, solver::Solver)
-  pvars = Set(name.(variables(problem)))
+  pvars = collect(name.(variables(problem)))
 
   result = []
   while !isempty(pvars)
     # choose a variable from the problem
-    var = pop!(pvars)
+    var = first(pvars)
 
     # find covariables of the variable
     covars = covariables(var, solver)
@@ -146,9 +146,7 @@ function covariables(problem::Problem, solver::Solver)
     push!(result, covars)
 
     # update remaining variables
-    for v in setdiff(covars.names, [var])
-      pop!(pvars, v)
-    end
+    pvars = setdiff(pvars, covars.names)
   end
 
   result
