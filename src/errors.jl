@@ -20,6 +20,7 @@ Base.error(solver, problem, ::ErrorEstimationMethod)
 # ----------------
 # IMPLEMENTATIONS
 # ----------------
+
 include("errors/loo.jl")
 include("errors/lbo.jl")
 include("errors/cv.jl")
