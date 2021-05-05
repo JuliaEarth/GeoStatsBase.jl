@@ -17,7 +17,7 @@ function folds(object, method::BallFolding)
   ball = method.ball
 
   # create search method
-  searcher = NeighborhoodSearch(object, ball)
+  searcher = BallSearch(object, ball)
   n = nelements(object)
 
   function pair(i)

@@ -41,7 +41,7 @@ testfiles = [
 
 @testset "GeoStatsBase.jl" begin
   for testfile in testfiles
-    @info "Processing $testfile..."
+    @info "Testing $testfile..."
     include(testfile)
   end
 end
