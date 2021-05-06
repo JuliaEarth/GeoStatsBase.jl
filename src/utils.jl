@@ -3,19 +3,6 @@
 # ------------------------------------------------------------------
 
 """
-    readgeotable(args; coordnames=(:x,:y,:z), kwargs)
-
-Read data from disk using `CSV.File`, optionally specifying
-the columns `coordnames` with spatial coordinates.
-
-The arguments `args` and keyword arguments `kwargs` are
-forwarded to the `CSV.File` function, please check their
-documentation for more details.
-"""
-readgeotable(args...; coordnames=(:x,:y,:z), kwargs...) =
-  georef(TypedTables.Table(CSV.File(args...; kwargs...)), coordnames)
-
-"""
     spheredir(θ, φ)
 
 Returns the 3D direction given polar angle `θ` and

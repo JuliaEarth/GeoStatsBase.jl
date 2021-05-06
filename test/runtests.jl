@@ -1,8 +1,10 @@
 using GeoStatsBase
 using Meshes
+using CSV
+using Tables
+using TypedTables
 using Distances
 using Distributions
-using Tables, TypedTables
 using Test, Random, Plots
 using ReferenceTests, ImageIO
 

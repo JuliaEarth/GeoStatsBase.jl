@@ -24,7 +24,7 @@
 
   @testset "HScatter" begin
     if visualtests
-      sdata = readgeotable(joinpath(datadir,"samples2D.tsv"), coordnames=(:x,:y))
+      sdata = georef(CSV.File(joinpath(datadir,"samples2D.tsv")), (:x,:y))
       p0 = hscatter(sdata, :value, lag=0)
       p1 = hscatter(sdata, :value, lag=1)
       p2 = hscatter(sdata, :value, lag=2)

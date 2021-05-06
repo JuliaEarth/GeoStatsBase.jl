@@ -1,6 +1,6 @@
 @testset "Mapping" begin
-  data1D = readgeotable(joinpath(datadir,"data1D.tsv"), delim='\t', coordnames=(:x,))
-  data2D = readgeotable(joinpath(datadir,"data2D.tsv"), delim='\t', coordnames=(:x,:y))
+  data1D = georef(CSV.File(joinpath(datadir,"data1D.tsv")), (:x,))
+  data2D = georef(CSV.File(joinpath(datadir,"data2D.tsv")), (:x,:y))
 
   @testset "NearestMapping" begin
     grid1D = CartesianGrid((100,), (-0.5,), (1.0,))

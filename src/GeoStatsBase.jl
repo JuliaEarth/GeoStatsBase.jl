@@ -176,7 +176,6 @@ export
   cornerplot,
 
   # utilities
-  readgeotable,
   uniquecoords,
   groupby,
   spheredir

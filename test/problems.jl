@@ -1,6 +1,6 @@
 @testset "Problems" begin
-  data2D = readgeotable(joinpath(datadir,"data2D.tsv"), coordnames=(:x,:y))
-  data3D = readgeotable(joinpath(datadir,"data3D.tsv"))
+  data2D = georef(CSV.File(joinpath(datadir,"data2D.tsv")), (:x,:y))
+  data3D = georef(CSV.File(joinpath(datadir,"data3D.tsv")), (:x,:y,:z))
   grid2D = CartesianGrid(100,100)
   grid3D = CartesianGrid(100,100,100)
 
