@@ -13,9 +13,9 @@ struct Ensemble{𝒟,ℛ}
   nreals::Int
 
   function Ensemble{𝒟,ℛ}(domain, reals) where {𝒟,ℛ}
-    n = [length(r) for (var, r) in reals]
+    n = [length(r) for r in reals]
     @assert length(unique(n)) == 1 "number of realizations must be unique"
-    new(domain, reals, n[1])
+    new(domain, reals, first(n))
   end
 end
 
@@ -41,7 +41,7 @@ Base.length(ensemble::Ensemble) = ensemble.nreals
 
 function Base.getindex(ensemble::Ensemble, ind::Int)
   sdomain = ensemble.domain
-  sreals  = ensemble.reals
+  sreals  = pairs(ensemble.reals)
   idata   = (; (var => reals[ind] for (var, reals) in sreals)...)
   georef(idata, sdomain)
 end
@@ -50,9 +50,10 @@ Base.getindex(ensemble::Ensemble, inds::AbstractVector{Int}) =
 Base.firstindex(ensemble::Ensemble) = 1
 Base.lastindex(ensemble::Ensemble) = length(ensemble)
 
-# ------------
-# IO methods
-# ------------
+# -----------
+# IO METHODS
+# -----------
+
 function Base.show(io::IO, ensemble::Ensemble)
   N = embeddim(ensemble.domain)
   print(io, "$(N)D Ensemble")

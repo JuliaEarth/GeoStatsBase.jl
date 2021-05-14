@@ -1,4 +1,4 @@
-import GeoStatsBase: solve
+import GeoStatsBase: solve, solvesingle
 import MLJModelInterface
 import TableOperations
 
@@ -41,6 +41,10 @@ end
   @param B=2
   @jparam J="foo"
   @global C=true
+end
+
+function solvesingle(problem::SimulationProblem, covars, ::SSolver, preproc)
+  Dict(var => rand(100) for var in covars.names)
 end
 
 struct DummyLearnSolver{M} <: LearningSolver

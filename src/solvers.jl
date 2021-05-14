@@ -61,9 +61,12 @@ function solve(problem::SimulationProblem, solver::SimulationSolver; procs=[myid
   # pool of worker processes
   pool = CachingPool(procs)
 
+  # list of covariables
+  allcovars = covariables(problem, solver)
+
   # simulation loop
   results = []
-  for covars in covariables(problem, solver)
+  for covars in allcovars
     # simulate covariables
     reals = pmap(pool, 1:nreals(problem)) do _
       solvesingle(problem, covars, solver, preproc)
@@ -72,14 +75,15 @@ function solve(problem::SimulationProblem, solver::SimulationSolver; procs=[myid
     # rearrange realizations
     vnames = covars.names
     vtypes = [mactypeof[var] for var in vnames]
-    rdict  = Dict(vnames .=> [Vector{V}[] for V in vtypes])
+    vvects = [Vector{V}[] for V in vtypes]
+    rtuple = (; zip(vnames, vvects)...)
     for real in reals
       for var in vnames
-        push!(rdict[var], real[var])
+        push!(rtuple[var], real[var])
       end
     end
 
-    push!(results, rdict)
+    push!(results, rtuple)
   end
 
   # merge results into a single dictionary
