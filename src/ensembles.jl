@@ -21,6 +21,8 @@ end
 
 Ensemble(domain::𝒟, reals::ℛ) where {𝒟,ℛ} = Ensemble{𝒟,ℛ}(domain, reals)
 
+Meshes.domain(ensemble::Ensemble) = ensemble.domain
+
 # -------------
 # VARIABLE API
 # -------------

@@ -71,6 +71,7 @@ export
 
   # spatial ensembles
   Ensemble,
+  domain,
 
   # mapping
   MappingMethod,
