@@ -31,6 +31,6 @@ GeoData(domain::𝒟, table::𝒯) where {𝒟,𝒯} =
 # DATA INTERFACE
 # ---------------
 
-Meshes.domain(data::GeoData) = data.domain
-Meshes.values(data::GeoData) = data.table
+Meshes.domain(data::GeoData) = getfield(data, :domain)
+Meshes.values(data::GeoData) = getfield(data, :table)
 Meshes.constructor(::Type{D}) where {D<:GeoData} = GeoData
