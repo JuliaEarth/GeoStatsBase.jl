@@ -28,9 +28,9 @@ end
 
 function DensityRatioWeighting(tdata, vars=nothing; estimator=LSIF(),
                                optlib=default_optlib(estimator))
-  validvars = collect(name.(variables(tdata)))
-  wvars = isnothing(vars) ? validvars : vars
-  @assert wvars ⊆ validvars "invalid variables ($wvars) for spatial data"
+  tvars = Tables.schema(values(tdata)).names
+  wvars = isnothing(vars) ? tvars : vars
+  @assert wvars ⊆ tvars "variables ($wvars) not found in geospatial data"
   DensityRatioWeighting(tdata, wvars, estimator, optlib)
 end
 
@@ -41,13 +41,17 @@ function weight(sdata, method::DensityRatioWeighting)
   dre    = method.dre
   optlib = method.optlib
 
-  @assert vars ⊆ name.(variables(sdata)) "invalid variables ($vars) for spatial data"
+  ttable = Tables.columns(values(tdata))
+  stable = Tables.columns(values(sdata))
+
+  svars  = Tables.schema(stable).names
+  @assert vars ⊆ svars "variables ($vars) not found in geospatial data"
 
   # numerator and denominator samples
-  Ωnu = view(tdata, vars)
-  Ωde = view(sdata, vars)
-  xnu = collect(Tables.rows(values(Ωnu)))
-  xde = collect(Tables.rows(values(Ωde)))
+  tcols  = [var => Tables.getcolumn(ttable, var) for var in vars]
+  scols  = [var => Tables.getcolumn(stable, var) for var in vars]
+  xnu    = [collect(r) for r in Tables.rowtable((; tcols...))]
+  xde    = [collect(r) for r in Tables.rowtable((; scols...))]
 
   # perform denstiy ratio estimation
   ratios = densratio(xnu, xde, dre, optlib=optlib)
