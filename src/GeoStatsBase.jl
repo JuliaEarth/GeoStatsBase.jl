@@ -44,7 +44,8 @@ function __init__()
   ScientificTypes.set_convention(GeoStats())
 end
 
-include("geodata.jl")
+const GeoData = Meshes.Metadata
+
 include("ensembles.jl")
 include("georef.jl")
 include("macros.jl")

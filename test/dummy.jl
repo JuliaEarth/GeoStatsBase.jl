@@ -83,5 +83,8 @@ function solve(problem::LearningProblem, solver::DummyLearnSolver)
 
   # georeference on target domain
   ctor = constructor(typeof(tdata))
-  ctor(domain(tdata), (; var=>val))
+  dom  = domain(tdata)
+  dat  = Dict(paramdim(dom) => (; var=>val))
+
+  ctor(dom, dat)
 end

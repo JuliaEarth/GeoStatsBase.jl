@@ -62,8 +62,11 @@ function uniquecoords(data::D; agg=Dict()) where {D<:Data}
   # construct new domain
   newdom = view(dom, locs)
 
+  # new data tables
+  newvals = Dict(paramdim(newdom) => newtab)
+
   # return new spatial data
-  constructor(D)(newdom, newtab)
+  constructor(D)(newdom, newvals)
 end
 
 function _mean(xs)

@@ -5,9 +5,9 @@
 """
     georef(table, domain)
 
-Georeference `table` on spatial `domain`.
+Georeference `table` on geospatial `domain`.
 """
-georef(table, domain) = GeoData(domain, table)
+georef(table, domain) = metadata(domain, etable=table)
 
 """
     georef(table, coords)

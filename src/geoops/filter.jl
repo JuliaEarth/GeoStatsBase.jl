@@ -21,8 +21,9 @@ function Base.filter(pred, data::D) where {D<:Data}
   inds = findall(pred, rows)
 
   # return point set
-  tab = ctor(rows[inds])
   dom = view(𝒟, inds)
+  tab = ctor(rows[inds])
+  dat = Dict(paramdim(dom) => tab)
 
-  constructor(D)(dom, tab)
+  constructor(D)(dom, dat)
 end
