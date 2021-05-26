@@ -7,7 +7,7 @@
 
 Georeference `table` on geospatial `domain`.
 """
-georef(table, domain) = metadata(domain, etable=table)
+georef(table, domain) = meshdata(domain, etable=table)
 
 """
     georef(table, coords)
@@ -35,7 +35,7 @@ end
 """
     georef(tuple, domain)
 
-Georeference named `tuple` on spatial `domain`.
+Georeference named `tuple` on geospatial `domain`.
 """
 function georef(tuple::NamedTuple, domain)
   flat = (; (var=>vec(val) for (var,val) in pairs(tuple))...)
