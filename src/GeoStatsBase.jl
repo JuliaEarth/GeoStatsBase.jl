@@ -7,6 +7,7 @@ module GeoStatsBase
 using CSV
 using Meshes
 using Tables
+using TableOperations
 using LinearAlgebra: normalize
 using Combinatorics: multiexponents
 using Distributed: CachingPool, pmap, myid
