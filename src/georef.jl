@@ -28,7 +28,7 @@ function georef(table, coordnames::NTuple)
   vars   = setdiff(colnames, coordnames)
   vtable = TableOperations.select(table, vars...)
   ctable = TableOperations.select(table, coordnames...)
-  coords = Tuple.(Tables.rows(ctable))
+  coords = Tuple.(Tables.rowtable(ctable))
   georef(vtable, coords)
 end
 

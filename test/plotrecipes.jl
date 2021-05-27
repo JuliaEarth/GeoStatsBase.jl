@@ -4,6 +4,12 @@
   z₂ = z₁ + randn(10000)
   d = georef((z₁=z₁,z₂=z₂), CartesianGrid(100,100))
 
+  agri = georef(CSV.File(joinpath(datadir,"agriculture.csv")), (:x,:y))
+
+  if visualtests
+    @test_reference "data/agriculture.png" plot(agri, (:band4,:crop), ms=0.2)
+  end
+
   @testset "DistPlot1D" begin
     if visualtests
       @test_reference "data/distplot1D.png" distplot1d(d,:z₁)
