@@ -33,7 +33,6 @@ import MLJModelInterface
 import Distributions: cdf
 import StatsBase: fit, varcorrection
 import Statistics: mean, var, quantile
-import ScientificTypes: Scitype, scitype
 
 # aliases
 const MI = MLJModelInterface
