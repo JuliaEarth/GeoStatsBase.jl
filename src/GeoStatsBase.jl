@@ -37,14 +37,6 @@ import ScientificTypes: Scitype, scitype
 
 # aliases
 const MI = MLJModelInterface
-
-# convention of scientific types
-include("convention.jl")
-
-function __init__()
-  ScientificTypes.set_convention(GeoStats())
-end
-
 const GeoData = Meshes.MeshData
 
 include("ensembles.jl")
