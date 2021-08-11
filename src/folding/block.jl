@@ -19,7 +19,7 @@ function folds(object, method::BlockFolding)
   # partition object
   p = partition(object, BlockPartition(sides, neighbors=true))
   m = metadata(p)[:neighbors]
-  s = subsets(p)
+  s = indices(p)
   n = length(p)
 
   function pair(i)

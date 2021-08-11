@@ -24,7 +24,7 @@ function weight(domain::Domain, method::BlockWeighting)
   p = partition(domain, BlockPartition(method.sides))
 
   weights = Vector{Float64}(undef, nelements(domain))
-  for s in subsets(p)
+  for s in indices(p)
     weights[s] .= 1 / length(s)
   end
 

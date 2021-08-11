@@ -34,13 +34,13 @@
     z = vec([1 1 1; 2 2 2; 3 3 3])
     sdata = georef((z=z,), CartesianGrid(3,3))
     p = groupby(sdata, :z)
-    @test setify(subsets(p)) == setify([[1,4,7],[2,5,8],[3,6,9]])
+    @test setify(indices(p)) == setify([[1,4,7],[2,5,8],[3,6,9]])
 
     # groupby with missing values
     z = vec([missing 1 1; 2 missing 2; 3 3 missing])
     sdata = georef((z=z,), CartesianGrid(3,3))
     p = groupby(sdata, :z)
-    @test setify(subsets(p)) == setify([[4,7],[2,8],[3,6],[1,5,9]])
+    @test setify(indices(p)) == setify([[4,7],[2,8],[3,6],[1,5,9]])
   end
 
   @testset "filter" begin

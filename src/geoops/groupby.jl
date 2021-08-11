@@ -36,10 +36,10 @@ function groupby(data::Data, var::Symbol)
   p = partition(data, PredicatePartition(pred))
 
   # retrieve value from each subset
-  vals = [vdata[s[1]] for s in subsets(p)]
+  vals = [vdata[s[1]] for s in indices(p)]
 
   # save metadata
   metadata = Dict(:values => vals)
 
-  Partition(data, subsets(p), metadata)
+  Partition(data, indices(p), metadata)
 end

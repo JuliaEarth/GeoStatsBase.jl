@@ -21,7 +21,7 @@ function folds(object, method::RandomFolding)
 
   # partition object
   p = partition(object, RandomPartition(k, shuffle))
-  s = subsets(p)
+  s = indices(p)
   n = length(p)
 
   function pair(i)
