@@ -50,12 +50,19 @@ Optionally, specify the variable `v` and the block side `s`.
 """
 quantile(d::Data, p) = quantile(d, p, median_heuristic(d))
 
-function median_heuristic(d)
+
+function dist_matrix_random_sample(d, npoints=1000)
+
   # select at most 1000 points at random
   nel = nelements(d)
   inds = sample(1:nel, min(nel, 1000), replace=false)
   X = (coordinates(centroid(d, ind)) for ind in inds)
-  D = pairwise(Euclidean(), X)
+  pairwise(Euclidean(), X)
+end
+
+function median_heuristic(d)
+
+  D = dist_matrix_random_sample(d)
 
   # median heuristic
   n = size(D, 1)
