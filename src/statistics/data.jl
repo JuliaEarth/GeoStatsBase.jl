@@ -50,7 +50,6 @@ Optionally, specify the variable `v` and the block side `s`.
 """
 quantile(d::Data, p) = quantile(d, p, mode_heuristic(d))
 
-
 function dist_matrix_random_sample(d, npoints=1000)
 
   # select at most 1000 points at random
@@ -61,7 +60,6 @@ function dist_matrix_random_sample(d, npoints=1000)
 end
 
 function median_heuristic(d)
-
   D = dist_matrix_random_sample(d)
   # median heuristic
   n = size(D, 1)
@@ -74,12 +72,9 @@ function median_heuristic(d)
 end
 
 function mode_heuristic(d)
-
   D = dist_matrix_random_sample(d)
   n = size(D, 1)
-  D_upper_sorted = sort(collect(D[i,j] for i in 1:n for j in 1:n if i > j))
-
-  x_n = D_upper_sorted
+  x_n = sort([D[i,j] for i in 1:n for j in 1:n if i > j])
 
   while length(x_n) ≥ 4
 
