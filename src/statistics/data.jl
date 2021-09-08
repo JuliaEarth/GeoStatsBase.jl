@@ -59,14 +59,17 @@ function dist_matrix_random_sample(d, npoints=1000)
   pairwise(Euclidean(), X)
 end
 
+function bound_box_constr(d)
+  minimum(sides(boundingbox(domain(d))))
+end
+
 function median_heuristic(d)
   D = dist_matrix_random_sample(d)
   # median heuristic
   n = size(D, 1)
   m = median(D[i,j] for i in 1:n for j in 1:n if i > j)
 
-  # bounding box constraint
-  l = minimum(sides(boundingbox(domain(d))))
+  l = bound_box_constr(d)
 
   min(m, l)
 end
@@ -102,8 +105,7 @@ function mode_heuristic(d)
     m = [x_n[2], mean(x_n[1:2]), mean(x_n[2:3])][argmin(difs)]
   end
 
-  # bounding box constraint
-  l = minimum(sides(boundingbox(domain(d))))
+  l = bound_box_constr(d)
 
   min(m, l)
 end
