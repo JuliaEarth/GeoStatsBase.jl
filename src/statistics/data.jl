@@ -79,8 +79,11 @@ end
 
 Return the estimated mode of the inter-point distances for a set of locations.
 
-This function applies the mode estimator described in Bickel and Frühwirth's [`On a fast, robust estimator
- of the mode: Comparisons to other robust estimators with applications`](https://doi.org/10.1016/j.csda.2005.07.011).
+## References
+
+* Bickel & Frühwirth, 2005. [On a fast, robust estimator
+  of the mode: Comparisons to other robust estimators
+  with applications](https://doi.org/10.1016/j.csda.2005.07.011)
 """
 function mode_heuristic(d)
   D = dist_matrix_random_sample(d)
