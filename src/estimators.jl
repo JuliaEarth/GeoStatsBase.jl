@@ -3,17 +3,16 @@
 # ------------------------------------------------------------------
 
 """
-    fit(estimator, X, z)
+    fit(estimator, data)
 
-Fit estimator to coordinates `X` and values `z`,
-and return a fitted estimator.
+Fit estimator to geospatial `data` and return a fitted estimator.
 """
 function fit end
 
 """
-    predict(estimator, xₒ)
+    predict(estimator, var, uₒ)
 
-Predict with the `estimator` at coordinates `xₒ`.
+Predict variable `var` with the `estimator` at point or geometry `uₒ`.
 """
 function predict end
 
