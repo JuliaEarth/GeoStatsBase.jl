@@ -5,16 +5,13 @@
 """
     LearningProblem(sdata, tdata, task)
 
-A spatial learning problem with source data `sdata`,
+A geostatistical learning problem with source data `sdata`,
 target data `tdata`, and learning `task`.
 
-## Examples
+## References
 
-Create a clustering problem based on a set of soil features:
-
-```julia
-julia> LearningProblem(sdata, tdata,
-                       ClusteringTask((:moisture,:mineral)))
+* Hoffimann et al. 2021. [Geostatistical Learning: Challenges and Opportunities]
+  (https://www.frontiersin.org/articles/10.3389/fams.2021.689393/full)
 ```
 """
 struct LearningProblem{Dₛ,Dₜ,T} <: Problem
