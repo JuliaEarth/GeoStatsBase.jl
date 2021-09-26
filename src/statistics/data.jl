@@ -110,7 +110,7 @@ function mode_heuristic(d)
 
     if (dif > 0)
       # x_n[2] is closer to larger value x_n[3]
-      m = mean(x_n[2:3])
+      m = (x_n[2] + x_n[3]) / 2
     elseif (dif < 0)
       # x_n[2] is closer to smaller value x_n[1]
       m = mean(x_n[1:2])
