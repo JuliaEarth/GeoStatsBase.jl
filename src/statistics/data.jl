@@ -59,9 +59,7 @@ function dist_matrix_random_sample(d, npoints=1000)
   pairwise(Euclidean(), X)
 end
 
-function bound_box_constr(d)
-  minimum(sides(boundingbox(domain(d))))
-end
+bound_box_constr(d) = minimum(sides(boundingbox(domain(d))))
 
 function median_heuristic(d)
   D = dist_matrix_random_sample(d)
@@ -91,29 +89,40 @@ function mode_heuristic(d)
   x_n = sort([D[i,j] for i in 1:n for j in 1:n if i > j])
 
   while length(x_n) ≥ 4
-
     n = length(x_n)
     k = trunc(Int, ceil(n / 2) - 1)
 
-    inf = x_n[begin:(n - k)]
+    inf = x_n[1:(n - k)]
     sup = x_n[(k + 1):n]
     diffs = sup - inf
     i = argmin(diffs)
     if diffs[i] == 0
-        x_n = [x_n[i]]
+      x_n = [x_n[i]]
     else
-        x_n = x_n[i:(i+k)]
+      x_n = x_n[i:(i+k)]
     end
-
   end
 
-  if length(x_n) == 1
-    m = x_n[1]
-  elseif length(x_n) == 2
+  if length(x_n) == 3
+
+    # Must determine if the center value (x_n[2])
+    #   is closer to the smaller value x_n[1] or larger value x_n[3]
+    dif = 2*x_n[2] - x_n[1] - x_n[3]
+
+    if (dif > 0)
+      # x_n[2] is closer to larger value x_n[3]
+      m = mean(x_n[2:3])
+    elseif (dif < 0)
+      # x_n[2] is closer to smaller value x_n[1]
+      m = mean(x_n[1:2])
+    else
+      # equidistant
+      m = x_n[2]
+    end
+
+  else
+    # if x_n has length 1 or 2, simply take the mean of the vector
     m = mean(x_n)
-  elseif length(x_n) == 3
-    difs = map(abs, [x_n[1] - x_n[2], x_n[1] - x_n[2], x_n[2] - x_n[3]])
-    m = [x_n[2], mean(x_n[1:2]), mean(x_n[2:3])][argmin(difs)]
   end
 
   l = bound_box_constr(d)
