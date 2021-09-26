@@ -104,9 +104,8 @@ function mode_heuristic(d)
   end
 
   if length(x_n) == 3
-
-    # Must determine if the center value (x_n[2])
-    #   is closer to the smaller value x_n[1] or larger value x_n[3]
+    # must determine if the center value x_n[2] is closer
+    # to the smaller value x_n[1] or larger value x_n[3]
     dif = 2*x_n[2] - x_n[1] - x_n[3]
 
     if (dif > 0)
