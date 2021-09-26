@@ -113,7 +113,7 @@ function mode_heuristic(d)
       m = (x_n[2] + x_n[3]) / 2
     elseif (dif < 0)
       # x_n[2] is closer to smaller value x_n[1]
-      m = mean(x_n[1:2])
+      m = (x_n[1] + x_n[2]) / 2
     else
       # equidistant
       m = x_n[2]
