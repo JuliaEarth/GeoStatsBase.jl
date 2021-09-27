@@ -140,12 +140,11 @@ function mode_hsm(x_n)
       m = mean(x_n[2:3])
     elseif (δx < 0)
       # x_n[2] is closer to smaller value x_n[1]
-      m = mean(x_n[1:2])
+      m = (x_n[1] + x_n[2]) / 2
     else
       # equidistant
       m = x_n[2]
     end
-
   else
     # if x_n has length 1 or 2, simply take the mean of the vector
     m = mean(x_n)
