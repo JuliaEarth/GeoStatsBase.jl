@@ -89,13 +89,15 @@ end
 
 
 """
+    mode_hsm(x)
+    
+Return the mode of the vector `x`.
 
 ## References
 
 * Bickel & Frühwirth, 2005. [On a fast, robust estimator
   of the mode: Comparisons to other robust estimators
   with applications](https://doi.org/10.1016/j.csda.2005.07.011)
-
 """
 function mode_hsm(x_n)
 
