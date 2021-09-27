@@ -72,32 +72,58 @@ function median_heuristic(d)
   min(m, l)
 end
 
+
 """
     mode_heuristic(d)
 
 Return the estimated mode of the inter-point distances for a set of locations.
+"""
+function mode_heuristic(d)
+  D = dist_matrix_random_sample(d)
+  n = size(D, 1)
+  x_n = [D[i,j] for i in 1:n for j in 1:n if i > j]
+  m = mode_hsm(x_n)
+  l = bound_box_constr(d)
+  min(m, l)
+end
+
+
+"""
 
 ## References
 
 * Bickel & Frühwirth, 2005. [On a fast, robust estimator
   of the mode: Comparisons to other robust estimators
   with applications](https://doi.org/10.1016/j.csda.2005.07.011)
+
 """
-function mode_heuristic(d)
-  D = dist_matrix_random_sample(d)
-  n = size(D, 1)
-  x_n = sort([D[i,j] for i in 1:n for j in 1:n if i > j])
+function mode_hsm(x_n)
+
+  sort!(x_n)
 
   while length(x_n) ≥ 4
+    # find interval that contains approx 1/2 of data
+    #   that has the smallest range
+
     n = length(x_n)
+    # k, smallest integer greater than or equal to n/2
     k = trunc(Int, ceil(n / 2) - 1)
 
+    # indices n, k constructed such that len(inf) == len(sup)
+    #     and these vectors are comparable
     inf = x_n[1:(n - k)]
     sup = x_n[(k + 1):n]
+
+    # calculating diffs between data separated by approx n / 2
     diffs = sup - inf
+    # index of minimum range over interval of approx n / 2
     i = argmin(diffs)
+    # if difference is zero, many points have the same
+    #     value and we have found the mode
     if diffs[i] == 0
       x_n = [x_n[i]]
+    # otherwise, take set with minimum range over n / 2 interval
+    #   and continue to next halving iteration
     else
       x_n = x_n[i:(i+k)]
     end
@@ -107,12 +133,12 @@ function mode_heuristic(d)
 
     # Must determine if the center value (x_n[2])
     #   is closer to the smaller value x_n[1] or larger value x_n[3]
-    dif = 2*x_n[2] - x_n[1] - x_n[3]
+    δx = 2*x_n[2] - x_n[1] - x_n[3]
 
-    if (dif > 0)
+    if (δx > 0)
       # x_n[2] is closer to larger value x_n[3]
       m = mean(x_n[2:3])
-    elseif (dif < 0)
+    elseif (δx < 0)
       # x_n[2] is closer to smaller value x_n[1]
       m = mean(x_n[1:2])
     else
@@ -125,7 +151,4 @@ function mode_heuristic(d)
     m = mean(x_n)
   end
 
-  l = bound_box_constr(d)
-
-  min(m, l)
 end
