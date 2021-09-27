@@ -42,6 +42,11 @@
     @test σn ≤ σs
     @test var(sdata)[:Au] ≈ σs
 
+    # mode heuristic
+    @test GeoStatsBase.mode_hsm([1]) == 1.0
+    @test GeoStatsBase.mode_hsm([1,2,2,3]) == 2.0
+    @test GeoStatsBase.mode_hsm(rand(1:6, 2111) + rand(1:6, 2111)) == 6.0
+
     # spatial quantile
     qn = quantile(sdata[:Au], 0.5)
     qs = quantile(sdata, :Au, 0.5)
