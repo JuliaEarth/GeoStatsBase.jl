@@ -104,7 +104,7 @@ function mode_hsm(x_n)
 
   while length(x_n) ≥ 4
     # find interval that contains approx 1/2 of data
-    #   that has the smallest range
+    # that has the smallest range
 
     n = length(x_n)
     # k, smallest integer greater than or equal to n/2
