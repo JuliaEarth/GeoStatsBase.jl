@@ -138,7 +138,7 @@ function mode_hsm(x_n)
 
     if (δx > 0)
       # x_n[2] is closer to larger value x_n[3]
-      m = mean(x_n[2:3])
+      m = (x_n[2] + x_n[3]) / 2
     elseif (δx < 0)
       # x_n[2] is closer to smaller value x_n[1]
       m = (x_n[1] + x_n[2]) / 2
