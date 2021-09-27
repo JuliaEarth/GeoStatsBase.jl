@@ -150,5 +150,4 @@ function mode_hsm(x_n)
     # if x_n has length 1 or 2, simply take the mean of the vector
     m = mean(x_n)
   end
-
 end
