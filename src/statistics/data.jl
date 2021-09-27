@@ -81,8 +81,8 @@ Return the estimated mode of the inter-point distances for a set of locations.
 function mode_heuristic(d)
   D = dist_matrix_random_sample(d)
   n = size(D, 1)
-  x_n = [D[i,j] for i in 1:n for j in 1:n if i > j]
-  m = mode_hsm(x_n)
+  δ = [D[i,j] for i in 1:n for j in 1:n if i > j]
+  m = mode_hsm(δ)
   l = bound_box_constr(d)
   min(m, l)
 end
