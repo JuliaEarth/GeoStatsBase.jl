@@ -100,7 +100,6 @@ Return the mode of the vector `x`.
   with applications](https://doi.org/10.1016/j.csda.2005.07.011)
 """
 function mode_hsm(x_n)
-
   sort!(x_n)
 
   while length(x_n) ≥ 4
