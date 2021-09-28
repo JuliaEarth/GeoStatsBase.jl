@@ -119,6 +119,7 @@ function mode_hsm(x_n)
       x_n = x_n[i:(i+k)]
     end
   end
+  
   if length(x_n) == 3
     # Must determine if the center value (x_n[2]) is closer to the smaller value x_n[1]
     # or larger value x_n[3]
