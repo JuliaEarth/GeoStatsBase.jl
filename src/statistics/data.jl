@@ -106,7 +106,6 @@ function mode_hsm(x_n)
     inf = x_n[1:(n - k)]
     sup = x_n[(k + 1):n]
     diffs = sup - inf
-    # index of minimum range over interval of approx n / 2
     i = argmin(diffs)
     if diffs[i] == 0
       # if difference is zero, many points have the same value and we have found the mode
