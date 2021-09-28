@@ -51,7 +51,6 @@ Optionally, specify the variable `v` and the block side `s`.
 quantile(d::Data, p) = quantile(d, p, mode_heuristic(d))
 
 function dist_matrix_random_sample(d, npoints=1000)
-
   # select at most 1000 points at random
   nel = nelements(d)
   inds = sample(1:nel, min(nel, npoints), replace=false)
@@ -72,7 +71,6 @@ function median_heuristic(d)
   min(m, l)
 end
 
-
 """
     mode_heuristic(d)
 
@@ -87,7 +85,6 @@ function mode_heuristic(d)
   min(m, l)
 end
 
-
 """
     mode_hsm(x)
     
@@ -101,41 +98,31 @@ Return the mode of the vector `x`.
 """
 function mode_hsm(x_n)
   sort!(x_n)
-
   while length(x_n) ≥ 4
-    # find interval that contains approx 1/2 of data
-    # that has the smallest range
-
+    # find interval that contains approx 1/2 of data that has the smallest range
     n = length(x_n)
     # k, smallest integer greater than or equal to n/2
     k = trunc(Int, ceil(n / 2) - 1)
-
-    # indices n, k constructed such that len(inf) == len(sup)
-    #     and these vectors are comparable
+    # indices n, k constructed such that len(inf) == len(sup) (compatible dimensions)
     inf = x_n[1:(n - k)]
     sup = x_n[(k + 1):n]
-
     # calculating diffs between data separated by approx n / 2
     diffs = sup - inf
     # index of minimum range over interval of approx n / 2
     i = argmin(diffs)
-    # if difference is zero, many points have the same
-    #     value and we have found the mode
     if diffs[i] == 0
+      # if difference is zero, many points have the same value and we have found the mode
       x_n = [x_n[i]]
-    # otherwise, take set with minimum range over n / 2 interval
-    #   and continue to next halving iteration
     else
+      # otherwise, take set with minimum range over n / 2 interval and continue to next
+      # halving iteration
       x_n = x_n[i:(i+k)]
     end
   end
-
   if length(x_n) == 3
-
-    # Must determine if the center value (x_n[2])
-    #   is closer to the smaller value x_n[1] or larger value x_n[3]
+    # Must determine if the center value (x_n[2]) is closer to the smaller value x_n[1]
+    # or larger value x_n[3]
     δx = 2*x_n[2] - x_n[1] - x_n[3]
-
     if (δx > 0)
       # x_n[2] is closer to larger value x_n[3]
       m = (x_n[2] + x_n[3]) / 2
