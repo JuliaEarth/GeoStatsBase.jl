@@ -100,10 +100,9 @@ function mode_hsm(x_n)
   sort!(x_n)
   while length(x_n) ≥ 4
     # find interval that contains approx 1/2 of data that has the smallest range
+    # indices n and k are constructed such that length(inf) == length(sup)
     n = length(x_n)
-    # k, smallest integer greater than or equal to n/2
     k = trunc(Int, ceil(n / 2) - 1)
-    # indices n, k constructed such that len(inf) == len(sup) (compatible dimensions)
     inf = x_n[1:(n - k)]
     sup = x_n[(k + 1):n]
     # calculating diffs between data separated by approx n / 2
