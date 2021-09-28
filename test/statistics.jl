@@ -39,7 +39,7 @@
     # spatial variance
     σn = var(sdata[:Au])
     σs = var(sdata, :Au)
-    @test σn ≤ σs
+    @test 0 ≤ σs
     @test var(sdata)[:Au] ≈ σs
 
     # mode heuristic
