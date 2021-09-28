@@ -105,7 +105,6 @@ function mode_hsm(x_n)
     k = trunc(Int, ceil(n / 2) - 1)
     inf = x_n[1:(n - k)]
     sup = x_n[(k + 1):n]
-    # calculating diffs between data separated by approx n / 2
     diffs = sup - inf
     # index of minimum range over interval of approx n / 2
     i = argmin(diffs)
