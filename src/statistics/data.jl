@@ -117,22 +117,21 @@ function mode_hsm(x_n)
     end
   end
   
+  # handle corner cases when n ≤ 3, i.e. find if the middle value x[2] is closer to x[1] or x[3]
   if length(x_n) == 3
-    # Must determine if the center value (x_n[2]) is closer to the smaller value x_n[1]
-    # or larger value x_n[3]
     δx = 2*x_n[2] - x_n[1] - x_n[3]
     if (δx > 0)
-      # x_n[2] is closer to larger value x_n[3]
+      # x[2] is closer to x[3]
       m = (x_n[2] + x_n[3]) / 2
     elseif (δx < 0)
-      # x_n[2] is closer to smaller value x_n[1]
+      # x[2] is closer to x[1]
       m = (x_n[1] + x_n[2]) / 2
     else
       # equidistant
       m = x_n[2]
     end
   else
-    # if x_n has length 1 or 2, simply take the mean of the vector
+    # x_n has length 1 or 2, simply take the mean
     m = mean(x_n)
   end
 end
