@@ -96,42 +96,42 @@ Return the mode of the vector `x`.
   of the mode: Comparisons to other robust estimators
   with applications](https://doi.org/10.1016/j.csda.2005.07.011)
 """
-function mode_hsm(x_n)
-  sort!(x_n)
-  while length(x_n) ≥ 4
+function mode_hsm(x)
+  sort!(x)
+  while length(x) ≥ 4
     # find interval that contains approx 1/2 of data that has the smallest range
     # indices n and k are constructed such that length(inf) == length(sup)
-    n = length(x_n)
+    n = length(x)
     k = trunc(Int, ceil(n / 2) - 1)
-    inf = x_n[1:(n - k)]
-    sup = x_n[(k + 1):n]
+    inf = x[1:(n - k)]
+    sup = x[(k + 1):n]
     diffs = sup - inf
     i = argmin(diffs)
     if diffs[i] == 0
       # if difference is zero, many points have the same value and we have found the mode
-      x_n = [x_n[i]]
+      x = [x[i]]
     else
       # otherwise, take set with minimum range over n / 2 interval and continue to next
       # halving iteration
-      x_n = x_n[i:(i+k)]
+      x = x[i:(i+k)]
     end
   end
   
   # handle corner cases when n ≤ 3, i.e. find if the middle value x[2] is closer to x[1] or x[3]
-  if length(x_n) == 3
-    δx = 2*x_n[2] - x_n[1] - x_n[3]
+  if length(x) == 3
+    δx = 2*x[2] - x[1] - x[3]
     if (δx > 0)
       # x[2] is closer to x[3]
-      m = (x_n[2] + x_n[3]) / 2
+      m = (x[2] + x[3]) / 2
     elseif (δx < 0)
       # x[2] is closer to x[1]
-      m = (x_n[1] + x_n[2]) / 2
+      m = (x[1] + x[2]) / 2
     else
       # equidistant
-      m = x_n[2]
+      m = x[2]
     end
   else
-    # x_n has length 1 or 2, simply take the mean
-    m = mean(x_n)
+    # x has length 1 or 2, simply take the mean
+    m = mean(x)
   end
 end
