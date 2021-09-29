@@ -26,6 +26,12 @@
     @test quants2D[2][:value] == quant2D[:value]
   end
 
+  @testset "HalfSampleMode" begin
+    @test GeoStatsBase.mode_hsm([1]) == 1.0
+    @test GeoStatsBase.mode_hsm([1,2,2,3]) == 2.0
+    @test GeoStatsBase.mode_hsm(rand(1:6, 2111) + rand(1:6, 2111)) == 6.0
+  end
+
   @testset "Data" begin
     # load data with bias towards large values (gold mine)
     sdata = georef(CSV.File(joinpath(datadir,"clustered.csv")), (:x,:y))
@@ -39,13 +45,8 @@
     # spatial variance
     σn = var(sdata[:Au])
     σs = var(sdata, :Au)
-    @test 0 ≤ σs
+    @test isapprox(σn, σs, atol=1e-2)
     @test var(sdata)[:Au] ≈ σs
-
-    # mode heuristic
-    @test GeoStatsBase.mode_hsm([1]) == 1.0
-    @test GeoStatsBase.mode_hsm([1,2,2,3]) == 2.0
-    @test GeoStatsBase.mode_hsm(rand(1:6, 2111) + rand(1:6, 2111)) == 6.0
 
     # spatial quantile
     qn = quantile(sdata[:Au], 0.5)
