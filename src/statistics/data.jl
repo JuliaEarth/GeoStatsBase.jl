@@ -74,7 +74,7 @@ end
 """
     mode_heuristic(d)
 
-Return the estimated mode of the inter-point distances for a set of locations.
+Return the estimated mode of the pairwise distances for a set of locations.
 """
 function mode_heuristic(d)
   D = dist_matrix_random_sample(d)
