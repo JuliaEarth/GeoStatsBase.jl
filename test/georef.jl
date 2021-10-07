@@ -22,6 +22,11 @@
   d = georef(table, (:x,:y))
   @test domain(d) isa PointSet
 
+  # coordinates names in named tuple
+  d = georef((a=rand(10), b=rand(10), c=rand(10)), (:b,:c))
+  @test domain(d) isa PointSet
+  @test Tables.columnnames(values(d)) == (:a,)
+
   # regular grid data
   d = georef(tuple)
   @test domain(d) == CartesianGrid(3)

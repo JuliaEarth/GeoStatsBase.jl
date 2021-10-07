@@ -42,6 +42,10 @@ function georef(tuple::NamedTuple, domain)
   georef(TypedTables.Table(flat), domain)
 end
 
+# fix ambiguity between other methods
+georef(tuple::NamedTuple, coordnames::NTuple) =
+  georef(TypedTables.Table(tuple), coordnames)
+
 """
     georef(tuple, coords)
 
