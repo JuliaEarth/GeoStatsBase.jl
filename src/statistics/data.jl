@@ -80,13 +80,13 @@ function mode_heuristic(d)
   D = dist_matrix_random_sample(d)
   n = size(D, 1)
   δ = [D[i,j] for i in 1:n for j in 1:n if i > j]
-  m = mode_hsm(δ)
+  m = hsm_mode(δ)
   l = bound_box_constr(d)
   min(m, l)
 end
 
 """
-    mode_hsm(x)
+    hsm_mode(x)
     
 Return the mode of the vector `x`.
 
@@ -96,42 +96,27 @@ Return the mode of the vector `x`.
   of the mode: Comparisons to other robust estimators
   with applications](https://doi.org/10.1016/j.csda.2005.07.011)
 """
-function mode_hsm(x)
-  sort!(x)
-  while length(x) ≥ 4
-    # find interval that contains approx 1/2 of data that has the smallest range
-    # indices n and k are constructed such that length(inf) == length(sup)
-    n = length(x)
-    k = trunc(Int, ceil(n / 2) - 1)
-    inf = x[1:(n - k)]
-    sup = x[(k + 1):n]
-    diffs = sup - inf
-    i = argmin(diffs)
-    if diffs[i] == 0
-      # if difference is zero, many points have the same value and we have found the mode
-      x = [x[i]]
-    else
-      # otherwise, take set with minimum range over n / 2 interval and continue to next
-      # halving iteration
-      x = x[i:(i+k)]
-    end
+hsm_mode(x) = hsm_recursion(sort(x))
+
+function hsm_recursion(x)
+  n = length(x)
+
+  # base cases
+  n == 1 && return x[1]
+  n == 2 && return (x[1] + x[2]) / 2
+  if n == 3
+    d1 = x[2] - x[1]
+    d2 = x[3] - x[2]
+    d1 < d2 && return (x[1] + x[2]) / 2
+    d1 > d2 && return (x[2] + x[3]) / 2
+    d1 == d2 && return x[2]
   end
   
-  # handle corner cases when n ≤ 3, i.e. find if the middle value x[2] is closer to x[1] or x[3]
-  if length(x) == 3
-    δx = 2*x[2] - x[1] - x[3]
-    if (δx > 0)
-      # x[2] is closer to x[3]
-      m = (x[2] + x[3]) / 2
-    elseif (δx < 0)
-      # x[2] is closer to x[1]
-      m = (x[1] + x[2]) / 2
-    else
-      # equidistant
-      m = x[2]
-    end
-  else
-    # x has length 1 or 2, simply take the mean
-    m = mean(x)
-  end
+  # find index of half interval
+  k = ceil(Int, n / 2) # or similar expression
+  # issue is here in argmin for whatever reason
+  i = argmin([x[j+k] - x[j] for j in 1:n-k])
+
+  # perform recursion
+  hsm_recursion(x[i:i+k])
 end
