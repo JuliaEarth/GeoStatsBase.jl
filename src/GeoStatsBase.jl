@@ -55,11 +55,11 @@ include("plotrecipes.jl")
 include("utils.jl")
 
 export
-  # geospatial data
+  # data
   GeoData,
   georef,
 
-  # spatial ensembles
+  # ensembles
   Ensemble,
   domain,
 
