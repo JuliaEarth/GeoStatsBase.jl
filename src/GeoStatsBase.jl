@@ -16,7 +16,6 @@ using Distances: Euclidean, evaluate, pairwise
 using StatsBase: Histogram, AbstractWeights, midpoints, sample
 using CategoricalArrays: CategoricalValue, CategoricalArray
 using CategoricalArrays: levels, isordered, pool
-using AverageShiftedHistograms: ash
 using Transducers: Map, foldxt
 using StaticArrays: SVector
 using DensityRatioEstimation
