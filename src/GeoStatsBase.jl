@@ -10,10 +10,10 @@ using Tables
 using TableOperations
 using LinearAlgebra: normalize
 using Combinatorics: multiexponents
+using Distributions: median, mode
 using Distributed: CachingPool, pmap, myid
 using Distances: Euclidean, evaluate, pairwise
 using StatsBase: Histogram, AbstractWeights, midpoints, sample
-using Distributions: ContinuousUnivariateDistribution, median, mode
 using CategoricalArrays: CategoricalValue, CategoricalArray
 using CategoricalArrays: levels, isordered, pool
 using AverageShiftedHistograms: ash
@@ -30,7 +30,6 @@ using Optim # for LSIF estimation
 
 import Meshes
 import MLJModelInterface
-import Distributions: cdf
 import StatsBase: fit, varcorrection
 import Statistics: mean, var, quantile
 
@@ -42,7 +41,6 @@ include("ensembles.jl")
 include("georef.jl")
 include("macros.jl")
 include("trends.jl")
-include("distributions.jl")
 include("estimators.jl")
 include("weighting.jl")
 include("geoops.jl")
@@ -140,10 +138,6 @@ export
   # distances
   aniso2distance,
   evaluate,
-
-  # distributions
-  EmpiricalDistribution,
-  transform!, quantile, cdf,
 
   # estimators
   fit, predict, status,
