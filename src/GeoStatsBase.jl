@@ -36,8 +36,8 @@ import Statistics: mean, var, quantile
 const MI = MLJModelInterface
 const GeoData = Meshes.MeshData
 
-include("ensembles.jl")
 include("georef.jl")
+include("ensembles.jl")
 include("macros.jl")
 include("trends.jl")
 include("estimators.jl")
