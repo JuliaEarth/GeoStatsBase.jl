@@ -10,24 +10,6 @@
     @test_reference "data/agriculture.png" plot(agri, (:band4,:crop), ms=0.2)
   end
 
-  @testset "DistPlot1D" begin
-    if visualtests
-      @test_reference "data/distplot1D.png" distplot1d(d,:z₁)
-    end
-  end
-
-  @testset "DistPlot2D" begin
-    if visualtests
-      @test_reference "data/distplot2D.png" distplot2d(d,:z₁,:z₂)
-    end
-  end
-
-  @testset "CornerPlot" begin
-    if visualtests
-      @test_reference "data/cornerplot.png" cornerplot(d)
-    end
-  end
-
   @testset "HScatter" begin
     if visualtests
       sdata = georef(CSV.File(joinpath(datadir,"samples2D.tsv")), (:x,:y))

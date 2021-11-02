@@ -13,10 +13,7 @@ include("plotrecipes/problems/learning.jl")
 # weights
 include("plotrecipes/weighting.jl")
 
-# distributions
-include("plotrecipes/distplot1D.jl")
-include("plotrecipes/distplot2D.jl")
-include("plotrecipes/cornerplot.jl")
+# histograms
 include("plotrecipes/histograms.jl")
 
 # other plots
