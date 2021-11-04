@@ -27,9 +27,12 @@
   end
 
   @testset "HalfSampleMode" begin
-    @test GeoStatsBase.mode_hsm([1]) == 1.0
-    @test GeoStatsBase.mode_hsm([1,2,2,3]) == 2.0
-    @test GeoStatsBase.mode_hsm(rand(1:6, 2111) + rand(1:6, 2111)) == 6.0
+    d = LogNormal(0,1)
+    rs = rand(d,1000)
+    @test GeoStatsBase.hsm_mode([1,2,2,3]) == 2.0
+    @test GeoStatsBase.hsm_mode([1,2,2,3,5]) == 2.0
+    @test GeoStatsBase.hsm_mode(rs) < mean(rs)
+    @test GeoStatsBase.hsm_mode(rs) < median(rs)
   end
 
   @testset "Data" begin
