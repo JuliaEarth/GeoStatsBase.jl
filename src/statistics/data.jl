@@ -117,5 +117,5 @@ function hsm_recursion(x)
   i = argmin([x[j+k] - x[j] for j in 1:n-k])
 
   # perform recursion
-  hsm_recursion(x[i:i+k])
+  hsm_recursion(view(x, i:i+k))
 end
