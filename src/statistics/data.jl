@@ -113,7 +113,7 @@ function hsm_recursion(x)
   end
   
   # find index of half interval
-  k = ceil(Int, n / 2) # or similar expression
+  k = ceil(Int, n / 2)
   # issue is here in argmin for whatever reason
   i = argmin([x[j+k] - x[j] for j in 1:n-k])
 
