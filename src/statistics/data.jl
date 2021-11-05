@@ -79,8 +79,7 @@ Return the estimated mode of the pairwise distances for a set of locations.
 function mode_heuristic(d)
   D = dist_matrix_random_sample(d)
   n = size(D, 1)
-  δ = [D[i,j] for i in 1:n for j in 1:n if i > j]
-  m = hsm_mode(δ)
+  m = hsm_mode([D[i,j] for i in 1:n for j in 1:n if i > j])
   l = bound_box_constr(d)
   min(m, l)
 end
