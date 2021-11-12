@@ -52,7 +52,6 @@ include("errors.jl")
 include("statistics.jl")
 include("histograms.jl")
 include("plotrecipes.jl")
-include("utils.jl")
 
 export
   # data
@@ -134,10 +133,6 @@ export
   @estimsolver,
   @simsolver,
 
-  # distances
-  aniso2distance,
-  evaluate,
-
   # estimators
   fit, predict, status,
 
@@ -164,7 +159,6 @@ export
 
   # utilities
   uniquecoords,
-  groupby,
-  spheredir
+  groupby
 
 end

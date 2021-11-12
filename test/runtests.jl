@@ -36,7 +36,6 @@ testfiles = [
   "statistics.jl",
   "histograms.jl",
   "plotrecipes.jl",
-  "utils.jl",
   "macros.jl"
 ]
 

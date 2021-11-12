@@ -31,7 +31,7 @@
 
   @testset "Ball" begin
     d = CartesianGrid(50,50)
-    f = folds(d, BallFolding(NormBall(10.)))
+    f = folds(d, BallFolding(MetricBall(10.)))
     @test length(collect(f)) == 2500
     ps = collect(f)
     ms = length.(first.(ps))

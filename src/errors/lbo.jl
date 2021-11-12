@@ -6,8 +6,9 @@
     LeaveBallOut(ball; loss=Dict())
 
 Leave-`ball`-out (a.k.a. spatial leave-one-out) validation.
-Optionally, specify `loss` function from `LossFunctions.jl`
-for some of the variables.
+Optionally, specify `loss` function from the
+[LossFunctions.jl](https://github.com/JuliaML/LossFunctions.jl)
+package for some of the variables.
 
     LeaveBallOut(radius; loss=Dict())
 
@@ -28,7 +29,7 @@ LeaveBallOut(ball; loss=Dict()) =
   LeaveBallOut{typeof(ball)}(ball, loss)
 
 LeaveBallOut(radius::Number; loss=Dict()) =
-  LeaveBallOut(NormBall(radius), loss=loss)
+  LeaveBallOut(MetricBall(radius), loss=loss)
 
 function Base.error(solver, problem, method::LeaveBallOut)
   # uniform weights
