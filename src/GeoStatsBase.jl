@@ -14,8 +14,6 @@ using Distributions: median, mode
 using Distributed: CachingPool, pmap, myid
 using Distances: Euclidean, evaluate, pairwise
 using StatsBase: Histogram, AbstractWeights, midpoints, sample
-using CategoricalArrays: CategoricalValue, CategoricalArray
-using CategoricalArrays: levels, isordered, pool
 using Transducers: Map, foldxt
 using StaticArrays: SVector
 using DensityRatioEstimation
