@@ -162,7 +162,8 @@ export
   groupby
 
   # rotations
-  Datamine,
-  Gslib
+  DatamineAngles,
+  GslibAngles,
+  VulcanAngles
 
 end
