@@ -50,8 +50,8 @@ include("folding.jl")
 include("errors.jl")
 include("statistics.jl")
 include("histograms.jl")
-include("plotrecipes.jl")
 include("rotations.jl")
+include("plotrecipes.jl")
 
 export
   # data
@@ -159,7 +159,7 @@ export
 
   # utilities
   uniquecoords,
-  groupby
+  groupby,
 
   # rotations
   DatamineAngles,
