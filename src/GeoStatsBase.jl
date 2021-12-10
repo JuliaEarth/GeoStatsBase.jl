@@ -113,7 +113,7 @@ export
   # folding
   FoldingMethod,
   UniformFolding,
-  PointFolding,
+  OneFolding,
   BlockFolding,
   BallFolding,
   folds,

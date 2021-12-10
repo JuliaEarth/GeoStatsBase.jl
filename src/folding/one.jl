@@ -3,14 +3,14 @@
 # ------------------------------------------------------------------
 
 """
-    PointFolding()
+    OneFolding()
 
 A method for creating folds from a spatial object that
-are single points.
+are single elements of the object.
 """
-struct PointFolding <: FoldingMethod end
+struct OneFolding <: FoldingMethod end
 
-function folds(object, ::PointFolding)
+function folds(object, ::OneFolding)
   n = nelements(object)
 
   function pair(i)

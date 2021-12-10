@@ -24,7 +24,7 @@ function Base.error(solver, problem, method::LeaveOneOut)
   weighting = UniformWeighting()
 
   # point folds
-  folding = PointFolding()
+  folding = OneFolding()
 
   wcv = WeightedCrossValidation(weighting, folding,
                                 lambda=1, loss=method.loss)

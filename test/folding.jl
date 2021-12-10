@@ -9,9 +9,9 @@
     @test length(collect(f)) == 10
   end
 
-  @testset "Point" begin
+  @testset "One" begin
     d = CartesianGrid(10,10)
-    f = folds(d, PointFolding())
+    f = folds(d, OneFolding())
     for (source, target) in f
       @test length(source) == 99
       @test length(target) == 1

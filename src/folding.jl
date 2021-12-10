@@ -17,10 +17,11 @@ Return iterator of folds of `object` according to `method`.
 """
 function folds end
 
-#------------------
+# ----------------
 # IMPLEMENTATIONS
-#------------------
+# ----------------
+
+include("folding/one.jl")
 include("folding/uniform.jl")
-include("folding/point.jl")
 include("folding/block.jl")
 include("folding/ball.jl")
