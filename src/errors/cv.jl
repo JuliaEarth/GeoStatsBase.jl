@@ -31,7 +31,7 @@ function Base.error(solver, problem, method::CrossValidation)
   weighting = UniformWeighting()
 
   # random folds
-  folding = RandomFolding(method.k, method.shuffle)
+  folding = UniformFolding(method.k, method.shuffle)
 
   wcv = WeightedCrossValidation(weighting, folding,
                                 lambda=1, loss=method.loss)

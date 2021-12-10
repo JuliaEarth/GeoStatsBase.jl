@@ -3,24 +3,25 @@
 # ------------------------------------------------------------------
 
 """
-    RandomFolding(k, shuffle=true)
+    UniformFolding(k, shuffle=true)
 
-A method for creating `k` random folds from a spatial object.
+A method for creating `k` random folds from a spatial object
+by sampling elements of the object with a uniform distribution.
 Optionally `shuffle` the object before creating the folds.
 """
-struct RandomFolding <: FoldingMethod
+struct UniformFolding <: FoldingMethod
   k::Int
   shuffle::Bool
 end
 
-RandomFolding(k::Int) = RandomFolding(k, true)
+UniformFolding(k::Int) = UniformFolding(k, true)
 
-function folds(object, method::RandomFolding)
+function folds(object, method::UniformFolding)
   # retrieve parameters
   k, shuffle = method.k, method.shuffle
 
   # partition object
-  p = partition(object, RandomPartition(k, shuffle))
+  p = partition(object, UniformPartition(k, shuffle))
   s = indices(p)
   n = length(p)
 

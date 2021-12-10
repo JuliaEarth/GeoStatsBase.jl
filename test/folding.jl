@@ -1,7 +1,7 @@
 @testset "Folding" begin
-  @testset "Random" begin
+  @testset "Uniform" begin
     d = CartesianGrid(100,100)
-    f = folds(d, RandomFolding(10))
+    f = folds(d, UniformFolding(10))
     for (source, target) in f
       @test length(source) == 9000
       @test length(target) == 1000
