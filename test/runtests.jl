@@ -5,6 +5,7 @@ using Tables
 using TypedTables
 using Distances
 using Distributions
+using ReferenceFrameRotations
 using Test, Random, Plots
 using ReferenceTests, ImageIO
 
@@ -35,6 +36,7 @@ testfiles = [
   "errors.jl",
   "statistics.jl",
   "histograms.jl",
+  "rotations.jl",
   "plotrecipes.jl",
   "macros.jl"
 ]

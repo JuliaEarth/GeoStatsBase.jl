@@ -21,6 +21,7 @@ using ScientificTypes
 using LossFunctions
 using RecipesBase
 using Parameters
+using ReferenceFrameRotations
 
 using TypedTables # for a default table type
 using Optim # for LSIF estimation
@@ -49,6 +50,7 @@ include("folding.jl")
 include("errors.jl")
 include("statistics.jl")
 include("histograms.jl")
+include("rotations.jl")
 include("plotrecipes.jl")
 
 export
@@ -157,6 +159,11 @@ export
 
   # utilities
   uniquecoords,
-  groupby
+  groupby,
+
+  # rotations
+  DatamineAngles,
+  GslibAngles,
+  VulcanAngles
 
 end
