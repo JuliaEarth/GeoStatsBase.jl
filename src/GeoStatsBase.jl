@@ -4,7 +4,6 @@
 
 module GeoStatsBase
 
-using CSV
 using Meshes
 using Tables
 using TableOperations

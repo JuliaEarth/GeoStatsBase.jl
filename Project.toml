@@ -4,7 +4,6 @@ author = "Júlio Hoffimann <julio.hoffimann@gmail.com>"
 version = "0.24.1"
 
 [deps]
-CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 Combinatorics = "861a8166-3701-5b0c-9a16-15d98fcdc6aa"
 DensityRatioEstimation = "ab46fb84-d57c-11e9-2f65-6f72e4a7229f"
 Distances = "b4f34e82-e78d-54a5-968a-f98e89d6e8f7"
@@ -28,7 +27,6 @@ Transducers = "28d57a85-8fef-5791-bfe6-a80928e7c999"
 TypedTables = "9d95f2ec-7b3d-5a63-8d20-e2491e220bb9"
 
 [compat]
-CSV = "0.5, 0.6, 0.7, 0.8, 0.9"
 Combinatorics = "1.0"
 DensityRatioEstimation = "0.4"
 Distances = "0.10"
