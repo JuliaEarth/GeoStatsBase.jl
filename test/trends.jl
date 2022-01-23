@@ -28,4 +28,10 @@
     plt = plot(p₁, p₂, size=(900,300))
     @test_reference "data/trends.png" plt
   end
+
+  d = georef((x=rand(10), y=rand(10)), rand(2,10))
+  𝒯 = d |> trend |> values
+  s = Tables.schema(𝒯)
+  @test s.names == (:x, :y)
+  @test s.types == (Float64, Float64)
 end

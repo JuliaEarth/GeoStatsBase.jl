@@ -20,12 +20,8 @@ function polymat(xs, d)
   x  = first(xs)
   n  = length(x)
   es = Iterators.flatten(multiexponents(n, d) for d in 0:d)
-  ms = map(es) do e
-    map(xs) do x
-      prod(x .^ e)
-    end
-  end
-  reduce(hcat, ms)
+  ps = [[prod(x.^e) for x in xs] for e in es]
+  reduce(hcat, ps)
 end
 
 """
@@ -63,4 +59,12 @@ function trend(data, vars::AbstractVector{Symbol}; degree=1)
   georef(means, 𝒟)
 end
 
-trend(data, var::Symbol; kwargs...) = trend(data, [var]; kwargs...)
+trend(data, var::Symbol; kwargs...) =
+  trend(data, [var]; kwargs...)
+
+function trend(data; kwargs...)
+  𝒯 = values(data)
+  s = Tables.schema(𝒯)
+  vars = collect(s.names)
+  trend(data, vars; kwargs...)
+end
