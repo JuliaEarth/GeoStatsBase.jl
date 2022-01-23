@@ -17,15 +17,15 @@ single column of ones is returned that corresponds to
 the constant term `x₁⁰⋅x₂⁰⋅⋯⋅xₙ⁰` for all items in `xs`.
 """
 function polymat(xs, d)
-  x, _ = iterate(xs)
-  n    = length(x)
-  exps = Iterators.flatten(multiexponents(n, d) for d in 0:d)
-  m = map(exps) do e
+  x  = first(xs)
+  n  = length(x)
+  es = Iterators.flatten(multiexponents(n, d) for d in 0:d)
+  ms = map(es) do e
     map(xs) do x
       prod(x .^ e)
     end
   end
-  reduce(hcat, m)
+  reduce(hcat, ms)
 end
 
 """
@@ -34,26 +34,33 @@ end
 Return the deterministic spatial trend for the variables `vars`
 in the spatial `data`. Approximate the trend with a polynomial
 of given `degree`.
+
+## References
+
+* Menafoglio, A., Secchi, P. 2013. [A Universal Kriging predictor
+  for spatially dependent functional data of a Hilbert Space]
+  (https://doi.org/10.1214/13-EJS843)
 """
 function trend(data, vars::AbstractVector{Symbol}; degree=1)
   𝒯 = values(data)
   𝒟 = domain(data)
 
-  # build LHS of linear system
-  xs = (coordinates(centroid(𝒟, i)) for i in 1:nelements(𝒟))
-  X  = polymat(xs, degree)
+  # build polynomial drift terms
+  coords(𝒟, i) = coordinates(centroid(𝒟, i))
+  xs = (coords(𝒟, i) for i in 1:nelements(𝒟))
+  F  = polymat(xs, degree)
 
-  # solve for each variable
-  ŷs = map(vars) do v
-    y  = Tables.getcolumn(𝒯, v)
-    θ  = X'*X \ X'*y
-    ŷ  = X*θ
+  # eqs 25 and 26 in Menafoglio, A., Secchi, P. 2013.
+  ms = map(vars) do var
+    z  = Tables.getcolumn(𝒯, var)
+    a  = (F'F \ F') * z
+    F * a
   end
 
   ctor  = Tables.materializer(𝒯)
-  table = ctor((; zip(vars, ŷs)...))
+  means = ctor((; zip(vars, ms)...))
 
-  georef(table, 𝒟)
+  georef(means, 𝒟)
 end
 
 trend(data, var::Symbol; kwargs...) = trend(data, [var]; kwargs...)
