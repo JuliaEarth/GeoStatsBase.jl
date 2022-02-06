@@ -68,9 +68,9 @@
   end
 
   @testset "Learning" begin
-    Random.seed!(123)
-    sdata = georef((x=rand(10),y=rand(10),z=rand(10)), 10rand(2,10))
-    tdata = georef((x=rand(10,10),))
+    rng   = MersenneTwister(42)
+    sdata = georef((x=rand(rng,10),y=rand(rng,10),z=rand(rng,10)), 10rand(rng,2,10))
+    tdata = georef((x=rand(rng,10,10),))
     rtask = RegressionTask(:x, :y)
     ctask = ClusteringTask(:x, :c)
 

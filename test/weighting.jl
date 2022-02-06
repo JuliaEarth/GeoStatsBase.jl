@@ -20,13 +20,14 @@
   end
 
   @testset "DensityRatioWeighting" begin
-    n = 1000; Random.seed!(123)
+    rng = MersenneTwister(42)
 
     r1 = Normal(0, 2)
     r2 = MixtureModel([Normal(-2,1), Normal(2,2)], [0.2, 0.8])
 
-    z1 = sort(rand(r1, n))
-    z2 = sort(rand(r2, n))
+    n  = 1000
+    z1 = sort(rand(rng, r1, n))
+    z2 = sort(rand(rng, r2, n))
 
     d1 = georef((z=z1,), PointSet(reshape(1:n,1,:)))
     d2 = georef((z=z2,), PointSet(reshape(1:n,1,:)))

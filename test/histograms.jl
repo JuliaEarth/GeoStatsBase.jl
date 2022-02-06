@@ -5,12 +5,12 @@
   @test length(c) == 10
   @test length(w) == 10
 
-  Random.seed!(123)
-  z₁ = randn(10000)
-  z₂ = z₁ + randn(10000)
-  d = georef((z₁=z₁,z₂=z₂), CartesianGrid(100,100))
-  h1 = EmpiricalHistogram(d, :z₁)
-  h2 = EmpiricalHistogram(d, :z₂)
+  rng = MersenneTwister(42)
+  z₁  = randn(rng, 10000)
+  z₂  = z₁ + randn(rng, 10000)
+  d   = georef((z₁=z₁,z₂=z₂), CartesianGrid(100,100))
+  h1  = EmpiricalHistogram(d, :z₁)
+  h2  = EmpiricalHistogram(d, :z₂)
 
   if visualtests
     @test_reference "data/histogram1.png" plot(h1)
