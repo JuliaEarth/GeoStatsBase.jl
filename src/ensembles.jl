@@ -19,7 +19,11 @@ struct Ensemble{𝒟,ℛ}
   end
 end
 
-Ensemble(domain::𝒟, reals::ℛ) where {𝒟,ℛ} = Ensemble{𝒟,ℛ}(domain, reals)
+Ensemble(domain::𝒟, reals::ℛ) where {𝒟,ℛ} =
+  Ensemble{𝒟,ℛ}(domain, reals)
+
+==(e₁::Ensemble, e₂::Ensemble) =
+  e₁.domain == e₂.domain && e₁.reals == e₂.reals
 
 Meshes.domain(ensemble::Ensemble) = ensemble.domain
 
@@ -27,7 +31,8 @@ Meshes.domain(ensemble::Ensemble) = ensemble.domain
 # VARIABLE API
 # -------------
 
-Base.getindex(ensemble::Ensemble, var::Symbol) = ensemble.reals[var]
+Base.getindex(ensemble::Ensemble, var::Symbol) =
+  ensemble.reals[var]
 
 # -------------
 # ITERATOR API

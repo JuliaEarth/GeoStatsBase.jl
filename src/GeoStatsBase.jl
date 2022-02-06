@@ -29,6 +29,7 @@ import Meshes
 import MLJModelInterface
 import StatsBase: fit, varcorrection
 import Statistics: mean, var, quantile
+import Base: ==
 
 # aliases
 const MI = MLJModelInterface
