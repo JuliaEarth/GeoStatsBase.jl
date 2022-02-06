@@ -20,7 +20,7 @@
   end
 
   @testset "DensityRatioWeighting" begin
-    rng = MersenneTwister(42)
+    rng = MersenneTwister(123)
 
     r1 = Normal(0, 2)
     r2 = MixtureModel([Normal(-2,1), Normal(2,2)], [0.2, 0.8])
@@ -32,7 +32,9 @@
     d1 = georef((z=z1,), PointSet(reshape(1:n,1,:)))
     d2 = georef((z=z2,), PointSet(reshape(1:n,1,:)))
 
-    w = weight(d1, DensityRatioWeighting(d2))
+    dre = LSIF(rng=rng)
+
+    w = weight(d1, DensityRatioWeighting(d2, estimator=dre))
 
     if visualtests
       plt = plot(z1, pdf.(r1, z1), size=(800,400), label="source")

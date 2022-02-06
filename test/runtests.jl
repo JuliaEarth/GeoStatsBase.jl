@@ -5,6 +5,7 @@ using Tables
 using TypedTables
 using Distances
 using Distributions
+using DensityRatioEstimation
 using ReferenceFrameRotations
 using Test, Random, Plots
 using ReferenceTests, ImageIO
