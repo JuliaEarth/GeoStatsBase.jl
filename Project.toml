@@ -28,7 +28,7 @@ TypedTables = "9d95f2ec-7b3d-5a63-8d20-e2491e220bb9"
 
 [compat]
 Combinatorics = "1.0"
-DensityRatioEstimation = "0.4"
+DensityRatioEstimation = "0.4, 0.5"
 Distances = "0.10"
 Distributions = "0.21, 0.22, 0.23, 0.24, 0.25"
 LossFunctions = "0.6, 0.7"
