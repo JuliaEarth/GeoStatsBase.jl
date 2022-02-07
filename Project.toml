@@ -1,7 +1,7 @@
 name = "GeoStatsBase"
 uuid = "323cb8eb-fbf6-51c0-afd0-f8fba70507b2"
 author = "Júlio Hoffimann <julio.hoffimann@gmail.com>"
-version = "0.24.7"
+version = "0.24.8"
 
 [deps]
 Combinatorics = "861a8166-3701-5b0c-9a16-15d98fcdc6aa"
@@ -33,7 +33,7 @@ Distances = "0.10"
 Distributions = "0.21, 0.22, 0.23, 0.24, 0.25"
 LossFunctions = "0.6, 0.7"
 MLJModelInterface = "0.2, 0.3, 0.4, 1.0"
-Meshes = "0.19"
+Meshes = "0.19, 0.20"
 Optim = "0.18, 0.20, 0.21, 0.22, 1.0, 1.1, 1.2"
 Parameters = "0.12"
 RecipesBase = "0.7, 0.8, 1.0, 1.1"
