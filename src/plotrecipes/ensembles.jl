@@ -21,11 +21,8 @@
   layout --> (length(vars), N)
   legend --> false
 
-  # select realizations at random
-  inds = sample(1:nreals, N, replace=false)
-
   for (i, var) in enumerate(vars)
-    reals = ensemble.reals[var][inds]
+    reals = ensemble.reals[var][1:N]
 
     # find value limits across realizations
     minmax = extrema.(reals)
