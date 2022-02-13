@@ -63,4 +63,13 @@
     @test 𝒫ₐᵦ[:a] == [2]
     @test 𝒫ₐᵦ[:b] == [2]
   end
+
+  @testset "integrate" begin
+    𝒮 = meshdata(CartesianGrid(2,2),
+                 vtable=(z=[1,2,3,4,5,6,7,8,9],
+                         w=[1,1,1,2,2,2,3,3,3]))
+    ℐ = integrate(𝒮, :z, :w)
+    @test ℐ.z == [3.,4.,6.,7.]
+    @test ℐ.w == [1.5,1.5,2.5,2.5]
+  end
 end

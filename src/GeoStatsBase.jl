@@ -159,6 +159,7 @@ export
 
   # utilities
   uniquecoords,
+  integrate,
   groupby,
 
   # rotations
