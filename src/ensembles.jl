@@ -58,6 +58,37 @@ Base.firstindex(ensemble::Ensemble) = 1
 Base.lastindex(ensemble::Ensemble) = length(ensemble)
 
 # -----------
+# STATISTICS
+# -----------
+
+function mean(ensemble::Ensemble)
+  varreals = pairs(ensemble.reals)
+  μs = (; (v => mean(rs) for (v, rs) in varreals)...)
+  georef(μs, ensemble.domain)
+end
+
+function var(ensemble::Ensemble)
+  varreals = pairs(ensemble.reals)
+  σs = (; (v => var(rs) for (v, rs) in varreals)...)
+  georef(σs, ensemble.domain)
+end
+
+function quantile(ensemble::Ensemble, p::Number)
+  cols = []
+  for (variable, reals) in pairs(ensemble.reals)
+    quantiles = map(1:nelements(ensemble.domain)) do location
+      slice = getindex.(reals, location)
+      quantile(slice, p)
+    end
+    push!(cols, variable => quantiles)
+  end
+  georef((; cols...), ensemble.domain)
+end
+
+quantile(ensemble::Ensemble, ps::AbstractVector) =
+  [quantile(ensemble, p) for p in ps]
+
+# -----------
 # IO METHODS
 # -----------
 
