@@ -4,7 +4,6 @@
 
 module GeoStatsBase
 
-using CSV
 using Meshes
 using Tables
 using TableTransforms
@@ -30,6 +29,7 @@ import Meshes
 import MLJModelInterface
 import StatsBase: fit, varcorrection
 import Statistics: mean, var, quantile
+import Base: ==
 
 # aliases
 const MI = MLJModelInterface
@@ -159,6 +159,7 @@ export
 
   # utilities
   uniquecoords,
+  integrate,
   groupby,
 
   # rotations

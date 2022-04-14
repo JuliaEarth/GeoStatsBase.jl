@@ -5,7 +5,17 @@
 """
     Ensemble
 
-An ensemble of geospatial realizations.
+An ensemble of geostatistical realizations.
+
+The result of a geostatistical simulation solver is a
+set of geospatial data (a.k.a. realizations). This set
+can be interpreted as an empirical approximation of the
+random field of interest.
+
+### Notes
+
+`Ensemble` objects are typically created by a call to the
+`solve` function on a [`SimulationProblem`](@ref).
 """
 struct Ensemble{𝒟,ℛ}
   domain::𝒟
@@ -19,7 +29,11 @@ struct Ensemble{𝒟,ℛ}
   end
 end
 
-Ensemble(domain::𝒟, reals::ℛ) where {𝒟,ℛ} = Ensemble{𝒟,ℛ}(domain, reals)
+Ensemble(domain::𝒟, reals::ℛ) where {𝒟,ℛ} =
+  Ensemble{𝒟,ℛ}(domain, reals)
+
+==(e₁::Ensemble, e₂::Ensemble) =
+  e₁.domain == e₂.domain && e₁.reals == e₂.reals
 
 Meshes.domain(ensemble::Ensemble) = ensemble.domain
 
@@ -27,7 +41,8 @@ Meshes.domain(ensemble::Ensemble) = ensemble.domain
 # VARIABLE API
 # -------------
 
-Base.getindex(ensemble::Ensemble, var::Symbol) = ensemble.reals[var]
+Base.getindex(ensemble::Ensemble, var::Symbol) =
+  ensemble.reals[var]
 
 # -------------
 # ITERATOR API
@@ -51,6 +66,37 @@ Base.getindex(ensemble::Ensemble, inds::AbstractVector{Int}) =
   [getindex(ensemble, ind) for ind in inds]
 Base.firstindex(ensemble::Ensemble) = 1
 Base.lastindex(ensemble::Ensemble) = length(ensemble)
+
+# -----------
+# STATISTICS
+# -----------
+
+function mean(ensemble::Ensemble)
+  varreals = pairs(ensemble.reals)
+  μs = (; (v => mean(rs) for (v, rs) in varreals)...)
+  georef(μs, ensemble.domain)
+end
+
+function var(ensemble::Ensemble)
+  varreals = pairs(ensemble.reals)
+  σs = (; (v => var(rs) for (v, rs) in varreals)...)
+  georef(σs, ensemble.domain)
+end
+
+function quantile(ensemble::Ensemble, p::Number)
+  cols = []
+  for (variable, reals) in pairs(ensemble.reals)
+    quantiles = map(1:nelements(ensemble.domain)) do location
+      slice = getindex.(reals, location)
+      quantile(slice, p)
+    end
+    push!(cols, variable => quantiles)
+  end
+  georef((; cols...), ensemble.domain)
+end
+
+quantile(ensemble::Ensemble, ps::AbstractVector) =
+  [quantile(ensemble, p) for p in ps]
 
 # -----------
 # IO METHODS
