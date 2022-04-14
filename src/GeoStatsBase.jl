@@ -7,7 +7,7 @@ module GeoStatsBase
 using CSV
 using Meshes
 using Tables
-using TableOperations
+using TableTransforms
 using LinearAlgebra: normalize
 using Combinatorics: multiexponents
 using Distributions: median, mode

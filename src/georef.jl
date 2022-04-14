@@ -26,8 +26,8 @@ function georef(table, coordnames::NTuple)
   @assert coordnames ⊆ colnames "invalid coordinates for table"
   @assert !(colnames ⊆ coordnames) "table must have at least one variable"
   vars   = setdiff(colnames, coordnames)
-  vtable = TableOperations.select(table, vars...)
-  ctable = TableOperations.select(table, coordnames...)
+  vtable = table |> Select(vars)
+  ctable = table |> Select(coordnames)
   coords = Tuple.(Tables.rowtable(ctable))
   georef(vtable, coords)
 end

@@ -25,7 +25,7 @@
   # coordinates names in named tuple
   d = georef((a=rand(10), b=rand(10), c=rand(10)), (:b,:c))
   @test domain(d) isa PointSet
-  @test Tables.columnnames(values(d)) == (:a,)
+  @test Tables.columnnames(values(d)) |> collect == [:a]
 
   # regular grid data
   d = georef(tuple)
