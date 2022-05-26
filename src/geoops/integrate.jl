@@ -23,14 +23,13 @@ function integrate(data::Data, vars...; rank=nothing)
   # rank of integration
   R = isnothing(rank) ? paramdim(𝒟) : rank
 
-  # boundary relation
-  t = topology(𝒟)
-  ∂ = Boundary{R,0}(t)
+  # retrieve topology
+  topo = topology(𝒟)
 
   # perform integration over each face
-  table = map(1:nfaces(𝒟, R)) do i
+  table = map(faces(topo, R)) do face
     # vertex indices
-    inds = ∂(i)
+    inds = collect(indices(face))
 
     # TODO: better integration rule
     ints = map(vars) do var
