@@ -65,11 +65,16 @@
   end
 
   @testset "integrate" begin
-    𝒮 = meshdata(CartesianGrid(2,2),
-                 vtable=(z=[1,2,3,4,5,6,7,8,9],
-                         w=[1,1,1,2,2,2,3,3,3]))
-    ℐ = integrate(𝒮, :z, :w)
-    @test ℐ.z == [3.,4.,6.,7.]
-    @test ℐ.w == [1.5,1.5,2.5,2.5]
+    grid  = CartesianGrid(2,2)
+    mesh  = triangulate(grid)
+    table = (z=[1,2,3,4,5,6,7,8,9], w=[1,1,1,2,2,2,3,3,3])
+    gdata = meshdata(grid, vtable=table)
+    mdata = meshdata(mesh, vtable=table)
+    ginte = integrate(gdata, :z, :w)
+    minte = integrate(mdata, :z, :w)
+    @test ginte.z == [3.,4.,6.,7.]
+    @test ginte.w == [1.5,1.5,2.5,2.5]
+    @test sum.(Iterators.partition(minte.z, 2)) == ginte.z
+    @test sum.(Iterators.partition(minte.w, 2)) == ginte.w
   end
 end
