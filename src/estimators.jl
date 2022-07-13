@@ -3,6 +3,13 @@
 # ------------------------------------------------------------------
 
 """
+    Estimator
+
+A geospatial estimator (e.g. Kriging).
+"""
+abstract type Estimator end
+
+"""
     fit(estimator, data)
 
 Fit estimator to geospatial `data` and return a fitted estimator.

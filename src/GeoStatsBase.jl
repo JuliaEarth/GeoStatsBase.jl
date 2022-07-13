@@ -40,6 +40,7 @@ include("ensembles.jl")
 include("macros.jl")
 include("trends.jl")
 include("estimators.jl")
+include("distributionals.jl")
 include("weighting.jl")
 include("geoops.jl")
 include("learning.jl")
@@ -134,7 +135,13 @@ export
   @simsolver,
 
   # estimators
-  fit, predict, status,
+  Estimator,
+  fit,
+  predict,
+  status,
+
+  # distributionals
+  Distributional,
 
   # weighting
   GeoWeights,
@@ -153,9 +160,6 @@ export
 
   # statistics
   mean, var, quantile,
-
-  # plot recipes
-  cornerplot,
 
   # utilities
   uniquecoords,
