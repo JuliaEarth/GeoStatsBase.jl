@@ -40,7 +40,6 @@ include("ensembles.jl")
 include("macros.jl")
 include("trends.jl")
 include("estimators.jl")
-include("distributionals.jl")
 include("weighting.jl")
 include("geoops.jl")
 include("learning.jl")
@@ -139,9 +138,6 @@ export
   fit,
   predict,
   status,
-
-  # distributionals
-  Distributional,
 
   # weighting
   GeoWeights,
