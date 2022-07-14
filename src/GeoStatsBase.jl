@@ -135,8 +135,10 @@ export
 
   # estimators
   Estimator,
+  ProbabilisticEstimator,
   fit,
   predict,
+  predictprob,
   status,
 
   # weighting

@@ -5,7 +5,11 @@
 """
     Estimator
 
-A geospatial estimator (e.g. Kriging).
+A geospatial estimator, i.e. an estimator that predicts
+variables at given locations based on geospatial data.
+
+An `Estimator` must implement the functions [`fit`](@ref),
+[`predict`](@ref) and [`status`](@ref).
 """
 abstract type Estimator end
 
@@ -30,3 +34,19 @@ Return the status of the `fitted` estimator. (e.g. the
 factorization of the linear system was successful)
 """
 function status end
+
+"""
+    ProbabilisticEstimator
+
+A geospatial estimator that also support probabilistic predictions
+with [`predictprob`](@ref).
+"""
+abstract type ProbabilisticEstimator end
+
+"""
+    predictprob(estimator, var, uₒ)
+
+Predict probability distribution of variable `var` with the
+probabilistic `estimator` at point or geometry `uₒ`.
+"""
+function predictprob end
