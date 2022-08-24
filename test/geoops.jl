@@ -66,7 +66,7 @@
 
   @testset "integrate" begin
     grid  = CartesianGrid(2,2)
-    mesh  = triangulate(grid)
+    mesh  = simplexify(grid)
     table = (z=[1,2,3,4,5,6,7,8,9], w=[1,1,1,2,2,2,3,3,3])
     gdata = meshdata(grid, vtable=table)
     mdata = meshdata(mesh, vtable=table)
