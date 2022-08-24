@@ -52,6 +52,7 @@ include("statistics.jl")
 include("histograms.jl")
 include("rotations.jl")
 include("plotrecipes.jl")
+include("ui.jl")
 
 export
   # data
@@ -167,6 +168,9 @@ export
   # rotations
   DatamineAngles,
   GslibAngles,
-  VulcanAngles
+  VulcanAngles,
+
+  # UI elements
+  searcher_ui
 
 end

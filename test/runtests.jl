@@ -8,6 +8,7 @@ using Distributions
 using DensityRatioEstimation
 using ReferenceFrameRotations
 using Test, Random, Plots
+using MeshPlots # TODO: replace by MeshViz
 using ReferenceTests, ImageIO
 
 # workaround GR warnings
@@ -39,7 +40,8 @@ testfiles = [
   "histograms.jl",
   "rotations.jl",
   "plotrecipes.jl",
-  "macros.jl"
+  "macros.jl",
+  "ui.jl"
 ]
 
 @testset "GeoStatsBase.jl" begin
