@@ -81,12 +81,12 @@ macro metasolver(solver, solvertype, body)
   jtype = NTuple{<:Any,Symbol}
 
   esc(quote
-    $Parameters.@with_kw_noshow struct $solvervparam
+    $Base.@kwdef struct $solvervparam
       __dummy__ = nothing
       $(vparams...)
     end
 
-    $Parameters.@with_kw_noshow struct $solverjparam
+    $Base.@kwdef struct $solverjparam
       __dummy__ = nothing
       $(jparams...)
     end
