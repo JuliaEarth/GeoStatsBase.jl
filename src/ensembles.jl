@@ -108,8 +108,12 @@ function Base.show(io::IO, ensemble::Ensemble)
 end
 
 function Base.show(io::IO, ::MIME"text/plain", ensemble::Ensemble)
+  names = keys(ensemble.reals)
+  rvals = values(ensemble.reals)
+  types = eltype.(first.(rvals))
+  vars  = ["$n ($t)" for (n, t) in zip(names, types)]
   println(io, ensemble)
-  println(io, "  domain: ", ensemble.domain)
-  println(io, "  variables: ", join(keys(ensemble.reals), ", ", " and "))
+  println(io, "  domain:    ", ensemble.domain)
+  println(io, "  variables: ", join(vars, ", ", " and "))
   print(  io, "  N° reals:  ", ensemble.nreals)
 end
