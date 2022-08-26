@@ -27,10 +27,6 @@
   @test sprint(show, s) == "2D Ensemble"
   @test sprint(show, MIME"text/plain"(), s) == "2D Ensemble\n  domain: 10×10 CartesianGrid{2,Float64}\n  variables: z\n  N° reals:  10"
 
-  if visualtests
-    @test_reference "data/ensemble.png" plot(s,size=(800,300))
-  end
-
   grid = CartesianGrid(3,3)
   reals = (z=[i*ones(nelements(grid)) for i in 1:3],)
   ensemble = Ensemble(grid, reals)

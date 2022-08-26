@@ -7,20 +7,19 @@ module GeoStatsBase
 using Meshes
 using Tables
 using TableTransforms
-using LinearAlgebra: normalize
+using Distributions: median
 using Combinatorics: multiexponents
-using Distributions: median, mode
+using Distances: Euclidean, pairwise
 using Distributed: CachingPool, pmap, myid
-using Distances: Euclidean, evaluate, pairwise
-using StatsBase: Histogram, AbstractWeights, midpoints, sample
+using StatsBase: Histogram, AbstractWeights
+using StatsBase: midpoints, sample
 using Transducers: Map, foldxt
 using StaticArrays: SVector
+using ReferenceFrameRotations
 using DensityRatioEstimation
 using ScientificTypes
 using LossFunctions
-using RecipesBase
 using Parameters
-using ReferenceFrameRotations
 
 using TypedTables # for a default table type
 using Optim # for LSIF estimation
@@ -51,7 +50,6 @@ include("errors.jl")
 include("statistics.jl")
 include("histograms.jl")
 include("rotations.jl")
-include("plotrecipes.jl")
 include("ui.jl")
 
 export

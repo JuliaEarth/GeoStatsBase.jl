@@ -20,10 +20,6 @@
     problem2D = EstimationProblem(data2D, grid2D, :value)
     @test sprint(show, problem2D) == "2D EstimationProblem"
     @test sprint(show, MIME"text/plain"(), problem2D) == "2D EstimationProblem\n  data:      3 MeshData{2,Float64}\n  domain:    100×100 CartesianGrid{2,Float64}\n  variables: value (Float64)"
-
-    if visualtests
-      @test_reference "data/estimation.png" plot(problem2D,ms=2)
-    end
   end
 
   @testset "Simulation" begin
@@ -61,10 +57,6 @@
     problem2D = SimulationProblem(data2D, grid2D, :value, 100)
     @test sprint(show, problem2D) == "2D SimulationProblem (conditional)"
     @test sprint(show, MIME"text/plain"(), problem2D) == "2D SimulationProblem (conditional)\n  data:      3 MeshData{2,Float64}\n  domain:    100×100 CartesianGrid{2,Float64}\n  variables: value (Float64)\n  N° reals:  100"
-
-    if visualtests
-      @test_reference "data/simulation.png" plot(problem2D,ms=2)
-    end
   end
 
   @testset "Learning" begin
@@ -84,9 +76,5 @@
     problem = LearningProblem(sdata, tdata, ctask)
     @test sprint(show, problem) == "2D LearningProblem"
     @test sprint(show, MIME"text/plain"(), problem) == "2D LearningProblem\n  source: 10 MeshData{2,Float64}\n  target: 100 MeshData{2,Float64}\n  task:   Clustering x → c"
-
-    if visualtests
-      @test_reference "data/learning.png" plot(problem,ms=2)
-    end
   end
 end
