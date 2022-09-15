@@ -11,11 +11,11 @@ based on blocks of given `sides`. The number `n` of points inside a
 block determines the weights `1/n` of these points.
 """
 struct BlockWeighting{Dim,T} <: WeightingMethod
-  sides::SVector{Dim,T}
+  sides::NTuple{Dim,T}
 end
 
-BlockWeighting(sides::NTuple) = BlockWeighting(SVector(sides))
-BlockWeighting(sides::Vararg) = BlockWeighting(SVector(sides))
+BlockWeighting(sides::AbstractVector) = BlockWeighting(Tuple(sides))
+BlockWeighting(sides::Vararg) = BlockWeighting(sides)
 
 weight(object, method::BlockWeighting) =
   weight(domain(object), method)

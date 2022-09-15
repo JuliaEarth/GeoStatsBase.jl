@@ -14,7 +14,6 @@ using Distributed: CachingPool, pmap, myid
 using StatsBase: Histogram, AbstractWeights
 using StatsBase: midpoints, sample
 using Transducers: Map, foldxt
-using StaticArrays: SVector
 using InteractiveUtils: subtypes
 using ReferenceFrameRotations
 using DensityRatioEstimation
