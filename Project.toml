@@ -4,6 +4,7 @@ author = "Júlio Hoffimann <julio.hoffimann@gmail.com>"
 version = "0.28.1"
 
 [deps]
+CoDa = "5900dafe-f573-5c72-b367-76665857777b"
 Combinatorics = "861a8166-3701-5b0c-9a16-15d98fcdc6aa"
 DensityRatioEstimation = "ab46fb84-d57c-11e9-2f65-6f72e4a7229f"
 Distances = "b4f34e82-e78d-54a5-968a-f98e89d6e8f7"
@@ -25,6 +26,7 @@ Transducers = "28d57a85-8fef-5791-bfe6-a80928e7c999"
 TypedTables = "9d95f2ec-7b3d-5a63-8d20-e2491e220bb9"
 
 [compat]
+CoDa = "1.0"
 Combinatorics = "1.0"
 DensityRatioEstimation = "1.0"
 Distances = "0.10"

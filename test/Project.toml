@@ -1,5 +1,6 @@
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
+CoDa = "5900dafe-f573-5c72-b367-76665857777b"
 DecisionTree = "7806a523-6efd-50cb-b5f6-3fa6f1930dbb"
 DensityRatioEstimation = "ab46fb84-d57c-11e9-2f65-6f72e4a7229f"
 Distances = "b4f34e82-e78d-54a5-968a-f98e89d6e8f7"

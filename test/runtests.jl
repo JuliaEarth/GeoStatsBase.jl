@@ -1,6 +1,7 @@
 using GeoStatsBase
 using Meshes
 using CSV
+using CoDa
 using Tables
 using TypedTables
 using Distances

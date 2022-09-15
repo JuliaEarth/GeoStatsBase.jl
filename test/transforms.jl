@@ -1,11 +1,39 @@
 @testset "Transforms" begin
-  d = georef((z=1:1000, w=rand(1000)))
-  n = d |> Select(:z)
-  t = n |> Tables.columns
-  @test n isa GeoData
-  @test Tables.columnnames(t) == (:z, :geometry)
-  n = d |> (Select(:w) → Quantile())
-  t = n |> Tables.columns
-  @test n isa GeoData
-  @test Tables.columnnames(t) == (:w, :geometry)
+  @testset "Builtin" begin
+    d = georef((z=rand(1000), w=rand(1000)))
+
+    n = d |> Quantile()
+    t = n |> Tables.columns
+    @test n isa GeoData
+    @test Tables.columnnames(t) == (:z, :w, :geometry)
+  end
+
+  @testset "CoDa" begin
+    d = georef((z=rand(1000), w=rand(1000)))
+
+    n = d |> Closure()
+    t = Tables.columns(n)
+    @test n isa GeoData
+    @test Tables.columnnames(t) == (:z, :w, :geometry)
+
+    n = d |> Remainder()
+    t = Tables.columns(n)
+    @test n isa GeoData
+    @test Tables.columnnames(t) == (:z, :w, :remainder, :geometry)
+
+    n = d |> ALR()
+    t = Tables.columns(n)
+    @test n isa GeoData
+    @test Tables.columnnames(t) == (:z, :geometry)
+
+    n = d |> CLR()
+    t = Tables.columns(n)
+    @test n isa GeoData
+    @test Tables.columnnames(t) == (:z, :w, :geometry)
+
+    n = d |> ILR()
+    t = Tables.columns(n)
+    @test n isa GeoData
+    @test Tables.columnnames(t) == (:z, :geometry)
+  end
 end
