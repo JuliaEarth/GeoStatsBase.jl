@@ -15,6 +15,7 @@ using StatsBase: Histogram, AbstractWeights
 using StatsBase: midpoints, sample
 using Transducers: Map, foldxt
 using StaticArrays: SVector
+using InteractiveUtils: subtypes
 using ReferenceFrameRotations
 using DensityRatioEstimation
 using ScientificTypes
@@ -25,6 +26,8 @@ using Optim # for LSIF estimation
 
 import Meshes
 import MLJModelInterface
+import TableTransforms: Transform, Colwise, Stateless
+import TableTransforms: apply, revert, reapply
 import StatsBase: fit, varcorrection
 import Statistics: mean, var, quantile
 import Base: ==
@@ -49,6 +52,7 @@ include("errors.jl")
 include("statistics.jl")
 include("histograms.jl")
 include("rotations.jl")
+include("transforms.jl")
 include("ui.jl")
 
 export

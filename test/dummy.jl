@@ -1,9 +1,7 @@
 import GeoStatsBase: solve, solvesingle
 import MLJModelInterface
-import TableOperations
 
 const MI = MLJModelInterface
-const TO = TableOperations
 
 ########################
 # DUMMY LEARNING MODEL
@@ -60,17 +58,17 @@ function solve(problem::LearningProblem, solver::DummyLearnSolver)
   # learn task with source data
   stable = values(sdata)
   if issupervised(ptask)
-    X = TO.select(stable, features(ptask)...)
+    X = stable |> Select(features(ptask))
     y = Tables.getcolumn(stable, label(ptask))
     θ, _, __ = MI.fit(model, 0, X, y)
   else
-    X = TO.select(stable, features(ptask)...)
+    X = stable |> Select(features(ptask))
     θ, _, __ = MI.fit(model, 0, X)
   end
 
   # perform task with target data
   ttable = values(tdata)
-  X = TO.select(ttable, features(ptask)...)
+  X = ttable |> Select(features(ptask))
   ŷ = MI.predict(model, θ, X)
 
   # post-process result

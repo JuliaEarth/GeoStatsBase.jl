@@ -5,6 +5,7 @@ using Tables
 using TypedTables
 using Distances
 using Distributions
+using TableTransforms
 using DensityRatioEstimation
 using ReferenceFrameRotations
 using Test, Random, Plots
@@ -39,6 +40,7 @@ testfiles = [
   "histograms.jl",
   "rotations.jl",
   "macros.jl",
+  "transforms.jl",
   "ui.jl"
 ]
 
