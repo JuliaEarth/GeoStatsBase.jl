@@ -3,12 +3,12 @@
 # ------------------------------------------------------------------
 
 # specialize TableTransforms.jl API for geospatial data
-AVAIL   = [setdiff(subtypes(Transform), (Colwise, Stateless));
-           subtypes(Colwise); subtypes(Stateless)]
-SPECIAL = [Sample, Filter, DropMissing]
-DEFAULT = setdiff(AVAIL, SPECIAL)
+BUILTIN_TRANSF = [setdiff(subtypes(Transform), (Colwise, Stateless));
+                  subtypes(Colwise); subtypes(Stateless)]
+SPECIAL_TRANSF = [Sample, Filter, DropMissing]
+DEFAULT_TRANSF = setdiff(BUILTIN_TRANSF, SPECIAL_TRANSF)
 
-for TRANS in DEFAULT
+for TRANS in DEFAULT_TRANSF
   @eval function apply(transform::$TRANS, data::Data)
     newtable, cache = apply(transform, values(data))
     georef(newtable, domain(data)), cache
