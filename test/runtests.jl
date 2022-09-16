@@ -7,10 +7,15 @@ using TypedTables
 using Distances
 using Distributions
 using TableTransforms
+using ScientificTypes
+using CategoricalArrays
 using DensityRatioEstimation
 using ReferenceFrameRotations
 using Test, Random, Plots
 using ReferenceTests, ImageIO
+
+# avoid ambiguities
+Continuous = ScientificTypes.Continuous
 
 # workaround GR warnings
 ENV["GKSwstype"] = "100"

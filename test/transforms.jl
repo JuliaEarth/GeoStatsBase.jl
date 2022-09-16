@@ -1,10 +1,41 @@
 @testset "Transforms" begin
   @testset "Builtin" begin
-    d = georef((z=rand(1000), w=rand(1000)))
+    # transforms that are revertible
+    d = georef((z=rand(100), w=rand(100)))
+    for p in [Select(:z), Reject(:z), Rename(:z => :a),
+              StdNames(), Replace(1.0 => 2.0), Coalesce(0.0),
+              Coerce(:z => Continuous), Identity(), Center(),
+              Scale(), MinMax(), Interquartile(), ZScore(),
+              Quantile()]
+      n, c = apply(p, d)
+      t = Tables.columns(n)
+      r = revert(p, n, c)
+      @test n isa Data
+      @test r isa Data
+    end
 
-    n = d |> Quantile()
-    t = n |> Tables.columns
-    @test n isa GeoData
+    # transforms with categorical variables
+    d = georef((c=categorical([1,2,3]),))
+    for p in [Levels(:c => [1,2,3]), OneHot(:c)]
+      # n, c = apply(p, d)
+      # t = Tables.columns(n)
+      # r = revert(p, n, c)
+      # @test n isa Data
+      # @test r isa Data
+    end
+
+    d = georef((z=rand(100), w=rand(100)))
+    p = Select(:w)
+    n = d |> p
+    t = Tables.columns(n)
+    @test n isa Data
+    @test Tables.columnnames(t) == (:w, :geometry)
+
+    d = georef((z=rand(100), w=rand(100)))
+    p = Sample(100)
+    n = d |> p
+    t = Tables.columns(n)
+    @test n isa Data
     @test Tables.columnnames(t) == (:z, :w, :geometry)
   end
 
