@@ -5,7 +5,8 @@
 # specialize TableTransforms.jl API for geospatial data
 BUILTIN_TRANSF = [setdiff(subtypes(Transform), (Colwise, Stateless));
                   subtypes(Colwise); subtypes(Stateless)]
-SPECIAL_TRANSF = [Sort, Sample, Filter, DropMissing, Sequential, Parallel]
+SPECIAL_TRANSF = [Sort, Sample, Filter, DropMissing,
+                  RowTable, ColTable, Sequential, Parallel]
 DEFAULT_TRANSF = setdiff(BUILTIN_TRANSF, SPECIAL_TRANSF)
 
 # --------------------
@@ -47,4 +48,16 @@ function apply(transform::Sample, data::Data)
                              ordered=ordered)
 
   sample(rng, data, method), nothing
+end
+
+for TRANS in [RowTable, ColTable]
+  @eval function apply(transform::$TRANS, data::Data)
+    newtable, cache = apply(transform, values(data))
+    georef(newtable, domain(data)), cache
+  end
+
+  @eval function revert(transform::$TRANS, newdata::Data, cache)
+    table = revert(transform, values(newdata), cache)
+    georef(table, domain(newdata))
+  end
 end

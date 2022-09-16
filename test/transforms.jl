@@ -6,7 +6,8 @@
               StdNames(), Replace(1.0 => 2.0), Coalesce(0.0),
               Coerce(:z => Continuous), Identity(), Center(),
               Scale(), MinMax(), Interquartile(), ZScore(),
-              Quantile()]
+              Quantile(), Functional(sin), EigenAnalysis(:V),
+              PCA(), DRS(), SDS(), RowTable(), ColTable()]
       n, c = apply(p, d)
       t = Tables.columns(n)
       r = revert(p, n, c)
