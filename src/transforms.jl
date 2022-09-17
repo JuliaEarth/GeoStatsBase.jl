@@ -36,15 +36,14 @@ end
 # --------------
 
 function apply(transform::Sample, data::Data)
-  size    = transform.size
-  weights = transform.weights
-  replace = transform.replace
-  ordered = transform.ordered
-  rng     = transform.rng
+  table = values(data)
 
-  method  = WeightedSampling(size, weights,
-                             replace=replace,
-                             ordered=ordered)
+  inds, _ = TableTransforms.indices(transform, table)
 
-  sample(rng, data, method), nothing
+  newrow = view(Tables.rowtable(table), inds)
+  newdom = view(domain(data), inds)
+
+  newtab = newrow |> Tables.materializer(table)
+
+  georef(newtab, newdom), nothing
 end
