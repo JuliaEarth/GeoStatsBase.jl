@@ -14,7 +14,6 @@ using Distributed: CachingPool, pmap, myid
 using StatsBase: Histogram, AbstractWeights
 using StatsBase: midpoints, sample
 using Transducers: Map, foldxt
-using InteractiveUtils: subtypes
 using ReferenceFrameRotations
 using DensityRatioEstimation
 using ScientificTypes
@@ -26,7 +25,6 @@ using CoDa # for table transforms
 
 import Meshes
 import MLJModelInterface
-import TableTransforms: Transform, Colwise, Stateless
 import TableTransforms: apply, revert, reapply
 import StatsBase: fit, varcorrection
 import Statistics: mean, var, quantile
