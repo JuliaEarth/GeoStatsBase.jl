@@ -2,14 +2,34 @@
 # Licensed under the MIT License. See LICENSE in the project root.
 # ------------------------------------------------------------------
 
+# implement TableTransforms.jl API for geospatial data
+
 divide(data::Data) = values(data), domain(data)
 attach(table, dom::Domain) = georef(table, dom)
 
+# transforms that change the order or number of
+# rows in the table need a special treatment
+
+function applymeta(::Sort, dom::Domain, prep)
+  sinds = prep
+
+  sdom = view(dom, sinds)
+
+  sdom, sinds
+end
+
+function revertmeta(::Sort, newdom::Domain, mcache)
+  sinds = mcache
+  rinds = sortperm(sinds)
+
+  view(newdom, rinds)
+end
+
+# --------------------------------------------------
+
 function applymeta(::Filter, dom::Domain, prep)
-  # preprocessed indices
   sinds, rinds = prep
 
-  # select/reject geometries
   sdom = view(dom, sinds)
   rdom = view(dom, rinds)
 
@@ -17,7 +37,6 @@ function applymeta(::Filter, dom::Domain, prep)
 end
 
 function revertmeta(::Filter, newdom::Domain, mcache)
-  # collect all geometries
   geoms = collect(newdom)
 
   rinds, rdom = mcache
@@ -26,4 +45,14 @@ function revertmeta(::Filter, newdom::Domain, mcache)
   end
 
   Collection(geoms)
+end
+
+# --------------------------------------------------
+
+function applymeta(::Sample, dom::Domain, prep)
+  sinds = prep
+
+  sdom = view(dom, sinds)
+
+  sdom, nothing
 end
