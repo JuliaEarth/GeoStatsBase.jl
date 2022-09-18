@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------
 
 TableTransforms.divide(data::Data) = values(data), domain(data)
-TableTransforms.attach(feat, meta) = georef(feat, meta)
+TableTransforms.attach(table, domain::Domain) = georef(table, domain)
 
 # --------------
 # SPECIAL CASES
