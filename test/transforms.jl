@@ -18,11 +18,11 @@
     # transforms with categorical variables
     d = georef((c=categorical([1,2,3]),))
     for p in [Levels(:c => [1,2,3]), OneHot(:c)]
-      # n, c = apply(p, d)
-      # t = Tables.columns(n)
-      # r = revert(p, n, c)
-      # @test n isa Data
-      # @test r isa Data
+      n, c = apply(p, d)
+      t = Tables.columns(n)
+      r = revert(p, n, c)
+      @test n isa Data
+      @test r isa Data
     end
 
     d = georef((z=rand(100), w=rand(100)))
