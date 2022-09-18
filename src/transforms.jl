@@ -2,22 +2,28 @@
 # Licensed under the MIT License. See LICENSE in the project root.
 # ------------------------------------------------------------------
 
-TableTransforms.divide(data::Data) = values(data), domain(data)
-TableTransforms.attach(table, domain::Domain) = georef(table, domain)
+divide(data::Data) = values(data), domain(data)
+attach(table, dom::Domain) = georef(table, dom)
 
-# --------------
-# SPECIAL CASES
-# --------------
+function applymeta(::Filter, dom::Domain, prep)
+  # preprocessed indices
+  sinds, rinds = prep
 
-function apply(transform::Sample, data::Data)
-  table = values(data)
+  # select/reject geometries
+  sdom = view(dom, sinds)
+  rdom = view(dom, rinds)
 
-  inds, _ = TableTransforms.indices(transform, table)
+  sdom, (rinds, rdom)
+end
 
-  newrow = view(Tables.rowtable(table), inds)
-  newdom = view(domain(data), inds)
+function revertmeta(::Filter, newdom::Domain, mcache)
+  # collect all geometries
+  geoms = collect(newdom)
 
-  newtab = newrow |> Tables.materializer(table)
+  rinds, rdom = mcache
+  for (i, geom) in zip(rinds, rdom)
+    insert!(geoms, i, geom)
+  end
 
-  georef(newtab, newdom), nothing
+  Collection(geoms)
 end

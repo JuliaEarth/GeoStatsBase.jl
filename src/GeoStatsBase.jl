@@ -25,7 +25,8 @@ using CoDa # for table transforms
 
 import Meshes
 import MLJModelInterface
-import TableTransforms: apply, revert, reapply
+import TableTransforms: divide, attach
+import TableTransforms: applymeta, revertmeta
 import StatsBase: fit, varcorrection
 import Statistics: mean, var, quantile
 import Base: ==
