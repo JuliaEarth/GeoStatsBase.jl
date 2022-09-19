@@ -21,7 +21,6 @@ using LossFunctions
 
 using TypedTables # for a default table type
 using Optim # for LSIF estimation
-using CoDa # for table transforms
 
 import Meshes
 import MLJModelInterface
