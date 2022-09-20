@@ -49,6 +49,19 @@ end
 
 # --------------------------------------------------
 
+function applymeta(::DropMissing, dom::Domain, prep)
+  ftrans, fprep, _ = prep
+  newmeta, fmcache = applymeta(ftrans, dom, fprep)
+  newmeta, (ftrans, fmcache)
+end
+
+function revertmeta(::DropMissing, newdom::Domain, mcache)
+  ftrans, fmcache = mcache
+  revertmeta(ftrans, newdom, fmcache)
+end
+
+# --------------------------------------------------
+
 function applymeta(::Sample, dom::Domain, prep)
   sinds, rinds = prep
 
