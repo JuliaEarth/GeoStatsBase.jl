@@ -23,15 +23,13 @@ using TypedTables # for a default table type
 using Optim # for LSIF estimation
 
 import Meshes
-import MLJModelInterface
-import TableTransforms: divide, attach
-import TableTransforms: applymeta, revertmeta
+import TableTransforms as TT
+import MLJModelInterface as MI
 import StatsBase: fit, varcorrection
 import Statistics: mean, var, quantile
 import Base: ==
 
 # aliases
-const MI = MLJModelInterface
 const GeoData = Meshes.MeshData
 
 include("georef.jl")
@@ -168,6 +166,9 @@ export
   DatamineAngles,
   GslibAngles,
   VulcanAngles,
+
+  # transforms
+  Detrend,
 
   # UI elements
   searcher_ui

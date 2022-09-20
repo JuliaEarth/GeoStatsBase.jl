@@ -5,7 +5,7 @@
 # transforms that change the order or number of
 # rows in the table need a special treatment
 
-function applymeta(::Sort, dom::Domain, prep)
+function TT.applymeta(::Sort, dom::Domain, prep)
   sinds = prep
 
   sdom = view(dom, sinds)
@@ -13,7 +13,7 @@ function applymeta(::Sort, dom::Domain, prep)
   sdom, sinds
 end
 
-function revertmeta(::Sort, newdom::Domain, mcache)
+function TT.revertmeta(::Sort, newdom::Domain, mcache)
   sinds = mcache
   rinds = sortperm(sinds)
 
@@ -22,7 +22,7 @@ end
 
 # --------------------------------------------------
 
-function applymeta(::Filter, dom::Domain, prep)
+function TT.applymeta(::Filter, dom::Domain, prep)
   sinds, rinds = prep
 
   sdom = view(dom, sinds)
@@ -31,7 +31,7 @@ function applymeta(::Filter, dom::Domain, prep)
   sdom, (rinds, rdom)
 end
 
-function revertmeta(::Filter, newdom::Domain, mcache)
+function TT.revertmeta(::Filter, newdom::Domain, mcache)
   geoms = collect(newdom)
 
   rinds, rdom = mcache
@@ -44,20 +44,20 @@ end
 
 # --------------------------------------------------
 
-function applymeta(::DropMissing, dom::Domain, prep)
+function TT.applymeta(::DropMissing, dom::Domain, prep)
   ftrans, fprep, _ = prep
-  newmeta, fmcache = applymeta(ftrans, dom, fprep)
+  newmeta, fmcache = TT.applymeta(ftrans, dom, fprep)
   newmeta, (ftrans, fmcache)
 end
 
-function revertmeta(::DropMissing, newdom::Domain, mcache)
+function TT.revertmeta(::DropMissing, newdom::Domain, mcache)
   ftrans, fmcache = mcache
-  revertmeta(ftrans, newdom, fmcache)
+  TT.revertmeta(ftrans, newdom, fmcache)
 end
 
 # --------------------------------------------------
 
-function applymeta(::Sample, dom::Domain, prep)
+function TT.applymeta(::Sample, dom::Domain, prep)
   sinds, rinds = prep
 
   sdom = view(dom, sinds)
@@ -66,7 +66,7 @@ function applymeta(::Sample, dom::Domain, prep)
   sdom, (sinds, rinds, rdom)
 end
 
-function revertmeta(::Sample, newdom::Domain, mcache)
+function TT.revertmeta(::Sample, newdom::Domain, mcache)
   geoms = collect(newdom)
 
   sinds, rinds, rdom = mcache
