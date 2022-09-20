@@ -37,6 +37,8 @@ Detrend(spec; degree=1) =
 Detrend(cols::T...; degree=1) where {T<:TT.Col} =
   Detrend(cols; degree=degree)
 
+Detrend(; degree=1) = Detrend(:, degree=degree)
+
 function TT.preprocess(transform::Detrend, data)
   table  = values(data)
   names  = Tables.schema(table).names
