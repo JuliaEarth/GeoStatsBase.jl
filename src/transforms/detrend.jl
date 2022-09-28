@@ -26,30 +26,30 @@ Detrend(:)
 
 See also [`trend`](@ref).
 """
-struct Detrend{S<:TT.ColSpec} <: TT.Stateless
+struct Detrend{S<:ColSpec} <: StatelessTableTransform
   colspec::S
   degree::Int
 end
 
 Detrend(spec; degree=1) =
-  Detrend(TT.colspec(spec), degree)
+  Detrend(colspec(spec), degree)
 
-Detrend(cols::T...; degree=1) where {T<:TT.Col} =
+Detrend(cols::T...; degree=1) where {T<:Col} =
   Detrend(cols; degree=degree)
 
 Detrend(; degree=1) = Detrend(:, degree=degree)
 
-function TT.preprocess(transform::Detrend, data)
+function TableTransforms.preprocess(transform::Detrend, data)
   table  = values(data)
   names  = Tables.schema(table).names
-  snames = TT.choose(transform.colspec, names)
+  snames = choose(transform.colspec, names)
   tdata  = trend(data, snames; degree=transform.degree)
   ttable = values(tdata)
   tcols  = Tables.columns(ttable)
   tcols, snames
 end
 
-function TT.applyfeat(::Detrend, feat, prep)
+function applyfeat(::Detrend, feat, prep)
   cols  = Tables.columns(feat)
   names = Tables.schema(feat).names
 
@@ -73,7 +73,7 @@ function TT.applyfeat(::Detrend, feat, prep)
   newfeat, fcache
 end
 
-function TT.revertfeat(transform::Detrend, newfeat, fcache)
+function revertfeat(transform::Detrend, newfeat, fcache)
   cols  = Tables.columns(newfeat)
   names = Tables.schema(newfeat).names
 

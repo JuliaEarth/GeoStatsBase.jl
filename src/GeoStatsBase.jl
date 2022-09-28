@@ -23,8 +23,13 @@ using TypedTables # for a default table type
 using Optim # for LSIF estimation
 
 import Meshes
-import TableTransforms as TT
 import MLJModelInterface as MI
+import TableTransforms: TableTransform
+import TableTransforms: StatelessTableTransform
+import TableTransforms: ColSpec, Col, colspec, choose
+import TableTransforms: applyfeat, revertfeat
+import TableTransforms: applymeta, revertmeta
+import TableTransforms: divide, attach
 import StatsBase: fit, varcorrection
 import Statistics: mean, var, quantile
 import Base: ==

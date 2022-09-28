@@ -4,7 +4,7 @@
     d = georef((z=rand(100), w=rand(100)))
     for p in [Select(:z), Reject(:z), Rename(:z => :a),
               StdNames(), Sort(:z), Sample(10), Filter(x->true),
-              DropMissing(), Replace(1.0 => 2.0), Coalesce(0.0),
+              DropMissing(), Replace(1.0 => 2.0), Coalesce(value=0.0),
               Coerce(:z => ST.Continuous), Identity(), Center(),
               Scale(), MinMax(), Interquartile(), ZScore(),
               Quantile(), Functional(sin), EigenAnalysis(:V),
