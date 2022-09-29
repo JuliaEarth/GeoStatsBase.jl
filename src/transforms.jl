@@ -10,4 +10,5 @@ attach(table, dom::Domain) = georef(table, dom)
 # ----------------
 
 include("transforms/basic.jl")
+include("transforms/geometric.jl")
 include("transforms/detrend.jl")

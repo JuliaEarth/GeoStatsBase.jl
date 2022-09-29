@@ -26,7 +26,7 @@ Detrend(:)
 
 See also [`trend`](@ref).
 """
-struct Detrend{S<:ColSpec} <: StatelessTableTransform
+struct Detrend{S<:ColSpec} <: StatelessFeatureTransform
   colspec::S
   degree::Int
 end
@@ -73,7 +73,7 @@ function applyfeat(::Detrend, feat, prep)
   newfeat, fcache
 end
 
-function revertfeat(transform::Detrend, newfeat, fcache)
+function revertfeat(::Detrend, newfeat, fcache)
   cols  = Tables.columns(newfeat)
   names = Tables.schema(newfeat).names
 

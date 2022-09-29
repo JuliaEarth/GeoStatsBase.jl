@@ -49,7 +49,18 @@
     @test r == d
   end
 
-  @testset "Geospatial" begin
+  @testset "Geometric" begin
+    d = georef((z=rand(100), w=rand(100)))
+    p = StdCoords()
+    n, c = apply(p, d)
+    dom = domain(n)
+    cen = centroid.(dom)
+    xs  = first.(coordinates.(cen))
+    @test dom isa SimpleMesh
+    @test all(x -> -0.5 ≤ x ≤ 0.5, xs)
+  end
+
+  @testset "Detrend" begin
     rng = MersenneTwister(42)
 
     l = range(-1,stop=1,length=100)
@@ -76,27 +87,37 @@
 
     n = d |> Closure()
     t = Tables.columns(n)
-    @test n isa GeoData
+    @test n isa Data
     @test Tables.columnnames(t) == (:z, :w, :geometry)
 
     n = d |> Remainder()
     t = Tables.columns(n)
-    @test n isa GeoData
+    @test n isa Data
     @test Tables.columnnames(t) == (:z, :w, :remainder, :geometry)
 
     n = d |> ALR()
     t = Tables.columns(n)
-    @test n isa GeoData
+    @test n isa Data
     @test Tables.columnnames(t) == (:z, :geometry)
 
     n = d |> CLR()
     t = Tables.columns(n)
-    @test n isa GeoData
+    @test n isa Data
     @test Tables.columnnames(t) == (:z, :w, :geometry)
 
     n = d |> ILR()
     t = Tables.columns(n)
-    @test n isa GeoData
+    @test n isa Data
     @test Tables.columnnames(t) == (:z, :geometry)
+  end
+
+  @testset "Mixed" begin
+    d = georef((z=rand(1000), w=rand(1000)))
+    p = Closure() → Quantile() → StdCoords()
+    n, c = apply(p, d)
+    r = revert(p, n, c)
+    Xr = Tables.matrix(values(r))
+    Xd = Tables.matrix(values(d))
+    @test isapprox(Xr, Xd, atol=0.1)
   end
 end

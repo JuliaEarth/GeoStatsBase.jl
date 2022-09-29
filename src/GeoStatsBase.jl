@@ -24,9 +24,9 @@ using Optim # for LSIF estimation
 
 import Meshes
 import MLJModelInterface as MI
-import TableTransforms: TableTransform
-import TableTransforms: StatelessTableTransform
+import TableTransforms: StatelessFeatureTransform
 import TableTransforms: ColSpec, Col, colspec, choose
+import TableTransforms: apply, revert, reapply
 import TableTransforms: applyfeat, revertfeat
 import TableTransforms: applymeta, revertmeta
 import TableTransforms: divide, attach
