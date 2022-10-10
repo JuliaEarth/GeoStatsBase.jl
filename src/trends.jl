@@ -41,6 +41,9 @@ function trend(data, vars::AbstractVector{Symbol}; degree=1)
   𝒯 = values(data)
   𝒟 = domain(data)
 
+  # retrieve columns
+  cols = Tables.columns(𝒯)
+
   # build polynomial drift terms
   coords(𝒟, i) = coordinates(centroid(𝒟, i))
   xs = (coords(𝒟, i) for i in 1:nelements(𝒟))
@@ -48,8 +51,8 @@ function trend(data, vars::AbstractVector{Symbol}; degree=1)
 
   # eqs 25 and 26 in Menafoglio, A., Secchi, P. 2013.
   ms = map(vars) do var
-    z  = Tables.getcolumn(𝒯, var)
-    a  = (F'F \ F') * z
+    z = Tables.getcolumn(cols, var)
+    a = (F'F \ F') * z
     F * a
   end
 
