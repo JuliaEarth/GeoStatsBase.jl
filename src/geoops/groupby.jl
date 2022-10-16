@@ -12,8 +12,8 @@ for selected columns `col₁`, `col₂`, ..., `colₙ`.
 
     @groupby(data, regex)
 
-Partition spatial `data` into groups of constant value
-for columns that math with `regex`.
+Partition geospatial `data` into groups of constant value
+for columns that match with `regex`.
 
 # Examples
 
