@@ -7,7 +7,7 @@
     @groupby(data, [col₁, col₂, ..., colₙ])
     @groupby(data, (col₁, col₂, ..., colₙ))
 
-Partition spatial `data` into groups of constant value
+Partition geospatial `data` into groups of constant value
 for selected columns `col₁`, `col₂`, ..., `colₙ`.
 
     @groupby(data, regex)
