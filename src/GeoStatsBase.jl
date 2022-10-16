@@ -55,6 +55,7 @@ include("histograms.jl")
 include("rotations.jl")
 include("transforms.jl")
 include("ui.jl")
+include("deprecations.jl")
 
 export
   # data
@@ -165,7 +166,7 @@ export
   # utilities
   uniquecoords,
   integrate,
-  groupby,
+  @groupby,
 
   # rotations
   DatamineAngles,
