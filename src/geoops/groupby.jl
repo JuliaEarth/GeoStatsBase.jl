@@ -43,7 +43,7 @@ function _groupby(data::Data, colspec::ColSpec)
 
   srows = collect(zip(scolumns...))
   urows = unique(srows)
-  inds  = map(row -> findall(Base.Fix2(===, row), srows), urows)
+  inds  = map(row -> findall(isequal(row), srows), urows)
 
   metadata = Dict(:values => urows)
   Partition(data, inds, metadata)
