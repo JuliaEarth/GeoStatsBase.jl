@@ -2,6 +2,28 @@
 # Licensed under the MIT License. See LICENSE in the project root.
 # ------------------------------------------------------------------
 
+"""
+    @groupby(data, col₁, col₂, ..., colₙ)
+    @groupby(data, [col₁, col₂, ..., colₙ])
+    @groupby(data, (col₁, col₂, ..., colₙ))
+
+Partition spatial `data` into groups of constant value
+for selected columns `col₁`, `col₂`, ..., `colₙ`.
+
+    @groupby(data, regex)
+
+Partition spatial `data` into groups of constant value
+for columns that math with `regex`.
+
+# Examples
+
+```julia
+@groupby(data, 1, 3, 5)
+@groupby(data, [:a, :c, :e])
+@groupby(data, ("a", "c", "e"))
+@groupby(data, r"[ace]")
+```
+"""
 macro groupby(data, cols...)
   :(_groupby($(esc(data)), $(cols...)))
 end
@@ -21,7 +43,7 @@ function _groupby(data::Data, colspec::ColSpec)
 
   srows = collect(zip(scolumns...))
   urows = unique(srows)
-  inds  = map(row -> findall(===(row), srows), urows)
+  inds  = map(row -> findall(Base.Fix2(===, row), srows), urows)
 
   metadata = Dict(:values => urows)
   Partition(data, inds, metadata)
