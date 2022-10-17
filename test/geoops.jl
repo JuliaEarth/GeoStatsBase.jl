@@ -80,6 +80,25 @@
     p = @groupby(sdata, ("x", "y"))
     @test indices(p) == [[1,2],[3,4],[5,6],[7,8]]
 
+    # regex
+    p = @groupby(sdata, r"[xy]")
+    @test indices(p) == [[1,2],[3,4],[5,6],[7,8]]
+
+    # variable interpolation
+    cols = (:x, :y)
+    p = @groupby(sdata, cols)
+    @test indices(p) == [[1,2],[3,4],[5,6],[7,8]]
+    p = @groupby(sdata, cols...)
+    @test indices(p) == [[1,2],[3,4],[5,6],[7,8]]
+
+    c1, c2 = :x, :y
+    p = @groupby(sdata, c1, c2)
+    @test indices(p) == [[1,2],[3,4],[5,6],[7,8]]
+    p = @groupby(sdata, [c1, c2])
+    @test indices(p) == [[1,2],[3,4],[5,6],[7,8]]
+    p = @groupby(sdata, (c1, c2))
+    @test indices(p) == [[1,2],[3,4],[5,6],[7,8]]
+
     # missing values
     x = [1, 1, missing, missing, 2, 2, 2, 2]
     y = [1, 1, 2, 2, 3, 3, missing, missing]
