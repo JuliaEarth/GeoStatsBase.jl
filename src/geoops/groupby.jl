@@ -7,13 +7,11 @@
     @groupby(data, [col₁, col₂, ..., colₙ])
     @groupby(data, (col₁, col₂, ..., colₙ))
 
-Partition geospatial `data` into groups of constant value
-for selected columns `col₁`, `col₂`, ..., `colₙ`.
+Partition geospatial `data` according to selected columns `col₁`, `col₂`, ..., `colₙ`.
 
     @groupby(data, regex)
 
-Partition geospatial `data` into groups of constant value
-for columns that match with `regex`.
+Partition geospatial `data` according to columns that match with `regex`.
 
 # Examples
 
@@ -24,7 +22,7 @@ for columns that match with `regex`.
 @groupby(data, r"[ace]")
 ```
 """
-macro groupby(data, cols...)
+macro groupby(data::Symbol, cols...)
   :(_groupby($(esc(data)), $(cols...)))
 end
 
@@ -40,8 +38,8 @@ function _groupby(data::Data, colspec::ColSpec)
   snames = choose(colspec, names)
 
   scolumns = [Tables.getcolumn(cols, nm) for nm in snames]
+  srows    = collect(zip(scolumns...))
 
-  srows = collect(zip(scolumns...))
   urows = unique(srows)
   inds  = map(row -> findall(isequal(row), srows), urows)
 
