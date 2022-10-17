@@ -21,10 +21,8 @@
   end
 
   @testset "groupby" begin
-    setify(lists) = Set(Set.(lists))
-
     d = georef((z=[1,2,3],x=[4,5,6]), rand(2,3))
-    g = groupby(d, :z)
+    g = @groupby(d, :z)
     @test all(nelements.(g) .== 1)
     rows = [[1 4], [2 5], [3 6]]
     for i in 1:3
@@ -33,14 +31,78 @@
 
     z = vec([1 1 1; 2 2 2; 3 3 3])
     sdata = georef((z=z,), CartesianGrid(3,3))
-    p = groupby(sdata, :z)
-    @test setify(indices(p)) == setify([[1,4,7],[2,5,8],[3,6,9]])
+    p = @groupby(sdata, :z)
+    @test indices(p) == [[1,4,7],[2,5,8],[3,6,9]]
 
     # groupby with missing values
     z = vec([missing 1 1; 2 missing 2; 3 3 missing])
     sdata = georef((z=z,), CartesianGrid(3,3))
-    p = groupby(sdata, :z)
-    @test setify(indices(p)) == setify([[4,7],[2,8],[3,6],[1,5,9]])
+    p = @groupby(sdata, :z)
+    @test indices(p) == [[1,5,9],[2,8],[3,6],[4,7]]
+
+    # macro
+    x = [1, 1, 1, 1, 2, 2, 2, 2]
+    y = [1, 1, 2, 2, 3, 3, 4, 4]
+    z = [1, 2, 3, 4, 5, 6, 7, 8]
+    table = (; x, y, z)
+    sdata = georef(table, rand(2, 8))
+
+    # args...
+    # integers
+    p = @groupby(sdata, 1)
+    @test indices(p) == [[1,2,3,4],[5,6,7,8]]
+    # symbols
+    p = @groupby(sdata, :y)
+    @test indices(p) == [[1,2],[3,4],[5,6],[7,8]]
+    # strings
+    p = @groupby(sdata, "x", "y")
+    @test indices(p) == [[1,2],[3,4],[5,6],[7,8]]
+
+    # vector...
+    # integers
+    p = @groupby(sdata, [1])
+    @test indices(p) == [[1,2,3,4],[5,6,7,8]]
+    # symbols
+    p = @groupby(sdata, [:y])
+    @test indices(p) == [[1,2],[3,4],[5,6],[7,8]]
+    # strings
+    p = @groupby(sdata, ["x", "y"])
+    @test indices(p) == [[1,2],[3,4],[5,6],[7,8]]
+
+    # tuple...
+    # integers
+    p = @groupby(sdata, (1,))
+    @test indices(p) == [[1,2,3,4],[5,6,7,8]]
+    # symbols
+    p = @groupby(sdata, (:y,))
+    @test indices(p) == [[1,2],[3,4],[5,6],[7,8]]
+    # strings
+    p = @groupby(sdata, ("x", "y"))
+    @test indices(p) == [[1,2],[3,4],[5,6],[7,8]]
+
+    # missing values
+    x = [1, 1, missing, missing, 2, 2, 2, 2]
+    y = [1, 1, 2, 2, 3, 3, missing, missing]
+    z = [1, 2, 3, 4, 5, 6, 7, 8]
+    table = (; x, y, z)
+    sdata = georef(table, rand(2, 8))
+
+    p = @groupby(sdata, :x)
+    @test indices(p) == [[1,2],[3,4],[5,6,7,8]]
+    p = @groupby(sdata, :x, :y)
+    @test indices(p) == [[1,2],[3,4],[5,6],[7,8]]
+
+    # isequal
+    x = [0.0, 0, 0, -0.0, 2, 2, 2, 2]
+    y = [1, 1, 2, 2, 3, 3, 4, 4]
+    z = [1, 2, 3, 4, 5, 6, 7, 8]
+    table = (; x, y, z)
+    sdata = georef(table, rand(2, 8))
+
+    p = @groupby(sdata, :x)
+    @test indices(p) == [[1,2,3],[4],[5,6,7,8]]
+    p = @groupby(sdata, :x, :y)
+    @test indices(p) == [[1,2],[3],[4],[5,6],[7,8]]
   end
 
   @testset "filter" begin
