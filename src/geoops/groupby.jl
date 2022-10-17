@@ -23,7 +23,12 @@ Partition geospatial `data` according to columns that match with `regex`.
 ```
 """
 macro groupby(data::Symbol, cols...)
-  :(_groupby($(esc(data)), $(cols...)))
+  spec = Expr(:tuple, esc.(cols)...)
+  :(_groupby($(esc(data)), $spec))
+end
+
+macro groupby(data::Symbol, spec)
+  :(_groupby($(esc(data)), $(esc(spec))))
 end
 
 _groupby(data::Data, spec) = _groupby(data, colspec(spec))
