@@ -7,7 +7,7 @@
 
 Return a new data object with `data` columns and new columns `newcol₁`, `newcol₂`, ..., `newcolₙ`.
 The new columns are calculated using their respective expressions.
-In expressions the `data` columns are represented by `Symbols` and the operations are applied to the rows.
+In expressions the `data` columns are represented by `Symbols` and the operations use `broadcast` by default.
 
 # Examples
 

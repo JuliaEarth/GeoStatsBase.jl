@@ -158,4 +158,41 @@
     @test sum.(Iterators.partition(minte.z, 2)) == ginte.z
     @test sum.(Iterators.partition(minte.w, 2)) == ginte.w
   end
+
+  @testset "@transform" begin
+    table = (x=rand(10), y=rand(10))
+    sdata = georef(table, rand(2, 10))
+
+    ndata = @transform(sdata, :z = :x - 2*:y)
+    @test ndata[:z] == sdata[:x] .- 2 .* sdata[:y]
+
+    ndata = @transform(sdata, :z = :x - :y, :w = :x + :y)
+    @test ndata[:z] == sdata[:x] .- sdata[:y]
+    @test ndata[:w] == sdata[:x] .+ sdata[:y]
+
+    ndata = @transform(sdata, :sinx = sin(:x), :cosy = cos(:y))
+    @test ndata[:sinx] == sin.(sdata[:x])
+    @test ndata[:cosy] == cos.(sdata[:y])
+
+    # user defined functions
+    dist(p) = norm(coordinates(p))
+    ndata = @transform(sdata, :dist_to_origin = dist(:geometry))
+    @test ndata[:dist_to_origin] == dist.(domain(sdata))
+
+    # variable interpolation
+    z = rand(10)
+    ndata = @transform(sdata, :z = z, :w = :x - z)
+    @test ndata[:z] == z
+    @test ndata[:w] == sdata[:x] .- z
+
+    # missing values
+    x = [1, 1, missing, missing, 2, 2, 2, 2]
+    y = [1, 1, 2, 2, 3, 3, missing, missing]
+    table = (; x, y)
+    sdata = georef(table, rand(8, 2))
+
+    ndata = @transform(sdata, :z = :x * :y, :w = :x / :y)
+    @test isequal(ndata[:z], sdata[:x] .* sdata[:y])
+    @test isequal(ndata[:w], sdata[:x] ./ sdata[:y])
+  end
 end

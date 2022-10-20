@@ -6,6 +6,7 @@ using Tables
 using TypedTables
 using Distances
 using Distributions
+using LinearAlgebra
 using TableTransforms
 using CategoricalArrays
 using DensityRatioEstimation
