@@ -166,6 +166,7 @@ export
   uniquecoords,
   integrate,
   @groupby,
+  @transform,
 
   # rotations
   DatamineAngles,
