@@ -175,7 +175,7 @@
     @test ndata[:cosy] == cos.(sdata[:y])
 
     # user defined functions
-    dist(p) = norm(coordinates(p))
+    dist(point) = norm(coordinates(point))
     ndata = @transform(sdata, :dist_to_origin = dist(:geometry))
     @test ndata[:dist_to_origin] == dist.(domain(sdata))
 
