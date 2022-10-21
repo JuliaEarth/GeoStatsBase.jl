@@ -43,8 +43,8 @@ function _transform(data::D, tnames, tcolumns) where {D<:Data}
   𝒯 = (; zip(newnames, newcolumns)...)
   newtable = 𝒯 |> Tables.materializer(table)
 
-  values = Dict(paramdim(dom) => newtable)
-  constructor(D)(dom, values)
+  vals = Dict(paramdim(dom) => newtable)
+  constructor(D)(dom, vals)
 end
 
 # macro utils

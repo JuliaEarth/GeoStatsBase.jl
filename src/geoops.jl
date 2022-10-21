@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------
 
 include("geoops/filter.jl")
-include("geoops/groupby.jl")
-include("geoops/transform.jl")
 include("geoops/unique.jl")
 include("geoops/integrate.jl")
+include("geoops/groupby.jl")
+include("geoops/transform.jl")
