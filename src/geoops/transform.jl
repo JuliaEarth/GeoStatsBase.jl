@@ -5,9 +5,11 @@
 """
     @transform(data, :newcol₁ = expr₁, :newcol₂ = expr₂, ..., :newcolₙ = exprₙ)
 
-Return a new data object with `data` columns and new columns `newcol₁`, `newcol₂`, ..., `newcolₙ`.
-The new columns are calculated using their respective expressions.
-In expressions the `data` columns are represented by `Symbols` and the operations use `broadcast` by default.
+Return a new data object with `data` columns and new columns
+`newcol₁`, `newcol₂`, ..., `newcolₙ` defined by expressions
+`expr₁`, `expr₂`, ..., `exprₙ`. In each expression the `data`
+columns are represented by symbols and the functions
+use `broadcast` by default.
 
 # Examples
 
@@ -41,8 +43,8 @@ function _transform(data::D, tnames, tcolumns) where {D<:Data}
   𝒯 = (; zip(newnames, newcolumns)...)
   newtable = 𝒯 |> Tables.materializer(table)
 
-  newdata = Dict(paramdim(dom) => newtable)
-  constructor(D)(dom, newdata)
+  values = Dict(paramdim(dom) => newtable)
+  constructor(D)(dom, values)
 end
 
 # macro utils
