@@ -164,40 +164,40 @@
     sdata = georef(table, rand(2, 10))
 
     ndata = @transform(sdata, :z = :x - 2*:y)
-    @test ndata[:z] == sdata[:x] .- 2 .* sdata[:y]
+    @test ndata.z == sdata.x .- 2 .* sdata.y
 
     ndata = @transform(sdata, :z = :x - :y, :w = :x + :y)
-    @test ndata[:z] == sdata[:x] .- sdata[:y]
-    @test ndata[:w] == sdata[:x] .+ sdata[:y]
+    @test ndata.z == sdata.x .- sdata.y
+    @test ndata.w == sdata.x .+ sdata.y
 
     ndata = @transform(sdata, :sinx = sin(:x), :cosy = cos(:y))
-    @test ndata[:sinx] == sin.(sdata[:x])
-    @test ndata[:cosy] == cos.(sdata[:y])
+    @test ndata.sinx == sin.(sdata.x)
+    @test ndata.cosy == cos.(sdata.y)
 
     # user defined functions & :geometry
     dist(point) = norm(coordinates(point))
     ndata = @transform(sdata, :dist_to_origin = dist(:geometry))
-    @test ndata[:dist_to_origin] == dist.(domain(sdata))
+    @test ndata.dist_to_origin == dist.(domain(sdata))
 
     # variable interpolation
     z = rand(10)
     ndata = @transform(sdata, :z = z, :w = :x - z)
-    @test ndata[:z] == z
-    @test ndata[:w] == sdata[:x] .- z
+    @test ndata.z == z
+    @test ndata.w == sdata.x .- z
 
     # column replacement
     table = (x=rand(10), y=rand(10), z=rand(10))
     sdata = georef(table, rand(2, 10))
 
     ndata = @transform(sdata, :z = :x + :y, :w = :x - :y)
-    @test ndata[:z] == sdata[:x] .+ sdata[:y]
-    @test ndata[:w] == sdata[:x] .- sdata[:y]
+    @test ndata.z == sdata.x .+ sdata.y
+    @test ndata.w == sdata.x .- sdata.y
     @test Tables.schema(values(ndata)).names == (:x, :y, :z, :w)
 
     ndata = @transform(sdata, :x = :y, :y = :z, :z = :x)
-    @test ndata[:x] == sdata[:y]
-    @test ndata[:y] == sdata[:z]
-    @test ndata[:z] == sdata[:x]
+    @test ndata.x == sdata.y
+    @test ndata.y == sdata.z
+    @test ndata.z == sdata.x
     @test Tables.schema(values(ndata)).names == (:x, :y, :z)
 
     # missing values
@@ -207,7 +207,7 @@
     sdata = georef(table, rand(8, 2))
 
     ndata = @transform(sdata, :z = :x * :y, :w = :x / :y)
-    @test isequal(ndata[:z], sdata[:x] .* sdata[:y])
-    @test isequal(ndata[:w], sdata[:x] ./ sdata[:y])
+    @test isequal(ndata.z, sdata.x .* sdata.y)
+    @test isequal(ndata.w, sdata.x ./ sdata.y)
   end
 end
