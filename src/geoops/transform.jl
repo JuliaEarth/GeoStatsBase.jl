@@ -3,13 +3,14 @@
 # ------------------------------------------------------------------
 
 """
-    @transform(data, :newcol₁ = expr₁, :newcol₂ = expr₂, ..., :newcolₙ = exprₙ)
+    @transform(data, :col₁ = expr₁, :col₂ = expr₂, ..., :colₙ = exprₙ)
 
 Return a new data object with `data` columns and new columns
-`newcol₁`, `newcol₂`, ..., `newcolₙ` defined by expressions
+`col₁`, `col₂`, ..., `colₙ` defined by expressions
 `expr₁`, `expr₂`, ..., `exprₙ`. In each expression the `data`
 columns are represented by symbols and the functions
-use `broadcast` by default.
+use `broadcast` by default. If there are columns in the table 
+with the same name as the new columns, these will be replaced.
 
 # Examples
 
@@ -33,14 +34,19 @@ function _transform(data::D, tnames, tcolumns) where {D<:Data}
 
   cols    = Tables.columns(table)
   names   = Tables.columnnames(cols) |> collect
-  columns = [Tables.getcolumn(cols, nm) for nm in names]
+  columns = Any[Tables.getcolumn(cols, nm) for nm in names]
 
-  @assert isdisjoint(tnames, names) "Invalid column names"
+  for (nm, col) in zip(tnames, tcolumns)
+    if nm ∈ names
+      i = findfirst(==(nm), names)
+      columns[i] = col
+    else
+      push!(names, nm)
+      push!(columns, col)
+    end
+  end
 
-  newnames   = [names; tnames]
-  newcolumns = [columns; tcolumns]
-
-  𝒯 = (; zip(newnames, newcolumns)...)
+  𝒯 = (; zip(names, columns)...)
   newtable = 𝒯 |> Tables.materializer(table)
 
   vals = Dict(paramdim(dom) => newtable)
