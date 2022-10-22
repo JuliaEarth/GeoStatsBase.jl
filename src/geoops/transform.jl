@@ -24,8 +24,7 @@ macro transform(data::Symbol, exprs...)
   splits = map(expr -> _split(data, expr), exprs)
   colnames = first.(splits)
   colexprs = last.(splits)
-  texpr = :(GeoStatsBase._transform($data, [$(colnames...)], [$(colexprs...)]))
-  esc(texpr)
+  :(_transform($(esc(data)), [$(colnames...)], [$(colexprs...)]))
 end
 
 function _transform(data::D, tnames, tcolumns) where {D<:Data}
@@ -79,10 +78,10 @@ function _colexpr(data::Symbol, arg::QuoteNode)
   end
 end
 
-_colexpr(::Symbol, arg::Symbol) = arg
+_colexpr(::Symbol, arg::Symbol) = esc(arg)
 _colexpr(::Symbol, ::Any) = error("Invalid expression")
 
-_makeexpr(data::Symbol, nm::QuoteNode) = :($data[$nm])
+_makeexpr(data::Symbol, nm::QuoteNode) = :($(esc(data))[$nm])
 
 function _preprocess!(data::Symbol, expr::Expr)
   if expr.head ≠ :call
@@ -90,11 +89,12 @@ function _preprocess!(data::Symbol, expr::Expr)
   end
 
   pushfirst!(expr.args, :broadcast)
-  
-  len  = length(expr.args)
-  args = view(expr.args, 3:len)
 
-  for (i, arg) in zip(3:len, args)
+  for (i, arg) in enumerate(expr.args)
+    if arg isa Symbol
+      expr.args[i] = esc(arg)
+    end
+
     if arg isa QuoteNode
       if arg.value isa Symbol
         expr.args[i] = _makeexpr(data, arg)
