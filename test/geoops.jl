@@ -20,7 +20,42 @@
     @test nelements(ndata) == 100
   end
 
-  @testset "groupby" begin
+  @testset "filter" begin
+    𝒟 = georef((a=[1,2,3], b=[1,1,missing]))
+    𝒫 = filter(s -> !ismissing(s.b), 𝒟)
+    @test 𝒫[:a] == [1,2]
+    @test 𝒫[:b] == [1,1]
+
+    𝒟 = georef((a=[1,2,3],b=[3,2,1]))
+    𝒫ₐ = filter(s -> s.a > 1, 𝒟)
+    𝒫ᵦ = filter(s -> s.b > 1, 𝒟)
+    𝒫ₐᵦ = filter(s -> s.a > 1 && s.b > 1, 𝒟)
+    @test nelements(𝒫ₐ) == 2
+    @test nelements(𝒫ᵦ) == 2
+    @test nelements(𝒫ₐᵦ) == 1
+    @test 𝒫ₐ[:a] == [2,3]
+    @test 𝒫ₐ[:b] == [2,1]
+    @test 𝒫ᵦ[:a] == [1,2]
+    @test 𝒫ᵦ[:b] == [3,2]
+    @test 𝒫ₐᵦ[:a] == [2]
+    @test 𝒫ₐᵦ[:b] == [2]
+  end
+
+  @testset "integrate" begin
+    grid  = CartesianGrid(2,2)
+    mesh  = simplexify(grid)
+    table = (z=[1,2,3,4,5,6,7,8,9], w=[1,1,1,2,2,2,3,3,3])
+    gdata = meshdata(grid, vtable=table)
+    mdata = meshdata(mesh, vtable=table)
+    ginte = integrate(gdata, :z, :w)
+    minte = integrate(mdata, :z, :w)
+    @test ginte.z == [3.,4.,6.,7.]
+    @test ginte.w == [1.5,1.5,2.5,2.5]
+    @test sum.(Iterators.partition(minte.z, 2)) == ginte.z
+    @test sum.(Iterators.partition(minte.w, 2)) == ginte.w
+  end
+
+  @testset "@groupby" begin
     d = georef((z=[1,2,3],x=[4,5,6]), rand(2,3))
     g = @groupby(d, :z)
     @test all(nelements.(g) .== 1)
@@ -124,38 +159,55 @@
     @test indices(p) == [[1,2],[3],[4],[5,6],[7,8]]
   end
 
-  @testset "filter" begin
-    𝒟 = georef((a=[1,2,3], b=[1,1,missing]))
-    𝒫 = filter(s -> !ismissing(s.b), 𝒟)
-    @test 𝒫[:a] == [1,2]
-    @test 𝒫[:b] == [1,1]
+  @testset "@transform" begin
+    table = (x=rand(10), y=rand(10))
+    sdata = georef(table, rand(2, 10))
 
-    𝒟 = georef((a=[1,2,3],b=[3,2,1]))
-    𝒫ₐ = filter(s -> s.a > 1, 𝒟)
-    𝒫ᵦ = filter(s -> s.b > 1, 𝒟)
-    𝒫ₐᵦ = filter(s -> s.a > 1 && s.b > 1, 𝒟)
-    @test nelements(𝒫ₐ) == 2
-    @test nelements(𝒫ᵦ) == 2
-    @test nelements(𝒫ₐᵦ) == 1
-    @test 𝒫ₐ[:a] == [2,3]
-    @test 𝒫ₐ[:b] == [2,1]
-    @test 𝒫ᵦ[:a] == [1,2]
-    @test 𝒫ᵦ[:b] == [3,2]
-    @test 𝒫ₐᵦ[:a] == [2]
-    @test 𝒫ₐᵦ[:b] == [2]
-  end
+    ndata = @transform(sdata, :z = :x - 2*:y)
+    @test ndata.z == sdata.x .- 2 .* sdata.y
 
-  @testset "integrate" begin
-    grid  = CartesianGrid(2,2)
-    mesh  = simplexify(grid)
-    table = (z=[1,2,3,4,5,6,7,8,9], w=[1,1,1,2,2,2,3,3,3])
-    gdata = meshdata(grid, vtable=table)
-    mdata = meshdata(mesh, vtable=table)
-    ginte = integrate(gdata, :z, :w)
-    minte = integrate(mdata, :z, :w)
-    @test ginte.z == [3.,4.,6.,7.]
-    @test ginte.w == [1.5,1.5,2.5,2.5]
-    @test sum.(Iterators.partition(minte.z, 2)) == ginte.z
-    @test sum.(Iterators.partition(minte.w, 2)) == ginte.w
+    ndata = @transform(sdata, :z = :x - :y, :w = :x + :y)
+    @test ndata.z == sdata.x .- sdata.y
+    @test ndata.w == sdata.x .+ sdata.y
+
+    ndata = @transform(sdata, :sinx = sin(:x), :cosy = cos(:y))
+    @test ndata.sinx == sin.(sdata.x)
+    @test ndata.cosy == cos.(sdata.y)
+
+    # user defined functions & :geometry
+    dist(point) = norm(coordinates(point))
+    ndata = @transform(sdata, :dist_to_origin = dist(:geometry))
+    @test ndata.dist_to_origin == dist.(domain(sdata))
+
+    # variable interpolation
+    z = rand(10)
+    ndata = @transform(sdata, :z = z, :w = :x - z)
+    @test ndata.z == z
+    @test ndata.w == sdata.x .- z
+
+    # column replacement
+    table = (x=rand(10), y=rand(10), z=rand(10))
+    sdata = georef(table, rand(2, 10))
+
+    ndata = @transform(sdata, :z = :x + :y, :w = :x - :y)
+    @test ndata.z == sdata.x .+ sdata.y
+    @test ndata.w == sdata.x .- sdata.y
+    @test Tables.schema(values(ndata)).names == (:x, :y, :z, :w)
+
+    ndata = @transform(sdata, :x = :y, :y = :z, :z = :x)
+    @test ndata.x == sdata.y
+    @test ndata.y == sdata.z
+    @test ndata.z == sdata.x
+    @test Tables.schema(values(ndata)).names == (:x, :y, :z)
+
+    # missing values
+    x = [1, 1, missing, missing, 2, 2, 2, 2]
+    y = [1, 1, 2, 2, 3, 3, missing, missing]
+    table = (; x, y)
+    sdata = georef(table, rand(8, 2))
+
+    ndata = @transform(sdata, :z = :x * :y, :w = :x / :y)
+    @test isequal(ndata.z, sdata.x .* sdata.y)
+    @test isequal(ndata.w, sdata.x ./ sdata.y)
   end
 end
