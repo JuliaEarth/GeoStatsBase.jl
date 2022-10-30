@@ -164,7 +164,8 @@ export
   # utilities
   uniquecoords,
   integrate,
-  groupby,
+  @groupby,
+  @transform,
 
   # rotations
   DatamineAngles,
