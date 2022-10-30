@@ -21,15 +21,17 @@
     @test inputvars(t) == (:x,:y)
     @test features(t) == (:x,:y)
     @test sprint(show, t) == "Classification (x, y) → z"
+  end
 
-    t = ClusteringTask(:x,:y)
-    @test inputvars(t) == (:x,)
-    @test outputvars(t) == (:y,)
-    @test features(t) == (:x,)
-    @test sprint(show, t) == "Clustering x → y"
-    t = ClusteringTask([:x,:y], :z)
-    @test inputvars(t) == (:x,:y)
-    @test features(t) == (:x,:y)
-    @test sprint(show, t) == "Clustering (x, y) → z"
+  @testset "Traits" begin
+    kmeans = @load KMeans pkg=Clustering verbosity=0
+    model  = kmeans(k=4)
+    @test !issupervised(model)
+    @test !isprobabilistic(model)
+
+    gmm   = @load GaussianMixtureClusterer pkg=BetaML verbosity=0
+    model = gmm(n_classes=4)
+    @test !issupervised(model)
+    @test isprobabilistic(model)
   end
 end

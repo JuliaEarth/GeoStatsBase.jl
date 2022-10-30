@@ -1,4 +1,5 @@
 using GeoStatsBase
+using MLJ: @load
 using Meshes
 using CSV
 using CoDa

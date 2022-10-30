@@ -76,7 +76,6 @@ export
   UnsupervisedLearningTask,
   RegressionTask,
   ClassificationTask,
-  ClusteringTask,
   issupervised,
   inputvars,
   outputvars,

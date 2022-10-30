@@ -13,14 +13,14 @@ iscompatible(model::MI.Model, task::RegressionTask) =
   issupervised(model) && (MI.target_scitype(model) == AbstractVector{Continuous})
 iscompatible(model::MI.Model, task::ClassificationTask) =
   issupervised(model) && (MI.target_scitype(model) == AbstractVector{<:Finite})
-iscompatible(model::MI.Model, task::ClusteringTask) = !issupervised(model)
 
 """
     isprobabilistic(model)
 
 Check whether or not `model` is probabilistic.
 """
-isprobabilistic(model::MI.Model) = false
+isprobabilistic(model::MI.Model) =
+  MI.prediction_type(model) == :probabilistic
 isprobabilistic(model::MI.Probabilistic) = true
 
 """

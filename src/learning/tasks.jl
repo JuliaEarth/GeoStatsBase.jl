@@ -33,6 +33,6 @@ issupervised(task::LearningTask) = false
 # ----------------
 # IMPLEMENTATIONS
 # ----------------
+
 include("tasks/regression.jl")
 include("tasks/classification.jl")
-include("tasks/clustering.jl")

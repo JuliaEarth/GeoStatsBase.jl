@@ -64,7 +64,7 @@
     sdata = georef((x=rand(rng,10),y=rand(rng,10),z=rand(rng,10)), 10rand(rng,2,10))
     tdata = georef((x=rand(rng,10,10),))
     rtask = RegressionTask(:x, :y)
-    ctask = ClusteringTask(:x, :c)
+    ctask = ClassificationTask(:x, :y)
 
     # test basic problem interface
     problem = LearningProblem(sdata, tdata, rtask)
@@ -75,6 +75,6 @@
     # show methods
     problem = LearningProblem(sdata, tdata, ctask)
     @test sprint(show, problem) == "2D LearningProblem"
-    @test sprint(show, MIME"text/plain"(), problem) == "2D LearningProblem\n  source: 10 MeshData{2,Float64}\n  target: 100 MeshData{2,Float64}\n  task:   Clustering x → c"
+    @test sprint(show, MIME"text/plain"(), problem) == "2D LearningProblem\n  source: 10 MeshData{2,Float64}\n  target: 100 MeshData{2,Float64}\n  task:   Classification x → y"
   end
 end
