@@ -32,7 +32,7 @@ end
 
 function _transform(data::D, tnames, tcolumns) where {D<:Data}
   if :geometry ∈ tnames
-    throw(ArgumentError("Cannot replace geometric column"))
+    throw(ArgumentError("Replacing :geometry column is not allowed"))
   end
 
   dom   = domain(data)

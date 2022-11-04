@@ -211,6 +211,6 @@
     @test isequal(ndata.w, sdata.x ./ sdata.y)
 
     # throws
-    @test_throws ArgumentError @transform(sdata, :geometry = center(:geometry))
+    @test_throws ArgumentError @transform(sdata, :geometry = centroid(:geometry))
   end
 end
