@@ -31,10 +31,6 @@ macro transform(data::Symbol, exprs...)
 end
 
 function _transform(data::D, tnames, tcolumns) where {D<:Data}
-  if :geometry ∈ tnames
-    throw(ArgumentError("Replacing :geometry column is not allowed"))
-  end
-
   dom   = domain(data)
   table = values(data)
 

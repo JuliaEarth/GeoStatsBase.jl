@@ -209,8 +209,5 @@
     ndata = @transform(sdata, :z = :x * :y, :w = :x / :y)
     @test isequal(ndata.z, sdata.x .* sdata.y)
     @test isequal(ndata.w, sdata.x ./ sdata.y)
-
-    # throws
-    @test_throws ArgumentError @transform(sdata, :geometry = centroid(:geometry))
   end
 end
