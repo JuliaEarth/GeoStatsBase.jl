@@ -21,10 +21,13 @@ with the same name as the new columns, these will be replaced.
 ```
 """
 macro transform(data::Symbol, exprs...)
-  splits = map(expr -> _split(data, expr), exprs)
+  splits   = map(expr -> _split(expr), exprs)
   colnames = first.(splits)
   colexprs = last.(splits)
-  :(_transform($(esc(data)), [$(colnames...)], [$(colexprs...)]))
+  quote
+    local data = $(esc(data))
+    _transform(data, [$(colnames...)], [$(colexprs...)])
+  end
 end
 
 function _transform(data::D, tnames, tcolumns) where {D<:Data}
@@ -50,59 +53,4 @@ function _transform(data::D, tnames, tcolumns) where {D<:Data}
 
   vals = Dict(paramdim(dom) => newtable)
   constructor(D)(dom, vals)
-end
-
-# macro utils
-function _split(data::Symbol, expr::Expr)
-  if expr.head ≠ :(=)
-    error("Invalid expression")
-  end
-
-  colname = expr.args[1]
-  colexpr = _colexpr(data, expr.args[2])
-
-  colname, colexpr
-end
-
-function _colexpr(data::Symbol, arg::Expr)
-  expr = copy(arg)
-  _preprocess!(data, expr)
-  expr
-end
-
-function _colexpr(data::Symbol, arg::QuoteNode)
-  if arg.value isa Symbol
-    _makeexpr(data, arg)
-  else
-    error("Invalid expression")
-  end
-end
-
-_colexpr(::Symbol, arg::Symbol) = esc(arg)
-_colexpr(::Symbol, ::Any) = error("Invalid expression")
-
-_makeexpr(data::Symbol, nm::QuoteNode) = :($(esc(data))[$nm])
-
-function _preprocess!(data::Symbol, expr::Expr)
-  if expr.head ≠ :call
-    error("Invalid expression")
-  end
-
-  pushfirst!(expr.args, :broadcast)
-
-  for (i, arg) in enumerate(expr.args)
-    if arg isa Symbol
-      expr.args[i] = esc(arg)
-    end
-
-    if arg isa QuoteNode
-      if arg.value isa Symbol
-        expr.args[i] = _makeexpr(data, arg)
-      end
-    end
-
-    if arg isa Expr
-      _preprocess!(data, arg)
-    end
-  end
 end
