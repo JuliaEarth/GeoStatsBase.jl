@@ -49,7 +49,11 @@ function _preprocess!(expr::Expr, rowwise)
     end
 
     if arg isa Expr
-      _preprocess!(arg, rowwise)
+      if arg.head == :(.)
+        expr.args[i] = esc(arg)
+      else
+        _preprocess!(arg, rowwise)
+      end
     end
   end
 end

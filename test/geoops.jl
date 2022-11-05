@@ -179,6 +179,11 @@
     ndata = @transform(sdata, :dist_to_origin = dist(:geometry))
     @test ndata.dist_to_origin == dist.(domain(sdata))
 
+    # unexported functions
+    ndata = @transform(sdata, :logx = Base.log(:x), :expy = Base.exp(:y))
+    @test ndata.logx == log.(sdata.x)
+    @test ndata.expy == exp.(sdata.y)
+
     # variable interpolation
     z = rand(10)
     ndata = @transform(sdata, :z = z, :w = :x - z)
