@@ -38,8 +38,11 @@ function _transform(data::D, tnames, tcolumns) where {D<:Data}
   names   = Tables.columnnames(cols) |> collect
   columns = Any[Tables.getcolumn(cols, nm) for nm in names]
 
+  newdom = dom
   for (nm, col) in zip(tnames, tcolumns)
-    if nm ∈ names
+    if nm == :geometry
+      newdom = Collection(col)
+    elseif nm ∈ names
       i = findfirst(==(nm), names)
       columns[i] = col
     else
@@ -51,6 +54,6 @@ function _transform(data::D, tnames, tcolumns) where {D<:Data}
   𝒯 = (; zip(names, columns)...)
   newtable = 𝒯 |> Tables.materializer(table)
 
-  vals = Dict(paramdim(dom) => newtable)
-  constructor(D)(dom, vals)
+  vals = Dict(paramdim(newdom) => newtable)
+  constructor(D)(newdom, vals)
 end
