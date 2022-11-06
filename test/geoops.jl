@@ -179,6 +179,11 @@
     ndata = @transform(sdata, :dist_to_origin = dist(:geometry))
     @test ndata.dist_to_origin == dist.(domain(sdata))
 
+    # replece :geometry column
+    testfunc(point) = Point(coordinates(point) .+ 1)
+    ndata = @transform(sdata, :geometry = testfunc(:geometry))
+    @test domain(ndata) == Collection(testfunc.(domain(sdata)))
+
     # unexported functions
     ndata = @transform(sdata, :logx = Base.log(:x), :expy = Base.exp(:y))
     @test ndata.logx == log.(sdata.x)
