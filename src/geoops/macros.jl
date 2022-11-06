@@ -28,7 +28,7 @@ function _colexpr(arg, rowwise)
   colexpr
 end
 
-_makeexpr(nm::QuoteNode) = :(data[$nm])
+_makeexpr(nm::QuoteNode) = :($(esc(:getproperty))(data, $nm))
 
 function _preprocess!(expr::Expr, rowwise)
   if expr.head ≠ :call
