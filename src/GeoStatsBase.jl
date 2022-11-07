@@ -166,6 +166,7 @@ export
   integrate,
   @groupby,
   @transform,
+  @combine,
 
   # rotations
   DatamineAngles,
