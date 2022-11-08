@@ -52,10 +52,18 @@ end
 
 function _combine(group::Partition{D}, names, columns) where {D<:Data}
   table = values(group.object)
+  meta  = metadata(group)
 
   newdom = Collection([centroid(domain(data)) for data in group])
 
-  𝒯 = (; zip(names, columns)...)
+  grows    = meta[:rows]
+  gnames   = meta[:names]
+  gcolumns = [[row[i] for row in grows] for i in 1:length(gnames)]
+
+  newnames   = vcat(gnames, names)
+  newcolumns = vcat(gcolumns, columns)
+
+  𝒯 = (; zip(newnames, newcolumns)...)
   newtable = 𝒯 |> Tables.materializer(table)
 
   vals = Dict(paramdim(newdom) => newtable)
@@ -64,4 +72,4 @@ end
 
 # utils
 _groupexpr(colexpr) = :([$colexpr for data in group])
-_dataexpr(colexpr) = :([colexpr])
+_dataexpr(colexpr) = :([$colexpr])

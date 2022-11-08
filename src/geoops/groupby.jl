@@ -48,6 +48,6 @@ function _groupby(data::Data, colspec::ColSpec)
   urows = unique(srows)
   inds  = map(row -> findall(isequal(row), srows), urows)
 
-  metadata = Dict(:values => urows)
+  metadata = Dict(:names => snames, :rows => urows)
   Partition(data, inds, metadata)
 end
