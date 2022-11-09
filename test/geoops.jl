@@ -226,7 +226,8 @@
     y = [1, 1, 2, 2, 3, 3, 4, 4]
     z = [1, 2, 3, 4, 5, 6, 7, 8]
     table = (; x, y, z)
-    sdata = georef(table, rand(2, 8))
+    grid  = CartesianGrid(2, 4)
+    sdata = georef(table, grid)
     
     c = @combine(sdata, :x_sum = sum(:x))
     @test c.x_sum   == [sum(sdata.x)]
