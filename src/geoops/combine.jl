@@ -4,9 +4,14 @@
 
 """
     @combine(data, :col₁ = expr₁, :col₂ = expr₂, ..., :colₙ = exprₙ)
-    @combine(group, :col₁ = expr₁, :col₂ = expr₂, ..., :colₙ = exprₙ)
 
-docstring...
+Returns a new data object with each column 
+`:col₁`, `:col₂`, ..., `:colₙ` being a reduction of `data` columns 
+defined by expressions `expr₁`, `expr₂`, ..., `exprₙ`.
+If `data` is a `Partition` object returned by `@groupby` macro,
+the reduction expressions will be applied in each `Partition` group.
+
+See also: [`@groupby`](@ref).
 
 # Examples
 
