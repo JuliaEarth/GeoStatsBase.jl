@@ -59,7 +59,9 @@ function _combine(group::Partition{D}, names, columns) where {D<:Data}
   table = values(group.object)
   meta  = metadata(group)
 
-  newdom = Collection([centroid(domain(data)) for data in group])
+  point(data) = centroid(boundingbox(domain(data)))
+
+  newdom = Collection([point(data) for data in group])
 
   grows    = meta[:rows]
   gnames   = meta[:names]
