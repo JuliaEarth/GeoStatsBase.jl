@@ -6,6 +6,7 @@ using CoDa
 using Tables
 using TypedTables
 using Distances
+using Statistics
 using Distributions
 using LinearAlgebra
 using TableTransforms

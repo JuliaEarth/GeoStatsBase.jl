@@ -220,4 +220,39 @@
     @test isequal(ndata.z, sdata.x .* sdata.y)
     @test isequal(ndata.w, sdata.x ./ sdata.y)
   end
+
+  @testset "@combine" begin
+    x = [1, 1, 1, 1, 2, 2, 2, 2]
+    y = [1, 1, 2, 2, 3, 3, 4, 4]
+    z = [1, 2, 3, 4, 5, 6, 7, 8]
+    table = (; x, y, z)
+    sdata = georef(table, rand(2, 8))
+    
+    c = @combine(sdata, :x_sum = sum(:x))
+    @test c.x_sum   == [sum(sdata.x)]
+    @test domain(c) == Collection([centroid(domain(sdata))])
+    @test Tables.schema(values(c)).names == (:x_sum,)
+
+    c = @combine(sdata, :y_mean = mean(:y), :z_median = median(:z))
+    @test c.y_mean   == [mean(sdata.y)]
+    @test c.z_median == [median(sdata.z)]
+    @test domain(c)  == Collection([centroid(domain(sdata))])
+    @test Tables.schema(values(c)).names == (:y_mean, :z_median)
+    
+    group = @groupby(sdata, :x)
+    c = @combine(group, :y_sum = sum(:y), :z_prod = prod(:z))
+    @test c.x       == [first(data.x) for data in group]
+    @test c.y_sum   == [sum(data.y) for data in group]
+    @test c.z_prod  == [prod(data.z) for data in group]
+    @test domain(c) == Collection([centroid(domain(data)) for data in group])
+    @test Tables.schema(values(c)).names == (:x, :y_sum, :z_prod)
+
+    group = @groupby(sdata, :x, :y)
+    c = @combine(group, :z_mean = mean(:z))
+    @test c.x       == [first(data.x) for data in group]
+    @test c.y       == [first(data.y) for data in group]
+    @test c.z_mean  == [mean(data.z) for data in group]
+    @test domain(c) == Collection([centroid(domain(data)) for data in group])
+    @test Tables.schema(values(c)).names == (:x, :y, :z_mean)
+  end
 end
