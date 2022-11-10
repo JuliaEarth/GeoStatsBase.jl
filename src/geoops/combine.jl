@@ -3,12 +3,13 @@
 # ------------------------------------------------------------------
 
 """
-    @combine(data, :col₁ = expr₁, :col₂ = expr₂, ..., :colₙ = exprₙ)
+    @combine(object, :col₁ = expr₁, :col₂ = expr₂, ..., :colₙ = exprₙ)
 
 Returns a new data object with each column 
-`:col₁`, `:col₂`, ..., `:colₙ` being a reduction of `data` columns 
-defined by expressions `expr₁`, `expr₂`, ..., `exprₙ`.
-If `data` is a `Partition` object returned by `@groupby` macro,
+`:col₁`, `:col₂`, ..., `:colₙ` being a reduction of `object` columns 
+defined by expressions `expr₁`, `expr₂`, ..., `exprₙ`. 
+The `object` can be a `Data` object or a `Partition` object 
+returned by the `@groupby` macro. If `object` is a `Partition`,
 the reduction expressions will be applied in each `Partition` group.
 
 See also: [`@groupby`](@ref).
@@ -26,17 +27,17 @@ p = @groupby(data, :y)
 @combine(p, :x_median = median(:x))
 ```
 """
-macro combine(data::Symbol, exprs...)
+macro combine(object::Symbol, exprs...)
   splits   = map(expr -> _split(expr, false), exprs)
   colnames = first.(splits)
   colexprs = last.(splits)
-  escdata  = esc(data)
+  escobj   = esc(object)
   quote
-    if $escdata isa Partition
-      local partition = $escdata
+    if $escobj isa Partition
+      local partition = $escobj
       _combine(partition, [$(colnames...)], [$(map(_partexpr, colexprs)...)])
     else
-      local data = $escdata
+      local data = $escobj
       _combine(data, [$(colnames...)], [$(map(_dataexpr, colexprs)...)])
     end
   end
