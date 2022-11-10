@@ -21,9 +21,9 @@ using Statistics
 @combine(data, :x_sum = sum(:x))
 @combine(data, :x_mean = mean(:x))
 
-group = @groupby(data, :y)
-@combine(group, :x_prod = prod(:x))
-@combine(group, :x_median = median(:x))
+p = @groupby(data, :y)
+@combine(p, :x_prod = prod(:x))
+@combine(p, :x_median = median(:x))
 ```
 """
 macro combine(data::Symbol, exprs...)
@@ -33,8 +33,8 @@ macro combine(data::Symbol, exprs...)
   escdata  = esc(data)
   quote
     if $escdata isa Partition
-      local group = $escdata
-      _combine(group, [$(colnames...)], [$(map(_groupexpr, colexprs)...)])
+      local partition = $escdata
+      _combine(partition, [$(colnames...)], [$(map(_partexpr, colexprs)...)])
     else
       local data = $escdata
       _combine(data, [$(colnames...)], [$(map(_dataexpr, colexprs)...)])
@@ -55,13 +55,13 @@ function _combine(data::D, names, columns) where {D<:Data}
   constructor(D)(newdom, vals)
 end
 
-function _combine(group::Partition{D}, names, columns) where {D<:Data}
-  table = values(group.object)
-  meta  = metadata(group)
+function _combine(partition::Partition{D}, names, columns) where {D<:Data}
+  table = values(partition.object)
+  meta  = metadata(partition)
 
   point(data) = centroid(boundingbox(domain(data)))
 
-  newdom = Collection([point(data) for data in group])
+  newdom = Collection([point(data) for data in partition])
 
   grows    = meta[:rows]
   gnames   = meta[:names]
@@ -78,5 +78,5 @@ function _combine(group::Partition{D}, names, columns) where {D<:Data}
 end
 
 # utils
-_groupexpr(colexpr) = :([$colexpr for data in group])
+_partexpr(colexpr) = :([$colexpr for data in partition])
 _dataexpr(colexpr) = :([$colexpr])

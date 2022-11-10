@@ -24,9 +24,16 @@ macro transform(data::Symbol, exprs...)
   splits   = map(expr -> _split(expr), exprs)
   colnames = first.(splits)
   colexprs = last.(splits)
+  escdata  = esc(data)
   quote
-    local data = $(esc(data))
-    _transform(data, [$(colnames...)], [$(colexprs...)])
+    if $escdata isa Partition
+      local partition = $escdata
+      local data = partition.object
+      _transform(partition, [$(colnames...)], [$(colexprs...)])
+    else
+      local data = $escdata
+      _transform(data, [$(colnames...)], [$(colexprs...)])
+    end
   end
 end
 
@@ -56,4 +63,17 @@ function _transform(data::D, tnames, tcolumns) where {D<:Data}
 
   vals = Dict(paramdim(newdom) => newtable)
   constructor(D)(newdom, vals)
+end
+
+function _transform(partition::Partition{D}, tnames, tcolumns) where {D<:Data}
+  data = partition.object
+  inds = indices(partition)
+  meta = metadata(partition)
+
+  if !isdisjoint(tnames, meta[:names])
+    throw(ArgumentError("Cannot replace group columns"))
+  end
+
+  newdata = _transform(data, tnames, tcolumns)
+  Partition(newdata, inds, meta)
 end
