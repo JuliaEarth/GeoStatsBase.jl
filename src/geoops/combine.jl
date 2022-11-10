@@ -3,13 +3,15 @@
 # ------------------------------------------------------------------
 
 """
-    @combine(data, :col₁ = expr₁, :col₂ = expr₂, ..., :colₙ = exprₙ)
+    @combine(object, :col₁ = expr₁, :col₂ = expr₂, ..., :colₙ = exprₙ)
 
 Returns a new data object with each column 
-`:col₁`, `:col₂`, ..., `:colₙ` being a reduction of `data` columns 
-defined by expressions `expr₁`, `expr₂`, ..., `exprₙ`.
-If `data` is a `Partition` object returned by `@groupby` macro,
-the reduction expressions will be applied in each `Partition` group.
+`:col₁`, `:col₂`, ..., `:colₙ` being a reduction of `object` columns 
+defined by expressions `expr₁`, `expr₂`, ..., `exprₙ`. 
+The `object` can be a `Data` object or a `Partition` object 
+returned by the `@groupby` macro. If `object` is a `Partition`,
+the reduction expressions will be applied in each subset of the
+`Partition`.
 
 See also: [`@groupby`](@ref).
 
@@ -21,22 +23,22 @@ using Statistics
 @combine(data, :x_sum = sum(:x))
 @combine(data, :x_mean = mean(:x))
 
-group = @groupby(data, :y)
-@combine(group, :x_prod = prod(:x))
-@combine(group, :x_median = median(:x))
+p = @groupby(data, :y)
+@combine(p, :x_prod = prod(:x))
+@combine(p, :x_median = median(:x))
 ```
 """
-macro combine(data::Symbol, exprs...)
+macro combine(object::Symbol, exprs...)
   splits   = map(expr -> _split(expr, false), exprs)
   colnames = first.(splits)
   colexprs = last.(splits)
-  escdata  = esc(data)
+  escobj   = esc(object)
   quote
-    if $escdata isa Partition
-      local group = $escdata
-      _combine(group, [$(colnames...)], [$(map(_groupexpr, colexprs)...)])
+    if $escobj isa Partition
+      local partition = $escobj
+      _combine(partition, [$(colnames...)], [$(map(_partexpr, colexprs)...)])
     else
-      local data = $escdata
+      local data = $escobj
       _combine(data, [$(colnames...)], [$(map(_dataexpr, colexprs)...)])
     end
   end
@@ -55,13 +57,13 @@ function _combine(data::D, names, columns) where {D<:Data}
   constructor(D)(newdom, vals)
 end
 
-function _combine(group::Partition{D}, names, columns) where {D<:Data}
-  table = values(group.object)
-  meta  = metadata(group)
+function _combine(partition::Partition{D}, names, columns) where {D<:Data}
+  table = values(partition.object)
+  meta  = metadata(partition)
 
   point(data) = centroid(boundingbox(domain(data)))
 
-  newdom = Collection([point(data) for data in group])
+  newdom = Collection([point(data) for data in partition])
 
   grows    = meta[:rows]
   gnames   = meta[:names]
@@ -78,5 +80,5 @@ function _combine(group::Partition{D}, names, columns) where {D<:Data}
 end
 
 # utils
-_groupexpr(colexpr) = :([$colexpr for data in group])
+_partexpr(colexpr) = :([$colexpr for data in partition])
 _dataexpr(colexpr) = :([$colexpr])

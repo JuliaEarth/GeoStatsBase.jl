@@ -219,6 +219,22 @@
     ndata = @transform(sdata, :z = :x * :y, :w = :x / :y)
     @test isequal(ndata.z, sdata.x .* sdata.y)
     @test isequal(ndata.w, sdata.x ./ sdata.y)
+
+    # Partition
+    x = [1, 1, 1, 1, 2, 2, 2, 2]
+    y = [1, 1, 2, 2, 3, 3, 4, 4]
+    z = [1, 2, 3, 4, 5, 6, 7, 8]
+    table = (; x, y, z)
+    sdata = georef(table, rand(2, 8))
+
+    p  = @groupby(sdata, :x, :y)
+    np = @transform(p, :z = 2*:x + :y)
+    @test np.object.z  == 2 .* sdata.x .+ sdata.y
+    @test indices(np)  == indices(p)
+    @test metadata(np) == metadata(p)
+
+    @test_throws ArgumentError @transform(p, :x = 3*:x)
+    @test_throws ArgumentError @transform(p, :y = 3*:y)
   end
 
   @testset "@combine" begin
@@ -240,20 +256,20 @@
     @test domain(c)  == Collection([centroid(boundingbox(domain(sdata)))])
     @test Tables.schema(values(c)).names == (:y_mean, :z_median)
     
-    group = @groupby(sdata, :x)
-    c = @combine(group, :y_sum = sum(:y), :z_prod = prod(:z))
-    @test c.x       == [first(data.x) for data in group]
-    @test c.y_sum   == [sum(data.y) for data in group]
-    @test c.z_prod  == [prod(data.z) for data in group]
-    @test domain(c) == Collection([centroid(boundingbox(domain(data))) for data in group])
+    p = @groupby(sdata, :x)
+    c = @combine(p, :y_sum = sum(:y), :z_prod = prod(:z))
+    @test c.x       == [first(data.x) for data in p]
+    @test c.y_sum   == [sum(data.y) for data in p]
+    @test c.z_prod  == [prod(data.z) for data in p]
+    @test domain(c) == Collection([centroid(boundingbox(domain(data))) for data in p])
     @test Tables.schema(values(c)).names == (:x, :y_sum, :z_prod)
 
-    group = @groupby(sdata, :x, :y)
-    c = @combine(group, :z_mean = mean(:z))
-    @test c.x       == [first(data.x) for data in group]
-    @test c.y       == [first(data.y) for data in group]
-    @test c.z_mean  == [mean(data.z) for data in group]
-    @test domain(c) == Collection([centroid(boundingbox(domain(data))) for data in group])
+    p = @groupby(sdata, :x, :y)
+    c = @combine(p, :z_mean = mean(:z))
+    @test c.x       == [first(data.x) for data in p]
+    @test c.y       == [first(data.y) for data in p]
+    @test c.z_mean  == [mean(data.z) for data in p]
+    @test domain(c) == Collection([centroid(boundingbox(domain(data))) for data in p])
     @test Tables.schema(values(c)).names == (:x, :y, :z_mean)
   end
 end
