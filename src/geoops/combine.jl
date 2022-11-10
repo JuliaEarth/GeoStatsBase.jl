@@ -10,7 +10,8 @@ Returns a new data object with each column
 defined by expressions `expr₁`, `expr₂`, ..., `exprₙ`. 
 The `object` can be a `Data` object or a `Partition` object 
 returned by the `@groupby` macro. If `object` is a `Partition`,
-the reduction expressions will be applied in each subset of the `Partition`.
+the reduction expressions will be applied in each subset of the
+`Partition`.
 
 See also: [`@groupby`](@ref).
 
