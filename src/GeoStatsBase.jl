@@ -37,9 +37,6 @@ import Base: ==
 # aliases
 const GeoData = Meshes.MeshData
 
-# temporary functions
-_dim(d) = embeddim(domain(d))
-
 include("georef.jl")
 include("ensembles.jl")
 include("macros.jl")
