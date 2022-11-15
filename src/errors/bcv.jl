@@ -28,16 +28,11 @@ BlockCrossValidation(sides; loss=Dict()) =
   BlockCrossValidation{typeof(sides)}(sides, loss)
 
 function Base.error(solver, problem, method::BlockCrossValidation)
-  s = method.sides
-  f = _foldable(problem)
-  d = embeddim(domain(f))
-  l = length(s) > 1 ? s : ntuple(i->s, d)
-
   # uniform weights
   weighting = UniformWeighting()
 
   # block folds
-  folding = BlockFolding(l)
+  folding = BlockFolding(method.sides)
 
   wcv = WeightedCrossValidation(weighting, folding,
                                 lambda=1, loss=method.loss)

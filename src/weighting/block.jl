@@ -10,12 +10,11 @@ A weighting method that assigns weights to points in spatial object
 based on blocks of given `sides`. The number `n` of points inside a
 block determines the weights `1/n` of these points.
 """
-struct BlockWeighting{Dim,T} <: WeightingMethod
-  sides::NTuple{Dim,T}
+struct BlockWeighting{S} <: WeightingMethod
+  sides::S
 end
 
-BlockWeighting(sides::AbstractVector) = BlockWeighting(Tuple(sides))
-BlockWeighting(sides::Vararg) = BlockWeighting(sides)
+BlockWeighting(sides...) = BlockWeighting(sides)
 
 weight(object, method::BlockWeighting) =
   weight(domain(object), method)
