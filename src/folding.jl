@@ -15,7 +15,8 @@ abstract type FoldingMethod end
 
 Return iterator of folds of `object` according to `method`.
 """
-function folds end
+folds(data::Data, method::FoldingMethod) =
+  folds(domain(data), method)
 
 # ----------------
 # IMPLEMENTATIONS

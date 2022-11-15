@@ -61,7 +61,7 @@ task(problem::LearningProblem) = problem.task
 # IO methods
 # ------------
 function Base.show(io::IO, problem::LearningProblem)
-  N = embeddim(problem.sdata)
+  N = embeddim(domain(problem.sdata))
   print(io, "$(N)D LearningProblem")
 end
 

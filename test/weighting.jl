@@ -4,7 +4,7 @@
     s = georef((z=rand(100,100),))
     for o in [d, s]
       w = weight(o, UniformWeighting())
-      @test length(w) == nelements(o)
+      @test length(w) == nitems(o)
       @test all(w .== 1)
     end
   end

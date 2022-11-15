@@ -12,17 +12,17 @@ struct BallFolding{B} <: FoldingMethod
   ball::B
 end
 
-function folds(object, method::BallFolding)
+function folds(domain::Domain, method::BallFolding)
   # retrieve parameters
   ball = method.ball
+  n = nelements(domain)
 
   # create search method
-  searcher = BallSearch(object, ball)
-  n = nelements(object)
+  searcher = BallSearch(domain, ball)
 
   function pair(i)
     # source and target indices
-    point  = centroid(object, i)
+    point  = centroid(domain, i)
     inside = search(point, searcher)
     sinds  = setdiff(1:n, inside)
     tinds  = [i]

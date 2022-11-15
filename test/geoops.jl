@@ -2,11 +2,12 @@
   @testset "unique" begin
     X = [i*j for i in 1:2, j in 1:1_000_000]
     z = rand(1_000_000)
-    d = georef((z=[z;z],), [X X])
+    d = georef((z=[z; z],), [X X])
     u = uniquecoords(d)
-    p = [centroid(u, i) for i in 1:nelements(u)]
+    du = domain(u)
+    p = [centroid(du, i) for i in 1:nelements(du)]
     U = reduce(hcat, coordinates.(p))
-    @test nelements(u) == 1_000_000
+    @test nelements(du) == 1_000_000
     @test Set(eachcol(U)) == Set(eachcol(X))
 
     X = rand(3,100)
@@ -17,28 +18,28 @@
     nd = vcat(n, n[1:10])
     sdata = georef((z=zd, n=nd), PointSet(Xd))
     ndata = uniquecoords(sdata)
-    @test nelements(ndata) == 100
+    @test nitems(ndata) == 100
   end
 
   @testset "filter" begin
     𝒟 = georef((a=[1,2,3], b=[1,1,missing]))
     𝒫 = filter(s -> !ismissing(s.b), 𝒟)
-    @test 𝒫[:a] == [1,2]
-    @test 𝒫[:b] == [1,1]
+    @test 𝒫.a == [1,2]
+    @test 𝒫.b == [1,1]
 
     𝒟 = georef((a=[1,2,3],b=[3,2,1]))
     𝒫ₐ = filter(s -> s.a > 1, 𝒟)
     𝒫ᵦ = filter(s -> s.b > 1, 𝒟)
     𝒫ₐᵦ = filter(s -> s.a > 1 && s.b > 1, 𝒟)
-    @test nelements(𝒫ₐ) == 2
-    @test nelements(𝒫ᵦ) == 2
-    @test nelements(𝒫ₐᵦ) == 1
-    @test 𝒫ₐ[:a] == [2,3]
-    @test 𝒫ₐ[:b] == [2,1]
-    @test 𝒫ᵦ[:a] == [1,2]
-    @test 𝒫ᵦ[:b] == [3,2]
-    @test 𝒫ₐᵦ[:a] == [2]
-    @test 𝒫ₐᵦ[:b] == [2]
+    @test nitems(𝒫ₐ) == 2
+    @test nitems(𝒫ᵦ) == 2
+    @test nitems(𝒫ₐᵦ) == 1
+    @test 𝒫ₐ.a == [2,3]
+    @test 𝒫ₐ.b == [2,1]
+    @test 𝒫ᵦ.a == [1,2]
+    @test 𝒫ᵦ.b == [3,2]
+    @test 𝒫ₐᵦ.a == [2]
+    @test 𝒫ₐᵦ.b == [2]
   end
 
   @testset "integrate" begin
@@ -58,7 +59,7 @@
   @testset "@groupby" begin
     d = georef((z=[1,2,3],x=[4,5,6]), rand(2,3))
     g = @groupby(d, :z)
-    @test all(nelements.(g) .== 1)
+    @test all(nitems.(g) .== 1)
     rows = [[1 4], [2 5], [3 6]]
     for i in 1:3
       @test Tables.matrix(values(g[i])) ∈ rows

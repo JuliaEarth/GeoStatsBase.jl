@@ -29,8 +29,9 @@ BlockCrossValidation(sides; loss=Dict()) =
 
 function Base.error(solver, problem, method::BlockCrossValidation)
   s = method.sides
-  n = embeddim(_foldable(problem))
-  l = length(s) > 1 ? s : ntuple(i->s, n)
+  f = _foldable(problem)
+  d = embeddim(domain(f))
+  l = length(s) > 1 ? s : ntuple(i->s, d)
 
   # uniform weights
   weighting = UniformWeighting()

@@ -39,7 +39,7 @@ macro transform(object::Symbol, exprs...)
   quote
     if $escobj isa Partition
       local partition = $escobj
-      local data = partition.object
+      local data = parent(partition)
       _transform(partition, [$(colnames...)], [$(colexprs...)])
     else
       local data = $escobj
@@ -77,7 +77,7 @@ function _transform(data::D, tnames, tcolumns) where {D<:Data}
 end
 
 function _transform(partition::Partition{D}, tnames, tcolumns) where {D<:Data}
-  data = partition.object
+  data = parent(partition)
   inds = indices(partition)
   meta = metadata(partition)
 

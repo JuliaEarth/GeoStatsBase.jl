@@ -53,7 +53,9 @@ struct SimulationProblem{S,D,N} <: Problem
 end
 
 function SimulationProblem(sdata::S, sdomain::D, vars::NTuple{N,VarOrVarType}, nreals::Int) where {S,D,N}
-  @assert coordtype(sdata) == coordtype(sdomain) "data and domain must have the same coordinate type"
+  T1 = coordtype(domain(sdata))
+  T2 = coordtype(sdomain)
+  @assert T1 == T2 "data and domain must have the same coordinate type"
 
   svars = variables(sdata)
   datavars = Dict(name.(svars) .=> mactype.(svars))

@@ -33,19 +33,19 @@
 
   # mean
   mean2D = mean(ensemble)
-  @test mean2D.z == 2.0*ones(nelements(mean2D))
-  @test domain(mean2D) == ensemble.domain
+  @test mean2D.z == 2.0*ones(nitems(mean2D))
+  @test domain(mean2D) == domain(ensemble)
 
   # variance
   var2D = var(ensemble)
-  @test var2D.z == 1.0*ones(nelements(var2D))
-  @test domain(var2D) == ensemble.domain
+  @test var2D.z == 1.0*ones(nitems(var2D))
+  @test domain(var2D) == domain(ensemble)
 
   # quantile (scalar)
   p = 0.5
   quant2D = quantile(ensemble, p)
-  @test quant2D.z == 2.0*ones(nelements(quant2D))
-  @test domain(quant2D) == ensemble.domain
+  @test quant2D.z == 2.0*ones(nitems(quant2D))
+  @test domain(quant2D) == domain(ensemble)
 
   # quantile (vector)
   ps = [0.0, 0.5, 1.0]

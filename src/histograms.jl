@@ -14,15 +14,15 @@ struct EmpiricalHistogram{H}
 end
 
 EmpiricalHistogram(d, v::Symbol, w::WeightingMethod; kwargs...) =
-  EmpiricalHistogram(fit(Histogram, d[v], weight(d, w); kwargs...))
+  EmpiricalHistogram(fit(Histogram, getproperty(d, v), weight(d, w); kwargs...))
 EmpiricalHistogram(d, v::Symbol, s::Number; kwargs...) =
-  EmpiricalHistogram(d, v, BlockWeighting(ntuple(i->s,embeddim(d))); kwargs...)
+  EmpiricalHistogram(d, v, BlockWeighting(ntuple(i->s, _dim(d))); kwargs...)
 EmpiricalHistogram(d, v::Symbol; kwargs...) =
   EmpiricalHistogram(d, v, median_heuristic(d); kwargs...)
 EmpiricalHistogram(d, w::WeightingMethod; kwargs...) =
   Dict(v => EmpiricalHistogram(d, v, w; kwargs...) for v in name.(variables(d)))
 EmpiricalHistogram(d, s::Number; kwargs...) =
-  EmpiricalHistogram(d, BlockWeighting(ntuple(i->s,embeddim(d))); kwargs...)
+  EmpiricalHistogram(d, BlockWeighting(ntuple(i->s, _dim(d))); kwargs...)
 
 """
     values(histogram)

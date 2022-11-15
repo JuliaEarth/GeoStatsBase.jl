@@ -12,12 +12,12 @@ struct BlockFolding{S} <: FoldingMethod
   sides::S
 end
 
-function folds(object, method::BlockFolding)
+function folds(domain::Domain, method::BlockFolding)
   # retrieve parameters
   sides = method.sides
 
-  # partition object
-  p = partition(object, BlockPartition(sides, neighbors=true))
+  # partition domain
+  p = partition(domain, BlockPartition(sides, neighbors=true))
   m = metadata(p)[:neighbors]
   s = indices(p)
   n = length(p)

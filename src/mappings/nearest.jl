@@ -20,16 +20,19 @@ function Base.map(sdata, sdomain, targetvars, ::NearestMapping)
   neighbor = Vector{Int}(undef, 1)
   searcher = KNearestSearch(sdomain, 1)
 
-  for ind in 1:nelements(sdata)
+  𝒟 = domain(sdata)
+
+  for ind in 1:nelements(𝒟)
     # update datum coordinates
-    pₒ = centroid(sdata, ind)
+    pₒ = centroid(𝒟, ind)
 
     # find nearest location in the domain
     search!(neighbor, pₒ, searcher)
 
     # save pair if there is data for variable
     for var in targetvars
-      if !ismissing(sdata[var][ind])
+      v = getproperty(sdata, var)
+      if !ismissing(v[ind])
         push!(mappings[var], neighbor[1] => ind)
       end
     end

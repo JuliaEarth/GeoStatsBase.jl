@@ -23,15 +23,16 @@ function Base.map(sdata, sdomain, targetvars, method::CopyMapping)
   mappings = Dict(var => Dict{Int,Int}() for var in targetvars)
 
   # retrieve origin and destination indices
-  orig = isnothing(method.orig) ? (1:nelements(sdata)) : method.orig
-  dest = isnothing(method.dest) ? (1:nelements(sdata)) : method.dest
+  orig = isnothing(method.orig) ? (1:nitems(sdata)) : method.orig
+  dest = isnothing(method.dest) ? (1:nitems(sdata)) : method.dest
 
   @assert length(orig) == length(dest) "invalid mapping specification"
 
   for i in eachindex(orig, dest)
     # save pair if there is data for variable
     for var in targetvars
-      if !ismissing(sdata[var][orig[i]])
+      v = getproperty(sdata, var)
+      if !ismissing(v[orig[i]])
         push!(mappings[var], dest[i] => orig[i])
       end
     end

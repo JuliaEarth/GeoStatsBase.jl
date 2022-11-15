@@ -22,7 +22,8 @@ function uniquecoords(data::D; agg=Dict()) where {D<:Data}
   # filtering info
   for var in vars
     if var ∉ keys(agg)
-      ST = scitype(data[var][1])
+      val = getproperty(data, var)
+      ST  = scitype(val[1])
       agg[var] = ST <: Continuous ? _mean : _first
     end
   end
@@ -44,12 +45,14 @@ function uniquecoords(data::D; agg=Dict()) where {D<:Data}
     if length(g) > 1
       # aggregate variables
       for var in vars
-        push!(vals[var], agg[var](data[var][g]))
+        v = getproperty(data, var)
+        push!(vals[var], agg[var](v[g]))
       end
     else
       # copy location
       for var in vars
-        push!(vals[var], data[var][i])
+        v = getproperty(data, var)
+        push!(vals[var], v[i])
       end
     end
     push!(locs, i)

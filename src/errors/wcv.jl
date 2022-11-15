@@ -44,7 +44,8 @@ function Base.error(solver, problem, method::WeightedCrossValidation)
   loss  = method.loss
   for var in ovars
     if var ∉ keys(loss)
-      loss[var] = defaultloss(sdata[var][1])
+      v = getproperty(sdata, var)
+      loss[var] = defaultloss(v[1])
     end
   end
 
@@ -66,9 +67,10 @@ function Base.error(solver, problem, method::WeightedCrossValidation)
 
     # loss for each variable
     losses = map(ovars) do var
-      y = holdout[var]
-      ŷ = solution[var]
-      ℒ = value(loss[var], y, ŷ, AggMode.WeightedSum(weights)) / length(y)
+      y = getproperty(holdout, var)
+      ŷ = getproperty(solution, var)
+      𝓌 = AggMode.WeightedSum(weights)
+      ℒ = value(loss[var], y, ŷ, 𝓌) / length(y)
       var => ℒ
     end
 

@@ -16,12 +16,12 @@ end
 
 UniformFolding(k::Int) = UniformFolding(k, true)
 
-function folds(object, method::UniformFolding)
+function folds(domain::Domain, method::UniformFolding)
   # retrieve parameters
   k, shuffle = method.k, method.shuffle
 
-  # partition object
-  p = partition(object, UniformPartition(k, shuffle))
+  # partition domain
+  p = partition(domain, UniformPartition(k, shuffle))
   s = indices(p)
   n = length(p)
 

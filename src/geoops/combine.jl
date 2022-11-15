@@ -58,7 +58,7 @@ function _combine(data::D, names, columns) where {D<:Data}
 end
 
 function _combine(partition::Partition{D}, names, columns) where {D<:Data}
-  table = values(partition.object)
+  table = values(parent(partition))
   meta  = metadata(partition)
 
   point(data) = centroid(boundingbox(domain(data)))

@@ -31,9 +31,13 @@ struct EstimationProblem{S,D,N} <: Problem
   function EstimationProblem{S,D,N}(sdata, sdomain, vars) where {S,D,N}
     pnames = name.(vars)
     dnames = name.(variables(sdata))
+    valid  = !isempty(pnames) && pnames ⊆ dnames
 
-    @assert !isempty(pnames) && pnames ⊆ dnames "target variables must be present in spatial data"
-    @assert coordtype(sdata) == coordtype(sdomain) "data and domain must have the same coordinate type"
+    T1 = coordtype(domain(sdata))
+    T2 = coordtype(sdomain)
+
+    @assert valid "target variables must be present in geospatial data"
+    @assert T1 == T2 "data and domain must have the same coordinate type"
 
     new(sdata, sdomain, vars)
   end

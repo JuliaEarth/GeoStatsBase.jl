@@ -10,8 +10,8 @@ are single elements of the object.
 """
 struct OneFolding <: FoldingMethod end
 
-function folds(object, ::OneFolding)
-  n = nelements(object)
+function folds(domain::Domain, ::OneFolding)
+  n = nelements(domain)
 
   function pair(i)
     # source and target indices
