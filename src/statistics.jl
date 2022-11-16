@@ -50,34 +50,30 @@ Optionally, specify the variable `v` and the block side `s`.
 """
 quantile(d::Data, p) = quantile(d, p, mode_heuristic(d))
 
-"""
-    median_heuristic(d)
-
-Return the estimated median of the pairwise distances for a set of locations.
-"""
-function median_heuristic(d)
-  D = dist_matrix_random_sample(domain(d))
-  # median heuristic
+# return a block size based on pairwise distances and
+# an aggregation function (e.g. mean, mode)
+function heuristic(d, fun)
+  𝒟 = domain(d)
+  D = dist_matrix_random_sample(𝒟)
   n = size(D, 1)
-  m = median(D[i,j] for i in 1:n for j in 1:n if i > j)
-
-  l = bound_box_constr(d)
-
-  min(m, l)
+  d = fun([D[i,j] for i in 1:n for j in 1:n if i > j])
+  l = bound_box_constr(𝒟)
+  min(d, l)
 end
 
-"""
-    mode_heuristic(d)
+median_heuristic(d) = heuristic(d, median)
 
-Return the estimated mode of the pairwise distances for a set of locations.
-"""
-function mode_heuristic(d)
-  D = dist_matrix_random_sample(domain(d))
-  n = size(D, 1)
-  m = hsm_mode([D[i,j] for i in 1:n for j in 1:n if i > j])
-  l = bound_box_constr(d)
-  min(m, l)
+mode_heuristic(d) = heuristic(d, hsm_mode)
+
+function dist_matrix_random_sample(𝒟)
+  # select a maximum number of points at random
+  nobs = nelements(𝒟)
+  inds = sample(1:nobs, min(nobs, 1000), replace=false)
+  X = (coordinates(centroid(𝒟, ind)) for ind in inds)
+  pairwise(Euclidean(), X)
 end
+
+bound_box_constr(𝒟) = minimum(sides(boundingbox(𝒟)))
 
 """
     hsm_mode(x)
@@ -113,13 +109,3 @@ function hsm_recursion(x)
   # perform recursion
   hsm_recursion(view(x, i:i+k))
 end
-
-function dist_matrix_random_sample(dom)
-  # select a maximum number of points at random
-  n = nelements(dom)
-  inds = sample(1:n, min(n, 1000), replace=false)
-  X = [coordinates(centroid(dom, ind)) for ind in inds]
-  pairwise(Euclidean(), X)
-end
-
-bound_box_constr(d) = minimum(sides(boundingbox(domain(d))))
