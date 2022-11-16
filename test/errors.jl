@@ -11,7 +11,7 @@
     # dummy classifier → 0.5 misclassification rate
     for m in [LeaveOneOut(),
               LeaveBallOut(0.1),
-              CrossValidation(10),
+              KFoldValidation(10),
               BlockCrossValidation(0.1),
               DensityRatioValidation(10)]
       e = error(s, p, m)
@@ -32,7 +32,7 @@
     # high variance + dummy (mean) estimator → high error
     for m in [LeaveOneOut(),
               LeaveBallOut(0.1),
-              CrossValidation(10),
+              KFoldValidation(10),
               BlockCrossValidation(0.1)]
       e₁ = error(s, p₁, m)
       e₂ = error(s, p₂, m)

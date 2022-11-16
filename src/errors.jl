@@ -23,7 +23,7 @@ Base.error(solver, problem, ::ErrorEstimationMethod)
 
 include("errors/loo.jl")
 include("errors/lbo.jl")
-include("errors/cv.jl")
+include("errors/kfv.jl")
 include("errors/bcv.jl")
 include("errors/wcv.jl")
 include("errors/drv.jl")

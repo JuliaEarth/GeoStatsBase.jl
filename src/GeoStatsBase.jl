@@ -126,7 +126,7 @@ export
   ErrorEstimationMethod,
   LeaveOneOut,
   LeaveBallOut,
-  CrossValidation,
+  KFoldValidation,
   BlockCrossValidation,
   WeightedCrossValidation,
   DensityRatioValidation,

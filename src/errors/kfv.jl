@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------
 
 """
-    CrossValidation(k; shuffle=true, loss=Dict())
+    KFoldValidation(k; shuffle=true, loss=Dict())
 
 `k`-fold cross-validation. Optionally, `shuffle` the
 data, and specify `loss` function  from `LossFunctions.jl`
@@ -17,16 +17,16 @@ for some of the variables.
   cross-validation and the repeated learning-testing methods]
   (https://www.jstor.org/stable/2336116)
 """
-struct CrossValidation <: ErrorEstimationMethod
+struct KFoldValidation <: ErrorEstimationMethod
   k::Int
   shuffle::Bool
   loss::Dict{Symbol,SupervisedLoss}
 end
 
-CrossValidation(k::Int; shuffle=true, loss=Dict()) =
-  CrossValidation(k, shuffle, loss)
+KFoldValidation(k::Int; shuffle=true, loss=Dict()) =
+  KFoldValidation(k, shuffle, loss)
 
-function Base.error(solver, problem, method::CrossValidation)
+function Base.error(solver, problem, method::KFoldValidation)
   # uniform weights
   weighting = UniformWeighting()
 
