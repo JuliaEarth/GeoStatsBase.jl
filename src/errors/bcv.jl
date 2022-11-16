@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------
 
 """
-    BlockCrossValidation(sides; loss=Dict())
+    BlockValidation(sides; loss=Dict())
 
 Cross-validation with blocks of given `sides`. Optionally,
 specify `loss` function from `LossFunctions.jl` for some
@@ -19,15 +19,15 @@ become cubes.
   of spatial models via spatial k-fold cross-validation]
   (https://www.tandfonline.com/doi/full/10.1080/13658816.2017.1346255)
 """
-struct BlockCrossValidation{S} <: ErrorEstimationMethod
+struct BlockValidation{S} <: ErrorEstimationMethod
   sides::S
   loss::Dict{Symbol,SupervisedLoss}
 end
 
-BlockCrossValidation(sides; loss=Dict()) =
-  BlockCrossValidation{typeof(sides)}(sides, loss)
+BlockValidation(sides; loss=Dict()) =
+  BlockValidation{typeof(sides)}(sides, loss)
 
-function Base.error(solver, problem, method::BlockCrossValidation)
+function Base.error(solver, problem, method::BlockValidation)
   # uniform weights
   weighting = UniformWeighting()
 

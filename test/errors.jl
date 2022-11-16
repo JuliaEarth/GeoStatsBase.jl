@@ -12,7 +12,7 @@
     for m in [LeaveOneOut(),
               LeaveBallOut(0.1),
               KFoldValidation(10),
-              BlockCrossValidation(0.1),
+              BlockValidation(0.1),
               DensityRatioValidation(10)]
       e = error(s, p, m)
       @test isapprox(e[:y], 0.5, atol=0.06)
@@ -33,7 +33,7 @@
     for m in [LeaveOneOut(),
               LeaveBallOut(0.1),
               KFoldValidation(10),
-              BlockCrossValidation(0.1)]
+              BlockValidation(0.1)]
       e₁ = error(s, p₁, m)
       e₂ = error(s, p₂, m)
       @test e₁[:z] < 1

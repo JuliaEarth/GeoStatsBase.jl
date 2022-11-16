@@ -127,7 +127,7 @@ export
   LeaveOneOut,
   LeaveBallOut,
   KFoldValidation,
-  BlockCrossValidation,
+  BlockValidation,
   WeightedCrossValidation,
   DensityRatioValidation,
 
