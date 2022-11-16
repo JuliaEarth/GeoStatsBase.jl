@@ -34,8 +34,8 @@ function Base.error(solver, problem, method::BlockValidation)
   # block folds
   folding = BlockFolding(method.sides)
 
-  wcv = WeightedCrossValidation(weighting, folding,
-                                lambda=1, loss=method.loss)
+  wcv = WeightedValidation(weighting, folding,
+                           lambda=1, loss=method.loss)
 
   error(solver, problem, wcv)
 end

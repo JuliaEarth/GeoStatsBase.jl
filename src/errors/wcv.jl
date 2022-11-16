@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------
 
 """
-    WeightedCrossValidation(weigthing, folding; lambda=1.0, loss=Dict())
+    WeightedValidation(weigthing, folding; lambda=1.0, loss=Dict())
 
 An error estimation method which samples are weighted with
 `weighting` method and split into folds with `folding` method.
@@ -18,26 +18,22 @@ the variables.
 * Sugiyama et al. 2007. [Covariate shift adaptation by importance weighted
   cross validation](http://www.jmlr.org/papers/volume8/sugiyama07a/sugiyama07a.pdf)
 """
-struct WeightedCrossValidation{W<:WeightingMethod,
-                               F<:FoldingMethod,
-                               T<:Real} <: ErrorEstimationMethod
+struct WeightedValidation{W<:WeightingMethod,F<:FoldingMethod,T<:Real} <: ErrorEstimationMethod
   weighting::W
   folding::F
   lambda::T
   loss::Dict{Symbol,SupervisedLoss}
 
-  function WeightedCrossValidation{W,F,T}(weighting, folding,
-                                          lambda, loss) where {W,F,T}
+  function WeightedValidation{W,F,T}(weighting, folding, lambda, loss) where {W,F,T}
     @assert 0 ≤ lambda ≤ 1 "lambda must lie in [0,1]"
     new(weighting, folding, lambda, loss)
   end
 end
 
-WeightedCrossValidation(weighting::W, folding::F;
-                        lambda::T=one(T), loss=Dict()) where {W,F,T} =
-  WeightedCrossValidation{W,F,T}(weighting, folding, lambda, loss)
+WeightedValidation(weighting::W, folding::F; lambda::T=one(T), loss=Dict()) where {W,F,T} =
+  WeightedValidation{W,F,T}(weighting, folding, lambda, loss)
 
-function Base.error(solver, problem, method::WeightedCrossValidation)
+function Base.error(solver, problem, method::WeightedValidation)
   # retrieve problem info
   sdata = _foldable(problem)
   ovars = _outputvars(problem)

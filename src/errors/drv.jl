@@ -56,9 +56,9 @@ function Base.error(solver::LearningSolver, problem::LearningProblem,
   # random folds
   folding = UniformFolding(method.k, method.shuffle)
 
-  wcv = WeightedCrossValidation(weighting, folding,
-                                lambda=method.lambda,
-                                loss=method.loss)
+  wcv = WeightedValidation(weighting, folding,
+                           lambda=method.lambda,
+                           loss=method.loss)
 
   error(solver, problem, wcv)
 end

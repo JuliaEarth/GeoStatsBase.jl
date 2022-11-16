@@ -38,8 +38,8 @@ function Base.error(solver, problem, method::LeaveBallOut)
   # ball folds
   folding = BallFolding(method.ball)
 
-  wcv = WeightedCrossValidation(weighting, folding,
-                                lambda=1, loss=method.loss)
+  wcv = WeightedValidation(weighting, folding,
+                           lambda=1, loss=method.loss)
 
   error(solver, problem, wcv)
 end

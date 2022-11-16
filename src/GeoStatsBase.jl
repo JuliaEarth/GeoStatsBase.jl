@@ -128,7 +128,7 @@ export
   LeaveBallOut,
   KFoldValidation,
   BlockValidation,
-  WeightedCrossValidation,
+  WeightedValidation,
   DensityRatioValidation,
 
   # helper macros
