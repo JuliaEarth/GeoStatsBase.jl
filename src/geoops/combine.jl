@@ -45,10 +45,9 @@ macro combine(object::Symbol, exprs...)
 end
 
 function _combine(data::D, names, columns) where {D<:Data}
-  dom   = domain(data)
   table = values(data)
 
-  newdom = Collection([centroid(dom)])
+  newdom = Collection([Multi(domain(data))])
 
   𝒯 = (; zip(names, columns)...)
   newtable = 𝒯 |> Tables.materializer(table)
@@ -61,9 +60,7 @@ function _combine(partition::Partition{D}, names, columns) where {D<:Data}
   table = values(parent(partition))
   meta  = metadata(partition)
 
-  point(data) = centroid(boundingbox(domain(data)))
-
-  newdom = Collection([point(data) for data in partition])
+  newdom = Collection([Multi(domain(data)) for data in partition])
 
   grows    = meta[:rows]
   gnames   = meta[:names]
