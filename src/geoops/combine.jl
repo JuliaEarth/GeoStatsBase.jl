@@ -47,7 +47,7 @@ end
 function _combine(data::D, names, columns) where {D<:Data}
   table = values(data)
 
-  newdom = Collection([Multi(domain(data))])
+  newdom = Collection([Multi(collect(domain(data)))])
 
   𝒯 = (; zip(names, columns)...)
   newtable = 𝒯 |> Tables.materializer(table)
@@ -60,7 +60,7 @@ function _combine(partition::Partition{D}, names, columns) where {D<:Data}
   table = values(parent(partition))
   meta  = metadata(partition)
 
-  newdom = Collection([Multi(domain(data)) for data in partition])
+  newdom = Collection([Multi(collect(domain(data))) for data in partition])
 
   grows    = meta[:rows]
   gnames   = meta[:names]

@@ -248,13 +248,13 @@
     
     c = @combine(sdata, :x_sum = sum(:x))
     @test c.x_sum   == [sum(sdata.x)]
-    @test domain(c) == Collection([Multi(domain(sdata))])
+    @test domain(c) == Collection([Multi(collect(domain(sdata)))])
     @test Tables.schema(values(c)).names == (:x_sum,)
 
     c = @combine(sdata, :y_mean = mean(:y), :z_median = median(:z))
     @test c.y_mean   == [mean(sdata.y)]
     @test c.z_median == [median(sdata.z)]
-    @test domain(c)  == Collection([Multi(domain(sdata))])
+    @test domain(c)  == Collection([Multi(collect(domain(sdata)))])
     @test Tables.schema(values(c)).names == (:y_mean, :z_median)
     
     p = @groupby(sdata, :x)
@@ -262,7 +262,7 @@
     @test c.x       == [first(data.x) for data in p]
     @test c.y_sum   == [sum(data.y) for data in p]
     @test c.z_prod  == [prod(data.z) for data in p]
-    @test domain(c) == Collection([Multi(domain(data)) for data in p])
+    @test domain(c) == Collection([Multi(collect(domain(data))) for data in p])
     @test Tables.schema(values(c)).names == (:x, :y_sum, :z_prod)
 
     p = @groupby(sdata, :x, :y)
@@ -270,7 +270,7 @@
     @test c.x       == [first(data.x) for data in p]
     @test c.y       == [first(data.y) for data in p]
     @test c.z_mean  == [mean(data.z) for data in p]
-    @test domain(c) == Collection([Multi(domain(data)) for data in p])
+    @test domain(c) == Collection([Multi(collect(domain(data))) for data in p])
     @test Tables.schema(values(c)).names == (:x, :y, :z_mean)
   end
 end
