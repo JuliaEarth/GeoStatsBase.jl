@@ -71,20 +71,20 @@ Meshes.domain(problem::EstimationProblem) = problem.sdomain
 
 Return the variable names of the estimation `problem` and their types.
 """
-Meshes.variables(problem::EstimationProblem) = problem.vars
+variables(problem::EstimationProblem) = problem.vars
 
 # ------------
 # IO methods
 # ------------
 function Base.show(io::IO, problem::EstimationProblem)
-  N = embeddim(problem.sdomain)
-  print(io, "$(N)D EstimationProblem")
+  Dim = embeddim(problem.sdomain)
+  print(io, "$(Dim)D EstimationProblem")
 end
 
 function Base.show(io::IO, ::MIME"text/plain", problem::EstimationProblem)
   vars = ["$(name(v)) ($(mactype(v)))" for v in problem.vars]
   println(io, problem)
-  println(io, "  data:      ", problem.sdata)
   println(io, "  domain:    ", problem.sdomain)
-  print(  io, "  variables: ", join(vars, ", ", " and "))
+  println(io, "  samples:   ", domain(problem.sdata))
+  print(  io, "  targets:   ", join(vars, ", ", " and "))
 end

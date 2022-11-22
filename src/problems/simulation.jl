@@ -112,7 +112,7 @@ Meshes.domain(problem::SimulationProblem) = problem.sdomain
 
 Return the target variables of the simulation `problem` and their types.
 """
-Meshes.variables(problem::SimulationProblem) = problem.vars
+variables(problem::SimulationProblem) = problem.vars
 
 """
     hasdata(problem)
@@ -132,18 +132,18 @@ nreals(problem::SimulationProblem) = problem.nreals
 # IO methods
 # ------------
 function Base.show(io::IO, problem::SimulationProblem)
-  N = embeddim(problem.sdomain)
+  Dim = embeddim(problem.sdomain)
   kind = hasdata(problem) ? "conditional" : "unconditional"
-  print(io, "$(N)D SimulationProblem ($kind)")
+  print(io, "$(Dim)D SimulationProblem ($kind)")
 end
 
 function Base.show(io::IO, ::MIME"text/plain", problem::SimulationProblem)
   vars = ["$(name(v)) ($(mactype(v)))" for v in problem.vars]
   println(io, problem)
-  if problem.sdata ≠ nothing
-    println(io, "  data:      ", problem.sdata)
-  end
   println(io, "  domain:    ", problem.sdomain)
-  println(io, "  variables: ", join(vars, ", ", " and "))
+  if problem.sdata ≠ nothing
+    println(io, "  samples:   ", domain(problem.sdata))
+  end
+  println(io, "  targets:   ", join(vars, ", ", " and "))
   print(  io, "  N° reals:  ", problem.nreals)
 end

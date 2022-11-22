@@ -19,7 +19,7 @@
     # show methods
     problem2D = EstimationProblem(data2D, grid2D, :value)
     @test sprint(show, problem2D) == "2D EstimationProblem"
-    @test sprint(show, MIME"text/plain"(), problem2D) == "2D EstimationProblem\n  data:      3 MeshData{2,Float64}\n  domain:    100×100 CartesianGrid{2,Float64}\n  variables: value (Float64)"
+    @test sprint(show, MIME"text/plain"(), problem2D) == "2D EstimationProblem\n  domain:    100×100 CartesianGrid{2,Float64}\n  samples:   3 PointSet{2,Float64}\n  targets:   value (Float64)"
   end
 
   @testset "Simulation" begin
@@ -56,7 +56,7 @@
     # show methods
     problem2D = SimulationProblem(data2D, grid2D, :value, 100)
     @test sprint(show, problem2D) == "2D SimulationProblem (conditional)"
-    @test sprint(show, MIME"text/plain"(), problem2D) == "2D SimulationProblem (conditional)\n  data:      3 MeshData{2,Float64}\n  domain:    100×100 CartesianGrid{2,Float64}\n  variables: value (Float64)\n  N° reals:  100"
+    @test sprint(show, MIME"text/plain"(), problem2D) == "2D SimulationProblem (conditional)\n  domain:    100×100 CartesianGrid{2,Float64}\n  samples:   3 PointSet{2,Float64}\n  targets:   value (Float64)\n  N° reals:  100"
   end
 
   @testset "Learning" begin
@@ -75,6 +75,6 @@
     # show methods
     problem = LearningProblem(sdata, tdata, ctask)
     @test sprint(show, problem) == "2D LearningProblem"
-    @test sprint(show, MIME"text/plain"(), problem) == "2D LearningProblem\n  source: 10 MeshData{2,Float64}\n  target: 100 MeshData{2,Float64}\n  task:   Classification x → y"
+    @test sprint(show, MIME"text/plain"(), problem) == "2D LearningProblem\n  source: 10 PointSet{2,Float64}\n  target: 10×10 CartesianGrid{2,Float64}\n  task:   Classification x → y"
   end
 end

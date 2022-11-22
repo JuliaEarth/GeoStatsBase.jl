@@ -38,6 +38,7 @@ import Base: ==
 const GeoData = Meshes.MeshData
 
 include("georef.jl")
+include("variables.jl")
 include("ensembles.jl")
 include("macros.jl")
 include("trends.jl")
@@ -60,6 +61,12 @@ export
   # data
   GeoData,
   georef,
+
+  # variables
+  Variable,
+  variables,
+  mactype,
+  name,
 
   # ensembles
   Ensemble,

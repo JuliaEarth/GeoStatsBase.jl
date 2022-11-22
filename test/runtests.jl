@@ -33,6 +33,7 @@ include("dummy.jl")
 # list of tests
 testfiles = [
   "georef.jl",
+  "variables.jl",
   "ensembles.jl",
   "weighting.jl",
   "geoops.jl",

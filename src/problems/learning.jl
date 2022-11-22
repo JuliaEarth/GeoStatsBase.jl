@@ -61,13 +61,13 @@ task(problem::LearningProblem) = problem.task
 # IO methods
 # ------------
 function Base.show(io::IO, problem::LearningProblem)
-  N = embeddim(domain(problem.sdata))
-  print(io, "$(N)D LearningProblem")
+  Dim = embeddim(domain(problem.sdata))
+  print(io, "$(Dim)D LearningProblem")
 end
 
 function Base.show(io::IO, ::MIME"text/plain", problem::LearningProblem)
   println(io, problem)
-  println(io, "  source: ", problem.sdata)
-  println(io, "  target: ", problem.tdata)
+  println(io, "  source: ", domain(problem.sdata))
+  println(io, "  target: ", domain(problem.tdata))
   print(  io, "  task:   ", problem.task)
 end
