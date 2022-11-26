@@ -190,6 +190,14 @@
     @test ndata.logx == log.(sdata.x)
     @test ndata.expy == exp.(sdata.y)
 
+    # column name interpolation
+    ndata = @transform(sdata, {"z"} = {"x"} - 2*{"y"})
+    @test ndata.z == sdata.x .- 2 .* sdata.y
+
+    xnm, ynm, znm = :x, :y, :z
+    ndata = @transform(sdata, {znm} = {xnm} - 2*{ynm})
+    @test ndata.z == sdata.x .- 2 .* sdata.y
+
     # variable interpolation
     z = rand(10)
     ndata = @transform(sdata, :z = z, :w = :x - z)
@@ -257,6 +265,15 @@
     @test domain(c)  == Collection([Multi(domain(sdata))])
     @test Tables.schema(values(c)).names == (:y_mean, :z_median)
     
+    # column name interpolation
+    c = @combine(sdata, {"z"} = sum({"x"}) + prod({"y"}))
+    @test c.z == [sum(sdata.x) + prod(sdata.y)]
+
+    xnm, ynm, znm = :x, :y, :z
+    c = @combine(sdata, {znm} = sum({xnm}) + prod({ynm}))
+    @test c.z == [sum(sdata.x) + prod(sdata.y)]
+
+    # Partition
     p = @groupby(sdata, :x)
     c = @combine(p, :y_sum = sum(:y), :z_prod = prod(:z))
     @test c.x       == [first(data.x) for data in p]
