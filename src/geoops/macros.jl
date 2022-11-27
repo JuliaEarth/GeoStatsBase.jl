@@ -2,9 +2,11 @@
 # Licensed under the MIT License. See LICENSE in the project root.
 # ------------------------------------------------------------------
 
+_exprerror() = throw(ArgumentError("Invalid expression"))
+
 function _split(expr::Expr, rowwise=true)
   if expr.head ≠ :(=)
-    error("Invalid expression")
+    _exprerror()
   end
 
   colname = _colname(expr.args[1])
@@ -13,43 +15,37 @@ function _split(expr::Expr, rowwise=true)
   colname, colexpr
 end
 
-function _colname(arg)
-  if Meta.isexpr(arg, :braces)
-    colname = :(Symbol($(esc(arg.args[1]))))
-  elseif arg isa QuoteNode
-    colname = arg
+function _colname(expr::Expr)
+  if expr.head == :braces
+    :(Symbol($(esc(expr.args[1]))))
   else
-    error("Invalid expression")
+    _exprerror()
   end
-
-  colname
 end
 
-function _colexpr(arg, rowwise)
-  if arg isa Expr
-    if arg.head == :braces
-      colexpr = _makeexpr(arg)
-    else
-      colexpr = copy(arg)
-      _preprocess!(colexpr, rowwise)
-    end
-  elseif arg isa QuoteNode
-    colexpr = _makeexpr(arg)
-  elseif arg isa Symbol
-    colexpr = esc(arg)
-  else
-    error("Invalid expression")
-  end
+_colname(nm::QuoteNode) = nm
+_colname(::Any) = _exprerror()
 
-  colexpr
+function _colexpr(expr::Expr, rowwise)
+  if expr.head == :braces
+    _makeexpr(expr)
+  else
+    colexpr = copy(expr)
+    _preprocess!(colexpr, rowwise)
+    colexpr
+  end
 end
+
+_colexpr(nm::QuoteNode, _) = _makeexpr(nm)
+_colexpr(var::Symbol, _) = esc(var)
+_colexpr(::Any, _) = _exprerror()
 
 _makeexpr(expr::Expr) = :(getproperty(data, $(esc(expr.args[1]))))
 _makeexpr(nm::QuoteNode) = :(getproperty(data, $nm))
 
 function _preprocess!(expr::Expr, rowwise)
   if expr.head ≠ :call
-    error("Invalid expression")
+    _exprerror()
   end
 
   if rowwise
