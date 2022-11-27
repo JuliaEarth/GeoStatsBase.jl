@@ -7,16 +7,32 @@ function _split(expr::Expr, rowwise=true)
     error("Invalid expression")
   end
 
-  colname = expr.args[1]
+  colname = _colname(expr.args[1])
   colexpr = _colexpr(expr.args[2], rowwise)
 
   colname, colexpr
 end
 
+function _colname(arg)
+  if Meta.isexpr(arg, :braces)
+    colname = :(Symbol($(esc(arg.args[1]))))
+  elseif arg isa QuoteNode
+    colname = arg
+  else
+    error("Invalid expression")
+  end
+
+  colname
+end
+
 function _colexpr(arg, rowwise)
   if arg isa Expr
-    colexpr = copy(arg)
-    _preprocess!(colexpr, rowwise)
+    if arg.head == :braces
+      colexpr = _makeexpr(arg)
+    else
+      colexpr = copy(arg)
+      _preprocess!(colexpr, rowwise)
+    end
   elseif arg isa QuoteNode
     colexpr = _makeexpr(arg)
   elseif arg isa Symbol
@@ -28,7 +44,8 @@ function _colexpr(arg, rowwise)
   colexpr
 end
 
-_makeexpr(nm::QuoteNode) = :($(esc(:getproperty))(data, $nm))
+_makeexpr(expr::Expr) = :(getproperty(data, $(esc(expr.args[1]))))
+_makeexpr(nm::QuoteNode) = :(getproperty(data, $nm))
 
 function _preprocess!(expr::Expr, rowwise)
   if expr.head ≠ :call
@@ -51,6 +68,8 @@ function _preprocess!(expr::Expr, rowwise)
     if arg isa Expr
       if arg.head == :(.)
         expr.args[i] = esc(arg)
+      elseif arg.head == :braces
+        expr.args[i] = _makeexpr(arg)
       else
         _preprocess!(arg, rowwise)
       end
