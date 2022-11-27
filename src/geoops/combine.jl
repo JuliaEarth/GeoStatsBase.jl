@@ -9,9 +9,10 @@ Returns a new data object with each column
 `:col₁`, `:col₂`, ..., `:colₙ` being a reduction of `object` columns 
 defined by expressions `expr₁`, `expr₂`, ..., `exprₙ`. 
 The `object` can be a `Data` object or a `Partition` object 
-returned by the `@groupby` macro. If `object` is a `Partition`,
-the reduction expressions will be applied in each subset of the
-`Partition`.
+returned by the `@groupby` macro. In each expression the `object` columns 
+are represented by symbols and, in addition, strings or variables 
+can also be used with the `{colname}` syntax. If `object` is a `Partition`, 
+the reduction expressions will be applied in each subset of the `Partition`.
 
 See also: [`@groupby`](@ref).
 
@@ -26,6 +27,10 @@ using Statistics
 p = @groupby(data, :y)
 @combine(p, :x_prod = prod(:x))
 @combine(p, :x_median = median(:x))
+
+@combine(data, {"z"} = sum({"x"}) + prod({"y"}))
+xnm, ynm, znm = :x, :y, :z
+@combine(data, {znm} = sum({xnm}) + prod({ynm}))
 ```
 """
 macro combine(object::Symbol, exprs...)
