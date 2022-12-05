@@ -12,6 +12,16 @@
   d = georef(tuple, CartesianGrid(3))
   @test domain(d) isa CartesianGrid
 
+  # vectors of elements
+  d = georef(table, rand(Point2, 3))
+  @test domain(d) isa PointSet
+  d = georef(tuple, rand(Point2, 3))
+  @test domain(d) isa PointSet
+  d = georef(table, collect(CartesianGrid(3)))
+  @test domain(d) isa GeometrySet
+  d = georef(tuple, collect(CartesianGrid(3)))
+  @test domain(d) isa GeometrySet
+
   # coordinates of point set
   d = georef(table, rand(2,3))
   @test domain(d) isa PointSet

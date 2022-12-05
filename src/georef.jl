@@ -10,11 +10,21 @@ Georeference `table` on geospatial `domain`.
 georef(table, domain) = meshdata(domain, etable=table)
 
 """
+    georef(table, elems)
+
+Georeference `table` on vector of elements `elems`, i.e.
+geometries or points.
+"""
+georef(table, elems::AbstractVector{<:PointOrGeometry}) =
+  georef(table, Collection(elems))
+
+"""
     georef(table, coords)
 
 Georeference `table` on a `PointSet(coords)`.
 """
-georef(table, coords::AbstractVecOrMat) = georef(table, PointSet(coords))
+georef(table, coords::AbstractVecOrMat) =
+  georef(table, PointSet(coords))
 
 """
     georef(table, coordnames)
@@ -32,26 +42,21 @@ function georef(table, coordnames::NTuple)
   georef(vtable, coords)
 end
 
-"""
-    georef(tuple, domain)
-
-Georeference named `tuple` on geospatial `domain`.
-"""
 function georef(tuple::NamedTuple, domain)
   flat = (; (var=>vec(val) for (var,val) in pairs(tuple))...)
   georef(TypedTables.Table(flat), domain)
 end
 
 # fix ambiguity between other methods
+georef(tuple::NamedTuple, elems::AbstractVector{<:PointOrGeometry}) =
+  georef(tuple, Collection(elems))
+
+georef(tuple::NamedTuple, coords::AbstractVecOrMat) =
+  georef(tuple, PointSet(coords))
+
+# fix ambiguity between other methods
 georef(tuple::NamedTuple, coordnames::NTuple) =
   georef(TypedTables.Table(tuple), coordnames)
-
-"""
-    georef(tuple, coords)
-
-Georefrence named `tuple` on `PointSet(coords)`.
-"""
-georef(tuple::NamedTuple, coords::AbstractVecOrMat) = georef(tuple, PointSet(coords))
 
 """
     georef(tuple; origin=(0.,0.,...), spacing=(1.,1.,...))
