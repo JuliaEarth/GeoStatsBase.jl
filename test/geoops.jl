@@ -21,27 +21,6 @@
     @test nitems(ndata) == 100
   end
 
-  @testset "filter" begin
-    𝒟 = georef((a=[1,2,3], b=[1,1,missing]))
-    𝒫 = filter(s -> !ismissing(s.b), 𝒟)
-    @test 𝒫.a == [1,2]
-    @test 𝒫.b == [1,1]
-
-    𝒟 = georef((a=[1,2,3],b=[3,2,1]))
-    𝒫ₐ = filter(s -> s.a > 1, 𝒟)
-    𝒫ᵦ = filter(s -> s.b > 1, 𝒟)
-    𝒫ₐᵦ = filter(s -> s.a > 1 && s.b > 1, 𝒟)
-    @test nitems(𝒫ₐ) == 2
-    @test nitems(𝒫ᵦ) == 2
-    @test nitems(𝒫ₐᵦ) == 1
-    @test 𝒫ₐ.a == [2,3]
-    @test 𝒫ₐ.b == [2,1]
-    @test 𝒫ᵦ.a == [1,2]
-    @test 𝒫ᵦ.b == [3,2]
-    @test 𝒫ₐᵦ.a == [2]
-    @test 𝒫ₐᵦ.b == [2]
-  end
-
   @testset "integrate" begin
     grid  = CartesianGrid(2,2)
     mesh  = simplexify(grid)
