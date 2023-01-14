@@ -54,15 +54,29 @@ function apply(transform::Potrace, data)
     (; feat...), mask
   end
 
+  # split preprocessing results
   feats = first.(preproc)
   masks = last.(preproc)
 
+  # collect vertices and topology
+  verts = vertices(dom)
+  topo  = topology(dom)
+
+  # map pixels to vertices
+  ∂ = Boundary{2,0}(topo)
+
+  # map direction to first vertex of edge of
+  # interest (i.e. edge touched by direction)
+  d = Dict(:→ => 1, :↑ => 2, :← => 3, :↓ => 4)
+
+  # map (→, i) representation to (x, y) point
+  points(chain) = [verts[∂(i)[d[→]]] for (→, i) in chain]
+
   elems = map(masks) do mask
     paths = potrace(mask)
-    polys = map(paths) do path
-      outer, inners = path
-      opoints = [centroid(dom, o) for o in outer]
-      ipoints = [[centroid(dom, i) for i in inner] for inner in inners]
+    polys = map(paths) do (outer, inners)
+      opoints = points(outer)
+      ipoints = [points(inner) for inner in inners]
       PolyArea(opoints, ipoints)
     end
     Multi(polys)
@@ -99,8 +113,8 @@ function potrace(mask)
   fun(■) = linear[■ - CartesianIndex(1,1)]
   map(paths) do path
     outer, inners = path
-    o  = [fun(■) for (□, ■) in outer]
-    is = [[fun(■) for (□, ■) in inner] for inner in inners]
+    o  = [(→, fun(■)) for (□, →, ■) in outer]
+    is = [[(→, fun(■)) for (□, →, ■) in inner] for inner in inners]
     o, is
   end
 end
@@ -149,28 +163,33 @@ function tracepath(M)
   # step direction along the path
   step(□, ■) = CartesianIndex(■[2] - □[2], □[1] - ■[1])
   
+  # direction after a given turn
+  left  = Dict(:→ => :↑, :↑ => :←, :← => :↓, :↓ => :→)
+  right = Dict(:→ => :↓, :↓ => :←, :← => :↑, :↑ => :→)
+    
   # find the next edge along the path
-  function move((□, ■))
+  function move((□, →, ■))
     □ₛ = □ + step(□, ■)
     ■ₛ = ■ + step(□, ■)
-    
+
     # 4 possible configurations
     if M[□ₛ] == 1 && M[■ₛ] == 1
-      □, □ₛ # make a right turn
+      □, right[→], □ₛ # make a right turn
     elseif M[□ₛ] == 0 && M[■ₛ] == 1
-      □ₛ, ■ₛ # continue straight
+      □ₛ, →, ■ₛ # continue straight
     elseif M[□ₛ] == 0 && M[■ₛ] == 0
-      ■ₛ, ■ # make a left turn
+      ■ₛ, left[→], ■ # make a left turn
     else # cross pattern
-      ■ₛ, ■ # left turn policy
+      ■ₛ, left[→], ■ # left turn policy
     end
   end
   
   # build a closed path
-  start = (□, ■)
+  start = (□, :→, ■)
   next  = move(start)
   path  = [start, next]
-  while next ≠ start
+  while first(next) ≠ first(start) ||
+        last(next) ≠ last(start)
     next = move(next)
     push!(path, next)
   end
@@ -180,9 +199,10 @@ end
 
 # invert the the mask inside the path
 function insideout!(M, path)
-  frontier = copy(path)
+  □s, ⬕s   = first.(path), last.(path)
+  frontier = collect(zip(□s, ⬕s))
   visited  = falses(size(M))
-  visited[first.(path)] .= true
+  visited[□s] .= true
   while !isempty(frontier)
     □, ⬕ = pop!(frontier)
     
