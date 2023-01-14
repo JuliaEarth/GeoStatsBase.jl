@@ -1,5 +1,4 @@
 using GeoStatsBase
-using MLJ: @load
 using Meshes
 using CSV
 using CoDa
@@ -15,6 +14,8 @@ using DensityRatioEstimation
 using ReferenceFrameRotations
 using Test, Random, Plots
 using ReferenceTests, ImageIO
+using FileIO: load
+using MLJ: @load
 
 import ScientificTypes as ST
 
@@ -54,7 +55,7 @@ testfiles = [
 
 @testset "GeoStatsBase.jl" begin
   for testfile in testfiles
-    @info "Testing $testfile..."
+    println("Testing $testfile...")
     include(testfile)
   end
 end

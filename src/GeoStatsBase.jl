@@ -12,7 +12,7 @@ using Combinatorics: multiexponents
 using Distances: Euclidean, pairwise
 using Distributed: CachingPool, pmap, myid
 using StatsBase: Histogram, AbstractWeights
-using StatsBase: midpoints, sample
+using StatsBase: midpoints, sample, mode
 using Transducers: Map, foldxt
 using ReferenceFrameRotations
 using DensityRatioEstimation
@@ -24,12 +24,14 @@ using Optim # for LSIF estimation
 
 import Meshes
 import MLJModelInterface as MI
+import TableTransforms: StatelessTableTransform
 import TableTransforms: StatelessFeatureTransform
 import TableTransforms: ColSpec, Col, colspec, choose
 import TableTransforms: apply, revert, reapply
 import TableTransforms: applyfeat, revertfeat
 import TableTransforms: applymeta, revertmeta
 import TableTransforms: divide, attach
+import TableTransforms: isrevertible
 import StatsBase: fit, varcorrection
 import Statistics: mean, var, quantile
 import Base: ==
@@ -182,6 +184,7 @@ export
 
   # transforms
   Detrend,
+  Potrace,
 
   # UI elements
   searcher_ui

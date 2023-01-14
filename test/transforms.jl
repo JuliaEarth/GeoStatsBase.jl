@@ -82,6 +82,21 @@
     end
   end
 
+  @testset "Potrace" begin
+    img = load(joinpath(datadir,"letters.png"))
+    dat = georef((color=img,))
+    new = dat |> Potrace(:color)
+    dom = domain(new)
+    @test nelements(dom) == 2
+    @test eltype(dom) <: Multi
+    multi1 = dom[1]
+    multi2 = dom[2]
+    polys1 = collect(multi1)
+    polys2 = collect(multi2)
+    @test length(polys1) == 1
+    @test length(polys2) == 2
+  end
+
   @testset "CoDa" begin
     d = georef((z=rand(1000), w=rand(1000)))
 
