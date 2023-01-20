@@ -69,15 +69,15 @@ function apply(transform::Potrace, data)
   # interest (i.e. edge touched by direction)
   d = Dict(:→ => 1, :↑ => 2, :← => 3, :↓ => 4)
 
-  # map (→, i) representation to (x, y) point
-  points(chain) = [verts[∂(i)[d[→]]] for (→, i) in chain]
+  # map (→, i) representation to chain of points
+  chain(itr) = Chain([verts[∂(i)[d[→]]] for (→, i) in itr])
 
   elems = map(masks) do mask
-    paths = potrace(mask)
+    paths = trace(mask)
     polys = map(paths) do (outer, inners)
-      opoints = points(outer)
-      ipoints = [points(inner) for inner in inners]
-      PolyArea(opoints, ipoints)
+      ochain  = chain(outer)
+      ichains = [chain(inner) for inner in inners]
+      PolyArea(ochain, ichains)
     end
     Multi(polys)
   end
@@ -100,13 +100,13 @@ aggregate(::Type{<:Continuous}, x) = mean(x)
 aggregate(::Type{<:Any}, x) = mode(x)
 
 # trace polygonal geometries on mask
-function potrace(mask)
+function trace(mask)
   # pad mask with inactive pixels
   M = falses(size(mask) .+ 2)
   M[begin+1:end-1,begin+1:end-1] .= mask
 
   # trace paths on padded mask
-  paths = potracerecursion!(M)
+  paths = tracerecursion!(M)
 
   # unpad and linearize indices
   linear = LinearIndices(mask)
@@ -119,7 +119,7 @@ function potrace(mask)
   end
 end
 
-function potracerecursion!(M)
+function tracerecursion!(M)
   paths = []
   while any(M)
     # trace outer path
@@ -133,7 +133,7 @@ function potracerecursion!(M)
 
     if any(I)
       # append inner paths
-      inners = potracerecursion!(I)
+      inners = tracerecursion!(I)
       push!(paths, (outer, first.(inners)))
     else
       # single outer path
