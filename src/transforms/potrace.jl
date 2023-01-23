@@ -111,8 +111,7 @@ function trace(mask)
   # unpad and linearize indices
   linear = LinearIndices(mask)
   fun(■) = linear[■ - CartesianIndex(1,1)]
-  map(paths) do path
-    outer, inners = path
+  map(paths) do (outer, inners)
     o  = [(→, fun(■)) for (□, →, ■) in outer]
     is = [[(→, fun(■)) for (□, →, ■) in inner] for inner in inners]
     o, is
@@ -188,8 +187,7 @@ function tracepath(M)
   start = (□, :→, ■)
   next  = move(start)
   path  = [start, next]
-  while first(next) ≠ first(start) ||
-        last(next) ≠ last(start)
+  while next ≠ start
     next = move(next)
     push!(path, next)
   end
