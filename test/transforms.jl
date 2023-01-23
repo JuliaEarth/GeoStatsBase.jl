@@ -95,6 +95,20 @@
     polys2 = collect(multi2)
     @test length(polys1) == 1
     @test length(polys2) == 2
+
+    ball1 = Ball((0,0), 1)
+    ball2 = Ball((0,0), 2)
+    ball3 = Ball((0,0), 3)
+    grid  = CartesianGrid((-5,-5), (5,5), dims=(100,100))
+    inds1 = centroid.(grid) .∈ Ref(ball1)
+    inds2 = centroid.(grid) .∈ Ref(ball2)
+    inds3 = centroid.(grid) .∈ Ref(ball3)
+    vals  = zeros(100, 100)
+    vals[inds3] .= 1
+    vals[inds2] .= 0
+    vals[inds1] .= 1
+    dat = georef((color=vals,))
+    new = dat |> Potrace(1)
   end
 
   @testset "CoDa" begin
