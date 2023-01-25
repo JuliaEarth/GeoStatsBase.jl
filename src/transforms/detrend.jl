@@ -39,6 +39,8 @@ Detrend(cols::T...; degree=1) where {T<:Col} =
 
 Detrend(; degree=1) = Detrend(:, degree=degree)
 
+isrevertible(::Type{<:Detrend}) = true
+
 function TableTransforms.preprocess(transform::Detrend, data)
   table  = values(data)
   names  = Tables.schema(table).names
