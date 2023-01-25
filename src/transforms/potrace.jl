@@ -73,8 +73,8 @@ function apply(transform::Potrace, data)
   chain(itr) = Chain([verts[∂(i)[d[→]]] for (→, i) in itr])
 
   elems = map(masks) do mask
-    paths = trace(mask)
-    polys = map(paths) do (outer, inners)
+    rings = trace(mask)
+    polys = map(rings) do (outer, inners)
       ochain  = chain(outer)
       ichains = [chain(inner) for inner in inners]
       PolyArea(ochain, ichains)
@@ -108,10 +108,13 @@ function trace(mask)
   # trace paths on padded mask
   paths = tracerecursion!(M)
 
+  # convert paths into rings
+  rings = paths2rings(paths)
+
   # unpad and linearize indices
   linear = LinearIndices(mask)
   fun(■) = linear[■ - CartesianIndex(1,1)]
-  map(paths) do (outer, inners)
+  map(rings) do (outer, inners)
     o  = [(→, fun(■)) for (□, →, ■) in outer]
     is = [[(→, fun(■)) for (□, →, ■) in inner] for inner in inners]
     o, is
@@ -131,9 +134,9 @@ function tracerecursion!(M)
     @. M = M & !I
 
     if any(I)
-      # append inner paths
+      # perform recursion
       inners = tracerecursion!(I)
-      push!(paths, (outer, first.(inners)))
+      push!(paths, (outer, inners))
     else
       # single outer path
       push!(paths, (outer, []))
@@ -223,4 +226,36 @@ function insideout!(M, path)
   end
 
   M
+end
+
+# convert forest of paths to rings
+paths2rings(paths) = mapreduce(treebfs, vcat, paths)
+
+# breadth-first-search on tree of paths
+function treebfs(root)
+  record(node) = (first(node), first.(last(node)))
+
+  visited = []
+  frontier = [root]
+  while !isempty(frontier)
+    node = popfirst!(frontier)
+
+    seen = false
+    for vnode in visited
+      if first(node) ∈ last(vnode)
+        seen = true
+        break
+      end
+    end
+
+    if !seen
+      push!(visited, record(node))
+    end
+
+    for child in last(node)
+      push!(frontier, child)
+    end
+  end
+
+  visited
 end

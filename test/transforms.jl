@@ -83,19 +83,19 @@
   end
 
   @testset "Potrace" begin
+    # challenging case with letters
     img = load(joinpath(datadir,"letters.png"))
     dat = georef((color=img,))
-    new = dat |> Potrace(:color)
+    new = dat |> Potrace(1)
     dom = domain(new)
     @test nelements(dom) == 2
     @test eltype(dom) <: Multi
-    multi1 = dom[1]
-    multi2 = dom[2]
-    polys1 = collect(multi1)
-    polys2 = collect(multi2)
-    @test length(polys1) == 1
+    polys1 = collect(dom[1])
+    polys2 = collect(dom[2])
+    @test length(polys1) == 4
     @test length(polys2) == 2
 
+    # concentric circles
     ball1 = Ball((0,0), 1)
     ball2 = Ball((0,0), 2)
     ball3 = Ball((0,0), 3)
@@ -103,12 +103,19 @@
     inds1 = centroid.(grid) .∈ Ref(ball1)
     inds2 = centroid.(grid) .∈ Ref(ball2)
     inds3 = centroid.(grid) .∈ Ref(ball3)
-    vals  = zeros(100, 100)
-    vals[inds3] .= 1
-    vals[inds2] .= 0
-    vals[inds1] .= 1
-    dat = georef((color=vals,))
+    mask  = zeros(100, 100)
+    mask[inds3] .= 1
+    mask[inds2] .= 0
+    mask[inds1] .= 1
+    dat = georef((mask=mask,))
     new = dat |> Potrace(1)
+    dom = domain(new)
+    @test nelements(dom) == 2
+    @test eltype(dom) <: Multi
+    polys1 = collect(dom[1])
+    polys2 = collect(dom[2])
+    @test length(polys1) == 2
+    @test length(polys2) == 2
   end
 
   @testset "CoDa" begin
@@ -142,7 +149,7 @@
 
   @testset "Mixed" begin
     d = georef((z=rand(1000), w=rand(1000)))
-    p = Closure() → Quantile() → StdCoords()
+    p = Quantile() → StdCoords()
     n, c = apply(p, d)
     r = revert(p, n, c)
     Xr = Tables.matrix(values(r))
