@@ -3,20 +3,26 @@
 # ------------------------------------------------------------------
 
 """
-   Potrace(col)
+   Potrace(col; [ϵ])
 
 Trace polygons on 2D image data with Selinger's Potrace algorithm.
+
+The categories stored in column `col` are converted into binary
+masks, which are then traced into multi-polygons. When provided,
+the option `ϵ` is forwarded to the [`Selinger`[@ref] simplification
+algorithm.
 
 ## References
 
 - Selinger, P. 2003. [Potrace: A polygon-based tracing algorithm]
   (https://potrace.sourceforge.net/potrace.pdf)
 """
-struct Potrace{S<:ColSpec} <: StatelessTableTransform
+struct Potrace{S<:ColSpec,T} <: StatelessTableTransform
   colspec::S
+  ϵ::T
 end
 
-Potrace(col::Col) = Potrace(colspec([col]))
+Potrace(col::Col; ϵ=nothing) = Potrace(colspec([col]), ϵ)
 
 isrevertible(::Type{<:Potrace}) = true
 
@@ -28,6 +34,9 @@ function apply(transform::Potrace, data)
   if !(dom isa Grid)
     throw(ArgumentError("potrace only defined for grid data"))
   end
+
+  # simplification threshold
+  ϵ = transform.ϵ
 
   # select column name
   cols  = Tables.columns(tab)
@@ -72,7 +81,8 @@ function apply(transform::Potrace, data)
   # map (→, i) representation to chain of points
   chain(itr) = Chain([verts[∂(i)[d[→]]] for (→, i) in itr])
 
-  elems = map(masks) do mask
+  # trace multi-polygons on each mask
+  multis = map(masks) do mask
     rings = trace(mask)
     polys = map(rings) do (outer, inners)
       ochain  = chain(outer)
@@ -82,6 +92,10 @@ function apply(transform::Potrace, data)
     Multi(polys)
   end
 
+  # simplify multi-polygons if necessary
+  elems = isnothing(ϵ) ? multis : [simplify(multi, Selinger(ϵ)) for multi in multis]
+
+  # georeference new features on new geometries
   newtab = feats |> Tables.materializer(tab)
   newdom = elems |> Collection
   newdat = georef(newtab, newdom)

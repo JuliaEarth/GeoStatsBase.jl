@@ -116,6 +116,13 @@
     polys2 = collect(dom[2])
     @test length(polys1) == 2
     @test length(polys2) == 2
+    new1 = dat |> Potrace(1, ϵ=0.1)
+    new2 = dat |> Potrace(1, ϵ=0.5)
+    dom1 = domain(new1)
+    dom2 = domain(new2)
+    for (g1, g2) in zip(dom1, dom2)
+      @test nvertices(g1) > nvertices(g2)
+    end
   end
 
   @testset "CoDa" begin
