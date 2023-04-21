@@ -66,7 +66,7 @@ function Base.error(solver, problem, method::WeightedValidation)
       y = getproperty(holdout, var)
       ŷ = getproperty(solution, var)
       𝓌 = AggMode.WeightedSum(weights)
-      ℒ = value(loss[var], y, ŷ, 𝓌) / length(y)
+      ℒ = value(loss[var], ŷ, y, 𝓌) / length(y)
       var => ℒ
     end
 
