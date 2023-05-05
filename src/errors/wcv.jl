@@ -57,17 +57,18 @@ function Base.error(solver, problem, method::WeightedValidation)
     subproblem = _subproblem(problem, f)
     solution   = solve(subproblem, solver)
 
-    # holdout set and weights
+    # holdout set
     holdout = _holdout(problem, f)
-    weights = view(ws, f[2])
+
+    # holdout weights
+    𝓌 = view(ws, f[2])
 
     # loss for each variable
     losses = map(ovars) do var
-      y = getproperty(holdout, var)
+      ℒ = loss[var]
       ŷ = getproperty(solution, var)
-      𝓌 = AggMode.WeightedSum(weights)
-      ℒ = value(loss[var], ŷ, y, 𝓌) / length(y)
-      var => ℒ
+      y = getproperty(holdout, var)
+      var => mean(ℒ, ŷ, y, 𝓌, normalize=false)
     end
 
     Dict(losses)
