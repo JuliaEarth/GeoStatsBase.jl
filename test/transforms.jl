@@ -2,13 +2,33 @@
   @testset "Builtin" begin
     # transforms that are revertible
     d = georef((z=rand(100), w=rand(100)))
-    for p in [Select(:z), Reject(:z), Rename(:z => :a),
-              StdNames(), Sort(:z), Sample(10), Filter(x->true),
-              DropMissing(), Replace(1.0 => 2.0), Coalesce(value=0.0),
-              Coerce(:z => ST.Continuous), Identity(), Center(),
-              Scale(), MinMax(), Interquartile(), ZScore(),
-              Quantile(), Functional(sin), EigenAnalysis(:V),
-              PCA(), DRS(), SDS(), RowTable(), ColTable()]
+    for p in [
+      Select(:z),
+      Reject(:z),
+      Rename(:z => :a),
+      StdNames(),
+      Sort(:z),
+      Sample(10),
+      Filter(x -> true),
+      DropMissing(),
+      Replace(1.0 => 2.0),
+      Coalesce(value=0.0),
+      Coerce(:z => ST.Continuous),
+      Identity(),
+      Center(),
+      Scale(),
+      MinMax(),
+      Interquartile(),
+      ZScore(),
+      Quantile(),
+      Functional(sin),
+      EigenAnalysis(:V),
+      PCA(),
+      DRS(),
+      SDS(),
+      RowTable(),
+      ColTable()
+    ]
       n, c = apply(p, d)
       t = Tables.columns(n)
       r = revert(p, n, c)
@@ -17,8 +37,8 @@
     end
 
     # transforms with categorical variables
-    d = georef((c=categorical([1,2,3]),))
-    for p in [Levels(:c => [1,2,3]), OneHot(:c)]
+    d = georef((c=categorical([1, 2, 3]),))
+    for p in [Levels(:c => [1, 2, 3]), OneHot(:c)]
       n, c = apply(p, d)
       t = Tables.columns(n)
       r = revert(p, n, c)
@@ -40,10 +60,10 @@
     t = Tables.columns(n)
     @test Tables.columnnames(t) == (:z, :w, :geometry)
 
-    d = georef((a=[1,missing,3], b=[3,2,1]))
+    d = georef((a=[1, missing, 3], b=[3, 2, 1]))
     p = DropMissing()
     n, c = apply(p, d)
-    @test Tables.columns(values(n)) == (a=[1,3], b=[3,1])
+    @test Tables.columns(values(n)) == (a=[1, 3], b=[3, 1])
     @test nelements(domain(n)) == 2
     r = revert(p, n, c)
     @test r == d
@@ -55,7 +75,7 @@
     n, c = apply(p, d)
     dom = domain(n)
     cen = centroid.(dom)
-    xs  = first.(coordinates.(cen))
+    xs = first.(coordinates.(cen))
     @test dom isa SimpleMesh
     @test all(x -> -0.5 ≤ x ≤ 0.5, xs)
   end
@@ -63,10 +83,10 @@
   @testset "Detrend" begin
     rng = MersenneTwister(42)
 
-    l = range(-1,stop=1,length=100)
+    l = range(-1, stop=1, length=100)
     μ = [x^2 + y^2 for x in l, y in l]
     ϵ = 0.1rand(rng, 100, 100)
-    d = georef((z=μ+ϵ, w=rand(100,100)))
+    d = georef((z=μ + ϵ, w=rand(100, 100)))
     p = Detrend(:z, degree=2)
     n, c = apply(p, d)
     r = revert(p, n, c)
@@ -77,14 +97,14 @@
     if visualtests
       p₁ = heatmap(asarray(d, :z), title="original")
       p₂ = heatmap(asarray(n, :z), title="detrended")
-      plt = plot(p₁, p₂, size=(900,300))
+      plt = plot(p₁, p₂, size=(900, 300))
       @test_reference "data/detrend.png" plt
     end
   end
 
   @testset "Potrace" begin
     # challenging case with letters
-    img = load(joinpath(datadir,"letters.png"))
+    img = load(joinpath(datadir, "letters.png"))
     dat = georef((color=img,))
     new = dat |> Potrace(1)
     dom = domain(new)
@@ -96,14 +116,14 @@
     @test length(polys2) == 2
 
     # concentric circles
-    ball1 = Ball((0,0), 1)
-    ball2 = Ball((0,0), 2)
-    ball3 = Ball((0,0), 3)
-    grid  = CartesianGrid((-5,-5), (5,5), dims=(100,100))
+    ball1 = Ball((0, 0), 1)
+    ball2 = Ball((0, 0), 2)
+    ball3 = Ball((0, 0), 3)
+    grid = CartesianGrid((-5, -5), (5, 5), dims=(100, 100))
     inds1 = centroid.(grid) .∈ Ref(ball1)
     inds2 = centroid.(grid) .∈ Ref(ball2)
     inds3 = centroid.(grid) .∈ Ref(ball3)
-    mask  = zeros(100, 100)
+    mask = zeros(100, 100)
     mask[inds3] .= 1
     mask[inds2] .= 0
     mask[inds1] .= 1

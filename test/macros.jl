@@ -1,6 +1,6 @@
 @testset "Macros" begin
   @testset "@estimsolver" begin
-    s = ESolver(:z => (A=2,B=3), C=false)
+    s = ESolver(:z => (A=2, B=3), C=false)
     @test s.C == false
     @test targets(s) == [:z]
     names, params = covariables(:z, s)
@@ -13,7 +13,7 @@
   end
 
   @testset "@simsolver" begin
-    s = SSolver(:z => (A=2,B=3), C=false)
+    s = SSolver(:z => (A=2, B=3), C=false)
     @test s.C == false
     @test targets(s) == [:z]
     names, params = covariables(:z, s)
@@ -32,15 +32,15 @@
     @test params[(:z,)].A == 1.0
     @test params[(:z,)].B == 2
 
-    s = SSolver(:z=>(A=1,B=2), :w=>(A=2,B=3), (:z,:w)=>(J="bar",))
+    s = SSolver(:z => (A=1, B=2), :w => (A=2, B=3), (:z, :w) => (J="bar",))
     @test s.C == true
-    @test Set(targets(s)) == Set([:z,:w])
+    @test Set(targets(s)) == Set([:z, :w])
     names, params = covariables(:z, s)
-    @test Set(names) == Set((:z,:w))
+    @test Set(names) == Set((:z, :w))
     @test params[(:z,)].A == 1
     @test params[(:z,)].B == 2
     @test params[(:w,)].A == 2
     @test params[(:w,)].B == 3
-    @test params[(:z,:w)].J == "bar"
+    @test params[(:z, :w)].J == "bar"
   end
 end

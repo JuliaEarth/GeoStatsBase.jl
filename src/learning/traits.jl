@@ -19,8 +19,7 @@ iscompatible(model::MI.Model, task::ClassificationTask) =
 
 Check whether or not `model` is probabilistic.
 """
-isprobabilistic(model::MI.Model) =
-  MI.prediction_type(model) == :probabilistic
+isprobabilistic(model::MI.Model) = MI.prediction_type(model) == :probabilistic
 isprobabilistic(model::MI.Probabilistic) = true
 
 """

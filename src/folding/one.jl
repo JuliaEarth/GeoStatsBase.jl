@@ -15,8 +15,8 @@ function folds(domain::Domain, ::OneFolding)
 
   function pair(i)
     # source and target indices
-    sinds  = setdiff(1:n, i)
-    tinds  = [i]
+    sinds = setdiff(1:n, i)
+    tinds = [i]
 
     sinds, tinds
   end

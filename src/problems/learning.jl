@@ -33,8 +33,7 @@ struct LearningProblem{Dₛ,Dₜ,T} <: Problem
   end
 end
 
-LearningProblem(sdata::Dₛ, tdata::Dₜ, task::T) where {Dₛ,Dₜ,T} =
-  LearningProblem{Dₛ,Dₜ,T}(sdata, tdata, task)
+LearningProblem(sdata::Dₛ, tdata::Dₜ, task::T) where {Dₛ,Dₜ,T} = LearningProblem{Dₛ,Dₜ,T}(sdata, tdata, task)
 
 """
     sourcedata(problem)
@@ -69,5 +68,5 @@ function Base.show(io::IO, ::MIME"text/plain", problem::LearningProblem)
   println(io, problem)
   println(io, "  source: ", domain(problem.sdata))
   println(io, "  target: ", domain(problem.tdata))
-  print(  io, "  task:   ", problem.task)
+  print(io, "  task:   ", problem.task)
 end

@@ -25,11 +25,9 @@ struct LeaveBallOut{B<:MetricBall} <: ErrorEstimationMethod
   loss::Dict{Symbol,SupervisedLoss}
 end
 
-LeaveBallOut(ball; loss=Dict()) =
-  LeaveBallOut{typeof(ball)}(ball, loss)
+LeaveBallOut(ball; loss=Dict()) = LeaveBallOut{typeof(ball)}(ball, loss)
 
-LeaveBallOut(radius::Number; loss=Dict()) =
-  LeaveBallOut(MetricBall(radius), loss=loss)
+LeaveBallOut(radius::Number; loss=Dict()) = LeaveBallOut(MetricBall(radius), loss=loss)
 
 function Base.error(solver, problem, method::LeaveBallOut)
   # uniform weights
@@ -38,8 +36,7 @@ function Base.error(solver, problem, method::LeaveBallOut)
   # ball folds
   folding = BallFolding(method.ball)
 
-  wcv = WeightedValidation(weighting, folding,
-                           lambda=1, loss=method.loss)
+  wcv = WeightedValidation(weighting, folding, lambda=1, loss=method.loss)
 
   error(solver, problem, wcv)
 end

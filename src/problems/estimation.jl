@@ -31,7 +31,7 @@ struct EstimationProblem{S,D,N} <: Problem
   function EstimationProblem{S,D,N}(sdata, sdomain, vars) where {S,D,N}
     pnames = name.(vars)
     dnames = name.(variables(sdata))
-    valid  = !isempty(pnames) && pnames ⊆ dnames
+    valid = !isempty(pnames) && pnames ⊆ dnames
 
     T1 = coordtype(domain(sdata))
     T2 = coordtype(sdomain)
@@ -49,8 +49,7 @@ function EstimationProblem(sdata::S, sdomain::D, varnames::NTuple{N,Symbol}) whe
   EstimationProblem{S,D,N}(sdata, sdomain, vars)
 end
 
-EstimationProblem(sdata, sdomain, varname::Symbol) =
-  EstimationProblem(sdata, sdomain, (varname,))
+EstimationProblem(sdata, sdomain, varname::Symbol) = EstimationProblem(sdata, sdomain, (varname,))
 
 """
     data(problem)
@@ -86,5 +85,5 @@ function Base.show(io::IO, ::MIME"text/plain", problem::EstimationProblem)
   println(io, problem)
   println(io, "  domain:    ", problem.sdomain)
   println(io, "  samples:   ", domain(problem.sdata))
-  print(  io, "  targets:   ", join(vars, ", ", " and "))
+  print(io, "  targets:   ", join(vars, ", ", " and "))
 end

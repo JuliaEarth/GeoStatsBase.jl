@@ -23,7 +23,7 @@ function uniquecoords(data::D; agg=Dict()) where {D<:Data}
   for var in vars
     if var ∉ keys(agg)
       val = getproperty(data, var)
-      ST  = scitype(val[1])
+      ST = scitype(val[1])
       agg[var] = ST <: Continuous ? _mean : _first
     end
   end
@@ -89,7 +89,9 @@ end
 using Base.Cartesian: @nref, @nloops
 
 import Base: hash
-struct Prehashed hash::UInt; end
+struct Prehashed
+  hash::UInt
+end
 hash(x::Prehashed) = x.hash
 
 @generated function _uniqueinds(A::AbstractArray{T,N}, dim::Int) where {T,N}
@@ -101,14 +103,18 @@ hash(x::Prehashed) = x.hash
 
     # Compute hash for each row
     k = 0
-    @nloops $N i A d->(if d == dim; k = i_d; end) begin
+    @nloops $N i A d -> (
+      if d == dim
+        k = i_d
+      end
+    ) begin
       @inbounds hashes[k] = hash(hashes[k], hash((@nref $N A i)))
     end
 
     # Collect index of first row for each hash
-    uniquerow = Array{Int}(undef,size(A, dim))
+    uniquerow = Array{Int}(undef, size(A, dim))
     firstrow = Dict{Prehashed,Int}()
-    for k = 1:size(A, dim)
+    for k in 1:size(A, dim)
       uniquerow[k] = get!(firstrow, Prehashed(hashes[k]), k)
     end
     uniquerows = collect(values(firstrow))
@@ -116,12 +122,14 @@ hash(x::Prehashed) = x.hash
     # Check for collisions
     collided = falses(size(A, dim))
     @inbounds begin
-      @nloops $N i A d->(if d == dim
-                           k = i_d
-                           j_d = uniquerow[k]
-                         else
-                           j_d = i_d
-                         end) begin
+      @nloops $N i A d -> (
+        if d == dim
+          k = i_d
+          j_d = uniquerow[k]
+        else
+          j_d = i_d
+        end
+      ) begin
         if (@nref $N A j) != (@nref $N A i)
           collided[k] = true
         end
@@ -133,7 +141,7 @@ hash(x::Prehashed) = x.hash
       while any(collided)
         # Collect index of first row for each collided hash
         empty!(firstrow)
-        for j = 1:size(A, dim)
+        for j in 1:size(A, dim)
           collided[j] || continue
           uniquerow[j] = get!(firstrow, Prehashed(hashes[j]), j)
         end
@@ -143,7 +151,7 @@ hash(x::Prehashed) = x.hash
 
         # Check for collisions
         fill!(nowcollided, false)
-        @nloops $N i A d->begin
+        @nloops $N i A d -> begin
           if d == dim
             k = i_d
             j_d = uniquerow[k]
@@ -162,12 +170,12 @@ hash(x::Prehashed) = x.hash
 
     ie = unique(uniquerow)
     ic_dict = Dict{Int,Int}()
-    for k = 1:length(ie)
+    for k in 1:length(ie)
       ic_dict[ie[k]] = k
     end
 
     ic = similar(uniquerow)
-    for k = 1:length(ic)
+    for k in 1:length(ic)
       ic[k] = ie[ic_dict[uniquerow[k]]]
     end
 

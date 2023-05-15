@@ -56,7 +56,7 @@ function heuristic(d, fun)
   𝒟 = domain(d)
   D = dist_matrix_random_sample(𝒟)
   n = size(D, 1)
-  d = fun([D[i,j] for i in 1:n for j in 1:n if i > j])
+  d = fun([D[i, j] for i in 1:n for j in 1:n if i > j])
   l = bound_box_constr(𝒟)
   min(d, l)
 end
@@ -104,8 +104,8 @@ function hsm_recursion(x)
 
   # find index of half interval
   k = ceil(Int, n / 2)
-  i = argmin([x[j+k] - x[j] for j in 1:n-k])
+  i = argmin([x[j + k] - x[j] for j in 1:(n - k)])
 
   # perform recursion
-  hsm_recursion(view(x, i:i+k))
+  hsm_recursion(view(x, i:(i + k)))
 end

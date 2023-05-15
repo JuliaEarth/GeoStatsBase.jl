@@ -1,6 +1,6 @@
 @testset "UI elements" begin
   # search method from user input
-  domain = PointSet(rand(2,3))
+  domain = PointSet(rand(2, 3))
   method = searcher_ui(domain, 2, Euclidean(), nothing)
   @test method isa KNearestSearch
   @test maxneighbors(method) == 2

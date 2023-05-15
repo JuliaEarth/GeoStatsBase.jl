@@ -1,6 +1,6 @@
 @testset "Geometric operations" begin
   @testset "unique" begin
-    X = [i*j for i in 1:2, j in 1:1_000_000]
+    X = [i * j for i in 1:2, j in 1:1_000_000]
     z = rand(1_000_000)
     d = georef((z=[z; z],), [X X])
     u = uniquecoords(d)
@@ -10,10 +10,10 @@
     @test nelements(du) == 1_000_000
     @test Set(eachcol(U)) == Set(eachcol(X))
 
-    X = rand(3,100)
+    X = rand(3, 100)
     z = rand(100)
     n = [string(i) for i in 1:100]
-    Xd = hcat(X, X[:,1:10])
+    Xd = hcat(X, X[:, 1:10])
     zd = vcat(z, z[1:10])
     nd = vcat(n, n[1:10])
     sdata = georef((z=zd, n=nd), PointSet(Xd))
@@ -22,21 +22,21 @@
   end
 
   @testset "integrate" begin
-    grid  = CartesianGrid(2,2)
-    mesh  = simplexify(grid)
-    table = (z=[1,2,3,4,5,6,7,8,9], w=[1,1,1,2,2,2,3,3,3])
+    grid = CartesianGrid(2, 2)
+    mesh = simplexify(grid)
+    table = (z=[1, 2, 3, 4, 5, 6, 7, 8, 9], w=[1, 1, 1, 2, 2, 2, 3, 3, 3])
     gdata = meshdata(grid, vtable=table)
     mdata = meshdata(mesh, vtable=table)
     ginte = integrate(gdata, :z, :w)
     minte = integrate(mdata, :z, :w)
-    @test ginte.z == [3.,4.,6.,7.]
-    @test ginte.w == [1.5,1.5,2.5,2.5]
+    @test ginte.z == [3.0, 4.0, 6.0, 7.0]
+    @test ginte.w == [1.5, 1.5, 2.5, 2.5]
     @test sum.(Iterators.partition(minte.z, 2)) == ginte.z
     @test sum.(Iterators.partition(minte.w, 2)) == ginte.w
   end
 
   @testset "@groupby" begin
-    d = georef((z=[1,2,3],x=[4,5,6]), rand(2,3))
+    d = georef((z=[1, 2, 3], x=[4, 5, 6]), rand(2, 3))
     g = @groupby(d, :z)
     @test all(nitems.(g) .== 1)
     rows = [[1 4], [2 5], [3 6]]
@@ -45,15 +45,15 @@
     end
 
     z = vec([1 1 1; 2 2 2; 3 3 3])
-    sdata = georef((z=z,), CartesianGrid(3,3))
+    sdata = georef((z=z,), CartesianGrid(3, 3))
     p = @groupby(sdata, :z)
-    @test indices(p) == [[1,4,7],[2,5,8],[3,6,9]]
+    @test indices(p) == [[1, 4, 7], [2, 5, 8], [3, 6, 9]]
 
     # groupby with missing values
     z = vec([missing 1 1; 2 missing 2; 3 3 missing])
-    sdata = georef((z=z,), CartesianGrid(3,3))
+    sdata = georef((z=z,), CartesianGrid(3, 3))
     p = @groupby(sdata, :z)
-    @test indices(p) == [[1,5,9],[2,8],[3,6],[4,7]]
+    @test indices(p) == [[1, 5, 9], [2, 8], [3, 6], [4, 7]]
 
     # macro
     x = [1, 1, 1, 1, 2, 2, 2, 2]
@@ -65,54 +65,54 @@
     # args...
     # integers
     p = @groupby(sdata, 1)
-    @test indices(p) == [[1,2,3,4],[5,6,7,8]]
+    @test indices(p) == [[1, 2, 3, 4], [5, 6, 7, 8]]
     # symbols
     p = @groupby(sdata, :y)
-    @test indices(p) == [[1,2],[3,4],[5,6],[7,8]]
+    @test indices(p) == [[1, 2], [3, 4], [5, 6], [7, 8]]
     # strings
     p = @groupby(sdata, "x", "y")
-    @test indices(p) == [[1,2],[3,4],[5,6],[7,8]]
+    @test indices(p) == [[1, 2], [3, 4], [5, 6], [7, 8]]
 
     # vector...
     # integers
     p = @groupby(sdata, [1])
-    @test indices(p) == [[1,2,3,4],[5,6,7,8]]
+    @test indices(p) == [[1, 2, 3, 4], [5, 6, 7, 8]]
     # symbols
     p = @groupby(sdata, [:y])
-    @test indices(p) == [[1,2],[3,4],[5,6],[7,8]]
+    @test indices(p) == [[1, 2], [3, 4], [5, 6], [7, 8]]
     # strings
     p = @groupby(sdata, ["x", "y"])
-    @test indices(p) == [[1,2],[3,4],[5,6],[7,8]]
+    @test indices(p) == [[1, 2], [3, 4], [5, 6], [7, 8]]
 
     # tuple...
     # integers
     p = @groupby(sdata, (1,))
-    @test indices(p) == [[1,2,3,4],[5,6,7,8]]
+    @test indices(p) == [[1, 2, 3, 4], [5, 6, 7, 8]]
     # symbols
     p = @groupby(sdata, (:y,))
-    @test indices(p) == [[1,2],[3,4],[5,6],[7,8]]
+    @test indices(p) == [[1, 2], [3, 4], [5, 6], [7, 8]]
     # strings
     p = @groupby(sdata, ("x", "y"))
-    @test indices(p) == [[1,2],[3,4],[5,6],[7,8]]
+    @test indices(p) == [[1, 2], [3, 4], [5, 6], [7, 8]]
 
     # regex
     p = @groupby(sdata, r"[xy]")
-    @test indices(p) == [[1,2],[3,4],[5,6],[7,8]]
+    @test indices(p) == [[1, 2], [3, 4], [5, 6], [7, 8]]
 
     # variable interpolation
     cols = (:x, :y)
     p = @groupby(sdata, cols)
-    @test indices(p) == [[1,2],[3,4],[5,6],[7,8]]
+    @test indices(p) == [[1, 2], [3, 4], [5, 6], [7, 8]]
     p = @groupby(sdata, cols...)
-    @test indices(p) == [[1,2],[3,4],[5,6],[7,8]]
+    @test indices(p) == [[1, 2], [3, 4], [5, 6], [7, 8]]
 
     c1, c2 = :x, :y
     p = @groupby(sdata, c1, c2)
-    @test indices(p) == [[1,2],[3,4],[5,6],[7,8]]
+    @test indices(p) == [[1, 2], [3, 4], [5, 6], [7, 8]]
     p = @groupby(sdata, [c1, c2])
-    @test indices(p) == [[1,2],[3,4],[5,6],[7,8]]
+    @test indices(p) == [[1, 2], [3, 4], [5, 6], [7, 8]]
     p = @groupby(sdata, (c1, c2))
-    @test indices(p) == [[1,2],[3,4],[5,6],[7,8]]
+    @test indices(p) == [[1, 2], [3, 4], [5, 6], [7, 8]]
 
     # missing values
     x = [1, 1, missing, missing, 2, 2, 2, 2]
@@ -122,9 +122,9 @@
     sdata = georef(table, rand(2, 8))
 
     p = @groupby(sdata, :x)
-    @test indices(p) == [[1,2],[3,4],[5,6,7,8]]
+    @test indices(p) == [[1, 2], [3, 4], [5, 6, 7, 8]]
     p = @groupby(sdata, :x, :y)
-    @test indices(p) == [[1,2],[3,4],[5,6],[7,8]]
+    @test indices(p) == [[1, 2], [3, 4], [5, 6], [7, 8]]
 
     # isequal
     x = [0.0, 0, 0, -0.0, 2, 2, 2, 2]
@@ -134,16 +134,16 @@
     sdata = georef(table, rand(2, 8))
 
     p = @groupby(sdata, :x)
-    @test indices(p) == [[1,2,3],[4],[5,6,7,8]]
+    @test indices(p) == [[1, 2, 3], [4], [5, 6, 7, 8]]
     p = @groupby(sdata, :x, :y)
-    @test indices(p) == [[1,2],[3],[4],[5,6],[7,8]]
+    @test indices(p) == [[1, 2], [3], [4], [5, 6], [7, 8]]
   end
 
   @testset "@transform" begin
     table = (x=rand(10), y=rand(10))
     sdata = georef(table, rand(2, 10))
 
-    ndata = @transform(sdata, :z = :x - 2*:y)
+    ndata = @transform(sdata, :z = :x - 2 * :y)
     @test ndata.z == sdata.x .- 2 .* sdata.y
 
     ndata = @transform(sdata, :z = :x - :y, :w = :x + :y)
@@ -170,11 +170,11 @@
     @test ndata.expy == exp.(sdata.y)
 
     # column name interpolation
-    ndata = @transform(sdata, {"z"} = {"x"} - 2*{"y"})
+    ndata = @transform(sdata, {"z"} = {"x"} - 2 * {"y"})
     @test ndata.z == sdata.x .- 2 .* sdata.y
 
     xnm, ynm, znm = :x, :y, :z
-    ndata = @transform(sdata, {znm} = {xnm} - 2*{ynm})
+    ndata = @transform(sdata, {znm} = {xnm} - 2 * {ynm})
     @test ndata.z == sdata.x .- 2 .* sdata.y
 
     # variable interpolation
@@ -215,14 +215,14 @@
     table = (; x, y, z)
     sdata = georef(table, rand(2, 8))
 
-    p  = @groupby(sdata, :x, :y)
-    np = @transform(p, :z = 2*:x + :y)
-    @test np.object.z  == 2 .* sdata.x .+ sdata.y
-    @test indices(np)  == indices(p)
+    p = @groupby(sdata, :x, :y)
+    np = @transform(p, :z = 2 * :x + :y)
+    @test np.object.z == 2 .* sdata.x .+ sdata.y
+    @test indices(np) == indices(p)
     @test metadata(np) == metadata(p)
 
-    @test_throws ArgumentError @transform(p, :x = 3*:x)
-    @test_throws ArgumentError @transform(p, :y = 3*:y)
+    @test_throws ArgumentError @transform(p, :x = 3 * :x)
+    @test_throws ArgumentError @transform(p, :y = 3 * :y)
   end
 
   @testset "@combine" begin
@@ -230,20 +230,20 @@
     y = [1, 1, 2, 2, 3, 3, 4, 4]
     z = [1, 2, 3, 4, 5, 6, 7, 8]
     table = (; x, y, z)
-    grid  = CartesianGrid(2, 4)
+    grid = CartesianGrid(2, 4)
     sdata = georef(table, grid)
-    
+
     c = @combine(sdata, :x_sum = sum(:x))
-    @test c.x_sum   == [sum(sdata.x)]
+    @test c.x_sum == [sum(sdata.x)]
     @test domain(c) == Collection([Multi(domain(sdata))])
     @test Tables.schema(values(c)).names == (:x_sum,)
 
     c = @combine(sdata, :y_mean = mean(:y), :z_median = median(:z))
-    @test c.y_mean   == [mean(sdata.y)]
+    @test c.y_mean == [mean(sdata.y)]
     @test c.z_median == [median(sdata.z)]
-    @test domain(c)  == Collection([Multi(domain(sdata))])
+    @test domain(c) == Collection([Multi(domain(sdata))])
     @test Tables.schema(values(c)).names == (:y_mean, :z_median)
-    
+
     # column name interpolation
     c = @combine(sdata, {"z"} = sum({"x"}) + prod({"y"}))
     @test c.z == [sum(sdata.x) + prod(sdata.y)]
@@ -255,17 +255,17 @@
     # Partition
     p = @groupby(sdata, :x)
     c = @combine(p, :y_sum = sum(:y), :z_prod = prod(:z))
-    @test c.x       == [first(data.x) for data in p]
-    @test c.y_sum   == [sum(data.y) for data in p]
-    @test c.z_prod  == [prod(data.z) for data in p]
+    @test c.x == [first(data.x) for data in p]
+    @test c.y_sum == [sum(data.y) for data in p]
+    @test c.z_prod == [prod(data.z) for data in p]
     @test domain(c) == Collection([Multi(domain(data)) for data in p])
     @test Tables.schema(values(c)).names == (:x, :y_sum, :z_prod)
 
     p = @groupby(sdata, :x, :y)
     c = @combine(p, :z_mean = mean(:z))
-    @test c.x       == [first(data.x) for data in p]
-    @test c.y       == [first(data.y) for data in p]
-    @test c.z_mean  == [mean(data.z) for data in p]
+    @test c.x == [first(data.x) for data in p]
+    @test c.y == [first(data.y) for data in p]
+    @test c.z_mean == [mean(data.z) for data in p]
     @test domain(c) == Collection([Multi(domain(data)) for data in p])
     @test Tables.schema(values(c)).names == (:x, :y, :z_mean)
   end

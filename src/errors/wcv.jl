@@ -37,7 +37,7 @@ function Base.error(solver, problem, method::WeightedValidation)
   # retrieve problem info
   sdata = _foldable(problem)
   ovars = _outputvars(problem)
-  loss  = method.loss
+  loss = method.loss
   for var in ovars
     if var ∉ keys(loss)
       v = getproperty(sdata, var)
@@ -55,7 +55,7 @@ function Base.error(solver, problem, method::WeightedValidation)
   function ε(f)
     # setup and solve sub-problem
     subproblem = _subproblem(problem, f)
-    solution   = solve(subproblem, solver)
+    solution = solve(subproblem, solver)
 
     # holdout set
     holdout = _holdout(problem, f)

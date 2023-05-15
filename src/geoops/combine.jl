@@ -34,10 +34,10 @@ xnm, ynm, znm = :x, :y, :z
 ```
 """
 macro combine(object::Symbol, exprs...)
-  splits   = map(expr -> _split(expr, false), exprs)
+  splits = map(expr -> _split(expr, false), exprs)
   colnames = first.(splits)
   colexprs = last.(splits)
-  escobj   = esc(object)
+  escobj = esc(object)
   quote
     if $escobj isa Partition
       local partition = $escobj
@@ -63,15 +63,15 @@ end
 
 function _combine(partition::Partition{D}, names, columns) where {D<:Data}
   table = values(parent(partition))
-  meta  = metadata(partition)
+  meta = metadata(partition)
 
   newdom = Collection([Multi(domain(data)) for data in partition])
 
-  grows    = meta[:rows]
-  gnames   = meta[:names]
+  grows = meta[:rows]
+  gnames = meta[:names]
   gcolumns = [[row[i] for row in grows] for i in 1:length(gnames)]
 
-  newnames   = vcat(gnames, names)
+  newnames = vcat(gnames, names)
   newcolumns = vcat(gcolumns, columns)
 
   𝒯 = (; zip(newnames, newcolumns)...)

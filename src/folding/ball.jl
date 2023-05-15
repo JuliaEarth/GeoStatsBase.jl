@@ -22,10 +22,10 @@ function folds(domain::Domain, method::BallFolding)
 
   function pair(i)
     # source and target indices
-    point  = centroid(domain, i)
+    point = centroid(domain, i)
     inside = search(point, searcher)
-    sinds  = setdiff(1:n, inside)
-    tinds  = [i]
+    sinds = setdiff(1:n, inside)
+    tinds = [i]
 
     sinds, tinds
   end

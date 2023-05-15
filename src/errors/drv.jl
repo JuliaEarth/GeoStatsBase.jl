@@ -33,8 +33,14 @@ struct DensityRatioValidation{T,E,O} <: ErrorEstimationMethod
   loss::Dict{Symbol,SupervisedLoss}
 end
 
-function DensityRatioValidation(k::Int; shuffle=true, lambda=1.0, loss=Dict(),
-                                estimator=LSIF(), optlib=default_optlib(estimator))
+function DensityRatioValidation(
+  k::Int;
+  shuffle=true,
+  lambda=1.0,
+  loss=Dict(),
+  estimator=LSIF(),
+  optlib=default_optlib(estimator)
+)
   @assert k > 0 "number of folds must be positive"
   @assert 0 ≤ lambda ≤ 1 "lambda must lie in [0,1]"
   T = typeof(lambda)
@@ -43,22 +49,17 @@ function DensityRatioValidation(k::Int; shuffle=true, lambda=1.0, loss=Dict(),
   DensityRatioValidation{T,E,O}(k, shuffle, lambda, estimator, optlib, loss)
 end
 
-function Base.error(solver::LearningSolver, problem::LearningProblem,
-                    method::DensityRatioValidation)
+function Base.error(solver::LearningSolver, problem::LearningProblem, method::DensityRatioValidation)
   tdata = targetdata(problem)
   vars = collect(inputvars(task(problem)))
 
   # density-ratio weights
-  weighting = DensityRatioWeighting(tdata, vars,
-                                    estimator=method.dre,
-                                    optlib=method.optlib)
+  weighting = DensityRatioWeighting(tdata, vars, estimator=method.dre, optlib=method.optlib)
 
   # random folds
   folding = UniformFolding(method.k, method.shuffle)
 
-  wcv = WeightedValidation(weighting, folding,
-                           lambda=method.lambda,
-                           loss=method.loss)
+  wcv = WeightedValidation(weighting, folding, lambda=method.lambda, loss=method.loss)
 
   error(solver, problem, wcv)
 end

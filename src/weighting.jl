@@ -17,14 +17,13 @@ mutable struct GeoWeights{S,T,V<:AbstractVector{T},D} <: AbstractWeights{S,T,V}
   sum::S
 end
 
-GeoWeights(domain::D, values::V) where {D,V} =
-  GeoWeights(domain, values, sum(values))
+GeoWeights(domain::D, values::V) where {D,V} = GeoWeights(domain, values, sum(values))
 
 Meshes.domain(w::GeoWeights) = w.domain
 
 @inline function varcorrection(w::GeoWeights, corrected::Bool=false)
-    corrected && throw(ArgumentError("GeoWeights type does not support bias correction."))
-    1 / w.sum
+  corrected && throw(ArgumentError("GeoWeights type does not support bias correction."))
+  1 / w.sum
 end
 
 # ------------

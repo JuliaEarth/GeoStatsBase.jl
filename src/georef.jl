@@ -15,16 +15,14 @@ georef(table, domain) = meshdata(domain, etable=table)
 Georeference `table` on vector of elements `elems`, i.e.
 geometries or points.
 """
-georef(table, elems::AbstractVector{<:PointOrGeometry}) =
-  georef(table, Collection(elems))
+georef(table, elems::AbstractVector{<:PointOrGeometry}) = georef(table, Collection(elems))
 
 """
     georef(table, coords)
 
 Georeference `table` on a `PointSet(coords)`.
 """
-georef(table, coords::AbstractVecOrMat) =
-  georef(table, PointSet(coords))
+georef(table, coords::AbstractVecOrMat) = georef(table, PointSet(coords))
 
 """
     georef(table, coordnames)
@@ -35,7 +33,7 @@ function georef(table, coordnames::NTuple)
   colnames = Tables.columnnames(table)
   @assert coordnames ⊆ colnames "invalid coordinates for table"
   @assert !(colnames ⊆ coordnames) "table must have at least one variable"
-  vars   = setdiff(colnames, coordnames)
+  vars = setdiff(colnames, coordnames)
   vtable = table |> Select(vars)
   ctable = table |> Select(coordnames)
   coords = Tuple.(Tables.rowtable(ctable))
@@ -43,29 +41,24 @@ function georef(table, coordnames::NTuple)
 end
 
 function georef(tuple::NamedTuple, domain)
-  flat = (; (var=>vec(val) for (var,val) in pairs(tuple))...)
+  flat = (; (var => vec(val) for (var, val) in pairs(tuple))...)
   georef(TypedTables.Table(flat), domain)
 end
 
 # fix ambiguity between other methods
-georef(tuple::NamedTuple, elems::AbstractVector{<:PointOrGeometry}) =
-  georef(tuple, Collection(elems))
+georef(tuple::NamedTuple, elems::AbstractVector{<:PointOrGeometry}) = georef(tuple, Collection(elems))
 
-georef(tuple::NamedTuple, coords::AbstractVecOrMat) =
-  georef(tuple, PointSet(coords))
+georef(tuple::NamedTuple, coords::AbstractVecOrMat) = georef(tuple, PointSet(coords))
 
 # fix ambiguity between other methods
-georef(tuple::NamedTuple, coordnames::NTuple) =
-  georef(TypedTables.Table(tuple), coordnames)
+georef(tuple::NamedTuple, coordnames::NTuple) = georef(TypedTables.Table(tuple), coordnames)
 
 """
     georef(tuple; origin=(0.,0.,...), spacing=(1.,1.,...))
 
 Georeference named `tuple` on `CartesianGrid(size(tuple[1]), origin, spacing)`.
 """
-georef(tuple;
-       origin=ntuple(i->0., ndims(tuple[1])),
-       spacing=ntuple(i->1., ndims(tuple[1]))) = georef(tuple, origin, spacing)
+georef(tuple; origin=ntuple(i -> 0.0, ndims(tuple[1])), spacing=ntuple(i -> 1.0, ndims(tuple[1]))) =
+  georef(tuple, origin, spacing)
 
-georef(tuple, origin, spacing) =
-  georef(tuple, CartesianGrid(size(tuple[1]), origin, spacing))
+georef(tuple, origin, spacing) = georef(tuple, CartesianGrid(size(tuple[1]), origin, spacing))

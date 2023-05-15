@@ -104,7 +104,8 @@ export
   EstimationProblem,
   SimulationProblem,
   LearningProblem,
-  data, domain,
+  data,
+  domain,
   sourcedata,
   targetdata,
   task,
@@ -121,7 +122,8 @@ export
   targets,
   covariables,
   preprocess,
-  solve, solvesingle,
+  solve,
+  solvesingle,
 
   # folding
   FoldingMethod,
@@ -168,7 +170,9 @@ export
   EmpiricalHistogram,
 
   # statistics
-  mean, var, quantile,
+  mean,
+  var,
+  quantile,
 
   # utilities
   uniquecoords,

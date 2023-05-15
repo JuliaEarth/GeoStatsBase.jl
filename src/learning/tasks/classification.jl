@@ -15,8 +15,7 @@ end
 
 ClassificationTask(x::Symbol, y::Symbol) = ClassificationTask{1}((x,), y)
 
-ClassificationTask(x::AbstractVector{Symbol}, y::Symbol) =
-  ClassificationTask{length(x)}(Tuple(x), y)
+ClassificationTask(x::AbstractVector{Symbol}, y::Symbol) = ClassificationTask{length(x)}(Tuple(x), y)
 
 issupervised(task::ClassificationTask) = true
 
@@ -40,6 +39,6 @@ label(task::ClassificationTask) = task.label
 function Base.show(io::IO, task::ClassificationTask)
   x = task.features
   y = task.label
-  lhs = length(x) > 1 ? "("*join(x, ", ")*")" : "$(x[1])"
+  lhs = length(x) > 1 ? "(" * join(x, ", ") * ")" : "$(x[1])"
   print(io, "Classification $lhs → $y")
 end

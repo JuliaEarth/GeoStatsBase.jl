@@ -27,7 +27,7 @@ function folds(domain::Domain, method::UniformFolding)
 
   function pair(i)
     # source and target subsets
-    source = [1:i-1; i+1:n]
+    source = [1:(i - 1); (i + 1):n]
     target = [i]
 
     # indices within subsets

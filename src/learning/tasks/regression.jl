@@ -15,8 +15,7 @@ end
 
 RegressionTask(x::Symbol, y::Symbol) = RegressionTask{1}((x,), y)
 
-RegressionTask(x::AbstractVector{Symbol}, y::Symbol) =
-  RegressionTask{length(x)}(Tuple(x), y)
+RegressionTask(x::AbstractVector{Symbol}, y::Symbol) = RegressionTask{length(x)}(Tuple(x), y)
 
 """
     features(task)
@@ -40,6 +39,6 @@ issupervised(task::RegressionTask) = true
 function Base.show(io::IO, task::RegressionTask)
   x = task.features
   y = task.label
-  lhs = length(x) > 1 ? "("*join(x, ", ")*")" : "$(x[1])"
+  lhs = length(x) > 1 ? "(" * join(x, ", ") * ")" : "$(x[1])"
   print(io, "Regression $lhs → $y")
 end

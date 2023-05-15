@@ -8,7 +8,7 @@ const MI = MLJModelInterface
 ########################
 
 struct DummyModel <: MI.Supervised end
-MI.fit(m::DummyModel, v, X, y) = rand(unique(y),length(y)), 0, 0
+MI.fit(m::DummyModel, v, X, y) = rand(unique(y), length(y)), 0, 0
 MI.predict(m::DummyModel, θ, X) = rand(θ, Tables.rowcount(X))
 MI.target_scitype(m::DummyModel) = AbstractVector{<:MI.Finite}
 
@@ -23,22 +23,22 @@ function solve(problem::EstimationProblem, solver::DummyEstimSolver)
   npts = nelements(sdom)
   vars = name.(variables(problem))
   μs = [v => fill(mean(getproperty(sdat, v)), npts) for v in vars]
-  σs = [Symbol(v,:Var) => fill(var(getproperty(sdat, v)), npts) for v in vars]
+  σs = [Symbol(v, :Var) => fill(var(getproperty(sdat, v)), npts) for v in vars]
   georef((; μs..., σs...), sdom)
 end
 
 @estimsolver ESolver begin
-  @param A=1.0
-  @param B=2
-  @jparam J="foo"
-  @global C=true
+  @param A = 1.0
+  @param B = 2
+  @jparam J = "foo"
+  @global C = true
 end
 
 @simsolver SSolver begin
-  @param A=1.0
-  @param B=2
-  @jparam J="foo"
-  @global C=true
+  @param A = 1.0
+  @param B = 2
+  @jparam J = "foo"
+  @global C = true
 end
 
 function solvesingle(problem::SimulationProblem, covars, ::SSolver, preproc)
@@ -81,8 +81,8 @@ function solve(problem::LearningProblem, solver::DummyLearnSolver)
 
   # georeference on target domain
   ctor = constructor(typeof(tdata))
-  dom  = domain(tdata)
-  dat  = Dict(paramdim(dom) => (; var=>val))
+  dom = domain(tdata)
+  dat = Dict(paramdim(dom) => (; var => val))
 
   ctor(dom, dat)
 end
