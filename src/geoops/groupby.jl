@@ -32,21 +32,20 @@ macro groupby(data::Symbol, spec)
 end
 
 _groupby(data::Data, spec) = _groupby(data, colspec(spec))
-_groupby(data::Data, cols::T...) where {T<:Col} = 
-  _groupby(data, colspec(cols))
+_groupby(data::Data, cols::T...) where {T<:Col} = _groupby(data, colspec(cols))
 
 function _groupby(data::Data, colspec::ColSpec)
   table = values(data)
 
-  cols   = Tables.columns(table)
-  names  = Tables.columnnames(cols)
+  cols = Tables.columns(table)
+  names = Tables.columnnames(cols)
   snames = choose(colspec, names)
 
   scolumns = [Tables.getcolumn(cols, nm) for nm in snames]
-  srows    = collect(zip(scolumns...))
+  srows = collect(zip(scolumns...))
 
   urows = unique(srows)
-  inds  = map(row -> findall(isequal(row), srows), urows)
+  inds = map(row -> findall(isequal(row), srows), urows)
 
   metadata = Dict(:names => snames, :rows => urows)
   Partition(data, inds, metadata)

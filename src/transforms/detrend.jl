@@ -31,28 +31,26 @@ struct Detrend{S<:ColSpec} <: StatelessFeatureTransform
   degree::Int
 end
 
-Detrend(spec; degree=1) =
-  Detrend(colspec(spec), degree)
+Detrend(spec; degree=1) = Detrend(colspec(spec), degree)
 
-Detrend(cols::T...; degree=1) where {T<:Col} =
-  Detrend(cols; degree=degree)
+Detrend(cols::T...; degree=1) where {T<:Col} = Detrend(cols; degree=degree)
 
 Detrend(; degree=1) = Detrend(:, degree=degree)
 
 isrevertible(::Type{<:Detrend}) = true
 
 function TableTransforms.preprocess(transform::Detrend, data)
-  table  = values(data)
-  names  = Tables.schema(table).names
+  table = values(data)
+  names = Tables.schema(table).names
   snames = choose(transform.colspec, names)
-  tdata  = trend(data, snames; degree=transform.degree)
+  tdata = trend(data, snames; degree=transform.degree)
   ttable = values(tdata)
-  tcols  = Tables.columns(ttable)
+  tcols = Tables.columns(ttable)
   tcols, snames
 end
 
 function applyfeat(::Detrend, feat, prep)
-  cols  = Tables.columns(feat)
+  cols = Tables.columns(feat)
   names = Tables.schema(feat).names
 
   tcols, snames = prep
@@ -76,7 +74,7 @@ function applyfeat(::Detrend, feat, prep)
 end
 
 function revertfeat(::Detrend, newfeat, fcache)
-  cols  = Tables.columns(newfeat)
+  cols = Tables.columns(newfeat)
   names = Tables.schema(newfeat).names
 
   tcols, snames = fcache

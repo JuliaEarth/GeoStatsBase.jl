@@ -26,7 +26,7 @@ ENV["GKSwstype"] = "100"
 isCI = "CI" ∈ keys(ENV)
 islinux = Sys.islinux()
 visualtests = !isCI || (isCI && islinux)
-datadir = joinpath(@__DIR__,"data")
+datadir = joinpath(@__DIR__, "data")
 
 # dummy definitions for testing
 include("dummy.jl")

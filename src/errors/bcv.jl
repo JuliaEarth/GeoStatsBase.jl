@@ -24,8 +24,7 @@ struct BlockValidation{S} <: ErrorEstimationMethod
   loss::Dict{Symbol,SupervisedLoss}
 end
 
-BlockValidation(sides; loss=Dict()) =
-  BlockValidation{typeof(sides)}(sides, loss)
+BlockValidation(sides; loss=Dict()) = BlockValidation{typeof(sides)}(sides, loss)
 
 function Base.error(solver, problem, method::BlockValidation)
   # uniform weights
@@ -34,8 +33,7 @@ function Base.error(solver, problem, method::BlockValidation)
   # block folds
   folding = BlockFolding(method.sides)
 
-  wcv = WeightedValidation(weighting, folding,
-                           lambda=1, loss=method.loss)
+  wcv = WeightedValidation(weighting, folding, lambda=1, loss=method.loss)
 
   error(solver, problem, wcv)
 end

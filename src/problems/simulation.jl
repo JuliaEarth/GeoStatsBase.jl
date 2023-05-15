@@ -2,7 +2,7 @@
 # Licensed under the MIT License. See LICENSE in the project root.
 # ------------------------------------------------------------------
 
-const VarType      = Pair{Symbol,DataType}
+const VarType = Pair{Symbol,DataType}
 const VarOrVarType = Union{Symbol,VarType}
 
 """
@@ -90,8 +90,7 @@ SimulationProblem(sdata::S, sdomain::D, var::VarOrVarType, nreals::Int) where {S
 SimulationProblem(sdomain::D, vars::NTuple{N,VarType}, nreals::Int) where {D,N} =
   SimulationProblem{Nothing,D,N}(nothing, sdomain, Tuple(Variable(n, t) for (n, t) in vars), nreals)
 
-SimulationProblem(sdomain::D, var::VarType, nreals::Int) where {D} =
-  SimulationProblem(sdomain, (var,), nreals)
+SimulationProblem(sdomain::D, var::VarType, nreals::Int) where {D} = SimulationProblem(sdomain, (var,), nreals)
 
 """
     data(problem)
@@ -145,5 +144,5 @@ function Base.show(io::IO, ::MIME"text/plain", problem::SimulationProblem)
     println(io, "  samples:   ", domain(problem.sdata))
   end
   println(io, "  targets:   ", join(vars, ", ", " and "))
-  print(  io, "  N° reals:  ", problem.nreals)
+  print(io, "  N° reals:  ", problem.nreals)
 end

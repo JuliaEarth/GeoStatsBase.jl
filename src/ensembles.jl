@@ -29,11 +29,9 @@ struct Ensemble{𝒟,ℛ}
   end
 end
 
-Ensemble(domain::𝒟, reals::ℛ) where {𝒟,ℛ} =
-  Ensemble{𝒟,ℛ}(domain, reals)
+Ensemble(domain::𝒟, reals::ℛ) where {𝒟,ℛ} = Ensemble{𝒟,ℛ}(domain, reals)
 
-==(e₁::Ensemble, e₂::Ensemble) =
-  e₁.domain == e₂.domain && e₁.reals == e₂.reals
+==(e₁::Ensemble, e₂::Ensemble) = e₁.domain == e₂.domain && e₁.reals == e₂.reals
 
 Meshes.domain(ensemble::Ensemble) = ensemble.domain
 
@@ -41,15 +39,13 @@ Meshes.domain(ensemble::Ensemble) = ensemble.domain
 # VARIABLE API
 # -------------
 
-Base.getindex(ensemble::Ensemble, var::Symbol) =
-  ensemble.reals[var]
+Base.getindex(ensemble::Ensemble, var::Symbol) = ensemble.reals[var]
 
 # -------------
 # ITERATOR API
 # -------------
 
-Base.iterate(ensemble::Ensemble, state=1) =
-  state > ensemble.nreals ? nothing : (ensemble[state], state + 1)
+Base.iterate(ensemble::Ensemble, state=1) = state > ensemble.nreals ? nothing : (ensemble[state], state + 1)
 Base.length(ensemble::Ensemble) = ensemble.nreals
 
 # --------------
@@ -58,12 +54,11 @@ Base.length(ensemble::Ensemble) = ensemble.nreals
 
 function Base.getindex(ensemble::Ensemble, ind::Int)
   sdomain = ensemble.domain
-  sreals  = pairs(ensemble.reals)
-  idata   = (; (var => reals[ind] for (var, reals) in sreals)...)
+  sreals = pairs(ensemble.reals)
+  idata = (; (var => reals[ind] for (var, reals) in sreals)...)
   georef(idata, sdomain)
 end
-Base.getindex(ensemble::Ensemble, inds::AbstractVector{Int}) =
-  [getindex(ensemble, ind) for ind in inds]
+Base.getindex(ensemble::Ensemble, inds::AbstractVector{Int}) = [getindex(ensemble, ind) for ind in inds]
 Base.firstindex(ensemble::Ensemble) = 1
 Base.lastindex(ensemble::Ensemble) = length(ensemble)
 
@@ -95,8 +90,7 @@ function quantile(ensemble::Ensemble, p::Number)
   georef((; cols...), ensemble.domain)
 end
 
-quantile(ensemble::Ensemble, ps::AbstractVector) =
-  [quantile(ensemble, p) for p in ps]
+quantile(ensemble::Ensemble, ps::AbstractVector) = [quantile(ensemble, p) for p in ps]
 
 # -----------
 # IO METHODS
@@ -111,9 +105,9 @@ function Base.show(io::IO, ::MIME"text/plain", ensemble::Ensemble)
   names = keys(ensemble.reals)
   rvals = values(ensemble.reals)
   types = eltype.(first.(rvals))
-  vars  = ["$n ($t)" for (n, t) in zip(names, types)]
+  vars = ["$n ($t)" for (n, t) in zip(names, types)]
   println(io, ensemble)
   println(io, "  domain:    ", ensemble.domain)
   println(io, "  variables: ", join(vars, ", ", " and "))
-  print(  io, "  N° reals:  ", ensemble.nreals)
+  print(io, "  N° reals:  ", ensemble.nreals)
 end

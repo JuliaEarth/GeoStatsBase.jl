@@ -88,7 +88,7 @@ function solve(problem::SimulationProblem, solver::SimulationSolver; procs=[myid
 
   # merge results into a single dictionary
   pdomain = domain(problem)
-  preals  = reduce(merge, results)
+  preals = reduce(merge, results)
 
   Ensemble(pdomain, preals)
 end

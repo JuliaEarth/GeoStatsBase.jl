@@ -71,7 +71,7 @@ function revertmeta(::Sample, newdom::Domain, mcache)
 
   sinds, rinds, rdom = mcache
 
-  uinds  = sort(unique(sinds))
+  uinds = sort(unique(sinds))
   ugeoms = map(uinds) do i
     j = findfirst(==(i), sinds)
     geoms[j]

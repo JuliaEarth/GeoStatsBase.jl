@@ -23,8 +23,7 @@ struct KFoldValidation <: ErrorEstimationMethod
   loss::Dict{Symbol,SupervisedLoss}
 end
 
-KFoldValidation(k::Int; shuffle=true, loss=Dict()) =
-  KFoldValidation(k, shuffle, loss)
+KFoldValidation(k::Int; shuffle=true, loss=Dict()) = KFoldValidation(k, shuffle, loss)
 
 function Base.error(solver, problem, method::KFoldValidation)
   # uniform weights
@@ -33,8 +32,7 @@ function Base.error(solver, problem, method::KFoldValidation)
   # random folds
   folding = UniformFolding(method.k, method.shuffle)
 
-  wcv = WeightedValidation(weighting, folding,
-                           lambda=1, loss=method.loss)
+  wcv = WeightedValidation(weighting, folding, lambda=1, loss=method.loss)
 
   error(solver, problem, wcv)
 end

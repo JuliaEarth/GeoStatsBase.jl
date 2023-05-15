@@ -5,12 +5,12 @@
 # connected component of adjacency matrix containing vertex
 function component(adjacency::AbstractMatrix{Int}, vertex::Int)
   frontier = [vertex]
-  visited  = Int[]
+  visited = Int[]
   # breadth-first search
   while !isempty(frontier)
     u = pop!(frontier)
     push!(visited, u)
-    for v in findall(!iszero, adjacency[u,:])
+    for v in findall(!iszero, adjacency[u, :])
       if v ∉ visited
         push!(frontier, v)
       end
@@ -71,131 +71,132 @@ macro metasolver(solver, solvertype, body)
   gkeys = map(p -> p.args[1], gparams)
 
   # solver parameter type for single variable
-  solvervparam = Symbol(solver,"Param")
+  solvervparam = Symbol(solver, "Param")
 
   # solver parameter type for joint variables
-  solverjparam = Symbol(solver,"JointParam")
+  solverjparam = Symbol(solver, "JointParam")
 
   # variables are symbols or tuples of symbols
   vtype = Symbol
   jtype = NTuple{<:Any,Symbol}
 
-  esc(quote
-    $Base.@kwdef struct $solvervparam
-      __dummy__ = nothing
-      $(vparams...)
-    end
+  esc(
+    quote
+      $Base.@kwdef struct $solvervparam
+        __dummy__ = nothing
+        $(vparams...)
+      end
 
-    $Base.@kwdef struct $solverjparam
-      __dummy__ = nothing
-      $(jparams...)
-    end
+      $Base.@kwdef struct $solverjparam
+        __dummy__ = nothing
+        $(jparams...)
+      end
 
-    @doc (@doc $solvervparam) (
-    struct $solver <: $solvertype
-      vparams::Dict{$vtype,$solvervparam}
-      jparams::Dict{$jtype,$solverjparam}
-      $(gkeys...)
+      @doc (@doc $solvervparam) (
+        struct $solver <: $solvertype
+          vparams::Dict{$vtype,$solvervparam}
+          jparams::Dict{$jtype,$solverjparam}
+          $(gkeys...)
 
-      # auxiliary fields
-      varnames::Vector{Symbol}
-      adjacency::Matrix{Int}
+          # auxiliary fields
+          varnames::Vector{Symbol}
+          adjacency::Matrix{Int}
 
-      function $solver(vparams::Dict{$vtype,$solvervparam},
-                       jparams::Dict{$jtype,$solverjparam},
-                       $(gkeys...))
-        svars = collect(keys(vparams))
-        jvars = collect(keys(jparams))
-        lens₁ = length.(jvars)
-        lens₂ = length.(unique.(jvars))
+          function $solver(vparams::Dict{$vtype,$solvervparam}, jparams::Dict{$jtype,$solverjparam}, $(gkeys...))
+            svars = collect(keys(vparams))
+            jvars = collect(keys(jparams))
+            lens₁ = length.(jvars)
+            lens₂ = length.(unique.(jvars))
 
-        @assert all(lens₁ .== lens₂ .> 1) "invalid joint variable specification"
+            @assert all(lens₁ .== lens₂ .> 1) "invalid joint variable specification"
 
-        varnames = svars ∪ Iterators.flatten(jvars)
+            varnames = svars ∪ Iterators.flatten(jvars)
 
-        adjacency = zeros(Int, length(varnames), length(varnames))
-        for (i, u) in enumerate(varnames)
-          for vtuple in jvars
-            if u ∈ vtuple
-              for v in vtuple
-                j = indexin([v], varnames)[1]
-                i == j || (adjacency[i,j] = 1)
+            adjacency = zeros(Int, length(varnames), length(varnames))
+            for (i, u) in enumerate(varnames)
+              for vtuple in jvars
+                if u ∈ vtuple
+                  for v in vtuple
+                    j = indexin([v], varnames)[1]
+                    i == j || (adjacency[i, j] = 1)
+                  end
+                end
               end
+            end
+
+            new(vparams, jparams, $(gkeys...), varnames, adjacency)
+          end
+        end
+      )
+
+      function $solver(params...; $(gparams...))
+        # build dictionaries for inner constructor
+        vdict = Dict{$vtype,$solvervparam}()
+        jdict = Dict{$jtype,$solverjparam}()
+
+        # convert named tuples to solver parameters
+        for (varname, varparams) in params
+          kwargs = [k => v for (k, v) in zip(keys(varparams), varparams)]
+          if varname isa Symbol
+            push!(vdict, varname => $solvervparam(; kwargs...))
+          else
+            push!(jdict, varname => $solverjparam(; kwargs...))
+          end
+        end
+
+        $solver(vdict, jdict, $(gkeys...))
+      end
+
+      function GeoStatsBase.covariables(var::Symbol, solver::$solver)
+        vind = indexin([var], solver.varnames)[1]
+        if vind ≠ nothing
+          comp = GeoStatsBase.component(solver.adjacency, vind)
+          vars = Tuple(solver.varnames[sort(comp)])
+          params = []
+          for v in vars
+            push!(params, (v,) => solver.vparams[v])
+          end
+          for vtuple in keys(solver.jparams)
+            if any(v ∈ vars for v in vtuple)
+              push!(params, vtuple => solver.jparams[vtuple])
+            end
+          end
+        else
+          # default parameter for single variable
+          vars = (var,)
+          params = [(var,) => $solvervparam()]
+        end
+
+        (names=vars, params=Dict(params))
+      end
+
+      GeoStatsBase.targets(solver::$solver) = solver.varnames
+
+      # ------------
+      # IO methods
+      # ------------
+      function Base.show(io::IO, solver::$solver)
+        print(io, $solver)
+      end
+
+      function Base.show(io::IO, ::MIME"text/plain", solver::$solver)
+        println(io, solver)
+        for (var, varparams) in merge(solver.vparams, solver.jparams)
+          header = var isa Symbol ? "  └─" * string(var) : "  └─" * join(var, "—")
+          pnames = setdiff(fieldnames(typeof(varparams)), [:__dummy__])
+          println(io, header)
+          for pname in pnames
+            pval = getfield(varparams, pname)
+            if !isnothing(pval)
+              print(io, "    └─", pname, " ⇨ ")
+              show(IOContext(io, :compact => true), pval)
+              println(io, "")
             end
           end
         end
-
-        new(vparams, jparams, $(gkeys...), varnames, adjacency)
-      end
-    end)
-
-    function $solver(params...; $(gparams...))
-      # build dictionaries for inner constructor
-      vdict = Dict{$vtype,$solvervparam}()
-      jdict = Dict{$jtype,$solverjparam}()
-
-      # convert named tuples to solver parameters
-      for (varname, varparams) in params
-        kwargs = [k => v for (k,v) in zip(keys(varparams), varparams)]
-        if varname isa Symbol
-          push!(vdict, varname => $solvervparam(; kwargs...))
-        else
-          push!(jdict, varname => $solverjparam(; kwargs...))
-        end
-      end
-
-      $solver(vdict, jdict, $(gkeys...))
-    end
-
-    function GeoStatsBase.covariables(var::Symbol, solver::$solver)
-      vind = indexin([var], solver.varnames)[1]
-      if vind ≠ nothing
-        comp = GeoStatsBase.component(solver.adjacency, vind)
-        vars = Tuple(solver.varnames[sort(comp)])
-        params = []
-        for v in vars
-          push!(params, (v,) => solver.vparams[v])
-        end
-        for vtuple in keys(solver.jparams)
-          if any(v ∈ vars for v in vtuple)
-            push!(params, vtuple => solver.jparams[vtuple])
-          end
-        end
-      else
-        # default parameter for single variable
-        vars = (var,)
-        params = [(var,) => $solvervparam()]
-      end
-
-      (names=vars, params=Dict(params))
-    end
-
-    GeoStatsBase.targets(solver::$solver) = solver.varnames
-
-    # ------------
-    # IO methods
-    # ------------
-    function Base.show(io::IO, solver::$solver)
-      print(io, $solver)
-    end
-
-    function Base.show(io::IO, ::MIME"text/plain", solver::$solver)
-      println(io, solver)
-      for (var, varparams) in merge(solver.vparams, solver.jparams)
-        header = var isa Symbol ? "  └─" * string(var) : "  └─" * join(var, "—")
-        pnames = setdiff(fieldnames(typeof(varparams)), [:__dummy__])
-        println(io, header)
-        for pname in pnames
-          pval = getfield(varparams, pname)
-          if !isnothing(pval)
-            print(io, "    └─", pname, " ⇨ ")
-            show(IOContext(io, :compact => true), pval)
-            println(io, "")
-          end
-        end
       end
     end
-  end)
+  )
 end
 
 """

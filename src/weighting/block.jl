@@ -16,8 +16,7 @@ end
 
 BlockWeighting(sides...) = BlockWeighting(sides)
 
-weight(object, method::BlockWeighting) =
-  weight(domain(object), method)
+weight(object, method::BlockWeighting) = weight(domain(object), method)
 
 function weight(domain::Domain, method::BlockWeighting)
   p = partition(domain, BlockPartition(method.sides))

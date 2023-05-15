@@ -9,11 +9,7 @@
     s = DummyLearnSolver(DummyModel())
 
     # dummy classifier → 0.5 misclassification rate
-    for m in [LeaveOneOut(),
-              LeaveBallOut(0.1),
-              KFoldValidation(10),
-              BlockValidation(0.1),
-              DensityRatioValidation(10)]
+    for m in [LeaveOneOut(), LeaveBallOut(0.1), KFoldValidation(10), BlockValidation(0.1), DensityRatioValidation(10)]
       e = error(s, p, m)
       @test isapprox(e[:y], 0.5, atol=0.06)
     end
@@ -26,14 +22,11 @@
     𝒮₂ = sample(ℐ₂, 100, replace=false)
     p₁ = EstimationProblem(𝒮₁, domain(ℐ₁), :z)
     p₂ = EstimationProblem(𝒮₂, domain(ℐ₂), :z)
-    s  = DummyEstimSolver()
+    s = DummyEstimSolver()
 
     # low variance + dummy (mean) estimator → low error
     # high variance + dummy (mean) estimator → high error
-    for m in [LeaveOneOut(),
-              LeaveBallOut(0.1),
-              KFoldValidation(10),
-              BlockValidation(0.1)]
+    for m in [LeaveOneOut(), LeaveBallOut(0.1), KFoldValidation(10), BlockValidation(0.1)]
       e₁ = error(s, p₁, m)
       e₂ = error(s, p₂, m)
       @test e₁[:z] < 1

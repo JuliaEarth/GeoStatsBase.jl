@@ -39,7 +39,7 @@ function apply(transform::Potrace, data)
   ϵ = transform.ϵ
 
   # select column name
-  cols  = Tables.columns(tab)
+  cols = Tables.columns(tab)
   names = Tables.columnnames(cols)
   sname = choose(transform.colspec, names) |> first
 
@@ -69,7 +69,7 @@ function apply(transform::Potrace, data)
 
   # collect vertices and topology
   verts = vertices(dom)
-  topo  = topology(dom)
+  topo = topology(dom)
 
   # map pixels to vertices
   ∂ = Boundary{2,0}(topo)
@@ -85,7 +85,7 @@ function apply(transform::Potrace, data)
   multis = map(masks) do mask
     rings = trace(mask)
     polys = map(rings) do (outer, inners)
-      ochain  = chain(outer)
+      ochain = chain(outer)
       ichains = [chain(inner) for inner in inners]
       PolyArea(ochain, ichains)
     end
@@ -117,7 +117,7 @@ aggregate(::Type{<:Any}, x) = mode(x)
 function trace(mask)
   # pad mask with inactive pixels
   M = falses(size(mask) .+ 2)
-  M[begin+1:end-1,begin+1:end-1] .= mask
+  M[(begin + 1):(end - 1), (begin + 1):(end - 1)] .= mask
 
   # trace paths on padded mask
   paths = tracerecursion!(M)
@@ -127,9 +127,9 @@ function trace(mask)
 
   # unpad and linearize indices
   linear = LinearIndices(mask)
-  fun(■) = linear[■ - CartesianIndex(1,1)]
+  fun(■) = linear[■ - CartesianIndex(1, 1)]
   map(rings) do (outer, inners)
-    o  = [(→, fun(■)) for (□, →, ■) in outer]
+    o = [(→, fun(■)) for (□, →, ■) in outer]
     is = [[(→, fun(■)) for (□, →, ■) in inner] for inner in inners]
     o, is
   end
@@ -163,26 +163,26 @@ end
 # trace the top-left polygon on the mask
 function tracepath(M)
   # find top-left corner (□ → ■ link)
-  i, j = 1, findfirst(==(1), M[1,:])
+  i, j = 1, findfirst(==(1), M[1, :])
   while isnothing(j) && i < size(M, 1)
     i += 1
-    j = findfirst(==(1), M[i,:])
+    j = findfirst(==(1), M[i, :])
   end
 
   # there must be at least one active pixel
   @assert !isnothing(j) "invalid input mask"
 
   # define □ → ■ link
-  □ = CartesianIndex(i, j-1)
+  □ = CartesianIndex(i, j - 1)
   ■ = CartesianIndex(i, j)
-  
+
   # step direction along the path
   step(□, ■) = CartesianIndex(■[2] - □[2], □[1] - ■[1])
-  
+
   # direction after a given turn
-  left  = Dict(:→ => :↑, :↑ => :←, :← => :↓, :↓ => :→)
+  left = Dict(:→ => :↑, :↑ => :←, :← => :↓, :↓ => :→)
   right = Dict(:→ => :↓, :↓ => :←, :← => :↑, :↑ => :→)
-    
+
   # find the next edge along the path
   function move((□, →, ■))
     □ₛ = □ + step(□, ■)
@@ -199,38 +199,38 @@ function tracepath(M)
       ■ₛ, left[→], ■ # left turn policy
     end
   end
-  
+
   # build a closed path
   start = (□, :→, ■)
-  next  = move(start)
-  path  = [start, next]
+  next = move(start)
+  path = [start, next]
   while next ≠ start
     next = move(next)
     push!(path, next)
   end
-  
+
   path
 end
 
 # invert the the mask inside the path
 function insideout!(M, path)
-  □s, ⬕s   = first.(path), last.(path)
+  □s, ⬕s = first.(path), last.(path)
   frontier = collect(zip(□s, ⬕s))
-  visited  = falses(size(M))
+  visited = falses(size(M))
   visited[□s] .= true
   while !isempty(frontier)
     □, ⬕ = pop!(frontier)
-    
+
     if !visited[⬕]
       # flip color
       M[⬕] = 1 - M[⬕]
       visited[⬕] = true
-      
+
       # update frontier
-      δ  = ⬕ - □
+      δ = ⬕ - □
       ⬕₁ = ⬕ + δ
-      ⬕₂ = ⬕ + CartesianIndex(δ[2],-δ[1])
-      ⬕₃ = ⬕ + CartesianIndex(-δ[2],δ[1])
+      ⬕₂ = ⬕ + CartesianIndex(δ[2], -δ[1])
+      ⬕₃ = ⬕ + CartesianIndex(-δ[2], δ[1])
       for ⬕ₛ in [⬕₁, ⬕₂, ⬕₃]
         if !visited[⬕ₛ]
           push!(frontier, (⬕, ⬕ₛ))

@@ -17,10 +17,10 @@ single column of ones is returned that corresponds to
 the constant term `x₁⁰⋅x₂⁰⋅⋯⋅xₙ⁰` for all items in `xs`.
 """
 function polymat(xs, d)
-  x  = first(xs)
-  n  = length(x)
+  x = first(xs)
+  n = length(x)
   es = Iterators.flatten(multiexponents(n, d) for d in 0:d)
-  ps = [[prod(x.^e) for x in xs] for e in es]
+  ps = [[prod(x .^ e) for x in xs] for e in es]
   reduce(hcat, ps)
 end
 
@@ -47,7 +47,7 @@ function trend(data, vars::AbstractVector{Symbol}; degree=1)
   # build polynomial drift terms
   coords(𝒟, i) = coordinates(centroid(𝒟, i))
   xs = (coords(𝒟, i) for i in 1:nelements(𝒟))
-  F  = polymat(xs, degree)
+  F = polymat(xs, degree)
 
   # eqs 25 and 26 in Menafoglio, A., Secchi, P. 2013.
   ms = map(vars) do var
@@ -56,14 +56,13 @@ function trend(data, vars::AbstractVector{Symbol}; degree=1)
     F * a
   end
 
-  ctor  = Tables.materializer(𝒯)
+  ctor = Tables.materializer(𝒯)
   means = ctor((; zip(vars, ms)...))
 
   georef(means, 𝒟)
 end
 
-trend(data, var::Symbol; kwargs...) =
-  trend(data, [var]; kwargs...)
+trend(data, var::Symbol; kwargs...) = trend(data, [var]; kwargs...)
 
 function trend(data; kwargs...)
   𝒯 = values(data)

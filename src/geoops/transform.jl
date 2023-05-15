@@ -37,10 +37,10 @@ xnm, ynm, znm = :x, :y, :z
 If `object` is a `Partition`, the group columns cannot be replaced.
 """
 macro transform(object::Symbol, exprs...)
-  splits   = map(expr -> _split(expr), exprs)
+  splits = map(expr -> _split(expr), exprs)
   colnames = first.(splits)
   colexprs = last.(splits)
-  escobj   = esc(object)
+  escobj = esc(object)
   quote
     if $escobj isa Partition
       local partition = $escobj
@@ -54,11 +54,11 @@ macro transform(object::Symbol, exprs...)
 end
 
 function _transform(data::D, tnames, tcolumns) where {D<:Data}
-  dom   = domain(data)
+  dom = domain(data)
   table = values(data)
 
-  cols    = Tables.columns(table)
-  names   = Tables.columnnames(cols) |> collect
+  cols = Tables.columns(table)
+  names = Tables.columnnames(cols) |> collect
   columns = Any[Tables.getcolumn(cols, nm) for nm in names]
 
   newdom = dom
