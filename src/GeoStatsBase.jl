@@ -26,7 +26,7 @@ import Meshes
 import MLJModelInterface as MI
 import TableTransforms: StatelessTableTransform
 import TableTransforms: StatelessFeatureTransform
-import TableTransforms: ColSpec, NoneSpec, Col, colspec, choose
+import TableTransforms: ColSpec, Col, NoneSpec, colspec, choose
 import TableTransforms: apply, revert, reapply
 import TableTransforms: applyfeat, revertfeat
 import TableTransforms: applymeta, revertmeta

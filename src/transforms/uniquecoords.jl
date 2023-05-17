@@ -23,12 +23,12 @@ UniqueCoords("a" => last, "b" => maximum)
 """
 struct UniqueCoords{S<:ColSpec} <: StatelessTableTransform
   colspec::S
-  aggfuns::Vector{Any}
+  aggfuns::Vector{Function}
 end
 
-UniqueCoords() = UniqueCoords(NoneSpec(), [])
-UniqueCoords(pairs::Pair{C,Any}...) where {C<:Col} = 
-  UniqueCoords(colspec(first.(pairs)), collect(last.(pairs)))
+UniqueCoords() = UniqueCoords(NoneSpec(), Function[])
+UniqueCoords(pairs::Pair{C,<:Function}...) where {C<:Col} = 
+  UniqueCoords(colspec(first.(pairs)), collect(Function, last.(pairs)))
 
 isrevertible(::Type{UniqueCoords}) = false
 
