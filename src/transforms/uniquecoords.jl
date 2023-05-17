@@ -27,7 +27,7 @@ struct UniqueCoords{S<:ColSpec} <: StatelessTableTransform
 end
 
 UniqueCoords() = UniqueCoords(NoneSpec(), Function[])
-UniqueCoords(pairs::Pair{C,<:Function}...) where {C<:Col} = 
+UniqueCoords(pairs::Pair{C,<:Function}...) where {C<:Col} =
   UniqueCoords(colspec(first.(pairs)), collect(Function, last.(pairs)))
 
 isrevertible(::Type{UniqueCoords}) = false
