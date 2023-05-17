@@ -26,7 +26,7 @@ import Meshes
 import MLJModelInterface as MI
 import TableTransforms: StatelessTableTransform
 import TableTransforms: StatelessFeatureTransform
-import TableTransforms: ColSpec, Col, colspec, choose
+import TableTransforms: ColSpec, Col, NoneSpec, colspec, choose
 import TableTransforms: apply, revert, reapply
 import TableTransforms: applyfeat, revertfeat
 import TableTransforms: applymeta, revertmeta
@@ -175,7 +175,6 @@ export
   quantile,
 
   # utilities
-  uniquecoords,
   integrate,
   @groupby,
   @transform,
@@ -189,6 +188,7 @@ export
   # transforms
   Detrend,
   Potrace,
+  UniqueCoords,
 
   # UI elements
   searcher_ui

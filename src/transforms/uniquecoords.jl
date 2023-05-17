@@ -3,74 +3,95 @@
 # ------------------------------------------------------------------
 
 """
-    uniquecoords(data, agg=Dict())
+    UniqueCoords(var₁ => agg₁, var₂ => agg₂, ..., varₙ => aggₙ)
 
-Retain locations in `data` with unique coordinates.
+Retain locations in data with unique coordinates.
 
-Duplicates of a variable `var` are aggregated with
-aggregation function `agg[var]`. Default aggregation
-function is `mean` for continuous variables and `first`
-otherwise.
+Duplicates of a variable `varᵢ` are aggregated with
+aggregation function `aggᵢ`. If an aggregation function 
+is not defined for variable `varᵢ`, the default aggregation 
+function will be used. Default aggregation function is `mean` for
+continuous variables and `first` otherwise.
+
+# Examples
+
+```julia
+UniqueCoords(1 => last, 2 => maximum)
+UniqueCoords(:a => first, :b => minimum)
+UniqueCoords("a" => last, "b" => maximum)
+```
 """
-function uniquecoords(data::D; agg=Dict()) where {D<:Data}
+struct UniqueCoords{S<:ColSpec} <: StatelessTableTransform
+  colspec::S
+  aggfuns::Vector{Function}
+end
+
+UniqueCoords() = UniqueCoords(NoneSpec(), Function[])
+UniqueCoords(pairs::Pair{C,<:Function}...) where {C<:Col} = 
+  UniqueCoords(colspec(first.(pairs)), collect(Function, last.(pairs)))
+
+isrevertible(::Type{UniqueCoords}) = false
+
+function apply(transform::UniqueCoords, data::Data)
   dom = domain(data)
   tab = values(data)
-  sch = Tables.schema(tab)
-  vars, types = sch.names, sch.types
-  mactype = Dict(vars .=> types)
+  cols = Tables.columns(tab)
+  vars = Tables.columnnames(cols)
+  svars = choose(transform.colspec, vars)
+  agg = Dict(zip(svars, transform.aggfuns))
 
   # filtering info
   for var in vars
-    if var ∉ keys(agg)
-      val = getproperty(data, var)
-      ST = scitype(val[1])
-      agg[var] = ST <: Continuous ? _mean : _first
+    if !haskey(agg, var)
+      v = getproperty(data, var)
+      agg[var] = elscitype(v) <: Continuous ? _mean : _first
     end
   end
 
   # group locations with the same coordinates
   pts = [centroid(dom, i) for i in 1:nelements(dom)]
   X = reduce(hcat, coordinates.(pts))
-  gind = _uniqueinds(X, 2)
-  groups = Dict(ind => Int[] for ind in unique(gind))
-  for (i, ind) in enumerate(gind)
+  uinds = _uniqueinds(X, 2)
+  ginds = unique(uinds)
+  groups = Dict(ind => Int[] for ind in ginds)
+  for (i, ind) in enumerate(uinds)
     push!(groups[ind], i)
   end
 
   # perform aggregation with repeated indices
-  locs = Int[]
-  vals = Dict(var => mactype[var][] for var in vars)
-  for g in values(groups)
-    i = g[1] # select any location
-    if length(g) > 1
-      # aggregate variables
-      for var in vars
-        v = getproperty(data, var)
-        push!(vals[var], agg[var](v[g]))
-      end
-    else
-      # copy location
-      for var in vars
-        v = getproperty(data, var)
-        push!(vals[var], v[i])
+  function aggvar(var)
+    v = getproperty(data, var)
+    map(ginds) do gind
+      group = groups[gind]
+      if length(group) > 1
+        # aggregate values
+        agg[var](v[group])
+      else
+        # copy value
+        v[group[1]]
       end
     end
-    push!(locs, i)
   end
 
   # construct new table
-  ctor = Tables.materializer(tab)
-  newtab = ctor((; (var => vals[var] for var in vars)...))
+  𝒯 = (; (var => aggvar(var) for var in vars)...)
+  newtab = 𝒯 |> Tables.materializer(tab)
 
   # construct new domain
-  newdom = view(dom, locs)
+  newdom = view(dom, ginds)
 
   # new data tables
   newvals = Dict(paramdim(newdom) => newtab)
 
-  # return new spatial data
-  constructor(D)(newdom, newvals)
+  # new spatial data
+  newdata = constructor(data)(newdom, newvals)
+
+  newdata, nothing
 end
+
+# ------------
+# AGGREGATION
+# ------------
 
 function _mean(xs)
   vs = skipmissing(xs)
@@ -86,13 +107,14 @@ end
 # The code below was copied/modified provisorily from Base.unique
 # See https://github.com/JuliaLang/julia/issues/1845
 # ---------------------------------------------------------------
+
 using Base.Cartesian: @nref, @nloops
 
-import Base: hash
 struct Prehashed
   hash::UInt
 end
-hash(x::Prehashed) = x.hash
+
+Base.hash(x::Prehashed) = x.hash
 
 @generated function _uniqueinds(A::AbstractArray{T,N}, dim::Int) where {T,N}
   quote
