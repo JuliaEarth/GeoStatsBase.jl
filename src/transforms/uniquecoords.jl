@@ -35,9 +35,8 @@ isrevertible(::Type{UniqueCoords}) = false
 function apply(transform::UniqueCoords, data::Data)
   dom = domain(data)
   tab = values(data)
-  sch = Tables.schema(tab)
-  vars, types = sch.names, sch.types
-  mactype = Dict(zip(vars, types))
+  cols = Tables.columns(tab)
+  vars = Tables.columnnames(cols)
   svars = choose(transform.colspec, vars)
   agg = Dict(zip(svars, transform.aggfuns))
 
@@ -52,39 +51,30 @@ function apply(transform::UniqueCoords, data::Data)
   # group locations with the same coordinates
   pts = [centroid(dom, i) for i in 1:nelements(dom)]
   X = reduce(hcat, coordinates.(pts))
-  ginds = _uniqueinds(X, 2)
-  groups = Dict(ind => Int[] for ind in unique(ginds))
-  for (i, ind) in enumerate(ginds)
-    push!(groups[ind], i)
-  end
+  uinds = _uniqueinds(X, 2)
+  ginds = unique(uinds)
+  groups = [findall(==(ind), uinds) for ind in ginds]
 
   # perform aggregation with repeated indices
-  locs = Int[]
-  vals = Dict(var => mactype[var][] for var in vars)
-  for g in values(groups)
-    i = g[1] # select any location
-    if length(g) > 1
-      # aggregate variables
-      for var in vars
-        v = getproperty(data, var)
-        push!(vals[var], agg[var](v[g]))
-      end
-    else
-      # copy location
-      for var in vars
-        v = getproperty(data, var)
-        push!(vals[var], v[i])
+  function aggvar(var)
+    v = getproperty(data, var)
+    map(groups) do group
+      if length(group) > 1
+        # aggregate values
+        agg[var](v[group])
+      else
+        # copy value
+        v[group[1]]
       end
     end
-    push!(locs, i)
   end
 
   # construct new table
-  𝒯 = (; (var => vals[var] for var in vars)...)
+  𝒯 = (; (var => aggvar(var) for var in vars)...)
   newtab = 𝒯 |> Tables.materializer(tab)
 
   # construct new domain
-  newdom = view(dom, locs)
+  newdom = view(dom, ginds)
 
   # new data tables
   newvals = Dict(paramdim(newdom) => newtab)
