@@ -53,12 +53,16 @@ function apply(transform::UniqueCoords, data::Data)
   X = reduce(hcat, coordinates.(pts))
   uinds = _uniqueinds(X, 2)
   ginds = unique(uinds)
-  groups = [findall(==(ind), uinds) for ind in ginds]
+  groups = Dict(ind => Int[] for ind in ginds)
+  for (i, ind) in enumerate(uinds)
+    push!(groups[ind], i)
+  end
 
   # perform aggregation with repeated indices
   function aggvar(var)
     v = getproperty(data, var)
-    map(groups) do group
+    map(ginds) do gind
+      group = groups[gind]
       if length(group) > 1
         # aggregate values
         agg[var](v[group])

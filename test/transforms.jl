@@ -146,14 +146,14 @@
   end
 
   @testset "UniqueCoords" begin
-    X = [i * j for i in 1:2, j in 1:100]
-    z = rand(100)
+    X = [i * j for i in 1:2, j in 1:1_000_000]
+    z = rand(1_000_000)
     d = georef((z=[z; z],), [X X])
     u = d |> UniqueCoords()
     du = domain(u)
     p = [centroid(du, i) for i in 1:nelements(du)]
     U = reduce(hcat, coordinates.(p))
-    @test nelements(du) == 100
+    @test nelements(du) == 1_000_000
     @test Set(eachcol(U)) == Set(eachcol(X))
 
     X = rand(3, 100)
