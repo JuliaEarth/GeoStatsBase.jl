@@ -1,3 +1,7 @@
+# ------------------------------------------------------------------
+# Licensed under the MIT License. See LICENSE in the project root.
+# ------------------------------------------------------------------
+
 """
     UniqueCoords(var₁ => agg₁, var₂ => agg₂, ..., varₙ => aggₙ)
 
@@ -19,7 +23,7 @@ UniqueCoords("a" => last, "b" => maximum)
 """
 struct UniqueCoords{S<:ColSpec} <: StatelessTableTransform
   colspec::S
-  aggfuncs::Vector{Any}
+  aggfuns::Vector{Any}
 end
 
 UniqueCoords() = UniqueCoords(NoneSpec(), [])
@@ -35,22 +39,22 @@ function apply(transform::UniqueCoords, data::Data)
   vars, types = sch.names, sch.types
   mactype = Dict(zip(vars, types))
   svars = choose(transform.colspec, vars)
-  agg = Dict(zip(svars, transform.aggfuncs))
+  agg = Dict(zip(svars, transform.aggfuns))
 
   # filtering info
   for var in vars
     if !haskey(agg, var)
-      x = getproperty(data, var)
-      agg[var] = elscitype(x) <: Continuous ? _mean : _first
+      v = getproperty(data, var)
+      agg[var] = elscitype(v) <: Continuous ? _mean : _first
     end
   end
 
   # group locations with the same coordinates
   pts = [centroid(dom, i) for i in 1:nelements(dom)]
   X = reduce(hcat, coordinates.(pts))
-  gind = _uniqueinds(X, 2)
-  groups = Dict(ind => Int[] for ind in unique(gind))
-  for (i, ind) in enumerate(gind)
+  ginds = _uniqueinds(X, 2)
+  groups = Dict(ind => Int[] for ind in unique(ginds))
+  for (i, ind) in enumerate(ginds)
     push!(groups[ind], i)
   end
 
