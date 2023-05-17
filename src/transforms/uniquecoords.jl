@@ -30,7 +30,7 @@ UniqueCoords() = UniqueCoords(NoneSpec(), Function[])
 UniqueCoords(pairs::Pair{C,<:Function}...) where {C<:Col} =
   UniqueCoords(colspec(first.(pairs)), collect(Function, last.(pairs)))
 
-isrevertible(::Type{UniqueCoords}) = false
+isrevertible(::Type{<:UniqueCoords}) = false
 
 function apply(transform::UniqueCoords, data::Data)
   dom = domain(data)
