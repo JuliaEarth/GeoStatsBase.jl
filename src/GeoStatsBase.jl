@@ -175,7 +175,6 @@ export
   quantile,
 
   # utilities
-  uniquecoords,
   integrate,
   @groupby,
   @transform,

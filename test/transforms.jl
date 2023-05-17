@@ -145,6 +145,28 @@
     end
   end
 
+  @testset "UniqueCoords" begin
+    X = [i * j for i in 1:2, j in 1:1_000_000]
+    z = rand(1_000_000)
+    d = georef((z=[z; z],), [X X])
+    u = d |> UniqueCoords()
+    du = domain(u)
+    p = [centroid(du, i) for i in 1:nelements(du)]
+    U = reduce(hcat, coordinates.(p))
+    @test nelements(du) == 1_000_000
+    @test Set(eachcol(U)) == Set(eachcol(X))
+
+    X = rand(3, 100)
+    z = rand(100)
+    n = [string(i) for i in 1:100]
+    Xd = hcat(X, X[:, 1:10])
+    zd = vcat(z, z[1:10])
+    nd = vcat(n, n[1:10])
+    sdata = georef((z=zd, n=nd), PointSet(Xd))
+    ndata = sdata |> UniqueCoords()
+    @test nitems(ndata) == 100
+  end
+
   @testset "CoDa" begin
     d = georef((z=rand(1000), w=rand(1000)))
 
