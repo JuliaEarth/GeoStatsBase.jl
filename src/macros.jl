@@ -105,7 +105,12 @@ macro metasolver(solver, solvertype, body)
           varnames::Vector{Symbol}
           adjacency::Matrix{Int}
 
-          function $solver(vparams::Dict{$vtype,$solvervparam}, jparams::Dict{$jtype,$solverjparam}, $(gkeys...), progress::Bool)
+          function $solver(
+            vparams::Dict{$vtype,$solvervparam},
+            jparams::Dict{$jtype,$solverjparam},
+            $(gkeys...),
+            progress::Bool
+          )
             svars = collect(keys(vparams))
             jvars = collect(keys(jparams))
             lens₁ = length.(jvars)
