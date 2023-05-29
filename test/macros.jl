@@ -2,6 +2,7 @@
   @testset "@estimsolver" begin
     s = ESolver(:z => (A=2, B=3), C=false)
     @test s.C == false
+    @test s.progress == true
     @test targets(s) == [:z]
     names, params = covariables(:z, s)
     @test names == (:z,)
@@ -26,11 +27,14 @@
 
     s = SSolver()
     @test s.C == true
+    @test s.progress == true
     @test isempty(targets(s))
     names, params = covariables(:z, s)
     @test names == (:z,)
     @test params[(:z,)].A == 1.0
     @test params[(:z,)].B == 2
+    s = SSolver(progress=false)
+    @test s.progress == false
 
     s = SSolver(:z => (A=1, B=2), :w => (A=2, B=3), (:z, :w) => (J="bar",))
     @test s.C == true

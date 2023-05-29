@@ -18,6 +18,7 @@ using ReferenceFrameRotations
 using DensityRatioEstimation
 using ScientificTypes
 using LossFunctions
+using ProgressMeter
 
 using TypedTables # for a default table type
 using Optim # for LSIF estimation
