@@ -213,7 +213,7 @@ macro estimsolver(solver, body)
 end
 
 """
-    @estimsolver solver body
+    @simsolver solver body
 
 A helper macro to create a simulation solver named `solver` with parameters
 specified in `body`. For examples, please check the documentation for
