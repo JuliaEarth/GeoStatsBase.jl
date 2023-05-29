@@ -98,11 +98,14 @@ macro metasolver(solver, solvertype, body)
           jparams::Dict{$jtype,$solverjparam}
           $(gkeys...)
 
+          # common parameters
+          progress::Bool
+
           # auxiliary fields
           varnames::Vector{Symbol}
           adjacency::Matrix{Int}
 
-          function $solver(vparams::Dict{$vtype,$solvervparam}, jparams::Dict{$jtype,$solverjparam}, $(gkeys...))
+          function $solver(vparams::Dict{$vtype,$solvervparam}, jparams::Dict{$jtype,$solverjparam}, $(gkeys...), progress::Bool)
             svars = collect(keys(vparams))
             jvars = collect(keys(jparams))
             lens₁ = length.(jvars)
@@ -124,12 +127,12 @@ macro metasolver(solver, solvertype, body)
               end
             end
 
-            new(vparams, jparams, $(gkeys...), varnames, adjacency)
+            new(vparams, jparams, $(gkeys...), progress, varnames, adjacency)
           end
         end
       )
 
-      function $solver(params...; $(gparams...))
+      function $solver(params...; $(gparams...), progress=false)
         # build dictionaries for inner constructor
         vdict = Dict{$vtype,$solvervparam}()
         jdict = Dict{$jtype,$solverjparam}()
@@ -144,7 +147,7 @@ macro metasolver(solver, solvertype, body)
           end
         end
 
-        $solver(vdict, jdict, $(gkeys...))
+        $solver(vdict, jdict, $(gkeys...), progress)
       end
 
       function GeoStatsBase.covariables(var::Symbol, solver::$solver)

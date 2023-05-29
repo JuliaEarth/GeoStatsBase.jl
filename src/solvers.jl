@@ -67,9 +67,14 @@ function solve(problem::SimulationProblem, solver::SimulationSolver; procs=[myid
   # simulation loop
   results = []
   for covars in allcovars
-    # simulate covariables
-    reals = pmap(pool, 1:nreals(problem)) do _
-      solvesingle(problem, covars, solver, preproc)
+    reals = if solver.progress
+      @showprogress pmap(pool, 1:nreals(problem)) do _
+        solvesingle(problem, covars, solver, preproc)
+      end
+    else
+      pmap(pool, 1:nreals(problem)) do _
+        solvesingle(problem, covars, solver, preproc)
+      end
     end
 
     # rearrange realizations
