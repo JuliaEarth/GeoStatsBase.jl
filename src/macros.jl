@@ -132,7 +132,7 @@ macro metasolver(solver, solvertype, body)
         end
       )
 
-      function $solver(params...; $(gparams...), progress=false)
+      function $solver(params...; $(gparams...), progress=true)
         # build dictionaries for inner constructor
         vdict = Dict{$vtype,$solvervparam}()
         jdict = Dict{$jtype,$solverjparam}()
