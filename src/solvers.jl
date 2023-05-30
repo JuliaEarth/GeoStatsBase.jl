@@ -68,7 +68,7 @@ function solve(problem::SimulationProblem, solver::SimulationSolver; procs=[myid
   results = []
   for covars in allcovars
     reals = if solver.progress
-      message = "Covariables: $(join(covars.names, " ,"))"
+      message = "Simulating $(join(covars.names, " ,", " and ")):"
       @showprogress message pmap(pool, 1:nreals(problem)) do _
         solvesingle(problem, covars, solver, preproc)
       end
