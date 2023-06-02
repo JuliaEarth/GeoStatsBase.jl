@@ -78,15 +78,15 @@ function apply(transform::Potrace, data)
   # interest (i.e. edge touched by direction)
   d = Dict(:→ => 1, :↑ => 2, :← => 3, :↓ => 4)
 
-  # map (→, i) representation to chain of points
-  chain(itr) = Chain([verts[∂(i)[d[→]]] for (→, i) in itr])
+  # map (→, i) representation to ring of points
+  ring(itr) = Ring([verts[∂(i)[d[→]]] for (→, i) in itr[begin:end-1]])
 
   # trace multi-polygons on each mask
   multis = map(masks) do mask
     rings = trace(mask)
     polys = map(rings) do (outer, inners)
-      ochain = chain(outer)
-      ichains = [chain(inner) for inner in inners]
+      ochain = ring(outer)
+      ichains = [ring(inner) for inner in inners]
       PolyArea(ochain, ichains)
     end
     Multi(polys)
