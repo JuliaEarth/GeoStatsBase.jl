@@ -79,7 +79,7 @@ function apply(transform::Potrace, data)
   d = Dict(:→ => 1, :↑ => 2, :← => 3, :↓ => 4)
 
   # map (→, i) representation to ring of points
-  ring(itr) = Ring([verts[∂(i)[d[→]]] for (→, i) in itr[begin:end-1]])
+  ring(itr) = Ring([verts[∂(i)[d[→]]] for (→, i) in itr[begin:(end - 1)]])
 
   # trace multi-polygons on each mask
   multis = map(masks) do mask
