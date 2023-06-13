@@ -15,7 +15,7 @@ georef(table, domain) = meshdata(domain, etable=table)
 Georeference `table` on vector of elements `elems`, i.e.
 geometries or points.
 """
-georef(table, elems::AbstractVector{<:PointOrGeometry}) = georef(table, Collection(elems))
+georef(table, elems::AbstractVector{<:Geometry}) = georef(table, GeometrySet(elems))
 
 """
     georef(table, coords)
@@ -46,7 +46,7 @@ function georef(tuple::NamedTuple, domain)
 end
 
 # fix ambiguity between other methods
-georef(tuple::NamedTuple, elems::AbstractVector{<:PointOrGeometry}) = georef(tuple, Collection(elems))
+georef(tuple::NamedTuple, elems::AbstractVector{<:Geometry}) = georef(tuple, GeometrySet(elems))
 
 georef(tuple::NamedTuple, coords::AbstractVecOrMat) = georef(tuple, PointSet(coords))
 

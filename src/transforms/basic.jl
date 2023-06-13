@@ -39,7 +39,7 @@ function revertmeta(::Filter, newdom::Domain, mcache)
     insert!(geoms, i, geom)
   end
 
-  Collection(geoms)
+  GeometrySet(geoms)
 end
 
 # --------------------------------------------------
@@ -81,5 +81,5 @@ function revertmeta(::Sample, newdom::Domain, mcache)
     insert!(ugeoms, i, geom)
   end
 
-  Collection(ugeoms)
+  GeometrySet(ugeoms)
 end

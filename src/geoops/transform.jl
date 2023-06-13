@@ -64,7 +64,7 @@ function _transform(data::D, tnames, tcolumns) where {D<:Data}
   newdom = dom
   for (nm, col) in zip(tnames, tcolumns)
     if nm == :geometry
-      newdom = Collection(col)
+      newdom = GeometrySet(col)
     elseif nm ∈ names
       i = findfirst(==(nm), names)
       columns[i] = col

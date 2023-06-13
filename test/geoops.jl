@@ -140,7 +140,7 @@
     # replece :geometry column
     testfunc(point) = Point(coordinates(point) .+ 1)
     ndata = @transform(sdata, :geometry = testfunc(:geometry))
-    @test domain(ndata) == Collection(testfunc.(domain(sdata)))
+    @test domain(ndata) == GeometrySet(testfunc.(domain(sdata)))
 
     # unexported functions
     ndata = @transform(sdata, :logx = Base.log(:x), :expy = Base.exp(:y))
@@ -213,13 +213,13 @@
 
     c = @combine(sdata, :x_sum = sum(:x))
     @test c.x_sum == [sum(sdata.x)]
-    @test domain(c) == Collection([Multi(domain(sdata))])
+    @test domain(c) == GeometrySet([Multi(domain(sdata))])
     @test Tables.schema(values(c)).names == (:x_sum,)
 
     c = @combine(sdata, :y_mean = mean(:y), :z_median = median(:z))
     @test c.y_mean == [mean(sdata.y)]
     @test c.z_median == [median(sdata.z)]
-    @test domain(c) == Collection([Multi(domain(sdata))])
+    @test domain(c) == GeometrySet([Multi(domain(sdata))])
     @test Tables.schema(values(c)).names == (:y_mean, :z_median)
 
     # column name interpolation
@@ -236,7 +236,7 @@
     @test c.x == [first(data.x) for data in p]
     @test c.y_sum == [sum(data.y) for data in p]
     @test c.z_prod == [prod(data.z) for data in p]
-    @test domain(c) == Collection([Multi(domain(data)) for data in p])
+    @test domain(c) == GeometrySet([Multi(domain(data)) for data in p])
     @test Tables.schema(values(c)).names == (:x, :y_sum, :z_prod)
 
     p = @groupby(sdata, :x, :y)
@@ -244,7 +244,7 @@
     @test c.x == [first(data.x) for data in p]
     @test c.y == [first(data.y) for data in p]
     @test c.z_mean == [mean(data.z) for data in p]
-    @test domain(c) == Collection([Multi(domain(data)) for data in p])
+    @test domain(c) == GeometrySet([Multi(domain(data)) for data in p])
     @test Tables.schema(values(c)).names == (:x, :y, :z_mean)
   end
 end

@@ -97,7 +97,7 @@ function apply(transform::Potrace, data)
 
   # georeference new features on new geometries
   newtab = feats |> Tables.materializer(tab)
-  newdom = elems |> Collection
+  newdom = elems |> GeometrySet
   newdat = georef(newtab, newdom)
 
   newdat, nothing
