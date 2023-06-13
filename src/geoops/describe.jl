@@ -38,8 +38,8 @@ function _describe(data::Data, colspec::ColSpec, funs::Vector{Function})
   names = Tables.columnnames(cols)
   snames = choose(colspec, names)
 
-  dnames = [:variable; nameof.(funs)]
-  dcolumns = Vector[snames]
+  pairs = []
+  push!(pairs, :variable => snames)
   for fun in funs
     column = map(snames) do name
       try
@@ -49,8 +49,8 @@ function _describe(data::Data, colspec::ColSpec, funs::Vector{Function})
         nothing
       end
     end
-    push!(dcolumns, column)
+    push!(pairs, nameof(fun) => column)
   end
 
-  TypedTables.Table(; zip(dnames, dcolumns)...)
+  TypedTables.Table(; pairs...)
 end
