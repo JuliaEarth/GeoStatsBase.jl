@@ -5,7 +5,7 @@ Count the missing values in iterator `iter`.
 """
 nmissing(iter) = count(ismissing, iter)
 
-const DEFAULTFUNS = [mean, minimum, median, maximum, nmissing, eltype]
+const DEFAULTFUNS = [mean, minimum, median, maximum, nmissing]
 
 """
     describe(data, col₁, col₂, ..., colₙ; funs=[fun₁, fun₂, ..., funₙ])
@@ -16,7 +16,7 @@ Return descriptive table of columns/variables `col₁`, `col₂`, ..., `colₙ`,
 using the descriptive functions `fun₁`, `fun₂`, ..., `funₙ`.
 Each row in the table represents a variable and each column a descriptive function.
 If descriptive functions are not passed, the default functions will be used, they are:
-`mean`, `minimum`, `median`, `maximum`, `nmissing`, `eltype`.
+`mean`, `minimum`, `median`, `maximum`, `nmissing`.
 
     describe(data; funs=[fun₁, fun₂, ..., funₙ])
 

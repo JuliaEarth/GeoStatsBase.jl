@@ -177,8 +177,8 @@ export
   quantile,
 
   # utilities
-  integrate,
   describe,
+  integrate,
   @groupby,
   @transform,
   @combine,
