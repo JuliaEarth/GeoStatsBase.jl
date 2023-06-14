@@ -33,9 +33,8 @@ import TableTransforms: applyfeat, revertfeat
 import TableTransforms: applymeta, revertmeta
 import TableTransforms: divide, attach
 import TableTransforms: isrevertible
-import StatsBase: fit, varcorrection
+import StatsBase: fit, varcorrection, describe
 import Statistics: mean, var, quantile
-import DataAPI: describe
 import Base: ==
 
 # aliases

@@ -1,4 +1,46 @@
 @testset "Geometric operations" begin
+  @testset "describe" begin
+    table = (x=rand(10), y=rand(10), z=rand(10))
+    sdata = georef(table, rand(2, 10))
+    columns = [table.x, table.y, table.z]
+
+    dtable = describe(sdata)
+    @test Tables.schema(dtable).names == (:variable, :mean, :minimum, :median, :maximum, :nmissing)
+    @test dtable.mean == mean.(columns)
+    @test dtable.minimum == minimum.(columns)
+    @test dtable.median == median.(columns)
+    @test dtable.maximum == maximum.(columns)
+    @test dtable.nmissing == GeoStatsBase.nmissing.(columns)
+
+    dtable = describe(sdata, funs=[mean, median, std])
+    @test Tables.schema(dtable).names == (:variable, :mean, :median, :std)
+    @test dtable.mean == mean.(columns)
+    @test dtable.median == median.(columns)
+    @test dtable.std == std.(columns)
+
+    funs = [mean, median, std]
+    columns = [table.y, table.z]
+    colspecs = [["y", "z"], ("y", "z"), [:y, :z], (:y, :z), [2, 3], (2, 3), r"[yz]"]
+
+    for colspec in colspecs
+      dtable = describe(sdata, colspec)
+      @test Tables.schema(dtable).names == (:variable, :mean, :minimum, :median, :maximum, :nmissing)
+      @test dtable.mean == mean.(columns)
+      @test dtable.minimum == minimum.(columns)
+      @test dtable.median == median.(columns)
+      @test dtable.maximum == maximum.(columns)
+      @test dtable.nmissing == GeoStatsBase.nmissing.(columns)
+    end
+
+    for colspec in colspecs
+      dtable = describe(sdata, colspec; funs)
+      @test Tables.schema(dtable).names == (:variable, :mean, :median, :std)
+      @test dtable.mean == mean.(columns)
+      @test dtable.median == median.(columns)
+      @test dtable.std == std.(columns)
+    end
+  end
+
   @testset "integrate" begin
     grid = CartesianGrid(2, 2)
     mesh = simplexify(grid)
