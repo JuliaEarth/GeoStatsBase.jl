@@ -6,6 +6,7 @@
 
     dtable = describe(sdata)
     @test Tables.schema(dtable).names == (:variable, :mean, :minimum, :median, :maximum, :nmissing)
+    @test dtable.variable == [:x, :y, :z]
     @test dtable.mean == mean.(columns)
     @test dtable.minimum == minimum.(columns)
     @test dtable.median == median.(columns)
@@ -14,6 +15,7 @@
 
     dtable = describe(sdata, funs=[mean, median, std])
     @test Tables.schema(dtable).names == (:variable, :mean, :median, :std)
+    @test dtable.variable == [:x, :y, :z]
     @test dtable.mean == mean.(columns)
     @test dtable.median == median.(columns)
     @test dtable.std == std.(columns)
@@ -25,6 +27,7 @@
     for colspec in colspecs
       dtable = describe(sdata, colspec)
       @test Tables.schema(dtable).names == (:variable, :mean, :minimum, :median, :maximum, :nmissing)
+      @test dtable.variable == [:y, :z]
       @test dtable.mean == mean.(columns)
       @test dtable.minimum == minimum.(columns)
       @test dtable.median == median.(columns)
@@ -35,6 +38,7 @@
     for colspec in colspecs
       dtable = describe(sdata, colspec; funs)
       @test Tables.schema(dtable).names == (:variable, :mean, :median, :std)
+      @test dtable.variable == [:y, :z]
       @test dtable.mean == mean.(columns)
       @test dtable.median == median.(columns)
       @test dtable.std == std.(columns)
