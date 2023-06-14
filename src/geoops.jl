@@ -3,6 +3,7 @@
 # ------------------------------------------------------------------
 
 include("geoops/macros.jl")
+include("geoops/describe.jl")
 include("geoops/integrate.jl")
 include("geoops/groupby.jl")
 include("geoops/transform.jl")
