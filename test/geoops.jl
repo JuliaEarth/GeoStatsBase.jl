@@ -20,6 +20,18 @@
     @test dtable.median == median.(columns)
     @test dtable.std == std.(columns)
 
+    dtable = describe(sdata, funs=[:mean => x -> sum(x) / length(x), :min => minimum])
+    @test Tables.schema(dtable).names == (:variable, :mean, :min)
+    @test dtable.variable == [:x, :y, :z]
+    @test dtable.mean == sum.(columns) ./ length.(columns)
+    @test dtable.min == minimum.(columns)
+
+    dtable = describe(sdata, funs=Dict(:mean => x -> sum(x) / length(x), :max => maximum))
+    @test Set(Tables.schema(dtable).names) == Set([:variable, :mean, :max])
+    @test dtable.variable == [:x, :y, :z]
+    @test dtable.mean == sum.(columns) ./ length.(columns)
+    @test dtable.max == maximum.(columns)
+
     funs = [mean, median, std]
     columns = [table.y, table.z]
     colspecs = [["y", "z"], ("y", "z"), [:y, :z], (:y, :z), [2, 3], (2, 3), r"[yz]"]
