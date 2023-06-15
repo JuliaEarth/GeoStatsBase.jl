@@ -1,10 +1,5 @@
-const DEFAULTFUNS = [
-  :mean => mean, 
-  :minimum => minimum, 
-  :median => median, 
-  :maximum => maximum, 
-  :nmissing => x -> count(ismissing, x)
-]
+const DEFAULTFUNS =
+  [:mean => mean, :minimum => minimum, :median => median, :maximum => maximum, :nmissing => x -> count(ismissing, x)]
 
 """
     describe(data, col₁, col₂, ..., colₙ; funs=[fun₁, fun₂, ..., funₙ])
@@ -50,11 +45,9 @@ describe(data::Data; kwargs...) = describe(data, AllSpec(); kwargs...)
 describe(data::Data, spec; kwargs...) = describe(data, colspec(spec); kwargs...)
 describe(data::Data, cols::T...; kwargs...) where {T<:Col} = describe(data, colspec(cols); kwargs...)
 
-_describe(data::Data, colspec::ColSpec, funs::Dict{Symbol}) =
-  _describe(data, colspec, collect(funs))
+_describe(data::Data, colspec::ColSpec, funs::Dict{Symbol}) = _describe(data, colspec, collect(funs))
 
-_describe(data::Data, colspec::ColSpec, funs::AbstractVector) =
-  _describe(data, colspec, nameof.(funs) .=> funs)
+_describe(data::Data, colspec::ColSpec, funs::AbstractVector) = _describe(data, colspec, nameof.(funs) .=> funs)
 
 function _describe(data::Data, colspec::ColSpec, funs::AbstractVector{<:Pair{Symbol}})
   table = values(data)
