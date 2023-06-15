@@ -28,9 +28,6 @@ Return descriptive table of columns that match with `regex`.
 # Examples
 
 ```julia
-table = (x=rand(10), y=rand(10), z=rand(10))
-data = georef(table, rand(2, 10))
-
 describe(data)
 describe(data, funs=[mean, median])
 describe(data, 1, 3, 5, funs=[std, var])
