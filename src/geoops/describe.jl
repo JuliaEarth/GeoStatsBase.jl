@@ -21,7 +21,7 @@ const DEFAULTFUNS = [
 Return descriptive table of columns/variables `col₁`, `col₂`, ..., `colₙ`,
 using the descriptive functions `fun₁`, `fun₂`, ..., `funₙ`.
 Each row in the table represents a variable and each column a descriptive function.
-If you want custom column names, you can pass `name₁`, `name₂`, ..., `nameₙ`,
+If you need custom column names, you can pass `name₁`, `name₂`, ..., `nameₙ`,
 otherwise function names will be used. If descriptive functions are not passed, 
 the default functions will be used, they are: `mean`, `minimum`, `median`, `maximum`, `nmissing`.
 
