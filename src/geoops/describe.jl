@@ -1,16 +1,9 @@
-"""
-    nmissing(iter)
-
-Count the missing values in iterator `iter`.
-"""
-nmissing(iter) = count(ismissing, iter)
-
 const DEFAULTFUNS = [
   :mean => mean, 
   :minimum => minimum, 
   :median => median, 
   :maximum => maximum, 
-  :nmissing => nmissing
+  :nmissing => x -> count(ismissing, x)
 ]
 
 """

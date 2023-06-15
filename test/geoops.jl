@@ -11,7 +11,7 @@
     @test dtable.minimum == minimum.(columns)
     @test dtable.median == median.(columns)
     @test dtable.maximum == maximum.(columns)
-    @test dtable.nmissing == GeoStatsBase.nmissing.(columns)
+    @test dtable.nmissing == count.(ismissing, columns)
 
     dtable = describe(sdata, funs=[mean, median, std])
     @test Tables.schema(dtable).names == (:variable, :mean, :median, :std)
@@ -44,7 +44,7 @@
       @test dtable.minimum == minimum.(columns)
       @test dtable.median == median.(columns)
       @test dtable.maximum == maximum.(columns)
-      @test dtable.nmissing == GeoStatsBase.nmissing.(columns)
+      @test dtable.nmissing == count.(ismissing, columns)
     end
 
     for colspec in colspecs
