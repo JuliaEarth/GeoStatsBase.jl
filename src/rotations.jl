@@ -9,7 +9,7 @@ Datamine ZXY rotation convention following the left-hand rule.
 All angles are in degrees and the signal convention is CW, CW, CW
 positive. Y is the principal axis.
 """
-DatamineAngles(α, β, θ) = EulerAngles(-deg2rad(α - 90), deg2rad(β), -deg2rad(θ), :ZYX)
+DatamineAngles(α, β, θ) = RotZYX(deg2rad(θ), -deg2rad(β), deg2rad(α - 90))
 
 """
     GslibAngles(α, β, θ)
@@ -22,7 +22,7 @@ positive. Y is the principal axis.
 * Deutsch, 2015. [The Angle Specification for GSLIB Software]
 (https://geostatisticslessons.com/lessons/anglespecification)
 """
-GslibAngles(α, β, θ) = EulerAngles(-deg2rad(α - 90), -deg2rad(β), deg2rad(θ), :ZYX)
+GslibAngles(α, β, θ) = RotZYX(-deg2rad(θ), deg2rad(β), deg2rad(α - 90))
 
 """
     VulcanAngles(α, β, θ)
@@ -35,4 +35,4 @@ positive. X is the principal axis.
 * Deutsch, 2015. [The Angle Specification for GSLIB Software]
 (https://geostatisticslessons.com/lessons/anglespecification)
 """
-VulcanAngles(α, β, θ) = EulerAngles(-deg2rad(α - 90), -deg2rad(β), -deg2rad(θ), :ZYX)
+VulcanAngles(α, β, θ) = RotZYX(deg2rad(θ), deg2rad(β), deg2rad(α - 90))

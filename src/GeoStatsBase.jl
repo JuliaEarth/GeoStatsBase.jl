@@ -7,6 +7,7 @@ module GeoStatsBase
 using Meshes
 using Tables
 using TableTransforms
+using Rotations: RotZYX
 using Distributions: median
 using Combinatorics: multiexponents
 using Distances: Euclidean, pairwise
@@ -14,7 +15,6 @@ using Distributed: CachingPool, pmap, myid
 using StatsBase: Histogram, AbstractWeights
 using StatsBase: midpoints, sample, mode
 using Transducers: Map, foldxt
-using ReferenceFrameRotations
 using DensityRatioEstimation
 using ScientificTypes
 using LossFunctions

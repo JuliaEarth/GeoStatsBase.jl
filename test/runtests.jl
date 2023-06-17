@@ -11,7 +11,6 @@ using LinearAlgebra
 using TableTransforms
 using CategoricalArrays
 using DensityRatioEstimation
-using ReferenceFrameRotations
 using Test, Random, Plots
 using ReferenceTests, ImageIO
 using FileIO: load
