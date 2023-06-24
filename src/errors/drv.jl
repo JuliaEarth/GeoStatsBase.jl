@@ -5,7 +5,7 @@
 """
     DensityRatioValidation(k; [parameters])
 
-Desntity ratio validation where weights are first obtained with density
+Density ratio validation where weights are first obtained with density
 ratio estimation, and then used in `k`-fold weighted cross-validation.
 
 ## Parameters

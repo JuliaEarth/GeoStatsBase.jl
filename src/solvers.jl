@@ -122,7 +122,7 @@ with the simulation `solver`, optionally using preprocessed data in `preproc`.
 
 By implementing this function instead of `solve`, the developer is
 informing the framework that realizations generated with his/her
-solver are indenpendent one from another. GeoStats.jl will trigger
+solver are independent one from another. GeoStats.jl will trigger
 the algorithm in parallel (if enough processes are available).
 """
 function solvesingle end
