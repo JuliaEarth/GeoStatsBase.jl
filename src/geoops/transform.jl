@@ -10,7 +10,7 @@ and new columns `col₁`, `col₂`, ..., `colₙ` defined by expressions
 `expr₁`, `expr₂`, ..., `exprₙ`. The `object` can be a `Data` object
 or a `Partition` object returned by the `@groupby` macro.
 In each expression the `object` columns are represented by symbols 
-and the functions use `broadcast` by default. Also, is pissible pass strings 
+and the functions use `broadcast` by default. Also, is possible pass strings 
 or variables as column names using the `{colname}` syntax. If there are columns 
 in the table with the same name as the new columns, these will be replaced.
 

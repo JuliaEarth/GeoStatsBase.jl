@@ -195,7 +195,7 @@
     ndata = @transform(sdata, :dist_to_origin = dist(:geometry))
     @test ndata.dist_to_origin == dist.(domain(sdata))
 
-    # replece :geometry column
+    # replace :geometry column
     testfunc(point) = Point(coordinates(point) .+ 1)
     ndata = @transform(sdata, :geometry = testfunc(:geometry))
     @test domain(ndata) == GeometrySet(testfunc.(domain(sdata)))
