@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------
 
 """
-    WeightedValidation(weigthing, folding; lambda=1.0, loss=Dict())
+    WeightedValidation(weighting, folding; lambda=1.0, loss=Dict())
 
 An error estimation method which samples are weighted with
 `weighting` method and split into folds with `folding` method.
