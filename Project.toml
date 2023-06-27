@@ -1,7 +1,7 @@
 name = "GeoStatsBase"
 uuid = "323cb8eb-fbf6-51c0-afd0-f8fba70507b2"
 author = "Júlio Hoffimann <julio.hoffimann@gmail.com>"
-version = "0.31.8"
+version = "0.31.9"
 
 [deps]
 Combinatorics = "861a8166-3701-5b0c-9a16-15d98fcdc6aa"
@@ -31,7 +31,7 @@ Distances = "0.10"
 Distributions = "0.25"
 LossFunctions = "0.10"
 MLJModelInterface = "1.0"
-Meshes = "0.31"
+Meshes = "0.31, 0.32"
 Optim = "1.7"
 ProgressMeter = "1.7"
 Rotations = "1.5"
