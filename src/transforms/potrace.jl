@@ -9,8 +9,7 @@ Trace polygons on 2D image data with Selinger's Potrace algorithm.
 
 The categories stored in column `col` are converted into binary
 masks, which are then traced into multi-polygons. When provided,
-the option `ϵ` is forwarded to the [`Selinger`[@ref] simplification
-algorithm.
+the option `ϵ` is forwarded to Selinger's simplification algorithm.
 
 ## References
 
