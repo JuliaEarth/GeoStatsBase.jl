@@ -145,12 +145,12 @@
     end
 
     # make sure that aggregation works
-    Z = [sin(i/10) + sin(j/10) for i in 1:100, j in 1:100]
+    Z = [sin(i / 10) + sin(j / 10) for i in 1:100, j in 1:100]
     M = Z .> 0
     Ω = georef((Z=Z, M=M))
     𝒯 = Ω |> Potrace(:M)
     @test nelements(domain(𝒯)) == 2
-    @test Set(𝒯.M) == Set([true,false])
+    @test Set(𝒯.M) == Set([true, false])
     @test all(z -> -1 ≤ z ≤ 1, 𝒯.Z)
   end
 
