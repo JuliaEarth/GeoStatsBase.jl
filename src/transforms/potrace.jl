@@ -53,7 +53,7 @@ function apply(transform::Potrace, data)
   preproc = map(colors) do color
     mask = isequal.(img, color)
     inds = findall(vec(mask))
-    feat = [sname => color]
+    feat = Any[sname => color]
     for name in setdiff(names, [sname])
       col = Tables.getcolumn(cols, name)
       val = aggregate(view(col, inds))
