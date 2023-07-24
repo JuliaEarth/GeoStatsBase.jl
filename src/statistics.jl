@@ -2,10 +2,6 @@
 # Licensed under the MIT License. See LICENSE in the project root.
 # ------------------------------------------------------------------
 
-mean(d, v::Symbol, w::WeightingMethod) = mean(getproperty(d, v), weight(d, w))
-mean(d, v::Symbol, s::Number) = mean(d, v, BlockWeighting(s))
-mean(d, v::Symbol) = mean(d, v, mode_heuristic(d))
-
 """
     mean(data)
     mean(data, v)
@@ -15,10 +11,9 @@ Declustered mean of geospatial `data`. Optionally,
 specify the variable `v` and the block side `s`.
 """
 mean(d::Data) = Dict(v => mean(d, v, mode_heuristic(d)) for v in name.(variables(d)))
-
-var(d, v::Symbol, w::WeightingMethod) = var(getproperty(d, v), weight(d, w), mean=mean(d, v, w), corrected=false)
-var(d, v::Symbol, s::Number) = var(d, v, BlockWeighting(s))
-var(d, v::Symbol) = var(d, v, mode_heuristic(d))
+mean(d, v::Symbol) = mean(d, v, mode_heuristic(d))
+mean(d, v::Symbol, s::Number) = mean(d, v, BlockWeighting(s))
+mean(d, v::Symbol, w::WeightingMethod) = mean(getproperty(d, v), weight(d, w))
 
 """
     var(data)
@@ -29,10 +24,9 @@ Declustered variance of geospatial `data`. Optionally,
 specify the variable `v` and the block side `s`.
 """
 var(d::Data) = Dict(v => var(d, v, mode_heuristic(d)) for v in name.(variables(d)))
-
-quantile(d, v::Symbol, p, w::WeightingMethod) = quantile(getproperty(d, v), weight(d, w), p)
-quantile(d, v::Symbol, p, s::Number) = quantile(d, v, p, BlockWeighting(s))
-quantile(d, v::Symbol, p) = quantile(d, v, p, mode_heuristic(d))
+var(d, v::Symbol) = var(d, v, mode_heuristic(d))
+var(d, v::Symbol, s::Number) = var(d, v, BlockWeighting(s))
+var(d, v::Symbol, w::WeightingMethod) = var(getproperty(d, v), weight(d, w), mean=mean(d, v, w), corrected=false)
 
 """
     quantile(data, p)
@@ -43,6 +37,9 @@ Declustered quantile of geospatial `data` at probability `p`.
 Optionally, specify the variable `v` and the block side `s`.
 """
 quantile(d::Data, p) = Dict(v => quantile(d, v, p, mode_heuristic(d)) for v in name.(variables(d)))
+quantile(d, v::Symbol, p) = quantile(d, v, p, mode_heuristic(d))
+quantile(d, v::Symbol, p, s::Number) = quantile(d, v, p, BlockWeighting(s))
+quantile(d, v::Symbol, p, w::WeightingMethod) = quantile(getproperty(d, v), weight(d, w), p)
 
 # return a block size based on pairwise distances and
 # an aggregation function (e.g. mean, mode)
