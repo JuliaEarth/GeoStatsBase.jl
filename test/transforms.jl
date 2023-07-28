@@ -76,13 +76,12 @@
     dom = domain(n)
     cen = centroid.(dom)
     xs = first.(coordinates.(cen))
-    @test dom isa SimpleMesh
+    @test dom isa CartesianGrid
     @test all(x -> -0.5 ≤ x ≤ 0.5, xs)
   end
 
   @testset "Detrend" begin
     rng = MersenneTwister(42)
-
     l = range(-1, stop=1, length=100)
     μ = [x^2 + y^2 for x in l, y in l]
     ϵ = 0.1rand(rng, 100, 100)
@@ -93,13 +92,6 @@
     D = Tables.matrix(values(d))
     R = Tables.matrix(values(r))
     @test isapprox(D, R, atol=1e-6)
-
-    if visualtests
-      p₁ = heatmap(asarray(d, :z), title="original")
-      p₂ = heatmap(asarray(n, :z), title="detrended")
-      plt = plot(p₁, p₂, size=(900, 300))
-      @test_reference "data/detrend.png" plt
-    end
   end
 
   @testset "Potrace" begin

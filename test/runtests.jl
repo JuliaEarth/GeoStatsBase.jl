@@ -11,20 +11,14 @@ using LinearAlgebra
 using TableTransforms
 using CategoricalArrays
 using DensityRatioEstimation
-using Test, Random, Plots
-using ReferenceTests, ImageIO
+using Test, Random
+using ImageIO
 using FileIO: load
 using MLJ: @load
 
 import ScientificTypes as ST
 
-# workaround GR warnings
-ENV["GKSwstype"] = "100"
-
 # environment settings
-isCI = "CI" ∈ keys(ENV)
-islinux = Sys.islinux()
-visualtests = !isCI || (isCI && islinux)
 datadir = joinpath(@__DIR__, "data")
 
 # dummy definitions for testing

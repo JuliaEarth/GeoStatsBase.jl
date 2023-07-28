@@ -33,14 +33,7 @@
     d2 = georef((z=z2,), PointSet(reshape(1:n, 1, :)))
 
     dre = LSIF(rng=rng)
-
     w = weight(d1, DensityRatioWeighting(d2, estimator=dre))
-
-    if visualtests
-      plt = plot(z1, pdf.(r1, z1), size=(800, 400), label="source")
-      plot!(z1, pdf.(r2, z1), label="target")
-      plot!(z1, w .* pdf.(r1, z1), label="approx")
-      @test_reference "data/densratio.png" plt
-    end
+    @test all(≥(0), w)
   end
 end

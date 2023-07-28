@@ -22,13 +22,6 @@
   z̄ = reshape(d̄.z, 100, 100)
   @test all([abs(z̄[i] - μ[i]) < 0.1 for i in 1:length(z̄)])
 
-  if visualtests
-    p₁ = heatmap(μ + ϵ, title="z")
-    p₂ = heatmap(z̄, title="z trend")
-    plt = plot(p₁, p₂, size=(900, 300))
-    @test_reference "data/trends.png" plt
-  end
-
   d = georef((x=rand(rng, 10), y=rand(rng, 10)), rand(rng, 2, 10))
   𝒯 = d |> trend |> values
   s = Tables.schema(𝒯)
