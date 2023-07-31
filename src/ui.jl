@@ -12,12 +12,14 @@ function searcher_ui(domain, maxneighbors, metric, neighborhood)
   # number of domain elements
   nelem = nelements(domain)
 
-  if isnothing(maxneighbors)
+  if isnothing(maxneighbors) || maxneighbors == nelem
     # global search with all elements
     GlobalSearch(domain)
   else
-    # upper bound in maxneighbors
-    maxneighbors > nelem && (maxneighbors = nelem)
+    if maxneighbors > nelem
+      throw(ArgumentError("maxneighbors must be smaller than number of elements"))
+    end
+
     if isnothing(neighborhood)
       # nearest neighbor search with a metric
       KNearestSearch(domain, maxneighbors, metric=metric)
