@@ -15,9 +15,9 @@ using Distributed: CachingPool, pmap, myid
 using StatsBase: Histogram, AbstractWeights
 using StatsBase: midpoints, sample, mode
 using Transducers: Map, foldxt
+using LossFunctions: L2DistLoss
 using DensityRatioEstimation
 using ScientificTypes
-using LossFunctions
 using ProgressMeter
 using LinearAlgebra
 
@@ -26,9 +26,11 @@ using Optim # for LSIF estimation
 
 import Meshes
 import MLJModelInterface as MI
+import LossFunctions.Traits: SupervisedLoss
 import TableTransforms: StatelessTableTransform
 import TableTransforms: StatelessFeatureTransform
-import TableTransforms: ColSpec, Col, AllSpec, NoneSpec, colspec, choose
+import TableTransforms: ColSpec, Col, AllSpec, NoneSpec
+import TableTransforms: colspec, choose
 import TableTransforms: apply, revert, reapply
 import TableTransforms: applyfeat, revertfeat
 import TableTransforms: applymeta, revertmeta
