@@ -61,7 +61,6 @@ include("statistics.jl")
 include("histograms.jl")
 include("rotations.jl")
 include("transforms.jl")
-include("ui.jl")
 
 export
   # data
@@ -193,9 +192,6 @@ export
   # transforms
   Detrend,
   Potrace,
-  UniqueCoords,
-
-  # UI elements
-  searcher_ui
+  UniqueCoords
 
 end
