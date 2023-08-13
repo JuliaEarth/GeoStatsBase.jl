@@ -10,43 +10,43 @@ A method to initialize buffers in geostatistical solvers.
 abstract type InitMethod end
 
 """
-    initbuff(sdata, sdomain, method; [vars])
+    initbuff(sdata, sdomain, method; [varstypes])
 
-Initialize buffers for all variables `vars` with given `method`
-based on the location of elements in `sdata` and `sdomain`.
+Initialize buffers for all variables and types `varstypes`
+with given `method` based on the location of elements in
+`sdata` and `sdomain`.
 """
-function initbuff(sdata::Data, sdomain::Domain, method::InitMethod; vars=defaultvars(sdata))
-  @assert vars ⊆ propertynames(sdata) "variables must be present in data"
+function initbuff(sdata, sdomain, method::InitMethod; varstypes=varstypesof(sdata))
+  buff, mask = alloc(varstypes, nelements(sdomain))
 
-  mactypeof(var) = nonmissingtype(eltype(valuesof(var)))
-
-  function valuesof(var)
-    table = values(sdata)
-    cols = Tables.columns(table)
-    Tables.getcolumn(cols, var)
+  if !isnothing(sdata)
+    vars = keys(varstypes) ∩ varsof(sdata)
+    preproc = preprocess(sdata, sdomain, vars, method)
+    for var in vars
+      initbuff!(buff[var], mask[var], valuesof(sdata, var), method, preproc)
+    end
   end
 
-  preproc = preprocess(sdata, sdomain, vars, method)
-
-  buffs = map(vars) do var
-    V = mactypeof(var)
-    n = nelements(sdomain)
-
-    buff = Vector{V}(undef, n)
-    mask = falses(n)
-    vals = valuesof(var)
-    initbuff!(buff, mask, vals, method, preproc)
-
-    (var => buff), (var => mask)
-  end
-
-  bdict = Dict(first.(buffs))
-  mdict = Dict(last.(buffs))
-
-  bdict, mdict
+  buff, mask
 end
 
-defaultvars(sdata) = setdiff(propertynames(sdata), [:geometry])
+function alloc(varstypes, n)
+  buff = Dict(var => Vector{V}(undef, n) for (var, V) in varstypes)
+  mask = Dict(var => falses(n) for (var, V) in varstypes)
+  buff, mask
+end
+
+varstypesof(sdata) = Dict(var => mactypeof(sdata, var) for var in varsof(sdata))
+
+varsof(sdata) = setdiff(propertynames(sdata), [:geometry])
+
+mactypeof(sdata, var) = nonmissingtype(eltype(valuesof(sdata, var)))
+
+function valuesof(sdata, var)
+  table = values(sdata)
+  cols = Tables.columns(table)
+  Tables.getcolumn(cols, var)
+end
 
 # ----------------
 # IMPLEMENTATIONS
