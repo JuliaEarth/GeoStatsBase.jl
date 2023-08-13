@@ -11,13 +11,14 @@ struct NearestInit <: InitMethod end
 
 preprocess(sdata, sdomain, vars, ::NearestInit) = domain(sdata), KNearestSearch(sdomain, 1)
 
-function initbuff!(buff, vals, ::NearestInit, preproc)
+function initbuff!(buff, mask, vals, ::NearestInit, preproc)
   domain, searcher = preproc
 
   @inbounds for ind in 1:nelements(domain)
     inds = search(centroid(domain, ind), searcher)
-    ismissing(vals[ind]) || (buff[inds] .= vals[ind])
+    if !ismissing(vals[ind])
+      buff[inds] .= vals[ind]
+      mask[inds] .= true
+    end
   end
-
-  buff
 end

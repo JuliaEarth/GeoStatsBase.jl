@@ -33,13 +33,17 @@ function initbuff(sdata::Data, sdomain::Domain, method::InitMethod; vars=default
     n = nelements(sdomain)
 
     buff = Vector{V}(undef, n)
+    mask = falses(n)
     vals = valuesof(var)
-    initbuff!(buff, vals, method, preproc)
+    initbuff!(buff, mask, vals, method, preproc)
 
-    var => buff
+    (var => buff), (var => mask)
   end
 
-  Dict(buffs)
+  bdict = Dict(first.(buffs))
+  mdict = Dict(last.(buffs))
+
+  bdict, mdict
 end
 
 defaultvars(sdata) = setdiff(propertynames(sdata), [:geometry])

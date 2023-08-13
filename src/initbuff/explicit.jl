@@ -20,7 +20,7 @@ ExplicitInit() = ExplicitInit(nothing, nothing)
 
 preprocess(sdata, sdomain, vars, ::ExplicitInit) = nothing
 
-function initbuff!(buff, vals, method::ExplicitInit, preproc)
+function initbuff!(buff, mask, vals, method::ExplicitInit, preproc)
   # retrieve origin and destination indices
   orig = isnothing(method.orig) ? (1:length(vals)) : method.orig
   dest = isnothing(method.dest) ? (1:length(vals)) : method.dest
@@ -29,8 +29,9 @@ function initbuff!(buff, vals, method::ExplicitInit, preproc)
 
   @inbounds for ind in eachindex(orig, dest)
     i, j = orig[ind], dest[ind]
-    ismissing(vals[i]) || (buff[j] = vals[i])
+    if !ismissing(vals[i])
+      buff[j] = vals[i]
+      mask[j] = true
+    end
   end
-
-  buff
 end
