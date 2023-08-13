@@ -52,9 +52,9 @@ include("estimators.jl")
 include("weighting.jl")
 include("geoops.jl")
 include("learning.jl")
-include("mappings.jl")
 include("problems.jl")
 include("solvers.jl")
+include("initbuff.jl")
 include("folding.jl")
 include("errors.jl")
 include("statistics.jl")
@@ -76,11 +76,6 @@ export
   # ensembles
   Ensemble,
   domain,
-
-  # mapping
-  MappingMethod,
-  NearestMapping,
-  CopyMapping,
 
   # learning tasks
   LearningTask,
@@ -127,6 +122,12 @@ export
   preprocess,
   solve,
   solvesingle,
+
+  # initialization
+  InitMethod,
+  NearestInit,
+  ExplicitInit,
+  initbuff,
 
   # folding
   FoldingMethod,
