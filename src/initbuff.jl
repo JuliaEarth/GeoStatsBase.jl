@@ -20,9 +20,8 @@ function initbuff(sdata, sdomain, method::InitMethod; varstypes=varstypesof(sdat
   buff, mask = alloc(varstypes, nelements(sdomain))
 
   if !isnothing(sdata)
-    vars = keys(varstypes) ∩ varsof(sdata)
-    preproc = preprocess(sdata, sdomain, vars, method)
-    for var in vars
+    preproc = preprocess(sdata, sdomain, method)
+    for var in keys(varstypes) ∩ varsof(sdata)
       initbuff!(buff[var], mask[var], valuesof(sdata, var), method, preproc)
     end
   end

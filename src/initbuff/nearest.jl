@@ -9,7 +9,7 @@ A method to initialize buffers using the nearest element in the domain.
 """
 struct NearestInit <: InitMethod end
 
-preprocess(sdata, sdomain, vars, ::NearestInit) = domain(sdata), KNearestSearch(sdomain, 1)
+preprocess(sdata, sdomain, ::NearestInit) = domain(sdata), KNearestSearch(sdomain, 1)
 
 function initbuff!(buff, mask, vals, ::NearestInit, preproc)
   domain, searcher = preproc
