@@ -49,8 +49,7 @@ function EstimationProblem(sdata::S, sdomain::D, varnames) where {S,D}
   EstimationProblem{S,D}(sdata, sdomain, vars)
 end
 
-EstimationProblem(sdata::S, sdomain::D, varname::Symbol) where {S,D} =
-  EstimationProblem(sdata, sdomain, (varname,))
+EstimationProblem(sdata::S, sdomain::D, varname::Symbol) where {S,D} = EstimationProblem(sdata, sdomain, (varname,))
 
 """
     data(problem)
