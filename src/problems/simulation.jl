@@ -107,13 +107,6 @@ Return the target variables of the simulation `problem` and their types.
 variables(problem::SimulationProblem) = problem.vars
 
 """
-    hasdata(problem)
-
-Return `true` if simulation `problem` has data.
-"""
-hasdata(problem::SimulationProblem) = !isnothing(problem.sdata)
-
-"""
     nreals(problem)
 
 Return the number of realizations of the simulation `problem`.
@@ -125,7 +118,7 @@ nreals(problem::SimulationProblem) = problem.nreals
 # ------------
 function Base.show(io::IO, problem::SimulationProblem)
   Dim = embeddim(problem.sdomain)
-  kind = hasdata(problem) ? "conditional" : "unconditional"
+  kind = isnothing(problem.sdata) ? "unconditional" : "conditional"
   print(io, "$(Dim)D SimulationProblem ($kind)")
 end
 

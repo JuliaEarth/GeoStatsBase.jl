@@ -29,7 +29,6 @@
     @test data(problem3D) == data3D
     @test domain(problem3D) == grid3D
     @test variables(problem3D) == (; value=Float64)
-    @test hasdata(problem3D)
     @test nreals(problem3D) == 100
 
     # problems with missing data have types inferred correctly

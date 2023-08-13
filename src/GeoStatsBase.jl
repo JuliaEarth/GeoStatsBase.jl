@@ -101,8 +101,6 @@ export
   targetdata,
   task,
   variables,
-  coordinates,
-  hasdata,
   nreals,
 
   # solvers
