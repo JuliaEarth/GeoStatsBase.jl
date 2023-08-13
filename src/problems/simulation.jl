@@ -62,7 +62,7 @@ function SimulationProblem(sdata::S, sdomain::D, vars::NTuple{N,VarOrVarType}, n
 
   # pairs with variable names and types
   varstypes = map(vars) do vt
-    if vt isa Symbol # for variables without type, find the type in spatial data
+    if vt isa Symbol # for variables without type, find the type in geospatial data
       var = vt
       if var ∈ keys(datavars)
         var => datavars[var]
@@ -73,7 +73,7 @@ function SimulationProblem(sdata::S, sdomain::D, vars::NTuple{N,VarOrVarType}, n
       var, T = vt
       if var ∈ keys(datavars)
         U = datavars[var]
-        @assert U <: T "type $T for variable $var cannot hold values of type $U in spatial data"
+        @assert U <: T "type $T for variable $var cannot hold values of type $U in geospatial data"
       end
       vt
     end
