@@ -157,7 +157,7 @@ macro metasolver(solver, solvertype, body)
 
       function GeoStatsBase.covariables(var::Symbol, solver::$solver)
         vind = indexin([var], solver.varnames)[1]
-        if vind ≠ nothing
+        if !isnothing(vind)
           comp = GeoStatsBase.component(solver.adjacency, vind)
           vars = Tuple(solver.varnames[sort(comp)])
           params = []

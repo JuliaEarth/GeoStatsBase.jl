@@ -138,7 +138,7 @@ Return all covariables in the `solver` based on list of
 variables in the `problem`.
 """
 function covariables(problem::Problem, solver::Solver)
-  pvars = collect(keys(variables(problem)))
+  pvars = keys(variables(problem))
 
   result = []
   while !isempty(pvars)
