@@ -134,7 +134,7 @@ function Base.show(io::IO, ::MIME"text/plain", problem::SimulationProblem)
   vars = ["$var ($V)" for (var, V) in pairs(pvars)]
   println(io, problem)
   println(io, "  domain:    ", problem.sdomain)
-  if problem.sdata ≠ nothing
+  if !isnothing(problem.sdata)
     println(io, "  samples:   ", domain(problem.sdata))
   end
   println(io, "  targets:   ", join(vars, ", ", " and "))
