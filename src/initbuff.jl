@@ -10,17 +10,19 @@ A method to initialize buffers in geostatistical solvers.
 abstract type InitMethod end
 
 """
-    initbuff(sdata, sdomain, method; [vars])
+    initbuff(sdata, sdomain, vars, method)
 
 Initialize buffers for all variables `vars` with given `method`
 based on the location of elements in `sdata` and `sdomain`.
 """
-function initbuff(sdata, sdomain, method::InitMethod; vars=variables(sdata))
+function initbuff(sdata, sdomain, vars, method::InitMethod)
   buff, mask = allocbuff(vars, nelements(sdomain))
 
   if !isnothing(sdata)
+    ivars = keys(vars)
+    dvars = setdiff(propertynames(sdata), [:geometry])
     preproc = preprocess(sdata, sdomain, method)
-    for var in keys(vars) ∩ varnames(sdata)
+    for var in ivars ∩ dvars
       initbuff!(buff[var], mask[var], valuesof(sdata, var), method, preproc)
     end
   end
@@ -35,16 +37,6 @@ function allocbuff(vars, n)
   mask = Dict(var => falses(n) for var in names)
   buff, mask
 end
-
-function variables(sdata)
-  names = varnames(sdata)
-  types = [mactypeof(sdata, var) for var in names]
-  (; zip(names, types)...)
-end
-
-varnames(sdata) = setdiff(propertynames(sdata), [:geometry])
-
-mactypeof(sdata, var) = nonmissingtype(eltype(valuesof(sdata, var)))
 
 function valuesof(sdata, var)
   table = values(sdata)
