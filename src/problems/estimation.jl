@@ -82,9 +82,7 @@ end
 
 function Base.show(io::IO, ::MIME"text/plain", problem::EstimationProblem)
   pvars = problem.vars
-  names = keys(pvars)
-  types = values(pvars)
-  vars = ["$var ($V)" for (var, V) in zip(names, types)]
+  vars = ["$var ($V)" for (var, V) in pairs(pvars)]
   println(io, problem)
   println(io, "  domain:    ", problem.sdomain)
   println(io, "  samples:   ", domain(problem.sdata))

@@ -42,18 +42,14 @@ function solve end
     solve(problem, solver; procs=[myid()])
 
 Solve the simulation `problem` with the simulation `solver`,
-optionally using multiple processes `procs`.
-
-### Notes
-
-Default implementation calls `solvesingle` in parallel.
+optionally using multiple distributed processes `procs`.
 """
 function solve(problem::SimulationProblem, solver::SimulationSolver; procs=[myid()])
-  # sanity checks
-  @assert targets(solver) ⊆ keys(variables(problem)) "invalid variables in solver"
+  # retrieve problem variables
+  pvars = variables(problem)
 
-  # named tuple with variable names and types
-  mactypeof = variables(problem)
+  # sanity checks
+  @assert targets(solver) ⊆ keys(pvars) "invalid variables in solver"
 
   # optional preprocessing
   preproc = preprocess(problem, solver)
@@ -80,7 +76,7 @@ function solve(problem::SimulationProblem, solver::SimulationSolver; procs=[myid
 
     # rearrange realizations
     vnames = covars.names
-    vtypes = [mactypeof[var] for var in vnames]
+    vtypes = [pvars[var] for var in vnames]
     vvects = [Vector{V}[] for V in vtypes]
     rtuple = (; zip(vnames, vvects)...)
     for real in reals

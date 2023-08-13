@@ -16,12 +16,9 @@ Initialize buffers for all variables `vars` with given `method`
 based on the location of elements in `domain` and (optionally) `data`.
 """
 function initbuff(domain, vars, method::InitMethod; data=nothing)
-  names = keys(vars)
-  types = values(vars)
   nelem = nelements(domain)
-
-  buff = Dict(var => Vector{V}(undef, nelem) for (var, V) in zip(names, types))
-  mask = Dict(var => falses(nelem) for var in names)
+  buff = Dict(var => Vector{V}(undef, nelem) for (var, V) in pairs(vars))
+  mask = Dict(var => falses(nelem) for (var, V) in pairs(vars))
 
   if !isnothing(data)
     ivars = keys(vars)

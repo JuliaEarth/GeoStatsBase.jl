@@ -131,9 +131,7 @@ end
 
 function Base.show(io::IO, ::MIME"text/plain", problem::SimulationProblem)
   pvars = problem.vars
-  names = keys(pvars)
-  types = values(pvars)
-  vars = ["$var ($V)" for (var, V) in zip(names, types)]
+  vars = ["$var ($V)" for (var, V) in pairs(pvars)]
   println(io, problem)
   println(io, "  domain:    ", problem.sdomain)
   if problem.sdata ≠ nothing
