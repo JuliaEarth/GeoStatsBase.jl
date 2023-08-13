@@ -86,14 +86,14 @@ _foldable(p::EstimationProblem) = data(p)
 _foldable(p::LearningProblem) = sourcedata(p)
 
 # output variables of the problem
-_outputvars(p::EstimationProblem) = name.(variables(p))
+_outputvars(p::EstimationProblem) = keys(variables(p))
 _outputvars(p::LearningProblem) = outputvars(task(p))
 
 # subproblem for a given fold
 function _subproblem(p::EstimationProblem, f)
   sdat = view(data(p), f[1])
   sdom = view(domain(data(p)), f[2])
-  vars = name.(variables(p))
+  vars = keys(variables(p))
   EstimationProblem(sdat, sdom, vars)
 end
 function _subproblem(p::LearningProblem, f)

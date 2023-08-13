@@ -36,59 +36,52 @@ with 100 realizations:
 julia> SimulationProblem(sdomain, (:porosity => Float64, :facies => Int), 100)
 ```
 """
-struct SimulationProblem{S,D,N} <: Problem
+struct SimulationProblem{S,D} <: Problem
   sdata::S
   sdomain::D
-  vars::NTuple{N,Variable}
+  vars::NamedTuple
   nreals::Int
 
-  function SimulationProblem{S,D,N}(sdata, sdomain, vars, nreals) where {S,D,N}
-    pnames = name.(vars)
-
-    @assert !isempty(pnames) "target variables must be specified"
+  function SimulationProblem{S,D}(sdata, sdomain, vars, nreals) where {S,D}
+    @assert !isempty(vars) "target variables must be specified"
     @assert nreals > 0 "number of realizations must be positive"
-
     new(sdata, sdomain, vars, nreals)
   end
 end
 
 function SimulationProblem(sdata::S, sdomain::D, vars::NTuple{N,VarOrVarType}, nreals::Int) where {S,D,N}
-  T1 = coordtype(domain(sdata))
-  T2 = coordtype(sdomain)
-  @assert T1 == T2 "data and domain must have the same coordinate type"
-
-  svars = variables(sdata)
-  datavars = Dict(name.(svars) .=> mactype.(svars))
+  schema = Tables.schema(sdata)
+  names = schema.names
+  types = nonmissingtype.(schema.types)
+  dvars = (; zip(names, types)...)
 
   # pairs with variable names and types
   varstypes = map(vars) do vt
     if vt isa Symbol # for variables without type, find the type in geospatial data
       var = vt
-      if var ∈ keys(datavars)
-        var => datavars[var]
+      if var ∈ keys(dvars)
+        var => dvars[var]
       else
         @error "please specify the type of target variable $var"
       end
     else # for variables with type, make sure the type is valid
-      var, T = vt
-      if var ∈ keys(datavars)
-        U = datavars[var]
-        @assert U <: T "type $T for variable $var cannot hold values of type $U in geospatial data"
+      var, V = vt
+      if var ∈ keys(dvars)
+        U = dvars[var]
+        @assert U <: V "type $V for variable $var cannot hold values of type $U in geospatial data"
       end
       vt
     end
   end
 
-  vars = Tuple(Variable(var, V) for (var, V) in varstypes)
-
-  SimulationProblem{S,D,N}(sdata, sdomain, vars, nreals)
+  SimulationProblem{S,D}(sdata, sdomain, NamedTuple(varstypes), nreals)
 end
 
 SimulationProblem(sdata::S, sdomain::D, var::VarOrVarType, nreals::Int) where {S,D} =
   SimulationProblem(sdata, sdomain, (var,), nreals)
 
-SimulationProblem(sdomain::D, vars::NTuple{N,VarType}, nreals::Int) where {D,N} =
-  SimulationProblem{Nothing,D,N}(nothing, sdomain, Tuple(Variable(n, t) for (n, t) in vars), nreals)
+SimulationProblem(sdomain::D, varstypes::NTuple{N,VarType}, nreals::Int) where {D,N} =
+  SimulationProblem{Nothing,D}(nothing, sdomain, NamedTuple(varstypes), nreals)
 
 SimulationProblem(sdomain::D, var::VarType, nreals::Int) where {D} = SimulationProblem(sdomain, (var,), nreals)
 
@@ -137,7 +130,10 @@ function Base.show(io::IO, problem::SimulationProblem)
 end
 
 function Base.show(io::IO, ::MIME"text/plain", problem::SimulationProblem)
-  vars = ["$(name(v)) ($(mactype(v)))" for v in problem.vars]
+  pvars = problem.vars
+  names = keys(pvars)
+  types = values(pvars)
+  vars = ["$var ($V)" for (var, V) in zip(names, types)]
   println(io, problem)
   println(io, "  domain:    ", problem.sdomain)
   if problem.sdata ≠ nothing

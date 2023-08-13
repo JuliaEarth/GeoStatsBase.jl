@@ -21,7 +21,7 @@ function solve(problem::EstimationProblem, solver::DummyEstimSolver)
   sdat = data(problem)
   sdom = domain(problem)
   npts = nelements(sdom)
-  vars = name.(variables(problem))
+  vars = keys(variables(problem))
   μs = [v => fill(mean(getproperty(sdat, v)), npts) for v in vars]
   σs = [Symbol(v, :Var) => fill(var(getproperty(sdat, v)), npts) for v in vars]
   georef((; μs..., σs...), sdom)

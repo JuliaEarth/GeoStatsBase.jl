@@ -9,12 +9,12 @@
     problem3D = EstimationProblem(data3D, grid3D, :value)
     @test data(problem3D) == data3D
     @test domain(problem3D) == grid3D
-    @test variables(problem3D) == (Variable(:value, Float64),)
+    @test variables(problem3D) == (; value=Float64)
 
     # problems with missing data have types inferred correctly
     Z = Array{Union{Float64,Missing}}(rand(10, 10))
     problem = EstimationProblem(georef((Z=Z,)), grid2D, :Z)
-    @test variables(problem) == (Variable(:Z, Float64),)
+    @test variables(problem) == (; Z=Float64)
 
     # show methods
     problem2D = EstimationProblem(data2D, grid2D, :value)
@@ -28,30 +28,30 @@
     problem3D = SimulationProblem(data3D, grid3D, :value, 100)
     @test data(problem3D) == data3D
     @test domain(problem3D) == grid3D
-    @test variables(problem3D) == (Variable(:value, Float64),)
+    @test variables(problem3D) == (; value=Float64)
     @test hasdata(problem3D)
     @test nreals(problem3D) == 100
 
     # problems with missing data have types inferred correctly
     Z = Array{Union{Float64,Missing}}(rand(10, 10))
     problem = SimulationProblem(georef((Z=Z,)), grid2D, :Z, 3)
-    @test variables(problem) == (Variable(:Z, Float64),)
+    @test variables(problem) == (; Z=Float64)
 
     # specify type of variable explicitly
     problem = SimulationProblem(data3D, grid3D, :value => Float64, 100)
-    @test variables(problem) == (Variable(:value, Float64),)
+    @test variables(problem) == (; value=Float64)
 
     # add variable not present in spatial data
     problem = SimulationProblem(data3D, grid3D, (:value => Float64, :other => Int), 100)
-    @test variables(problem) == (Variable(:value, Float64), Variable(:other, Int))
+    @test variables(problem) == (; value=Float64, other=Int)
 
     # infer type of variables in spatial data whenever possible
     problem = SimulationProblem(data3D, grid3D, (:value, :other => Int), 100)
-    @test variables(problem) == (Variable(:value, Float64), Variable(:other, Int))
+    @test variables(problem) == (; value=Float64, other=Int)
 
     # constructors without spatial data require variables with types
     problem = SimulationProblem(grid3D, :value => Float64, 100)
-    @test variables(problem) == (Variable(:value, Float64),)
+    @test variables(problem) == (; value=Float64)
     @test_throws MethodError SimulationProblem(grid3D, :value, 100)
 
     # show methods

@@ -50,10 +50,10 @@ Default implementation calls `solvesingle` in parallel.
 """
 function solve(problem::SimulationProblem, solver::SimulationSolver; procs=[myid()])
   # sanity checks
-  @assert targets(solver) ⊆ name.(variables(problem)) "invalid variables in solver"
+  @assert targets(solver) ⊆ keys(variables(problem)) "invalid variables in solver"
 
-  # dictionary with variable types
-  mactypeof = Dict(name(v) => mactype(v) for v in variables(problem))
+  # named tuple with variable names and types
+  mactypeof = variables(problem)
 
   # optional preprocessing
   preproc = preprocess(problem, solver)
@@ -142,7 +142,7 @@ Return all covariables in the `solver` based on list of
 variables in the `problem`.
 """
 function covariables(problem::Problem, solver::Solver)
-  pvars = collect(name.(variables(problem)))
+  pvars = collect(keys(variables(problem)))
 
   result = []
   while !isempty(pvars)

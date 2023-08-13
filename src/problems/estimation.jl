@@ -23,33 +23,34 @@ Create an estimation problem for precipitation and CO₂:
 julia> EstimationProblem(sdata, sdomain, (:precipitation,:CO₂))
 ```
 """
-struct EstimationProblem{S,D,N} <: Problem
+struct EstimationProblem{S,D} <: Problem
   sdata::S
   sdomain::D
-  vars::NTuple{N,Variable}
+  vars::NamedTuple
 
-  function EstimationProblem{S,D,N}(sdata, sdomain, vars) where {S,D,N}
-    pnames = name.(vars)
-    dnames = name.(variables(sdata))
-    valid = !isempty(pnames) && pnames ⊆ dnames
-
-    T1 = coordtype(domain(sdata))
-    T2 = coordtype(sdomain)
+  function EstimationProblem{S,D}(sdata, sdomain, vars) where {S,D}
+    pvars = keys(vars)
+    dvars = Tables.schema(sdata).names
+    valid = !isempty(pvars) && pvars ⊆ dvars
 
     @assert valid "target variables must be present in geospatial data"
-    @assert T1 == T2 "data and domain must have the same coordinate type"
 
     new(sdata, sdomain, vars)
   end
 end
 
-function EstimationProblem(sdata::S, sdomain::D, varnames::NTuple{N,Symbol}) where {S,D,N}
-  # find variables in spatial data
-  vars = filter(v -> name(v) ∈ varnames, variables(sdata))
-  EstimationProblem{S,D,N}(sdata, sdomain, vars)
+function EstimationProblem(sdata::S, sdomain::D, varnames) where {S,D}
+  # find variables in geospatial data
+  schema = Tables.schema(sdata)
+  names = schema.names
+  types = nonmissingtype.(schema.types)
+  inds = findall(∈(varnames), names)
+  vars = (; zip(names[inds], types[inds])...)
+  EstimationProblem{S,D}(sdata, sdomain, vars)
 end
 
-EstimationProblem(sdata, sdomain, varname::Symbol) = EstimationProblem(sdata, sdomain, (varname,))
+EstimationProblem(sdata::S, sdomain::D, varname::Symbol) where {S,D} =
+  EstimationProblem(sdata, sdomain, (varname,))
 
 """
     data(problem)
@@ -81,7 +82,10 @@ function Base.show(io::IO, problem::EstimationProblem)
 end
 
 function Base.show(io::IO, ::MIME"text/plain", problem::EstimationProblem)
-  vars = ["$(name(v)) ($(mactype(v)))" for v in problem.vars]
+  pvars = problem.vars
+  names = keys(pvars)
+  types = values(pvars)
+  vars = ["$var ($V)" for (var, V) in zip(names, types)]
   println(io, problem)
   println(io, "  domain:    ", problem.sdomain)
   println(io, "  samples:   ", domain(problem.sdata))

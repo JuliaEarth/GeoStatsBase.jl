@@ -19,14 +19,14 @@ struct LearningProblem{Dₛ,Dₜ,T} <: Problem
   task::T
 
   function LearningProblem{Dₛ,Dₜ,T}(sdata, tdata, task) where {Dₛ,Dₜ,T}
-    sourcevars = name.(variables(sdata))
-    targetvars = name.(variables(tdata))
+    svars = Tables.schema(sdata).names
+    tvars = Tables.schema(tdata).names
 
     # assert task is compatible with the data
-    @assert features(task) ⊆ sourcevars "features must be present in source data"
-    @assert features(task) ⊆ targetvars "features must be present in target data"
+    @assert features(task) ⊆ svars "features must be present in source data"
+    @assert features(task) ⊆ tvars "features must be present in target data"
     if issupervised(task)
-      @assert label(task) ∈ sourcevars "label must be present in source data"
+      @assert label(task) ∈ svars "label must be present in source data"
     end
 
     new(sdata, tdata, task)
