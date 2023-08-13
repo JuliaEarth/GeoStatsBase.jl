@@ -10,18 +10,17 @@ A method to initialize buffers in geostatistical solvers.
 abstract type InitMethod end
 
 """
-    initbuff(sdata, sdomain, method; [varstypes])
+    initbuff(sdata, sdomain, method; [vars])
 
-Initialize buffers for all variables and types `varstypes`
-with given `method` based on the location of elements in
-`sdata` and `sdomain`.
+Initialize buffers for all variables `vars` with given `method`
+based on the location of elements in `sdata` and `sdomain`.
 """
-function initbuff(sdata, sdomain, method::InitMethod; varstypes=varstypesof(sdata))
-  buff, mask = alloc(varstypes, nelements(sdomain))
+function initbuff(sdata, sdomain, method::InitMethod; vars=variables(sdata))
+  buff, mask = allocbuff(vars, nelements(sdomain))
 
   if !isnothing(sdata)
     preproc = preprocess(sdata, sdomain, method)
-    for var in keys(varstypes) ∩ varsof(sdata)
+    for var in keys(vars) ∩ varnames(sdata)
       initbuff!(buff[var], mask[var], valuesof(sdata, var), method, preproc)
     end
   end
@@ -29,15 +28,21 @@ function initbuff(sdata, sdomain, method::InitMethod; varstypes=varstypesof(sdat
   buff, mask
 end
 
-function alloc(varstypes, n)
-  buff = Dict(var => Vector{V}(undef, n) for (var, V) in varstypes)
-  mask = Dict(var => falses(n) for (var, V) in varstypes)
+function allocbuff(vars, n)
+  names = keys(vars)
+  types = values(vars)
+  buff = Dict(var => Vector{V}(undef, n) for (var, V) in zip(names, types))
+  mask = Dict(var => falses(n) for var in names)
   buff, mask
 end
 
-varstypesof(sdata) = Dict(var => mactypeof(sdata, var) for var in varsof(sdata))
+function variables(sdata)
+  names = varnames(sdata)
+  types = [mactypeof(sdata, var) for var in names]
+  (; zip(names, types)...)
+end
 
-varsof(sdata) = setdiff(propertynames(sdata), [:geometry])
+varnames(sdata) = setdiff(propertynames(sdata), [:geometry])
 
 mactypeof(sdata, var) = nonmissingtype(eltype(valuesof(sdata, var)))
 
