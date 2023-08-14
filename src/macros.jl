@@ -3,14 +3,14 @@
 # ------------------------------------------------------------------
 
 # connected component of adjacency matrix containing vertex
-function component(adjacency::AbstractMatrix{Int}, vertex::Int)
+function component(adjacency::BitMatrix, vertex::Int)
   frontier = [vertex]
   visited = Int[]
   # breadth-first search
   while !isempty(frontier)
     u = pop!(frontier)
     push!(visited, u)
-    for v in findall(!iszero, adjacency[u, :])
+    for v in findall(adjacency[u, :])
       if v ∉ visited
         push!(frontier, v)
       end
@@ -77,8 +77,8 @@ macro metasolver(solver, solvertype, body)
   solverjparam = Symbol(solver, "JointParam")
 
   # variables are symbols or tuples of symbols
-  vtype = Symbol
-  jtype = NTuple{<:Any,Symbol}
+  vtype = Set{Symbol}
+  jtype = Set{Symbol}
 
   esc(
     quote
@@ -103,7 +103,7 @@ macro metasolver(solver, solvertype, body)
 
           # auxiliary fields
           varnames::Vector{Symbol}
-          adjacency::Matrix{Int}
+          adjacency::BitMatrix
 
           function $solver(
             vparams::Dict{$vtype,$solvervparam},
@@ -113,20 +113,16 @@ macro metasolver(solver, solvertype, body)
           )
             svars = collect(keys(vparams))
             jvars = collect(keys(jparams))
-            lens₁ = length.(jvars)
-            lens₂ = length.(unique.(jvars))
 
-            @assert all(lens₁ .== lens₂ .> 1) "invalid joint variable specification"
+            varnames = Iterators.flatten(svars) ∪ Iterators.flatten(jvars)
 
-            varnames = svars ∪ Iterators.flatten(jvars)
-
-            adjacency = zeros(Int, length(varnames), length(varnames))
+            adjacency = falses(length(varnames), length(varnames))
             for (i, u) in enumerate(varnames)
               for vtuple in jvars
                 if u ∈ vtuple
                   for v in vtuple
                     j = indexin([v], varnames)[1]
-                    i == j || (adjacency[i, j] = 1)
+                    i == j || (adjacency[i, j] = true)
                   end
                 end
               end
@@ -146,9 +142,9 @@ macro metasolver(solver, solvertype, body)
         for (varname, varparams) in params
           kwargs = [k => v for (k, v) in zip(keys(varparams), varparams)]
           if varname isa Symbol
-            push!(vdict, varname => $solvervparam(; kwargs...))
+            push!(vdict, Set([varname]) => $solvervparam(; kwargs...))
           else
-            push!(jdict, varname => $solverjparam(; kwargs...))
+            push!(jdict, Set(varname) => $solverjparam(; kwargs...))
           end
         end
 
@@ -159,20 +155,23 @@ macro metasolver(solver, solvertype, body)
         vind = indexin([var], solver.varnames)[1]
         if !isnothing(vind)
           comp = GeoStatsBase.component(solver.adjacency, vind)
-          vars = Tuple(solver.varnames[sort(comp)])
+          vars = Set(solver.varnames[sort(comp)])
           params = []
           for v in vars
-            push!(params, (v,) => solver.vparams[v])
+            key = Set([v])
+            push!(params, key => solver.vparams[key])
           end
           for vtuple in keys(solver.jparams)
             if any(v ∈ vars for v in vtuple)
-              push!(params, vtuple => solver.jparams[vtuple])
+              key = Set(vtuple)
+              push!(params, key => solver.jparams[key])
             end
           end
         else
           # default parameter for single variable
-          vars = (var,)
-          params = [(var,) => $solvervparam()]
+          key = Set([var])
+          vars = key
+          params = [key => $solvervparam()]
         end
 
         (names=vars, params=Dict(params))
@@ -180,17 +179,19 @@ macro metasolver(solver, solvertype, body)
 
       GeoStatsBase.targets(solver::$solver) = solver.varnames
 
-      # ------------
-      # IO methods
-      # ------------
+      # -----------
+      # IO METHODS
+      # -----------
+
       function Base.show(io::IO, solver::$solver)
         print(io, $solver)
       end
 
       function Base.show(io::IO, ::MIME"text/plain", solver::$solver)
         println(io, solver)
-        for (var, varparams) in merge(solver.vparams, solver.jparams)
-          header = var isa Symbol ? "  └─" * string(var) : "  └─" * join(var, "—")
+        allparams = merge(solver.vparams, solver.jparams)
+        for (var, varparams) in allparams
+          header = "  └─" * join(var, "—")
           pnames = setdiff(fieldnames(typeof(varparams)), [:__dummy__])
           println(io, header)
           for pname in pnames

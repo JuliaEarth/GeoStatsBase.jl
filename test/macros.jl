@@ -5,9 +5,9 @@
     @test s.progress == true
     @test targets(s) == [:z]
     names, params = covariables(:z, s)
-    @test names == (:z,)
-    @test params[(:z,)].A == 2
-    @test params[(:z,)].B == 3
+    @test names == Set([:z])
+    @test params[Set([:z])].A == 2
+    @test params[Set([:z])].B == 3
 
     @test sprint(show, s) == "ESolver"
     @test sprint(show, MIME"text/plain"(), s) == "ESolver\n  └─z\n    └─A ⇨ 2\n    └─B ⇨ 3\n"
@@ -18,9 +18,9 @@
     @test s.C == false
     @test targets(s) == [:z]
     names, params = covariables(:z, s)
-    @test names == (:z,)
-    @test params[(:z,)].A == 2
-    @test params[(:z,)].B == 3
+    @test names == Set([:z])
+    @test params[Set([:z])].A == 2
+    @test params[Set([:z])].B == 3
 
     @test sprint(show, s) == "SSolver"
     @test sprint(show, MIME"text/plain"(), s) == "SSolver\n  └─z\n    └─A ⇨ 2\n    └─B ⇨ 3\n"
@@ -30,9 +30,9 @@
     @test s.progress == true
     @test isempty(targets(s))
     names, params = covariables(:z, s)
-    @test names == (:z,)
-    @test params[(:z,)].A == 1.0
-    @test params[(:z,)].B == 2
+    @test names == Set([:z])
+    @test params[Set([:z])].A == 1.0
+    @test params[Set([:z])].B == 2
     s = SSolver(progress=false)
     @test s.progress == false
 
@@ -40,11 +40,11 @@
     @test s.C == true
     @test Set(targets(s)) == Set([:z, :w])
     names, params = covariables(:z, s)
-    @test Set(names) == Set((:z, :w))
-    @test params[(:z,)].A == 1
-    @test params[(:z,)].B == 2
-    @test params[(:w,)].A == 2
-    @test params[(:w,)].B == 3
-    @test params[(:z, :w)].J == "bar"
+    @test names == Set([:z, :w])
+    @test params[Set([:z])].A == 1
+    @test params[Set([:z])].B == 2
+    @test params[Set([:w])].A == 2
+    @test params[Set([:w])].B == 3
+    @test params[Set([:z, :w])].J == "bar"
   end
 end
