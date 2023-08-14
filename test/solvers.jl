@@ -27,7 +27,8 @@
   @test covars[1].params[Set([:Z1, :Z2])].J == "bar"
   @test covars[2].params[Set([:Z3])].A == 1.0
   @test covars[2].params[Set([:Z3])].B == 2
-  @test sprint(show, MIME"text/plain"(), solver) == "SSolver\n  └─Z2\n    └─A ⇨ 3.0\n    └─B ⇨ 4\n  └─Z1\n    └─A ⇨ 2.0\n    └─B ⇨ 3\n  └─Z2—Z1\n    └─J ⇨ \"bar\"\n"
+  @test sprint(show, MIME"text/plain"(), solver) ==
+        "SSolver\n  └─Z2\n    └─A ⇨ 3.0\n    └─B ⇨ 4\n  └─Z1\n    └─A ⇨ 2.0\n    └─B ⇨ 3\n  └─Z2—Z1\n    └─J ⇨ \"bar\"\n"
   sol = solve(prob, solver)
   @test sol isa Ensemble
 end
