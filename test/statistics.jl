@@ -1,15 +1,17 @@
 @testset "Statistics" begin
+  rng = MersenneTwister(2023)
+
   # half sample mode
   d = LogNormal(0, 1)
-  rs = rand(d, 1000)
+  x = rand(rng, d, 1000)
   @test GeoStatsBase.hsm_mode([1, 2, 2, 3]) == 2.0
   @test GeoStatsBase.hsm_mode([1, 2, 2, 3, 5]) == 2.0
-  @test GeoStatsBase.hsm_mode(rs) < mean(rs)
-  @test GeoStatsBase.hsm_mode(rs) < median(rs)
+  @test GeoStatsBase.hsm_mode(x) < mean(x)
+  @test GeoStatsBase.hsm_mode(x) < median(x)
   d = MixtureModel([Normal(), Normal(3, 0.2)], [0.7, 0.3])
-  rs = rand(d, 1000)
-  @test GeoStatsBase.hsm_mode(rs) < mean(rs)
-  @test GeoStatsBase.hsm_mode(rs) < median(rs)
+  x = rand(rng, d, 1000)
+  @test GeoStatsBase.hsm_mode(x) < mean(x)
+  @test GeoStatsBase.hsm_mode(x) < median(x)
 
   # load data with bias towards large values (gold mine)
   sdata = georef(CSV.File(joinpath(datadir, "clustered.csv")), (:x, :y))
