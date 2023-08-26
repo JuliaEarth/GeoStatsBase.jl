@@ -12,7 +12,7 @@
   d = georef(tuple, CartesianGrid(3))
   @test domain(d) isa CartesianGrid
 
-  # vectors of elements
+  # vectors of geometries
   d = georef(table, rand(Point2, 3))
   @test domain(d) isa PointSet
   d = georef(tuple, rand(Point2, 3))
@@ -38,15 +38,12 @@
   @test Tables.columnnames(values(d)) |> collect == [:a]
 
   # regular grid data
-  d = georef(tuple)
-  @test domain(d) == CartesianGrid(3)
-  tuple2D = (x=rand(10, 10), y=rand(Int, 10, 10))
+  tuple1D = (x=rand(10), y=rand(10))
+  d = georef(tuple1D)
+  @test domain(d) == CartesianGrid(10)
+  tuple2D = (x=rand(10, 10), y=rand(10, 10))
   d = georef(tuple2D)
   @test domain(d) == CartesianGrid(10, 10)
-  d = georef(tuple2D, (1.0, 2.0), (3.0, 4.0))
-  @test domain(d) == CartesianGrid((10, 10), (1.0, 2.0), (3.0, 4.0))
-  d = georef(tuple2D, spacing=(3.0, 4.0))
-  @test domain(d) == CartesianGrid((10, 10), (0.0, 0.0), (3.0, 4.0))
   tuple3D = (x=rand(10, 10, 10), y=rand(10, 10, 10))
   d = georef(tuple3D)
   @test domain(d) == CartesianGrid(10, 10, 10)

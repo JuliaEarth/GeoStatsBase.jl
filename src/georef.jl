@@ -5,37 +5,69 @@
 """
     georef(table, domain)
 
-Georeference `table` on geospatial `domain`.
+Georeference `table` on `domain`.
+
+`table` must implement the [Tables.jl](https://github.com/JuliaData/Tables.jl)
+interface (e.g., `DataFrame`, `CSV.File`, `XLSX.Worksheet`).
+
+`domain` must implement the [Meshes.jl](https://github.com/JuliaGeometry/Meshes.jl)
+interface (e.g., `CartesianGrid`, `SimpleMesh`, `GeometrySet`).
+
+## Examples
+
+```julia
+julia> georef((a=rand(100), b=rand(100)), CartesianGrid(10, 10))
+```
 """
 georef(table, domain) = meshdata(domain, etable=table)
 
 """
-    georef(table, elems)
+    georef(table, geoms)
 
-Georeference `table` on vector of elements `elems`, i.e.
-geometries or points.
+Georeference `table` on vector of geometries `geoms`.
+
+`geoms` must implement the [Meshes.jl](https://github.com/JuliaGeometry/Meshes.jl)
+interface (e.g., `Point`, `Quadrangle`, `Hexahedron`).
+
+## Examples
+
+```julia
+julia> georef((a=rand(10), b=rand(10)), rand(Point2, 10))
+```
 """
-georef(table, elems::AbstractVector{<:Geometry}) = georef(table, GeometrySet(elems))
+georef(table, geoms::AbstractVector{<:Geometry}) = georef(table, GeometrySet(geoms))
 
 """
     georef(table, coords)
 
-Georeference `table` on a `PointSet(coords)`.
+Georeference `table` on `PointSet(coords)`.
+
+## Examples
+
+```julia
+julia> georef((a=rand(10), b=rand(10)), rand(2, 10))
+```
 """
 georef(table, coords::AbstractVecOrMat) = georef(table, PointSet(coords))
 
 """
-    georef(table, coordnames)
+    georef(table, names)
 
-Georeference `table` using columns `coordnames`.
+Georeference `table` using column `names`.
+
+## Examples
+
+```julia
+julia> georef((a=rand(10), x=rand(10), y=rand(10)), (:x, :y))
+```
 """
-function georef(table, coordnames::NTuple)
+function georef(table, names::NTuple)
   colnames = Tables.columnnames(table)
-  @assert coordnames ⊆ colnames "invalid coordinates for table"
-  @assert !(colnames ⊆ coordnames) "table must have at least one variable"
-  vars = setdiff(colnames, coordnames)
+  @assert names ⊆ colnames "invalid column names for table"
+  @assert !(colnames ⊆ names) "table must have at least one variable"
+  vars = setdiff(colnames, names)
   vtable = table |> Select(vars)
-  ctable = table |> Select(coordnames)
+  ctable = table |> Select(names)
   coords = Tuple.(Tables.rowtable(ctable))
   georef(vtable, coords)
 end
@@ -46,19 +78,23 @@ function georef(tuple::NamedTuple, domain)
 end
 
 # fix ambiguity between other methods
-georef(tuple::NamedTuple, elems::AbstractVector{<:Geometry}) = georef(tuple, GeometrySet(elems))
+georef(tuple::NamedTuple, geoms::AbstractVector{<:Geometry}) = georef(tuple, GeometrySet(geoms))
 
 georef(tuple::NamedTuple, coords::AbstractVecOrMat) = georef(tuple, PointSet(coords))
 
 # fix ambiguity between other methods
-georef(tuple::NamedTuple, coordnames::NTuple) = georef(TypedTables.Table(tuple), coordnames)
+georef(tuple::NamedTuple, names::NTuple) = georef(TypedTables.Table(tuple), names)
 
 """
-    georef(tuple; origin=(0.,0.,...), spacing=(1.,1.,...))
+    georef(tuple)
 
-Georeference named `tuple` on `CartesianGrid(size(tuple[1]), origin, spacing)`.
+Georeference named `tuple` on `CartesianGrid(size(first(tuple)))`.
+
+## Examples
+
+```julia
+julia> georef((a=rand(10, 10), b=rand(10, 10))) # 2D grid
+julia> georef((a=rand(10, 10, 10), b=rand(10, 10, 10))) # 3D grid
+```
 """
-georef(tuple; origin=ntuple(i -> 0.0, ndims(tuple[1])), spacing=ntuple(i -> 1.0, ndims(tuple[1]))) =
-  georef(tuple, origin, spacing)
-
-georef(tuple, origin, spacing) = georef(tuple, CartesianGrid(size(tuple[1]), origin, spacing))
+georef(tuple) = georef(tuple, CartesianGrid(size(first(tuple))))
