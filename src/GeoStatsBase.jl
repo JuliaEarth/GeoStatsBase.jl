@@ -172,6 +172,7 @@ export
   # utilities
   describe,
   integrate,
+  geosplit,
   @groupby,
   @transform,
   @combine,

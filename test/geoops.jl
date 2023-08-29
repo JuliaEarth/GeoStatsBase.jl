@@ -305,4 +305,29 @@
     @test domain(c) == GeometrySet([Multi(domain(data)) for data in p])
     @test Tables.schema(values(c)).names == (:x, :y, :z_mean)
   end
+
+  @testset "geosplit" begin
+    d = CartesianGrid(10, 10)
+    l, r = geosplit(d, 0.5)
+    @test nelements(l) == 50
+    @test nelements(r) == 50
+    l, r = geosplit(d, 0.5, (1.0, 0.0))
+    @test nelements(l) == 50
+    @test nelements(r) == 50
+    lpts = [centroid(l, i) for i in 1:nelements(l)]
+    rpts = [centroid(r, i) for i in 1:nelements(r)]
+    cl = mean(coordinates.(lpts))
+    cr = mean(coordinates.(rpts))
+    @test cl[1] < cr[1]
+    @test cl[2] == cr[2]
+    l, r = geosplit(d, 0.5, (0.0, 1.0))
+    @test nelements(l) == 50
+    @test nelements(r) == 50
+    lpts = [centroid(l, i) for i in 1:nelements(l)]
+    rpts = [centroid(r, i) for i in 1:nelements(r)]
+    cl = mean(coordinates.(lpts))
+    cr = mean(coordinates.(rpts))
+    @test cl[1] == cr[1]
+    @test cl[2] < cr[2]
+  end
 end
