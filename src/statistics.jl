@@ -3,11 +3,11 @@
 # ------------------------------------------------------------------
 
 """
-    mean(geotable)
-    mean(geotable, v)
-    mean(geotable, v, s)
+    mean(data)
+    mean(data, v)
+    mean(data, v, s)
 
-Declustered mean of `geotable`. Optionally,
+Declustered mean of geospatial `data`. Optionally,
 specify the variable `v` and the block side `s`.
 """
 mean(t::AbstractGeoTable) = Dict(v => mean(t, v, mode_heuristic(t)) for v in setdiff(propertynames(t), [:geometry]))
@@ -16,11 +16,11 @@ mean(t, v::Symbol, s::Number) = mean(t, v, BlockWeighting(s))
 mean(t, v::Symbol, w::WeightingMethod) = mean(getproperty(t, v), weight(t, w))
 
 """
-    var(geotable)
-    var(geotable, v)
-    var(geotable, v, s)
+    var(data)
+    var(data, v)
+    var(data, v, s)
 
-Declustered variance of `geotable`. Optionally,
+Declustered variance of geospatial `data`. Optionally,
 specify the variable `v` and the block side `s`.
 """
 var(t::AbstractGeoTable) = Dict(v => var(t, v, mode_heuristic(t)) for v in setdiff(propertynames(t), [:geometry]))
@@ -29,11 +29,11 @@ var(t, v::Symbol, s::Number) = var(t, v, BlockWeighting(s))
 var(t, v::Symbol, w::WeightingMethod) = var(getproperty(t, v), weight(t, w), mean=mean(t, v, w), corrected=false)
 
 """
-    quantile(geotable, p)
-    quantile(geotable, v, p)
-    quantile(geotable, v, p, s)
+    quantile(data, p)
+    quantile(data, v, p)
+    quantile(data, v, p, s)
 
-Declustered quantile of `geotable` at probability `p`.
+Declustered quantile of geospatial `data` at probability `p`.
 Optionally, specify the variable `v` and the block side `s`.
 """
 quantile(t::AbstractGeoTable, p) = Dict(v => quantile(t, v, p, mode_heuristic(t)) for v in setdiff(propertynames(t), [:geometry]))

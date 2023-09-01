@@ -3,16 +3,16 @@
 # ------------------------------------------------------------------
 
 """
-    integrate(geotable, var; rank=nothing)
+    integrate(data, var; rank=nothing)
 
-Integrate `geotable` for variable `var` over geometries of given `rank`.
-Default rank is the parametric dimension of the underlying domain
-where the geotable is georeferenced.
+Integrate geospatial `data` for variable `var` over geometries of
+given `rank`. Default rank is the parametric dimension of the
+underlying geospatial domain.
 """
-function integrate(data::AbstractGeoTable, vars...; rank=nothing)
+function integrate(t::AbstractGeoTable, vars...; rank=nothing)
   # domain and vertex table
-  𝒟 = domain(data)
-  𝒯 = values(data, 0)
+  𝒟 = domain(t)
+  𝒯 = values(t, 0)
 
   valid = Tables.schema(𝒯).names
   @assert vars ⊆ valid "invalid variables for vertex table"
