@@ -86,7 +86,7 @@ function apply(transform::Potrace, data)
     polys = map(rings) do (outer, inners)
       ochain = ring(outer)
       ichains = [ring(inner) for inner in inners]
-      PolyArea(ochain, ichains)
+      PolyArea([ochain, ichains...])
     end
     Multi(polys)
   end

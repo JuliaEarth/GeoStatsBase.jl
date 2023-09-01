@@ -102,8 +102,8 @@
     dom = domain(new)
     @test nelements(dom) == 2
     @test eltype(dom) <: Multi
-    polys1 = collect(dom[1])
-    polys2 = collect(dom[2])
+    polys1 = parent(dom[1])
+    polys2 = parent(dom[2])
     @test length(polys1) == 4
     @test length(polys2) == 2
 
@@ -124,8 +124,8 @@
     dom = domain(new)
     @test nelements(dom) == 2
     @test eltype(dom) <: Multi
-    polys1 = collect(dom[1])
-    polys2 = collect(dom[2])
+    polys1 = parent(dom[1])
+    polys2 = parent(dom[2])
     @test length(polys1) == 2
     @test length(polys2) == 2
     new1 = dat |> Potrace(1, ϵ=0.1)
