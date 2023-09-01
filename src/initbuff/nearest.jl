@@ -9,7 +9,7 @@ A method to initialize buffers using the nearest element in the domain.
 """
 struct NearestInit <: InitMethod end
 
-preprocess(geotable, sdomain, ::NearestInit) = domain(geotable), KNearestSearch(sdomain, 1)
+preprocess(data, dom, ::NearestInit) = domain(data), KNearestSearch(dom, 1)
 
 function initbuff!(buff, mask, vals, ::NearestInit, preproc)
   domain, searcher = preproc

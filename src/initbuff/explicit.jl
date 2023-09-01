@@ -18,7 +18,7 @@ end
 ExplicitInit(dest) = ExplicitInit(nothing, dest)
 ExplicitInit() = ExplicitInit(nothing, nothing)
 
-preprocess(geotable, sdomain, ::ExplicitInit) = nothing
+preprocess(data, domain, ::ExplicitInit) = nothing
 
 function initbuff!(buff, mask, vals, method::ExplicitInit, preproc)
   # retrieve origin and destination indices
