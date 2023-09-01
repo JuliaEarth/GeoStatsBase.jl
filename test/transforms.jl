@@ -32,8 +32,8 @@
       n, c = apply(p, d)
       t = Tables.columns(n)
       r = revert(p, n, c)
-      @test n isa Data
-      @test r isa Data
+      @test n isa AbstractGeoTable
+      @test r isa AbstractGeoTable
     end
 
     # transforms with categorical variables
@@ -42,8 +42,8 @@
       n, c = apply(p, d)
       t = Tables.columns(n)
       r = revert(p, n, c)
-      @test n isa Data
-      @test r isa Data
+      @test n isa AbstractGeoTable
+      @test r isa AbstractGeoTable
     end
 
     d = georef((z=rand(100), w=rand(100)))
@@ -167,7 +167,7 @@
     nd = vcat(n, n[1:10])
     sdata = georef((z=zd, n=nd), PointSet(Xd))
     ndata = sdata |> UniqueCoords()
-    @test nitems(ndata) == 100
+    @test nrow(ndata) == 100
 
     # domain with repeated points
     x = rand(100)
@@ -178,7 +178,7 @@
     pset = PointSet(rand(points, 100))
     sdata = georef(table, pset)
     ndata = sdata |> UniqueCoords()
-    @test nitems(ndata) == 10
+    @test nrow(ndata) == 10
 
     # aggregators
     pset = PointSet(repeat(points, inner=10))
@@ -186,7 +186,7 @@
 
     # default aggregators
     ndata = sdata |> UniqueCoords()
-    @test nitems(ndata) == 10
+    @test nrow(ndata) == 10
 
     for i in 1:10
       j = i * 10
@@ -201,7 +201,7 @@
     # custom aggregators
     # colspec: index
     ndata = sdata |> UniqueCoords(1 => std, 2 => median)
-    @test nitems(ndata) == 10
+    @test nrow(ndata) == 10
 
     for i in 1:10
       j = i * 10
@@ -215,7 +215,7 @@
 
     # colspec: symbols
     ndata = sdata |> UniqueCoords(:x => last, :y => first)
-    @test nitems(ndata) == 10
+    @test nrow(ndata) == 10
 
     for i in 1:10
       j = i * 10
@@ -229,7 +229,7 @@
 
     # colspec: strings
     ndata = sdata |> UniqueCoords("x" => maximum, "y" => minimum)
-    @test nitems(ndata) == 10
+    @test nrow(ndata) == 10
 
     for i in 1:10
       j = i * 10
@@ -247,27 +247,27 @@
 
     n = d |> Closure()
     t = Tables.columns(n)
-    @test n isa Data
+    @test n isa AbstractGeoTable
     @test Tables.columnnames(t) == (:z, :w, :geometry)
 
     n = d |> Remainder()
     t = Tables.columns(n)
-    @test n isa Data
+    @test n isa AbstractGeoTable
     @test Tables.columnnames(t) == (:z, :w, :remainder, :geometry)
 
     n = d |> ALR()
     t = Tables.columns(n)
-    @test n isa Data
+    @test n isa AbstractGeoTable
     @test Tables.columnnames(t) == (:z, :geometry)
 
     n = d |> CLR()
     t = Tables.columns(n)
-    @test n isa Data
+    @test n isa AbstractGeoTable
     @test Tables.columnnames(t) == (:z, :w, :geometry)
 
     n = d |> ILR()
     t = Tables.columns(n)
-    @test n isa Data
+    @test n isa AbstractGeoTable
     @test Tables.columnnames(t) == (:z, :geometry)
   end
 

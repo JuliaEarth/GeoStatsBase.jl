@@ -32,9 +32,9 @@ UniqueCoords(pairs::Pair{C,<:Function}...) where {C<:Col} =
 
 isrevertible(::Type{<:UniqueCoords}) = false
 
-function apply(transform::UniqueCoords, data::Data)
-  dom = domain(data)
-  tab = values(data)
+function apply(transform::UniqueCoords, geotable::AbstractGeoTable)
+  dom = domain(geotable)
+  tab = values(geotable)
   cols = Tables.columns(tab)
   vars = Tables.columnnames(cols)
   svars = choose(transform.colspec, vars)
@@ -43,7 +43,7 @@ function apply(transform::UniqueCoords, data::Data)
   # filtering info
   for var in vars
     if !haskey(agg, var)
-      v = getproperty(data, var)
+      v = getproperty(geotable, var)
       agg[var] = elscitype(v) <: Continuous ? _mean : _first
     end
   end
@@ -60,7 +60,7 @@ function apply(transform::UniqueCoords, data::Data)
 
   # perform aggregation with repeated indices
   function aggvar(var)
-    v = getproperty(data, var)
+    v = getproperty(geotable, var)
     map(ginds) do gind
       group = groups[gind]
       if length(group) > 1
@@ -84,7 +84,7 @@ function apply(transform::UniqueCoords, data::Data)
   newvals = Dict(paramdim(newdom) => newtab)
 
   # new spatial data
-  newdata = constructor(data)(newdom, newvals)
+  newdata = constructor(geotable)(newdom, newvals)
 
   newdata, nothing
 end

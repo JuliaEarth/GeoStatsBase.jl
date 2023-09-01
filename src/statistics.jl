@@ -3,48 +3,48 @@
 # ------------------------------------------------------------------
 
 """
-    mean(data)
-    mean(data, v)
-    mean(data, v, s)
+    mean(geotable)
+    mean(geotable, v)
+    mean(geotable, v, s)
 
-Declustered mean of geospatial `data`. Optionally,
+Declustered mean of `geotable`. Optionally,
 specify the variable `v` and the block side `s`.
 """
-mean(d::Data) = Dict(v => mean(d, v, mode_heuristic(d)) for v in setdiff(propertynames(d), [:geometry]))
-mean(d, v::Symbol) = mean(d, v, mode_heuristic(d))
-mean(d, v::Symbol, s::Number) = mean(d, v, BlockWeighting(s))
-mean(d, v::Symbol, w::WeightingMethod) = mean(getproperty(d, v), weight(d, w))
+mean(t::AbstractGeoTable) = Dict(v => mean(t, v, mode_heuristic(t)) for v in setdiff(propertynames(t), [:geometry]))
+mean(t, v::Symbol) = mean(t, v, mode_heuristic(t))
+mean(t, v::Symbol, s::Number) = mean(t, v, BlockWeighting(s))
+mean(t, v::Symbol, w::WeightingMethod) = mean(getproperty(t, v), weight(t, w))
 
 """
-    var(data)
-    var(data, v)
-    var(data, v, s)
+    var(geotable)
+    var(geotable, v)
+    var(geotable, v, s)
 
-Declustered variance of geospatial `data`. Optionally,
+Declustered variance of `geotable`. Optionally,
 specify the variable `v` and the block side `s`.
 """
-var(d::Data) = Dict(v => var(d, v, mode_heuristic(d)) for v in setdiff(propertynames(d), [:geometry]))
-var(d, v::Symbol) = var(d, v, mode_heuristic(d))
-var(d, v::Symbol, s::Number) = var(d, v, BlockWeighting(s))
-var(d, v::Symbol, w::WeightingMethod) = var(getproperty(d, v), weight(d, w), mean=mean(d, v, w), corrected=false)
+var(t::AbstractGeoTable) = Dict(v => var(t, v, mode_heuristic(t)) for v in setdiff(propertynames(t), [:geometry]))
+var(t, v::Symbol) = var(t, v, mode_heuristic(t))
+var(t, v::Symbol, s::Number) = var(t, v, BlockWeighting(s))
+var(t, v::Symbol, w::WeightingMethod) = var(getproperty(t, v), weight(t, w), mean=mean(t, v, w), corrected=false)
 
 """
-    quantile(data, p)
-    quantile(data, v, p)
-    quantile(data, v, p, s)
+    quantile(geotable, p)
+    quantile(geotable, v, p)
+    quantile(geotable, v, p, s)
 
-Declustered quantile of geospatial `data` at probability `p`.
+Declustered quantile of `geotable` at probability `p`.
 Optionally, specify the variable `v` and the block side `s`.
 """
-quantile(d::Data, p) = Dict(v => quantile(d, v, p, mode_heuristic(d)) for v in setdiff(propertynames(d), [:geometry]))
-quantile(d, v::Symbol, p) = quantile(d, v, p, mode_heuristic(d))
-quantile(d, v::Symbol, p, s::Number) = quantile(d, v, p, BlockWeighting(s))
-quantile(d, v::Symbol, p, w::WeightingMethod) = quantile(getproperty(d, v), weight(d, w), p)
+quantile(t::AbstractGeoTable, p) = Dict(v => quantile(t, v, p, mode_heuristic(t)) for v in setdiff(propertynames(t), [:geometry]))
+quantile(t, v::Symbol, p) = quantile(t, v, p, mode_heuristic(t))
+quantile(t, v::Symbol, p, s::Number) = quantile(t, v, p, BlockWeighting(s))
+quantile(t, v::Symbol, p, w::WeightingMethod) = quantile(getproperty(t, v), weight(t, w), p)
 
 # return a block size based on pairwise distances and
 # an aggregation function (e.g. mean, mode)
-function heuristic(d, fun)
-  𝒟 = domain(d)
+function heuristic(t, fun)
+  𝒟 = domain(t)
   D = dist_matrix_random_sample(𝒟)
   n = size(D, 1)
   d = fun([D[i, j] for i in 1:n for j in 1:n if i > j])
@@ -52,9 +52,9 @@ function heuristic(d, fun)
   min(d, l)
 end
 
-median_heuristic(d) = heuristic(d, median)
+median_heuristic(t) = heuristic(t, median)
 
-mode_heuristic(d) = heuristic(d, hsm_mode)
+mode_heuristic(t) = heuristic(t, hsm_mode)
 
 function dist_matrix_random_sample(𝒟)
   # select a maximum number of points at random

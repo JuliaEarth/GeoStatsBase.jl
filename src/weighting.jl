@@ -19,7 +19,7 @@ end
 
 GeoWeights(domain::D, values::V) where {D,V} = GeoWeights(domain, values, sum(values))
 
-Meshes.domain(w::GeoWeights) = w.domain
+domain(w::GeoWeights) = w.domain
 
 @inline function varcorrection(w::GeoWeights, corrected::Bool=false)
   corrected && throw(ArgumentError("GeoWeights type does not support bias correction."))

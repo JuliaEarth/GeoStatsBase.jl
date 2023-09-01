@@ -61,8 +61,8 @@
     grid = CartesianGrid(2, 2)
     mesh = simplexify(grid)
     table = (z=[1, 2, 3, 4, 5, 6, 7, 8, 9], w=[1, 1, 1, 2, 2, 2, 3, 3, 3])
-    gdata = meshdata(grid, vtable=table)
-    mdata = meshdata(mesh, vtable=table)
+    gdata = geotable(grid, vtable=table)
+    mdata = geotable(mesh, vtable=table)
     ginte = integrate(gdata, :z, :w)
     minte = integrate(mdata, :z, :w)
     @test ginte.z == [3.0, 4.0, 6.0, 7.0]
@@ -74,7 +74,7 @@
   @testset "@groupby" begin
     d = georef((z=[1, 2, 3], x=[4, 5, 6]), rand(2, 3))
     g = @groupby(d, :z)
-    @test all(nitems.(g) .== 1)
+    @test all(nrow.(g) .== 1)
     rows = [[1 4], [2 5], [3 6]]
     for i in 1:3
       @test Tables.matrix(values(g[i])) ∈ rows

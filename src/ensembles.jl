@@ -33,7 +33,7 @@ Ensemble(domain::𝒟, reals::ℛ) where {𝒟,ℛ} = Ensemble{𝒟,ℛ}(domain,
 
 ==(e₁::Ensemble, e₂::Ensemble) = e₁.domain == e₂.domain && e₁.reals == e₂.reals
 
-Meshes.domain(ensemble::Ensemble) = ensemble.domain
+domain(ensemble::Ensemble) = ensemble.domain
 
 # -------------
 # VARIABLE API

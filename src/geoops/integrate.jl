@@ -3,13 +3,13 @@
 # ------------------------------------------------------------------
 
 """
-    integrate(data, var; rank=nothing)
+    integrate(geotable, var; rank=nothing)
 
-Integrate `data` for variable `var` over geometries of given `rank`.
+Integrate `geotable` for variable `var` over geometries of given `rank`.
 Default rank is the parametric dimension of the underlying domain
-where the data is georeferenced.
+where the geotable is georeferenced.
 """
-function integrate(data::Data, vars...; rank=nothing)
+function integrate(data::AbstractGeoTable, vars...; rank=nothing)
   # domain and vertex table
   𝒟 = domain(data)
   𝒯 = values(data, 0)
@@ -37,7 +37,7 @@ function integrate(data::Data, vars...; rank=nothing)
     (; zip(vars, ints)...)
   end
 
-  meshdata(𝒟, Dict(R => table))
+  geotable(𝒟, Dict(R => table))
 end
 
 # The surface integral ∫fdA over a 2D geometry can be

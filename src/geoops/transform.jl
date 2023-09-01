@@ -3,33 +3,27 @@
 # ------------------------------------------------------------------
 
 """
-    @transform(object, :col₁ = expr₁, :col₂ = expr₂, ..., :colₙ = exprₙ)
+    @transform(geotable, :col₁ = expr₁, :col₂ = expr₂, ..., :colₙ = exprₙ)
 
-Return a new `Data` or `Partition` object with `object` columns 
-and new columns `col₁`, `col₂`, ..., `colₙ` defined by expressions
-`expr₁`, `expr₂`, ..., `exprₙ`. The `object` can be a `Data` object
-or a `Partition` object returned by the `@groupby` macro.
-In each expression the `object` columns are represented by symbols 
-and the functions use `broadcast` by default. Also, is possible pass strings 
-or variables as column names using the `{colname}` syntax. If there are columns 
-in the table with the same name as the new columns, these will be replaced.
+Returns a geotable with columns `col₁`, `col₂`, ..., `colₙ` computed with
+expressions `expr₁`, `expr₂`, ..., `exprₙ`.
 
 See also: [`@groupby`](@ref).
 
 # Examples
 
 ```julia
-@transform(data, :z = :x + 2*:y)
-@transform(data, :w = :x^2 - :y^2)
-@transform(data, :sinx = sin(:x), :cosy = cos(:y))
+@transform(geotable, :z = :x + 2*:y)
+@transform(geotable, :w = :x^2 - :y^2)
+@transform(geotable, :sinx = sin(:x), :cosy = cos(:y))
 
-p = @groupby(data, :y)
+p = @groupby(geotable, :y)
 @transform(p, :logx = log(:x))
 @transform(p, :expz = exp(:z))
 
-@transform(data, {"z"} = {"x"} - 2*{"y"})
+@transform(geotable, {"z"} = {"x"} - 2*{"y"})
 xnm, ynm, znm = :x, :y, :z
-@transform(data, {znm} = {xnm} - 2*{ynm})
+@transform(geotable, {znm} = {xnm} - 2*{ynm})
 ```
 
 ### Notes
@@ -53,9 +47,9 @@ macro transform(object::Symbol, exprs...)
   end
 end
 
-function _transform(data::D, tnames, tcolumns) where {D<:Data}
-  dom = domain(data)
-  table = values(data)
+function _transform(geotable::GT, tnames, tcolumns) where {GT<:AbstractGeoTable}
+  dom = domain(geotable)
+  table = values(geotable)
 
   cols = Tables.columns(table)
   names = Tables.columnnames(cols) |> collect
@@ -78,10 +72,10 @@ function _transform(data::D, tnames, tcolumns) where {D<:Data}
   newtable = 𝒯 |> Tables.materializer(table)
 
   vals = Dict(paramdim(newdom) => newtable)
-  constructor(D)(newdom, vals)
+  constructor(GT)(newdom, vals)
 end
 
-function _transform(partition::Partition{D}, tnames, tcolumns) where {D<:Data}
+function _transform(partition::Partition{GT}, tnames, tcolumns) where {GT<:AbstractGeoTable}
   data = parent(partition)
   inds = indices(partition)
   meta = metadata(partition)

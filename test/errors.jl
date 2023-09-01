@@ -18,8 +18,8 @@
   @testset "Estimation" begin
     ℐ₁ = georef((z=rand(50, 50),))
     ℐ₂ = georef((z=100rand(50, 50),))
-    𝒮₁ = sample(ℐ₁, 100, replace=false)
-    𝒮₂ = sample(ℐ₂, 100, replace=false)
+    𝒮₁ = sample(ℐ₁, UniformSampling(100, replace=false))
+    𝒮₂ = sample(ℐ₂, UniformSampling(100, replace=false))
     p₁ = EstimationProblem(𝒮₁, domain(ℐ₁), :z)
     p₂ = EstimationProblem(𝒮₂, domain(ℐ₂), :z)
     s = DummyEstimSolver()

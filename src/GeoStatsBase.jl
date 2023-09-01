@@ -6,6 +6,7 @@ module GeoStatsBase
 
 using Meshes
 using Tables
+using GeoTables
 using TableTransforms
 using Rotations: RotZYX
 using Distributions: median
@@ -20,11 +21,14 @@ using DensityRatioEstimation
 using ScientificTypes
 using ProgressMeter
 using LinearAlgebra
+using Random
 
 using TypedTables # for a default table type
 using Optim # for LSIF estimation
 
-import Meshes
+import Meshes: partitioninds
+import Meshes: sampleinds
+import GeoTables: domain
 import MLJModelInterface as MI
 import LossFunctions.Traits: SupervisedLoss
 import TableTransforms: StatelessTableTransform
@@ -40,8 +44,9 @@ import StatsBase: fit, varcorrection, describe
 import Statistics: mean, var, quantile
 import Base: ==
 
-# aliases
-const GeoData = Meshes.MeshData
+# geotable specializations
+include("partitioning.jl")
+include("sampling.jl")
 
 include("georef.jl")
 include("ensembles.jl")
@@ -63,12 +68,10 @@ include("transforms.jl")
 
 export
   # data
-  GeoData,
   georef,
 
   # ensembles
   Ensemble,
-  domain,
 
   # learning tasks
   LearningTask,

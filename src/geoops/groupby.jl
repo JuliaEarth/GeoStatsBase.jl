@@ -3,39 +3,39 @@
 # ------------------------------------------------------------------
 
 """
-    @groupby(data, col₁, col₂, ..., colₙ)
-    @groupby(data, [col₁, col₂, ..., colₙ])
-    @groupby(data, (col₁, col₂, ..., colₙ))
+    @groupby(geotable, col₁, col₂, ..., colₙ)
+    @groupby(geotable, [col₁, col₂, ..., colₙ])
+    @groupby(geotable, (col₁, col₂, ..., colₙ))
 
-Partition geospatial `data` according to selected columns `col₁`, `col₂`, ..., `colₙ`.
+Partition `geotable` based on columns `col₁`, `col₂`, ..., `colₙ`.
 
-    @groupby(data, regex)
+    @groupby(geotable, regex)
 
-Partition geospatial `data` according to columns that match with `regex`.
+Partition `geotable` based on columns that match with `regex`.
 
 # Examples
 
 ```julia
-@groupby(data, 1, 3, 5)
-@groupby(data, [:a, :c, :e])
-@groupby(data, ("a", "c", "e"))
-@groupby(data, r"[ace]")
+@groupby(geotable, 1, 3, 5)
+@groupby(geotable, [:a, :c, :e])
+@groupby(geotable, ("a", "c", "e"))
+@groupby(geotable, r"[ace]")
 ```
 """
-macro groupby(data::Symbol, cols...)
+macro groupby(geotable::Symbol, cols...)
   spec = Expr(:tuple, esc.(cols)...)
-  :(_groupby($(esc(data)), $spec))
+  :(_groupby($(esc(geotable)), $spec))
 end
 
-macro groupby(data::Symbol, spec)
-  :(_groupby($(esc(data)), $(esc(spec))))
+macro groupby(geotable::Symbol, spec)
+  :(_groupby($(esc(geotable)), $(esc(spec))))
 end
 
-_groupby(data::Data, spec) = _groupby(data, colspec(spec))
-_groupby(data::Data, cols::T...) where {T<:Col} = _groupby(data, colspec(cols))
+_groupby(geotable::AbstractGeoTable, spec) = _groupby(geotable, colspec(spec))
+_groupby(geotable::AbstractGeoTable, cols::T...) where {T<:Col} = _groupby(geotable, colspec(cols))
 
-function _groupby(data::Data, colspec::ColSpec)
-  table = values(data)
+function _groupby(geotable::AbstractGeoTable, colspec::ColSpec)
+  table = values(geotable)
 
   cols = Tables.columns(table)
   names = Tables.columnnames(cols)
@@ -48,5 +48,5 @@ function _groupby(data::Data, colspec::ColSpec)
   inds = map(row -> findall(isequal(row), srows), urows)
 
   metadata = Dict(:names => snames, :rows => urows)
-  Partition(data, inds, metadata)
+  Partition(geotable, inds, metadata)
 end

@@ -2,9 +2,9 @@
   @testset "UniformWeighting" begin
     d = CartesianGrid(100, 100)
     s = georef((z=rand(100, 100),))
-    for o in [d, s]
+    for (o, f) in zip([d, s], [nelements, nrow])
       w = weight(o, UniformWeighting())
-      @test length(w) == nitems(o)
+      @test length(w) == f(o)
       @test all(w .== 1)
     end
   end

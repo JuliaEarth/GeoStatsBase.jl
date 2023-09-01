@@ -1,5 +1,6 @@
 using GeoStatsBase
 using Meshes
+using GeoTables
 using CSV
 using CoDa
 using Tables
@@ -28,6 +29,8 @@ include("dummy.jl")
 testfiles = [
   "georef.jl",
   "ensembles.jl",
+  "partitioning.jl",
+  "sampling.jl",
   "weighting.jl",
   "geoops.jl",
   "trends.jl",

@@ -19,7 +19,7 @@ interface (e.g., `CartesianGrid`, `SimpleMesh`, `GeometrySet`).
 julia> georef((a=rand(100), b=rand(100)), CartesianGrid(10, 10))
 ```
 """
-georef(table, domain) = meshdata(domain, etable=table)
+georef(table, domain) = geotable(domain, etable=table)
 
 """
     georef(table, geoms)
