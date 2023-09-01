@@ -36,7 +36,8 @@ var(t, v::Symbol, w::WeightingMethod) = var(getproperty(t, v), weight(t, w), mea
 Declustered quantile of geospatial `data` at probability `p`.
 Optionally, specify the variable `v` and the block side `s`.
 """
-quantile(t::AbstractGeoTable, p) = Dict(v => quantile(t, v, p, mode_heuristic(t)) for v in setdiff(propertynames(t), [:geometry]))
+quantile(t::AbstractGeoTable, p) =
+  Dict(v => quantile(t, v, p, mode_heuristic(t)) for v in setdiff(propertynames(t), [:geometry]))
 quantile(t, v::Symbol, p) = quantile(t, v, p, mode_heuristic(t))
 quantile(t, v::Symbol, p, s::Number) = quantile(t, v, p, BlockWeighting(s))
 quantile(t, v::Symbol, p, w::WeightingMethod) = quantile(getproperty(t, v), weight(t, w), p)
