@@ -37,11 +37,14 @@ describe(geotable::AbstractGeoTable, colspec::ColSpec; funs=DEFAULTFUNS) = _desc
 
 describe(geotable::AbstractGeoTable; kwargs...) = describe(geotable, AllSpec(); kwargs...)
 describe(geotable::AbstractGeoTable, spec; kwargs...) = describe(geotable, colspec(spec); kwargs...)
-describe(geotable::AbstractGeoTable, cols::T...; kwargs...) where {T<:Col} = describe(geotable, colspec(cols); kwargs...)
+describe(geotable::AbstractGeoTable, cols::T...; kwargs...) where {T<:Col} =
+  describe(geotable, colspec(cols); kwargs...)
 
-_describe(geotable::AbstractGeoTable, colspec::ColSpec, funs::Dict{Symbol}) = _describe(geotable, colspec, collect(funs))
+_describe(geotable::AbstractGeoTable, colspec::ColSpec, funs::Dict{Symbol}) =
+  _describe(geotable, colspec, collect(funs))
 
-_describe(geotable::AbstractGeoTable, colspec::ColSpec, funs::AbstractVector) = _describe(geotable, colspec, nameof.(funs) .=> funs)
+_describe(geotable::AbstractGeoTable, colspec::ColSpec, funs::AbstractVector) =
+  _describe(geotable, colspec, nameof.(funs) .=> funs)
 
 function _describe(geotable::AbstractGeoTable, colspec::ColSpec, funs::AbstractVector{<:Pair{Symbol}})
   table = values(geotable)
