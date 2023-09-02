@@ -3,32 +3,28 @@
 # ------------------------------------------------------------------
 
 """
-    @transform(geotable, :col₁ = expr₁, :col₂ = expr₂, ..., :colₙ = exprₙ)
+    @transform(data, :col₁ = expr₁, :col₂ = expr₂, ..., :colₙ = exprₙ)
 
-Returns a geotable with columns `col₁`, `col₂`, ..., `colₙ` computed with
-expressions `expr₁`, `expr₂`, ..., `exprₙ`.
+Returns geospatial `data` with columns `col₁`, `col₂`, ..., `colₙ`
+computed with expressions `expr₁`, `expr₂`, ..., `exprₙ`.
 
 See also: [`@groupby`](@ref).
 
 # Examples
 
 ```julia
-@transform(geotable, :z = :x + 2*:y)
-@transform(geotable, :w = :x^2 - :y^2)
-@transform(geotable, :sinx = sin(:x), :cosy = cos(:y))
+@transform(data, :z = :x + 2*:y)
+@transform(data, :w = :x^2 - :y^2)
+@transform(data, :sinx = sin(:x), :cosy = cos(:y))
 
-p = @groupby(geotable, :y)
-@transform(p, :logx = log(:x))
-@transform(p, :expz = exp(:z))
+groups = @groupby(data, :y)
+@transform(groups, :logx = log(:x))
+@transform(groups, :expz = exp(:z))
 
-@transform(geotable, {"z"} = {"x"} - 2*{"y"})
+@transform(data, {"z"} = {"x"} - 2*{"y"})
 xnm, ynm, znm = :x, :y, :z
-@transform(geotable, {znm} = {xnm} - 2*{ynm})
+@transform(data, {znm} = {xnm} - 2*{ynm})
 ```
-
-### Notes
-
-If `object` is a `Partition`, the group columns cannot be replaced.
 """
 macro transform(object::Symbol, exprs...)
   splits = map(expr -> _split(expr), exprs)
@@ -47,9 +43,9 @@ macro transform(object::Symbol, exprs...)
   end
 end
 
-function _transform(geotable::GT, tnames, tcolumns) where {GT<:AbstractGeoTable}
-  dom = domain(geotable)
-  table = values(geotable)
+function _transform(data::D, tnames, tcolumns) where {D<:AbstractGeoTable}
+  dom = domain(data)
+  table = values(data)
 
   cols = Tables.columns(table)
   names = Tables.columnnames(cols) |> collect
@@ -72,10 +68,10 @@ function _transform(geotable::GT, tnames, tcolumns) where {GT<:AbstractGeoTable}
   newtable = 𝒯 |> Tables.materializer(table)
 
   vals = Dict(paramdim(newdom) => newtable)
-  constructor(GT)(newdom, vals)
+  constructor(D)(newdom, vals)
 end
 
-function _transform(partition::Partition{GT}, tnames, tcolumns) where {GT<:AbstractGeoTable}
+function _transform(partition::Partition{D}, tnames, tcolumns) where {D<:AbstractGeoTable}
   data = parent(partition)
   inds = indices(partition)
   meta = metadata(partition)

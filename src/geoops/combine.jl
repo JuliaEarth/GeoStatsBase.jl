@@ -3,26 +3,26 @@
 # ------------------------------------------------------------------
 
 """
-    @combine(geotable, :col₁ = expr₁, :col₂ = expr₂, ..., :colₙ = exprₙ)
+    @combine(data, :col₁ = expr₁, :col₂ = expr₂, ..., :colₙ = exprₙ)
 
-Returns a geotable with columns `:col₁`, `:col₂`, ..., `:colₙ` computed
-with reduction expressions `expr₁`, `expr₂`, ..., `exprₙ`. 
+Returns geospatial `data` with columns `:col₁`, `:col₂`, ..., `:colₙ`
+computed with reduction expressions `expr₁`, `expr₂`, ..., `exprₙ`. 
 
 See also: [`@groupby`](@ref).
 
 # Examples
 
 ```julia
-@combine(geotable, :x_sum = sum(:x))
-@combine(geotable, :x_mean = mean(:x))
+@combine(data, :x_sum = sum(:x))
+@combine(data, :x_mean = mean(:x))
 
-p = @groupby(geotable, :y)
-@combine(p, :x_prod = prod(:x))
-@combine(p, :x_median = median(:x))
+groups = @groupby(data, :y)
+@combine(groups, :x_prod = prod(:x))
+@combine(groups, :x_median = median(:x))
 
-@combine(geotable, {"z"} = sum({"x"}) + prod({"y"}))
+@combine(data, {"z"} = sum({"x"}) + prod({"y"}))
 xnm, ynm, znm = :x, :y, :z
-@combine(geotable, {znm} = sum({xnm}) + prod({ynm}))
+@combine(data, {znm} = sum({xnm}) + prod({ynm}))
 ```
 """
 macro combine(object::Symbol, exprs...)
@@ -41,19 +41,19 @@ macro combine(object::Symbol, exprs...)
   end
 end
 
-function _combine(geotable::GT, names, columns) where {GT<:AbstractGeoTable}
-  table = values(geotable)
+function _combine(data::D, names, columns) where {D<:AbstractGeoTable}
+  table = values(data)
 
-  newdom = GeometrySet([Multi(domain(geotable))])
+  newdom = GeometrySet([Multi(domain(data))])
 
   𝒯 = (; zip(names, columns)...)
   newtable = 𝒯 |> Tables.materializer(table)
 
   vals = Dict(paramdim(newdom) => newtable)
-  constructor(GT)(newdom, vals)
+  constructor(D)(newdom, vals)
 end
 
-function _combine(partition::Partition{GT}, names, columns) where {GT<:AbstractGeoTable}
+function _combine(partition::Partition{D}, names, columns) where {D<:AbstractGeoTable}
   table = values(parent(partition))
   meta = metadata(partition)
 
@@ -70,7 +70,7 @@ function _combine(partition::Partition{GT}, names, columns) where {GT<:AbstractG
   newtable = 𝒯 |> Tables.materializer(table)
 
   vals = Dict(paramdim(newdom) => newtable)
-  constructor(GT)(newdom, vals)
+  constructor(D)(newdom, vals)
 end
 
 # utils
