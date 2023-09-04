@@ -61,8 +61,8 @@
     grid = CartesianGrid(2, 2)
     mesh = simplexify(grid)
     table = (z=[1, 2, 3, 4, 5, 6, 7, 8, 9], w=[1, 1, 1, 2, 2, 2, 3, 3, 3])
-    gdata = geotable(grid, vtable=table)
-    mdata = geotable(mesh, vtable=table)
+    gdata = GeoTable(grid, vtable=table)
+    mdata = GeoTable(mesh, vtable=table)
     ginte = integrate(gdata, :z, :w)
     minte = integrate(mdata, :z, :w)
     @test ginte.z == [3.0, 4.0, 6.0, 7.0]

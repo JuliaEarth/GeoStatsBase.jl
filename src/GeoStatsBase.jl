@@ -48,7 +48,6 @@ import Base: ==
 # geotable specializations
 include("geotables.jl")
 
-include("georef.jl")
 include("ensembles.jl")
 include("macros.jl")
 include("trends.jl")
@@ -67,9 +66,6 @@ include("rotations.jl")
 include("transforms.jl")
 
 export
-  # data
-  georef,
-
   # ensembles
   Ensemble,
 

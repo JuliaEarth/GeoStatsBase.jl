@@ -37,7 +37,7 @@ function integrate(t::AbstractGeoTable, vars...; rank=nothing)
     (; zip(vars, ints)...)
   end
 
-  geotable(𝒟, Dict(R => table))
+  GeoTable(𝒟, Dict(R => table))
 end
 
 # The surface integral ∫fdA over a 2D geometry can be

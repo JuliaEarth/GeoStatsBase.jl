@@ -4,7 +4,7 @@
   # PARTITIONING
   # -------------
 
-  t = geotable(CartesianGrid(10, 10), etable=(a=rand(100), b=rand(100)))
+  t = georef((a=rand(100), b=rand(100)), CartesianGrid(10, 10))
   for method in [
     UniformPartition(2),
     FractionPartition(0.5),
