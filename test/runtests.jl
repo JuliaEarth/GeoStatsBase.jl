@@ -27,10 +27,9 @@ include("dummy.jl")
 
 # list of tests
 testfiles = [
+  "geotables.jl",
   "georef.jl",
   "ensembles.jl",
-  "partitioning.jl",
-  "sampling.jl",
   "weighting.jl",
   "geoops.jl",
   "trends.jl",

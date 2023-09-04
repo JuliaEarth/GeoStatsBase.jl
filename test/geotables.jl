@@ -1,5 +1,10 @@
-@testset "partitioning" begin
-  data = geotable(CartesianGrid(10, 10), etable=(a=rand(100), b=rand(100)))
+@testset "geotables" begin
+
+  # -------------
+  # PARTITIONING
+  # -------------
+
+  t = geotable(CartesianGrid(10, 10), etable=(a=rand(100), b=rand(100)))
   for method in [
     UniformPartition(2),
     FractionPartition(0.5),
@@ -14,8 +19,22 @@
     ProductPartition(UniformPartition(2), UniformPartition(2)),
     HierarchicalPartition(UniformPartition(2), UniformPartition(2))
   ]
-    Π = partition(data, method)
+    Π = partition(t, method)
     inds = reduce(vcat, indices(Π))
     @test sort(inds) == 1:100
   end
+
+  # ---------
+  # SAMPLING
+  # ---------
+
+  t = georef((z=rand(50, 50),))
+  s = sample(t, UniformSampling(100))
+  @test nrow(s) == 100
+
+  # --------
+  # SORTING
+  # --------
+
+  # TODO
 end

@@ -28,6 +28,7 @@ using Optim # for LSIF estimation
 
 import Meshes: partitioninds
 import Meshes: sampleinds
+import Meshes: sortinds
 import GeoTables: domain
 import MLJModelInterface as MI
 import LossFunctions.Traits: SupervisedLoss
@@ -45,8 +46,7 @@ import Statistics: mean, var, quantile
 import Base: ==
 
 # geotable specializations
-include("partitioning.jl")
-include("sampling.jl")
+include("geotables.jl")
 
 include("georef.jl")
 include("ensembles.jl")
