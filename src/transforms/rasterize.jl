@@ -84,5 +84,6 @@ function revert(::Rasterize, geotable::AbstractGeoTable, cache)
   newtab = (; mask => cache, pairs...)
   newgtb = georef(newtab, dom)
 
-  newgtb |> Potrace(mask) |> Reject(mask)
+  newgtb = newgtb |> Potrace(mask) |> Reject(mask)
+  newgtb[2:nrow(newgtb), :]
 end
