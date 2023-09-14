@@ -177,14 +177,14 @@
 
     # revert
     gtb = georef((; z=1:4), [poly1, poly2, poly3, poly4])
-    trans = Rasterize(100, 100)
+    trans = Rasterize(200, 200)
     ngtb, cache = apply(trans, gtb)
     rgtb = revert(trans, ngtb, cache)
     inds = unique(cache)
     @test isapprox(area(gtb.geometry[inds[2]]), area(rgtb.geometry[2]), atol=0.5)
     @test isapprox(area(gtb.geometry[inds[3]]), area(rgtb.geometry[3]), atol=0.5)
     @test isapprox(area(gtb.geometry[inds[4]]), area(rgtb.geometry[4]), atol=0.5)
-    @test isapprox(area(gtb.geometry[inds[5]]), area(rgtb.geometry[5]), atol=1)
+    @test isapprox(area(gtb.geometry[inds[5]]), area(rgtb.geometry[5]), atol=0.5)
   end
 
   @testset "UniqueCoords" begin
