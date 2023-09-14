@@ -12,7 +12,7 @@ Rasterize geometries within specified `grid`.
 Alternatively, use the grid with size `nx` by `ny`
 obtained with discretization of the bounding box.
 """
-struct Rasterize{T<:Union{Grid{2},Dims{2}}} <: StatelessTableTransform
+struct Rasterize{T<:Union{Grid{2},Dims{2}}} <: TableTransform
   grid::T
 end
 

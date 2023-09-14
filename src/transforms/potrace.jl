@@ -16,7 +16,7 @@ the option `ϵ` is forwarded to Selinger's simplification algorithm.
 - Selinger, P. 2003. [Potrace: A polygon-based tracing algorithm]
   (https://potrace.sourceforge.net/potrace.pdf)
 """
-struct Potrace{S<:ColSpec,T} <: StatelessTableTransform
+struct Potrace{S<:ColSpec,T} <: TableTransform
   colspec::S
   ϵ::T
 end

@@ -21,7 +21,7 @@ UniqueCoords(:a => first, :b => minimum)
 UniqueCoords("a" => last, "b" => maximum)
 ```
 """
-struct UniqueCoords{S<:ColSpec} <: StatelessTableTransform
+struct UniqueCoords{S<:ColSpec} <: TableTransform
   colspec::S
   aggfuns::Vector{Function}
 end
