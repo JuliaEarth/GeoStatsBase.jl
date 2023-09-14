@@ -32,7 +32,7 @@ function apply(transform::Rasterize, geotable::AbstractGeoTable)
   for (ind, geom) in enumerate(dom)
     for i in indices(grid, geom)
       mask[i] = ind
-      row = Tables.subset(tab, i)
+      row = Tables.subset(tab, ind)
       for j in 1:ncols
         v = Tables.getcolumn(row, j)
         push!(rows[i][j], v)
