@@ -5,7 +5,7 @@
 """
     Rasterize(grid)
 
-Rasterize the geometries within specified `grid`.
+Rasterize geometries within specified `grid`.
 
     Rasterize(nx, ny)
 
