@@ -43,7 +43,7 @@ function apply(transform::UniqueCoords, geotable::AbstractGeoTable)
   # filtering info
   for var in vars
     if !haskey(agg, var)
-      v = getproperty(geotable, var)
+      v = Tables.getcolumn(tab, var)
       agg[var] = defaultagg(v)
     end
   end
@@ -80,13 +80,10 @@ function apply(transform::UniqueCoords, geotable::AbstractGeoTable)
   # construct new domain
   newdom = view(dom, ginds)
 
-  # new data tables
-  newvals = Dict(paramdim(newdom) => newtab)
-
   # new spatial data
-  newdata = constructor(geotable)(newdom, newvals)
+  newgtb = georef(newtab, newdom)
 
-  newdata, nothing
+  newgtb, nothing
 end
 
 # ---------------------------------------------------------------
