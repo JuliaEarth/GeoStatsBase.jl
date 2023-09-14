@@ -146,6 +146,33 @@
     @test all(z -> -1 ≤ z ≤ 1, 𝒯.Z)
   end
 
+  @testset "Rasterize" begin
+    @test isrevertible(Rasterize(10, 10)) == true
+
+    x = [1, 2, 3, 4, 5]
+    y = [1.1, 2.2, 3.3, 4.4, 5.5]
+    poly1 = PolyArea((2, 0), (6, 2), (2, 2))
+    poly2 = PolyArea((0, 6), (3, 8), (0, 10))
+    poly3 = PolyArea((3, 6), (9, 6), (9, 9), (6, 9))
+    poly4 = PolyArea((7, 0), (10, 0), (10, 4), (7, 4))
+    poly5 = PolyArea((1, 3), (5, 3), (6, 6), (3, 8), (0, 6))
+    gtb = georef((; x, y), [poly1, poly2, poly3, poly4, poly5])
+
+    trans = Rasterize(20, 20)
+    ngtb, cache = apply(trans, gtb)
+    linds = LinearIndices((20, 20))
+    @test ngtb.x[linds[7, 3]] == 1
+    @test ngtb.x[linds[3, 16]] == 2
+    @test ngtb.x[linds[15, 15]] == 3
+    @test ngtb.x[linds[17, 5]] == 4
+    @test ngtb.x[linds[6, 11]] == 5
+    @test ngtb.y[linds[7, 3]] == 1.1
+    @test ngtb.y[linds[3, 16]] == 2.2
+    @test ngtb.y[linds[15, 15]] == 3.3
+    @test ngtb.y[linds[17, 5]] == 4.4
+    @test ngtb.y[linds[6, 11]] == 5.5
+  end
+
   @testset "UniqueCoords" begin
     @test isrevertible(UniqueCoords()) == false
 
