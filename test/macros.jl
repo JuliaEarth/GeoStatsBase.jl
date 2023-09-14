@@ -10,7 +10,7 @@
     @test params[Set([:z])].B == 3
 
     @test sprint(show, s) == "ESolver"
-    @test sprint(show, MIME"text/plain"(), s) == "ESolver\n  └─z\n    └─A ⇨ 2\n    └─B ⇨ 3\n"
+    @test sprint(show, MIME"text/plain"(), s) == "ESolver\n└─z\n  └─A: 2\n  └─B: 3\n"
   end
 
   @testset "@simsolver" begin
@@ -23,7 +23,7 @@
     @test params[Set([:z])].B == 3
 
     @test sprint(show, s) == "SSolver"
-    @test sprint(show, MIME"text/plain"(), s) == "SSolver\n  └─z\n    └─A ⇨ 2\n    └─B ⇨ 3\n"
+    @test sprint(show, MIME"text/plain"(), s) == "SSolver\n└─z\n  └─A: 2\n  └─B: 3\n"
 
     s = SSolver()
     @test s.C == true

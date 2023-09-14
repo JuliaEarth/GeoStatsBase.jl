@@ -191,13 +191,13 @@ macro metasolver(solver, solvertype, body)
         println(io, solver)
         allparams = merge(solver.vparams, solver.jparams)
         for (var, varparams) in allparams
-          header = "  └─" * join(var, "—")
+          header = "└─" * join(var, "—")
           pnames = setdiff(fieldnames(typeof(varparams)), [:__dummy__])
           println(io, header)
           for pname in pnames
             pval = getfield(varparams, pname)
             if !isnothing(pval)
-              print(io, "    └─", pname, " ⇨ ")
+              print(io, "  └─", pname, ": ")
               show(IOContext(io, :compact => true), pval)
               println(io, "")
             end
