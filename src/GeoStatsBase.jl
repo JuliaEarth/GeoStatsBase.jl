@@ -32,7 +32,6 @@ import Meshes: sortinds
 import GeoTables: domain
 import MLJModelInterface as MI
 import LossFunctions.Traits: SupervisedLoss
-import TableTransforms: StatelessFeatureTransform
 import TableTransforms: ColSpec, Col, AllSpec, NoneSpec
 import TableTransforms: colspec, choose
 import TableTransforms: apply, revert, reapply

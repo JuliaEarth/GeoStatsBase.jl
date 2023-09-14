@@ -26,7 +26,7 @@ Detrend(:)
 
 See also [`trend`](@ref).
 """
-struct Detrend{S<:ColSpec} <: StatelessFeatureTransform
+struct Detrend{S<:ColSpec} <: TableTransform
   colspec::S
   degree::Int
 end
@@ -39,21 +39,15 @@ Detrend(; degree=1) = Detrend(:, degree=degree)
 
 isrevertible(::Type{<:Detrend}) = true
 
-function TableTransforms.preprocess(transform::Detrend, data)
-  table = values(data)
+function apply(transform::Detrend, geotable)
+  table = values(geotable)
+  cols = Tables.columns(table)
   names = Tables.schema(table).names
   snames = choose(transform.colspec, names)
-  tdata = trend(data, snames; degree=transform.degree)
+
+  tdata = trend(geotable, snames; degree=transform.degree)
   ttable = values(tdata)
   tcols = Tables.columns(ttable)
-  tcols, snames
-end
-
-function applyfeat(::Detrend, feat, prep)
-  cols = Tables.columns(feat)
-  names = Tables.schema(feat).names
-
-  tcols, snames = prep
 
   ncols = map(names) do n
     x = Tables.getcolumn(cols, n)
@@ -66,18 +60,19 @@ function applyfeat(::Detrend, feat, prep)
   end
 
   𝒯 = (; zip(names, ncols)...)
-  newfeat = 𝒯 |> Tables.materializer(feat)
+  newtable = 𝒯 |> Tables.materializer(table)
 
-  fcache = prep
+  newgeotable = georef(newtable, domain(geotable))
 
-  newfeat, fcache
+  newgeotable, (snames, tcols)
 end
 
-function revertfeat(::Detrend, newfeat, fcache)
-  cols = Tables.columns(newfeat)
-  names = Tables.schema(newfeat).names
+function revert(::Detrend, newgeotable, cache)
+  newtable = values(newgeotable)
+  cols = Tables.columns(newtable)
+  names = Tables.schema(newtable).names
 
-  tcols, snames = fcache
+  snames, tcols = cache
 
   ncols = map(names) do n
     x = Tables.getcolumn(cols, n)
@@ -90,5 +85,7 @@ function revertfeat(::Detrend, newfeat, fcache)
   end
 
   𝒯 = (; zip(names, ncols)...)
-  𝒯 |> Tables.materializer(newfeat)
+  table = 𝒯 |> Tables.materializer(newtable)
+
+  georef(table, domain(newgeotable))
 end
