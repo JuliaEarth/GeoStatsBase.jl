@@ -77,6 +77,7 @@ function revert(::Rasterize, geotable::AbstractGeoTable, cache)
   while geomind ∈ names
     geomind = Symbol(geomind, :_)
   end
+
   pairs = (nm => Tables.getcolumn(cols, nm) for nm in names)
   newtab = (; geomind => cache, pairs...)
   newgtb = georef(newtab, dom)
