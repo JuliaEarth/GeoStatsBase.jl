@@ -171,6 +171,9 @@
     @test ngtb.y[linds[15, 15]] == 3.3
     @test ngtb.y[linds[17, 5]] == 4.4
     @test ngtb.y[linds[6, 11]] == 5.5
+    # intersection: poly3 with poly5
+    @test ngtb.x[linds[9, 13]] == first(gtb.x[[3, 5]])
+    @test ngtb.y[linds[9, 13]] == mean(gtb.y[[3, 5]])
   end
 
   @testset "UniqueCoords" begin
