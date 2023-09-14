@@ -27,11 +27,11 @@ function apply(transform::Rasterize, geotable::AbstractGeoTable)
   ncols = length(sch.names)
   nrows = nelements(grid)
 
-  cache = zeros(nrows)
+  mask = zeros(Int, nrows)
   rows = [[T[] for T in sch.types] for _ in 1:nrows]
   for (ind, geom) in enumerate(dom)
     for i in indices(grid, geom)
-      cache[i] = ind
+      mask[i] = ind
       row = Tables.subset(tab, i)
       for j in 1:ncols
         v = Tables.getcolumn(row, j)
@@ -62,7 +62,7 @@ function apply(transform::Rasterize, geotable::AbstractGeoTable)
   # new spatial data
   newgtb = georef(newtab, grid)
 
-  newgtb, cache
+  newgtb, mask
 end
 
 function revert(::Rasterize, geotable::AbstractGeoTable, cache)
@@ -71,15 +71,14 @@ function revert(::Rasterize, geotable::AbstractGeoTable, cache)
   cols = Tables.columns(tab)
   names = Tables.columnnames(cols)
 
-  # column with geometry indices
-  geomind = :__GEOMETRY_INDEX__
+  maskcol = :mask
   # make unique
-  while geomind ∈ names
-    geomind = Symbol(geomind, :_)
+  while maskcol ∈ names
+    maskcol = Symbol(maskcol, :_)
   end
 
   pairs = (nm => Tables.getcolumn(cols, nm) for nm in names)
-  newtab = (; geomind => cache, pairs...)
+  newtab = (; maskcol => cache, pairs...)
   newgtb = georef(newtab, dom)
-  Potrace(geomind)(newgtb)
+  Potrace(maskcol)(newgtb)
 end
