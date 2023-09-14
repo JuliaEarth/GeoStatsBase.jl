@@ -44,7 +44,7 @@ function apply(transform::UniqueCoords, geotable::AbstractGeoTable)
   for var in vars
     if !haskey(agg, var)
       v = getproperty(geotable, var)
-      agg[var] = elscitype(v) <: Continuous ? _mean : _first
+      agg[var] = defaultagg(v)
     end
   end
 
@@ -60,7 +60,7 @@ function apply(transform::UniqueCoords, geotable::AbstractGeoTable)
 
   # perform aggregation with repeated indices
   function aggvar(var)
-    v = getproperty(geotable, var)
+    v = Tables.getcolumn(tab, var)
     map(ginds) do gind
       group = groups[gind]
       if length(group) > 1
@@ -87,20 +87,6 @@ function apply(transform::UniqueCoords, geotable::AbstractGeoTable)
   newdata = constructor(geotable)(newdom, newvals)
 
   newdata, nothing
-end
-
-# ------------
-# AGGREGATION
-# ------------
-
-function _mean(xs)
-  vs = skipmissing(xs)
-  isempty(vs) ? missing : mean(vs)
-end
-
-function _first(xs)
-  vs = skipmissing(xs)
-  isempty(vs) ? missing : first(vs)
 end
 
 # ---------------------------------------------------------------
