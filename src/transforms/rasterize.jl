@@ -14,7 +14,7 @@ end
 
 Rasterize(nx::Int, ny::Int) = Rasterize((nx, ny))
 
-isrevertible(::Type{<:Rasterize}) = false
+isrevertible(::Type{<:Rasterize}) = true
 
 _grid(grid::Grid{2}, dom) = grid
 _grid(dims::Dims{2}, dom) = CartesianGrid(extrema(boundingbox(dom))...; dims)
@@ -22,48 +22,63 @@ _grid(dims::Dims{2}, dom) = CartesianGrid(extrema(boundingbox(dom))...; dims)
 function apply(transform::Rasterize, geotable::AbstractGeoTable)
   dom = domain(geotable)
   tab = values(geotable)
-  cols = Tables.columns(tab)
-  vars = Tables.columnnames(cols)
+  sch = Tables.schema(tab)
   grid = _grid(transform.grid, dom)
+  ncols = length(sch.names)
+  nrows = nelements(grid)
 
-  # get grid indices of each domain index
-  gridinds = mapreduce(vcat, enumerate(dom)) do (i, geom)
-    i .=> indices(grid, geom)
-  end
-
-  # map each grid index with 0 or more domain indices
-  dominds = Dict(gind => Int[] for gind in 1:nelements(grid))
-  for (i, gind) in gridinds
-    push!(dominds[gind], i)
+  cache = zeros(nrows)
+  rows = [[T[] for T in sch.types] for _ in 1:nrows]
+  for (ind, geom) in enumerate(dom)
+    for i in indices(grid, geom)
+      cache[i] = ind
+      row = Tables.subset(tab, i)
+      for j in 1:ncols
+        v = Tables.getcolumn(row, j)
+        push!(rows[i][j], v)
+      end
+    end
   end
 
   # generate grid column
-  function gencol(var)
-    v = Tables.getcolumn(tab, var)
-    map(1:nelements(grid)) do gind
-      inds = dominds[gind]
-      if isempty(inds)
+  function gencol(j)
+    map(1:nrows) do i
+      vs = rows[i][j]
+      if isempty(vs)
         missing
-      elseif length(inds) == 1
-        # copy value
-        v[inds[1]]
+      elseif length(vs) == 1
+        first(vs)
       else
-        # aggregate values
-        agg = defaultagg(v)
-        agg(v[inds])
+        agg = defaultagg(vs)
+        agg(vs)
       end
     end
   end
 
   # construct new table
-  𝒯 = (; (var => gencol(var) for var in vars)...)
-  newtab = 𝒯 |> Tables.materializer(tab)
-
-  # new data tables
-  newvals = Dict(paramdim(grid) => newtab)
+  pairs = (nm => gencol(j) for (j, nm) in enumerate(sch.names))
+  newtab = (; pairs...) |> Tables.materializer(tab)
 
   # new spatial data
-  newdata = constructor(geotable)(grid, newvals)
+  newgtb = georef(newtab, grid)
 
-  newdata, nothing
+  newgtb, cache
+end
+
+function revert(::Rasterize, geotable::AbstractGeoTable, cache)
+  dom = domain(geotable)
+  tab = values(geotable)
+  cols = Tables.columns(tab)
+  names = Tables.columnnames(cols)
+
+  # column with geometry indices
+  geomind = :__GEOMETRY_INDEX__
+  # make unique
+  while geomind ∈ names
+    geomind = Symbol(geomind, :_)
+  end
+  pairs = (nm => Tables.getcolumn(cols, nm) for nm in names)
+  newtab = (; geomind => cache, pairs...)
+  newgtb = georef(newtab, dom)
+  Potrace(geomind)(newgtb)
 end
