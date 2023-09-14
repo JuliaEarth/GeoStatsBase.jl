@@ -71,14 +71,14 @@ function revert(::Rasterize, geotable::AbstractGeoTable, cache)
   cols = Tables.columns(tab)
   names = Tables.columnnames(cols)
 
-  maskcol = :mask
+  mask = :mask
   # make unique
-  while maskcol ∈ names
-    maskcol = Symbol(maskcol, :_)
+  while mask ∈ names
+    mask = Symbol(mask, :_)
   end
 
   pairs = (nm => Tables.getcolumn(cols, nm) for nm in names)
-  newtab = (; maskcol => cache, pairs...)
+  newtab = (; mask => cache, pairs...)
   newgtb = georef(newtab, dom)
-  Potrace(maskcol)(newgtb)
+  Potrace(mask)(newgtb)
 end
