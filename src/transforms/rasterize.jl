@@ -4,9 +4,13 @@
 
 """
     Rasterize(grid)
+
+Rasterize the geometries within specified `grid`.
+
     Rasterize(nx, ny)
 
-TODO
+Alternatively, use the grid with size `nx` by `ny`
+obtained with discretization of the bounding box.
 """
 struct Rasterize{T<:Union{Grid{2},Dims{2}}} <: StatelessTableTransform
   grid::T
