@@ -1,4 +1,6 @@
-defaultagg(v) = elscitype(v) <: Continuous ? _mean : _first
+defaultagg(v) = defaultagg(nonmissingtype(elscitype(v)))
+defaultagg(::Type{<:Continuous}) = _mean
+defaultagg(::Type) = _first
 
 function _mean(xs)
   vs = skipmissing(xs)

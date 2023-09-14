@@ -184,7 +184,7 @@ export
   # transforms
   Detrend,
   Potrace,
-  UniqueCoords,
-  Rasterize
+  Rasterize,
+  UniqueCoords
 
 end
