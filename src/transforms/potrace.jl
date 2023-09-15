@@ -25,9 +25,9 @@ Potrace(col::Col; ϵ=nothing) = Potrace(colspec([col]), ϵ)
 
 isrevertible(::Type{<:Potrace}) = true
 
-function apply(transform::Potrace, data)
-  tab = values(data)
-  dom = domain(data)
+function apply(transform::Potrace, geotable::AbstractGeoTable)
+  tab = values(geotable)
+  dom = domain(geotable)
 
   # sanity check
   if !(dom isa Grid)
@@ -97,15 +97,12 @@ function apply(transform::Potrace, data)
   # georeference new features on new geometries
   newtab = feats |> Tables.materializer(tab)
   newdom = elems |> GeometrySet
-  newdat = georef(newtab, newdom)
+  newgeotable = georef(newtab, newdom)
 
-  newdat, nothing
+  newgeotable, dom
 end
 
-function revert(transform::Potrace, data, cache)
-  # TODO: implement rasterization
-  @assert "not implemented"
-end
+revert(::Potrace, newgeotable::AbstractGeoTable, cache) = newgeotable |> Rasterize(cache)
 
 # aggregate vector of values into a single value
 aggregate(x) = aggregate(nonmissingtype(elscitype(x)), x)
