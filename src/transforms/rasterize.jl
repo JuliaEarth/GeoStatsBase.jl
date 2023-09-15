@@ -62,7 +62,7 @@ function apply(transform::Rasterize, geotable::AbstractGeoTable)
   types = Tables.schema(tab).types
 
   grid = _grid(transform.grid, dom)
-  ncols = length(sch.names)
+  ncols = length(vars)
   nrows = nelements(grid)
 
   # aggregation functions
