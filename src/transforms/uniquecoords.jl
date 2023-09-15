@@ -37,13 +37,13 @@ function apply(transform::UniqueCoords, geotable::AbstractGeoTable)
   tab = values(geotable)
   cols = Tables.columns(tab)
   vars = Tables.columnnames(cols)
+
+  # aggregation functions
   svars = choose(transform.colspec, vars)
   agg = Dict(zip(svars, transform.aggfuns))
-
-  # filtering info
   for var in vars
     if !haskey(agg, var)
-      v = Tables.getcolumn(tab, var)
+      v = Tables.getcolumn(cols, var)
       agg[var] = defaultagg(v)
     end
   end
@@ -60,7 +60,7 @@ function apply(transform::UniqueCoords, geotable::AbstractGeoTable)
 
   # perform aggregation with repeated indices
   function aggvar(var)
-    v = Tables.getcolumn(tab, var)
+    v = Tables.getcolumn(cols, var)
     map(ginds) do gind
       group = groups[gind]
       if length(group) > 1

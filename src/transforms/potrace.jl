@@ -3,31 +3,53 @@
 # ------------------------------------------------------------------
 
 """
-   Potrace(col; [ϵ])
+    Potrace(mask; [ϵ])
+    Potrace(mask, var₁ => agg₁, ..., varₙ => aggₙ; [ϵ])
 
 Trace polygons on 2D image data with Selinger's Potrace algorithm.
 
-The categories stored in column `col` are converted into binary
+The categories stored in column `mask` are converted into binary
 masks, which are then traced into multi-polygons. When provided,
 the option `ϵ` is forwarded to Selinger's simplification algorithm.
+
+Duplicates of a variable `varᵢ` are aggregated with
+aggregation function `aggᵢ`. If an aggregation function 
+is not defined for variable `varᵢ`, the default aggregation 
+function will be used. Default aggregation function is `mean` for
+continuous variables and `first` otherwise.
+
+# Examples
+
+```julia
+Potrace(:mask, ϵ=0.1)
+Potrace(1, 1 => last, 2 => maximum)
+Potrace(:mask, :a => first, :b => minimum)
+Potrace("mask", "a" => last, "b" => maximum)
+```
 
 ## References
 
 - Selinger, P. 2003. [Potrace: A polygon-based tracing algorithm]
   (https://potrace.sourceforge.net/potrace.pdf)
 """
-struct Potrace{S<:ColSpec,T} <: TableTransform
+struct Potrace{M<:ColSpec,S<:ColSpec,T} <: TableTransform
+  mask::M
   colspec::S
+  aggfuns::Vector{Function}
   ϵ::T
 end
 
-Potrace(col::Col; ϵ=nothing) = Potrace(colspec([col]), ϵ)
+Potrace(mask::Col; ϵ=nothing) = Potrace(colspec(mask), NoneSpec(), Function[], ϵ)
+Potrace(mask::Col, pairs::Pair{C,<:Function}...; ϵ=nothing) where {C<:Col} =
+  Potrace(colspec(mask), colspec(first.(pairs)), collect(Function, last.(pairs)), ϵ)
 
 isrevertible(::Type{<:Potrace}) = true
 
 function apply(transform::Potrace, geotable::AbstractGeoTable)
   tab = values(geotable)
   dom = domain(geotable)
+  cols = Tables.columns(tab)
+  vars = Tables.columnnames(cols)
 
   # sanity check
   if !(dom isa Grid)
@@ -38,9 +60,17 @@ function apply(transform::Potrace, geotable::AbstractGeoTable)
   ϵ = transform.ϵ
 
   # select column name
-  cols = Tables.columns(tab)
-  names = Tables.columnnames(cols)
-  sname = choose(transform.colspec, names) |> first
+  sname = choose(transform.mask, vars) |> first
+
+  # aggregation functions
+  svars = choose(transform.colspec, vars)
+  agg = Dict(zip(svars, transform.aggfuns))
+  for var in vars
+    if !haskey(agg, var)
+      v = Tables.getcolumn(cols, var)
+      agg[var] = defaultagg(v)
+    end
+  end
 
   # convert column to image
   col = Tables.getcolumn(cols, sname)
@@ -54,10 +84,10 @@ function apply(transform::Potrace, geotable::AbstractGeoTable)
     mask = isequal.(img, color)
     inds = findall(vec(mask))
     feat = Any[sname => color]
-    for name in setdiff(names, [sname])
-      col = Tables.getcolumn(cols, name)
-      val = aggregate(view(col, inds))
-      push!(feat, name => val)
+    for var in setdiff(vars, [sname])
+      v = Tables.getcolumn(cols, var)
+      newv = agg[var](v[inds])
+      push!(feat, var => newv)
     end
     (; feat...), mask
   end
@@ -103,11 +133,6 @@ function apply(transform::Potrace, geotable::AbstractGeoTable)
 end
 
 revert(::Potrace, newgeotable::AbstractGeoTable, cache) = newgeotable |> Rasterize(cache)
-
-# aggregate vector of values into a single value
-aggregate(x) = aggregate(nonmissingtype(elscitype(x)), x)
-aggregate(::Type{<:Continuous}, x) = mean(x)
-aggregate(::Type{<:Any}, x) = mode(x)
 
 # trace polygonal geometries on mask
 function trace(mask)
