@@ -97,15 +97,24 @@
   @testset "Potrace" begin
     # challenging case with letters
     img = load(joinpath(datadir, "letters.png"))
-    dat = georef((color=img,))
-    new = dat |> Potrace(1)
-    dom = domain(new)
-    @test nelements(dom) == 2
-    @test eltype(dom) <: Multi
-    polys1 = parent(dom[1])
-    polys2 = parent(dom[2])
+    gtb = georef((color=img,))
+    trans = Potrace(1)
+    ngtb, cache = apply(trans, gtb)
+    ndom = domain(ngtb)
+    @test nelements(ndom) == 2
+    @test eltype(ndom) <: Multi
+    polys1 = parent(ndom[1])
+    polys2 = parent(ndom[2])
     @test length(polys1) == 4
     @test length(polys2) == 2
+    rgtb = revert(trans, ngtb, cache)
+    dom = domain(gtb)
+    rdom = domain(rgtb)
+    @test rdom isa Grid
+    @test size(rdom) == size(dom)
+    @test minimum(rdom) == minimum(dom)
+    @test maximum(rdom) == maximum(dom)
+    @test spacing(rdom) == spacing(dom)
 
     # concentric circles
     ball1 = Ball((0, 0), 1)
