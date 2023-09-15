@@ -99,14 +99,10 @@ function apply(transform::Potrace, geotable::AbstractGeoTable)
   newdom = elems |> GeometrySet
   newgeotable = georef(newtab, newdom)
 
-  newgeotable, (size(dom), minimum(dom), spacing(dom))
+  newgeotable, dom
 end
 
-function revert(::Potrace, newgeotable::AbstractGeoTable, cache)
-  dims, origin, spacing = cache
-  grid = CartesianGrid(dims, origin, spacing)
-  newgeotable |> Rasterize(grid)
-end
+revert(::Potrace, newgeotable::AbstractGeoTable, cache) = newgeotable |> Rasterize(cache)
 
 # aggregate vector of values into a single value
 aggregate(x) = aggregate(nonmissingtype(elscitype(x)), x)
