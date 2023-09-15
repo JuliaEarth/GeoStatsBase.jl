@@ -64,14 +64,14 @@ function apply(transform::Rasterize, geotable::AbstractGeoTable)
   newtab = (; pairs...) |> Tables.materializer(tab)
 
   # new spatial data
-  newgtb = georef(newtab, grid)
+  newgeotable = georef(newtab, grid)
 
-  newgtb, mask
+  newgeotable, mask
 end
 
-function revert(::Rasterize, geotable::AbstractGeoTable, cache)
-  dom = domain(geotable)
-  tab = values(geotable)
+function revert(::Rasterize, newgeotable::AbstractGeoTable, cache)
+  dom = domain(newgeotable)
+  tab = values(newgeotable)
   cols = Tables.columns(tab)
   names = Tables.columnnames(cols)
 
@@ -84,5 +84,5 @@ function revert(::Rasterize, geotable::AbstractGeoTable, cache)
   newtab = (; mask => cache, pairs...)
   newgtb = georef(newtab, dom)
 
-  newgtb |> Potrace(mask) |> Filter(row -> row.mask > 0) |> Reject(mask)
+  newgtb |> Potrace(mask) |> Filter(row -> row[mask] > 0) |> Reject(mask)
 end
