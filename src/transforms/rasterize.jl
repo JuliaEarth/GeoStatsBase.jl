@@ -34,7 +34,7 @@ Rasterize(grid, "a" => last, "b" => maximum)
 Rasterize(10, 10, "a" => last, "b" => maximum)
 ```
 """
-struct Rasterize{T<:Union{Grid{2},Dims{2}},S<:ColSpec,} <: TableTransform
+struct Rasterize{T<:Union{Grid{2},Dims{2}},S<:ColSpec} <: TableTransform
   grid::T
   colspec::S
   aggfuns::Vector{Function}
