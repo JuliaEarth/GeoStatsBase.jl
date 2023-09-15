@@ -194,7 +194,7 @@
     @test ngtb.y[linds[13, 9]] == 3.3
     @test ngtb.y[linds[6, 9]] == 4.4
     @test ngtb.y[linds[4, 14]] == 5.5
-    
+
     gtb = georef((; x, y), [poly1, poly2, poly3, poly4, poly5])
     trans = Rasterize(20, 20)
     ngtb, cache = apply(trans, gtb)
