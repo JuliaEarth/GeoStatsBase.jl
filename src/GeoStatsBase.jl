@@ -7,10 +7,8 @@ module GeoStatsBase
 using Meshes
 using Tables
 using GeoTables
-using TableTransforms
 using Rotations: RotZYX
 using Distributions: median
-using Combinatorics: multiexponents
 using Distances: Euclidean, pairwise
 using Distributed: CachingPool, pmap, myid
 using StatsBase: Histogram, AbstractWeights
@@ -23,6 +21,9 @@ using ProgressMeter
 using LinearAlgebra
 using Random
 
+using TableTransforms: ColSpec, Col, AllSpec, NoneSpec
+using TableTransforms: colspec, choose
+
 using TypedTables # for a default table type
 using Optim # for LSIF estimation
 
@@ -32,13 +33,6 @@ import Meshes: sortinds
 import GeoTables: domain
 import MLJModelInterface as MI
 import LossFunctions.Traits: SupervisedLoss
-import TableTransforms: ColSpec, Col, AllSpec, NoneSpec
-import TableTransforms: colspec, choose
-import TableTransforms: apply, revert, reapply
-import TableTransforms: applyfeat, revertfeat
-import TableTransforms: applymeta, revertmeta
-import TableTransforms: divide, attach
-import TableTransforms: isrevertible
 import StatsBase: fit, varcorrection, describe
 import Statistics: mean, var, quantile
 import Base: ==
@@ -48,8 +42,6 @@ include("geotables.jl")
 
 include("ensembles.jl")
 include("macros.jl")
-include("trends.jl")
-include("estimators.jl")
 include("weighting.jl")
 include("geoops.jl")
 include("learning.jl")
@@ -61,7 +53,6 @@ include("errors.jl")
 include("statistics.jl")
 include("histograms.jl")
 include("rotations.jl")
-include("transforms.jl")
 
 export
   # ensembles
