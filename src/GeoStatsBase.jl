@@ -27,18 +27,12 @@ using TableTransforms: colspec, choose
 using TypedTables # for a default table type
 using Optim # for LSIF estimation
 
-import Meshes: partitioninds
-import Meshes: sampleinds
-import Meshes: sortinds
 import GeoTables: domain
 import MLJModelInterface as MI
 import LossFunctions.Traits: SupervisedLoss
 import StatsBase: fit, varcorrection, describe
 import Statistics: mean, var, quantile
 import Base: ==
-
-# geotable specializations
-include("geotables.jl")
 
 include("ensembles.jl")
 include("macros.jl")
