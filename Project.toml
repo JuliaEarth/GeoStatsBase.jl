@@ -1,7 +1,7 @@
 name = "GeoStatsBase"
 uuid = "323cb8eb-fbf6-51c0-afd0-f8fba70507b2"
 author = "Júlio Hoffimann <julio.hoffimann@gmail.com>"
-version = "0.35.3"
+version = "0.36.0"
 
 [deps]
 DensityRatioEstimation = "ab46fb84-d57c-11e9-2f65-6f72e4a7229f"
@@ -29,7 +29,7 @@ TypedTables = "9d95f2ec-7b3d-5a63-8d20-e2491e220bb9"
 DensityRatioEstimation = "1.0"
 Distances = "0.10"
 Distributions = "0.25"
-GeoTables = "1.6.1"
+GeoTables = "1.7"
 LossFunctions = "0.11"
 MLJModelInterface = "1.0"
 Meshes = "0.35.1"
