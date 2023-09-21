@@ -23,6 +23,7 @@ using Random
 
 using TableTransforms: ColSpec, Col, AllSpec, NoneSpec
 using TableTransforms: colspec, choose
+using TableTransforms: Rename
 
 using TypedTables # for a default table type
 using Optim # for LSIF estimation
@@ -155,6 +156,7 @@ export
   describe,
   integrate,
   geosplit,
+  geojoin,
   @groupby,
   @transform,
   @combine,
