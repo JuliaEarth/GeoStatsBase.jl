@@ -16,31 +16,28 @@ function _geojoin(
   colspec::ColSpec,
   aggfuns::Vector{<:Function};
   kind=:left,
-  pred=intersects,
-  makeunique=false
+  pred=intersects
 )
   if kind ∉ KINDS
     throw(ArgumentError("invalid join kind, use one these $KINDS"))
   end
 
+  # make column names unique
   vars1 = Tables.schema(values(gtb1)).names
   vars2 = Tables.schema(values(gtb2)).names
   if !isdisjoint(vars1, vars2)
-    if makeunique
-      vars = vars1 ∩ vars2
-      pairs = map(vars) do var
-        newvar = var
-        while newvar ∈ vars1
-          newvar = Symbol(newvar, :_)
-        end
-        var => newvar
+    vars = vars1 ∩ vars2
+    pairs = map(vars) do var
+      newvar = var
+      while newvar ∈ vars1
+        newvar = Symbol(newvar, :_)
       end
-      gtb2 = gtb2 |> Rename(pairs...)
-    else
-      throw(ArgumentError("the geotables must be different variables"))
+      var => newvar
     end
+    gtb2 = gtb2 |> Rename(pairs...)
   end
 
+  # aggregation functions
   agg = Dict(zip(choose(colspec, vars2), aggfuns))
 
   _leftjoin(gtb1, gtb2, agg, pred)
