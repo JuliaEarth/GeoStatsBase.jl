@@ -4,7 +4,21 @@
 
 const KINDS = [:left]
 
-function geojoin(gtb1::AbstractGeoTable, gtb2::AbstractGeoTable; kind=:left, pred=intersects, makeunique=false)
+geojoin(gtb1::AbstractGeoTable, gtb2::AbstractGeoTable; kwargs...) =
+  _geojoin(gtb1, gtb2, NoneSpec(), Function[]; kwargs...)
+
+geojoin(gtb1::AbstractGeoTable, gtb2::AbstractGeoTable, pairs::Pair{C,<:Function}...; kwargs...) where {C<:Col} =
+  _geojoin(gtb1, gtb2, colspec(first.(pairs)), collect(last.(pairs)); kwargs...)
+
+function _geojoin(
+  gtb1::AbstractGeoTable,
+  gtb2::AbstractGeoTable,
+  colspec::ColSpec,
+  aggfuns::Vector{<:Function};
+  kind=:left,
+  pred=intersects,
+  makeunique=false
+)
   if kind ∉ KINDS
     throw(ArgumentError("invalid join kind, use one these $KINDS"))
   end
@@ -21,29 +35,39 @@ function geojoin(gtb1::AbstractGeoTable, gtb2::AbstractGeoTable; kind=:left, pre
         end
         var => newvar
       end
-      gtb2 = gtb2 |> Rename(gtb2, pairs...)
+      gtb2 = gtb2 |> Rename(pairs...)
     else
       throw(ArgumentError("the geotables must be different variables"))
     end
   end
 
-  _leftjoin(gtb1, gtb2, pred)
+  agg = Dict(zip(choose(colspec, vars2), aggfuns))
+
+  _leftjoin(gtb1, gtb2, agg, pred)
 end
 
-function _leftjoin(gtb1, gtb2, pred)
+function _leftjoin(gtb1, gtb2, agg, pred)
   dom1 = domain(gtb1)
   dom2 = domain(gtb2)
   tab1 = values(gtb1)
   tab2 = values(gtb2)
-  sch1 = Tables.schema(tab1)
-  sch2 = Tables.schema(tab2)
-  vars1 = sch1.names
-  vars2 = sch2.names
+  cols1 = Tables.columns(tab1)
+  cols2 = Tables.columns(tab2)
+  vars1 = Tables.columnnames(cols1)
+  vars2 = Tables.columnnames(cols2)
+
+  # aggregation functions
+  for var in vars2
+    if !haskey(agg, var)
+      v = Tables.getcolumn(cols2, var)
+      agg[var] = defaultagg(v)
+    end
+  end
 
   # rows to join
-  types = sch2.types
-  ncols = length(vars1)
-  nrows = nelements(dom1)
+  nrows = nrow(gtb1)
+  ncols = length(vars2)
+  types = Tables.schema(tab2).types
   rows = [[T[] for T in types] for _ in 1:nrows]
   for (i, geom1) in enumerate(dom1)
     for (ind, geom2) in enumerate(dom2)
@@ -58,7 +82,7 @@ function _leftjoin(gtb1, gtb2, pred)
   end
 
   # generate joined column
-  function gencol(j)
+  function gencol(j, var)
     map(1:nrows) do i
       vs = rows[i][j]
       if isempty(vs)
@@ -66,15 +90,13 @@ function _leftjoin(gtb1, gtb2, pred)
       elseif length(vs) == 1
         first(vs)
       else
-        agg = defaultagg(vs)
-        agg(vs)
+        agg[var](vs)
       end
     end
   end
 
-  cols = Tables.columns(tab1)
-  pairs1 = (var => Tables.getcolumn(cols, var) for var in vars1)
-  pairs2 = (var => gencol(j) for (j, var) in enumerate(vars2))
+  pairs1 = (var => Tables.getcolumn(cols1, var) for var in vars1)
+  pairs2 = (var => gencol(j, var) for (j, var) in enumerate(vars2))
   newtab = (; pairs1..., pairs2...) |> Tables.materializer(tab1)
 
   georef(newtab, dom1)
