@@ -16,8 +16,8 @@ selected according to the scientific types: `mean` for continuous and `first` ot
 
 ## Kinds
 
-* `:left` - Returns all `geotable₁` rows and fills non-matching rows from `geotable₂` with missing values.
-* `:inner` - Returns only rows from both geotables with matches.
+* `:left` - Returns all rows of `geotable₁` and fills non-matching rows of `geotable₂` with missing values.
+* `:inner` - Returns only the rows of `geotable₁` with matches in `geotable₂`.
 
 # Examples
 
