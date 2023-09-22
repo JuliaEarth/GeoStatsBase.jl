@@ -16,8 +16,8 @@ selected according to the scientific types: `mean` for continuous and `first` ot
 
 ## Kinds
 
-* `:left` - Returns all rows of `geotable₁` and fills non-matching rows of `geotable₂` with missing values.
-* `:inner` - Returns only the rows of `geotable₁` with matches in `geotable₂`.
+* `:left` - Returns all rows of `geotable₁` filling entries with `missing` when there is no match in `geotable₂`.
+* `:inner` - Returns rows of `geotable₁` that have a match in `geotable₂`.
 
 # Examples
 
@@ -150,9 +150,9 @@ function _innerjoin(gtb1, gtb2, colspec, aggfuns, pred)
   nrows = nrow(gtb1)
   ncols = ncol(gtb2) - 1
   types = Tables.schema(tab2).types
-  # rows to join from gtb2
+  # rows of gtb2 to join
   rows = [[T[] for T in types] for _ in 1:nrows]
-  # row indices to preserve from gtb1
+  # row indices of gtb1 to preserve
   inds = Int[]
   for (i1, geom1) in enumerate(dom1)
     for (i2, geom2) in enumerate(dom2)
