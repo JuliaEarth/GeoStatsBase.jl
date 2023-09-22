@@ -63,7 +63,7 @@ function _leftjoin(gtb1, gtb2, agg, pred)
 
   # rows to join
   nrows = nrow(gtb1)
-  ncols = ncol(gt2) - 1
+  ncols = ncol(gtb2) - 1
   types = Tables.schema(tab2).types
   rows = [[T[] for T in types] for _ in 1:nrows]
   for (i, geom1) in enumerate(dom1)
