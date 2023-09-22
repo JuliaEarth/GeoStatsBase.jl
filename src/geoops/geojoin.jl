@@ -7,7 +7,12 @@ const KINDS = [:left]
 """
     geojoin(geotable₁, geotable₂, var₁ => agg₁, ..., varₙ => aggₙ; kind=:left, pred=intersects)
 
-TODO
+Joins `geotable₁` with `geotable₂` using a certain `kind` of join and predicate function `pred`
+that takes two geometries and returns a boolean (`(g1, g2) -> g1 ⊆ g2`).
+
+Whenever two or more matches are encountered, aggregate `varᵢ` with aggregation function `aggᵢ`.
+If no aggregation function is provided for a variable, then the aggregation function will be 
+selected according to the scientific types: `mean` for continuous and `first` otherwise. 
 
 # Examples
 
@@ -33,7 +38,7 @@ function _geojoin(
   pred=intersects
 )
   if kind ∉ KINDS
-    throw(ArgumentError("invalid join kind, use one these $KINDS"))
+    throw(ArgumentError("invalid kind of join, use one these $KINDS"))
   end
 
   # make variable names unique
