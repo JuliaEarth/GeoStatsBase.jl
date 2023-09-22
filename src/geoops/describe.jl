@@ -1,3 +1,7 @@
+# ------------------------------------------------------------------
+# Licensed under the MIT License. See LICENSE in the project root.
+# ------------------------------------------------------------------
+
 const DEFAULTFUNS =
   [:mean => mean, :minimum => minimum, :median => median, :maximum => maximum, :nmissing => x -> count(ismissing, x)]
 
