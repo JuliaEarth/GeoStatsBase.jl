@@ -4,17 +4,31 @@
 
 const KINDS = [:left]
 
+"""
+    geojoin(geotable₁, geotable₂, var₁ => agg₁, ..., varₙ => aggₙ; kind=:left, pred=intersects)
+
+TODO
+
+# Examples
+
+```julia
+geojoin(gtb1, gtb2)
+geojoin(gtb1, gtb2, 1 => mean)
+geojoin(gtb1, gtb2, :a => mean, :b => std)
+geojoin(gtb1, gtb2, "a" => mean, pred=issubset)
+```
+"""
 geojoin(gtb1::AbstractGeoTable, gtb2::AbstractGeoTable; kwargs...) =
   _geojoin(gtb1, gtb2, NoneSpec(), Function[]; kwargs...)
 
 geojoin(gtb1::AbstractGeoTable, gtb2::AbstractGeoTable, pairs::Pair{C,<:Function}...; kwargs...) where {C<:Col} =
-  _geojoin(gtb1, gtb2, colspec(first.(pairs)), collect(last.(pairs)); kwargs...)
+  _geojoin(gtb1, gtb2, colspec(first.(pairs)), collect(Function, last.(pairs)); kwargs...)
 
 function _geojoin(
   gtb1::AbstractGeoTable,
   gtb2::AbstractGeoTable,
   colspec::ColSpec,
-  aggfuns::Vector{<:Function};
+  aggfuns::Vector{Function};
   kind=:left,
   pred=intersects
 )
