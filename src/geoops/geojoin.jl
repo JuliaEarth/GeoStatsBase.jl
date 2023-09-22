@@ -17,7 +17,7 @@ selected according to the scientific types: `mean` for continuous and `first` ot
 ## Kinds
 
 * `:left` - Returns all rows of `geotable₁` filling entries with `missing` when there is no match in `geotable₂`.
-* `:inner` - Returns rows of `geotable₁` that have a match in `geotable₂`.
+* `:inner` - Returns the subset of rows of `geotable₁` that has a match in `geotable₂`.
 
 # Examples
 
