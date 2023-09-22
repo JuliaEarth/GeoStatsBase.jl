@@ -22,10 +22,11 @@ function _geojoin(
     throw(ArgumentError("invalid join kind, use one these $KINDS"))
   end
 
-  # make column names unique
+  # make variable names unique
   vars1 = Tables.schema(values(gtb1)).names
   vars2 = Tables.schema(values(gtb2)).names
   if !isdisjoint(vars1, vars2)
+    # repeated variable names
     vars = vars1 ∩ vars2
     pairs = map(vars) do var
       newvar = var
@@ -37,13 +38,10 @@ function _geojoin(
     gtb2 = gtb2 |> Rename(pairs...)
   end
 
-  # aggregation functions
-  agg = Dict(zip(choose(colspec, vars2), aggfuns))
-
-  _leftjoin(gtb1, gtb2, agg, pred)
+  _leftjoin(gtb1, gtb2, colspec, aggfuns, pred)
 end
 
-function _leftjoin(gtb1, gtb2, agg, pred)
+function _leftjoin(gtb1, gtb2, colspec, aggfuns, pred)
   dom1 = domain(gtb1)
   dom2 = domain(gtb2)
   tab1 = values(gtb1)
@@ -54,6 +52,8 @@ function _leftjoin(gtb1, gtb2, agg, pred)
   vars2 = Tables.columnnames(cols2)
 
   # aggregation functions
+  svars = choose(colspec, vars2)
+  agg = Dict(zip(svars, aggfuns))
   for var in vars2
     if !haskey(agg, var)
       v = Tables.getcolumn(cols2, var)
@@ -66,13 +66,13 @@ function _leftjoin(gtb1, gtb2, agg, pred)
   ncols = ncol(gtb2) - 1
   types = Tables.schema(tab2).types
   rows = [[T[] for T in types] for _ in 1:nrows]
-  for (i, geom1) in enumerate(dom1)
-    for (ind, geom2) in enumerate(dom2)
+  for (i1, geom1) in enumerate(dom1)
+    for (i2, geom2) in enumerate(dom2)
       if pred(geom1, geom2)
-        row = Tables.subset(tab2, ind)
+        row = Tables.subset(tab2, i2)
         for j in 1:ncols
           v = Tables.getcolumn(row, j)
-          push!(rows[i][j], v)
+          push!(rows[i1][j], v)
         end
       end
     end
