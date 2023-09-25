@@ -1,7 +1,7 @@
 name = "GeoStatsBase"
 uuid = "323cb8eb-fbf6-51c0-afd0-f8fba70507b2"
 author = "Júlio Hoffimann <julio.hoffimann@gmail.com>"
-version = "0.37.2"
+version = "0.37.3"
 
 [deps]
 DensityRatioEstimation = "ab46fb84-d57c-11e9-2f65-6f72e4a7229f"
