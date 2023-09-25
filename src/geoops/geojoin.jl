@@ -189,9 +189,11 @@ function _innerjoin(gtb1, gtb2, colspec, aggfuns, pred)
 end
 
 # utilities
-defaultagg(x) = defaultagg(nonmissingtype(elscitype(x)))
-defaultagg(::Type{<:Continuous}) = _mean
-defaultagg(::Type) = _first
+defaultagg(x) = defaultagg(nonmissingtype(elscitype(x)), eltype(x))
+defaultagg(::Type{<:Continuous}, ::Type) = _mean
+defaultagg(::Type, ::Type{<:AbstractQuantity}) = _mean
+defaultagg(::Type, ::Type{<:AffineQuantity}) = _first
+defaultagg(::Type, ::Type) = _first
 
 function _mean(x)
   vs = skipmissing(x)

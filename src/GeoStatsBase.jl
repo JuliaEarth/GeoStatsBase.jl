@@ -21,6 +21,7 @@ using ProgressMeter
 using LinearAlgebra
 using Random
 
+using Unitful: AbstractQuantity, AffineQuantity
 using TableTransforms: ColSpec, Col, AllSpec, NoneSpec
 using TableTransforms: colspec, choose
 using TableTransforms: Rename

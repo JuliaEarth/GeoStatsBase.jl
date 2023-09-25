@@ -4,6 +4,7 @@ using GeoTables
 using CSV
 using CoDa
 using Tables
+using Unitful
 using TypedTables
 using Distances
 using Statistics
