@@ -6,6 +6,7 @@ module GeoStatsBase
 
 using Meshes
 using Tables
+using Unitful
 using GeoTables
 using Rotations: RotZYX
 using Distributions: median
@@ -21,6 +22,7 @@ using ProgressMeter
 using LinearAlgebra
 using Random
 
+using Unitful: AbstractQuantity, AffineUnits, Units
 using TableTransforms: ColSpec, Col, AllSpec, NoneSpec
 using TableTransforms: colspec, choose
 using TableTransforms: Rename

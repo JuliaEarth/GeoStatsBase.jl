@@ -434,5 +434,30 @@
     @test jgtb.b[findfirst(==(pointquads[7][2]), inds)] == gtb2.b[7]
     @test jgtb.b[findfirst(==(pointquads[8][2]), inds)] == gtb2.b[8]
     @test jgtb.b[findfirst(==(pointquads[9][2]), inds)] == gtb2.b[9]
+
+    # units
+    gtb4 = georef((; d=rand(9) * u"K"), pset)
+    jgtb = geojoin(gtb1, gtb4)
+    @test propertynames(jgtb) == [:a, :d, :geometry]
+    @test jgtb.geometry == gtb1.geometry
+    @test jgtb.a == gtb1.a
+    @test GeoStatsBase.elunit(jgtb.d) == u"K"
+    @test jgtb.d[1] == mean(gtb4.d[[1, 2]])
+    @test jgtb.d[2] == mean(gtb4.d[[3, 4]])
+    @test jgtb.d[3] == mean(gtb4.d[[6, 7]])
+    @test jgtb.d[4] == mean(gtb4.d[[8, 9]])
+
+    # affine units
+    gtb5 = georef((; e=rand(9) * u"°C"), pset)
+    jgtb = geojoin(gtb1, gtb5)
+    ngtb5 = GeoStatsBase.uadjust(gtb5)
+    @test propertynames(jgtb) == [:a, :e, :geometry]
+    @test jgtb.geometry == gtb1.geometry
+    @test jgtb.a == gtb1.a
+    @test GeoStatsBase.elunit(jgtb.e) == u"K"
+    @test jgtb.e[1] == mean(ngtb5.e[[1, 2]])
+    @test jgtb.e[2] == mean(ngtb5.e[[3, 4]])
+    @test jgtb.e[3] == mean(ngtb5.e[[6, 7]])
+    @test jgtb.e[4] == mean(ngtb5.e[[8, 9]])
   end
 end
