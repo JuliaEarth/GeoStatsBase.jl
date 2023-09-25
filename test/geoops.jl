@@ -450,14 +450,27 @@
     # affine units
     gtb5 = georef((; e=rand(9) * u"°C"), pset)
     jgtb = geojoin(gtb1, gtb5)
-    ngtb5 = GeoStatsBase.uadjust(gtb5)
+    ngtb = GeoStatsBase.uadjust(gtb5)
     @test propertynames(jgtb) == [:a, :e, :geometry]
     @test jgtb.geometry == gtb1.geometry
     @test jgtb.a == gtb1.a
     @test GeoStatsBase.elunit(jgtb.e) == u"K"
-    @test jgtb.e[1] == mean(ngtb5.e[[1, 2]])
-    @test jgtb.e[2] == mean(ngtb5.e[[3, 4]])
-    @test jgtb.e[3] == mean(ngtb5.e[[6, 7]])
-    @test jgtb.e[4] == mean(ngtb5.e[[8, 9]])
+    @test jgtb.e[1] == mean(ngtb.e[[1, 2]])
+    @test jgtb.e[2] == mean(ngtb.e[[3, 4]])
+    @test jgtb.e[3] == mean(ngtb.e[[6, 7]])
+    @test jgtb.e[4] == mean(ngtb.e[[8, 9]])
+
+    # units and missings
+    gtb6 = georef((; f=[rand(4); missing; rand(4)] * u"°C"), pset)
+    jgtb = geojoin(gtb1, gtb6)
+    ngtb = GeoStatsBase.uadjust(gtb6)
+    @test propertynames(jgtb) == [:a, :f, :geometry]
+    @test jgtb.geometry == gtb1.geometry
+    @test jgtb.a == gtb1.a
+    @test GeoStatsBase.elunit(jgtb.f) == u"K"
+    @test jgtb.f[1] == mean(ngtb.f[[1, 2]])
+    @test jgtb.f[2] == mean(ngtb.f[[3, 4]])
+    @test jgtb.f[3] == mean(ngtb.f[[6, 7]])
+    @test jgtb.f[4] == mean(ngtb.f[[8, 9]])
   end
 end
