@@ -6,7 +6,7 @@
 # AGGREGATION
 #-------------
 
-defaultagg(x) = defaultagg(nonmissingtype(elscitype(x)), eltype(x))
+defaultagg(x) = defaultagg(nonmissingtype(elscitype(x)), nonmissingtype(eltype(x)))
 defaultagg(::Type{<:Continuous}, ::Type) = _mean
 defaultagg(::Type, ::Type{<:AbstractQuantity}) = _mean
 defaultagg(::Type, ::Type) = _first
@@ -40,10 +40,10 @@ uadjust(x) = uadjust(elunit(x), x)
 uadjust(::Units, x) = x
 function uadjust(u::AffineUnits, x)
   a = absoluteunit(u)
-  uconvert.(a, x)
+  [ismissing(v) ? missing : uconvert(a, v) for v in x]
 end
 
-elunit(x) = typeunit(eltype(x))
+elunit(x) = typeunit(nonmissingtype(eltype(x)))
 
 typeunit(::Type) = NoUnits
 typeunit(::Type{Q}) where {Q<:AbstractQuantity} = unit(Q)
