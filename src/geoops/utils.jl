@@ -26,7 +26,7 @@ function uadjust(geotable::AbstractGeoTable)
   tab = values(geotable)
   cols = Tables.columns(tab)
   vars = Tables.columnnames(cols)
-  
+
   pairs = (var => uadjust(Tables.getcolumn(cols, var)) for var in vars)
   newtab = (; pairs...) |> Tables.materializer(tab)
   georef(newtab, dom)
