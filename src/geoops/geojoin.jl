@@ -62,6 +62,10 @@ function _geojoin(
     gtb2 = gtb2 |> Rename(pairs...)
   end
 
+  # adjust units
+  gtb1 = uadjust(gtb1)
+  gtb2 = uadjust(gtb2)
+
   if kind === :inner
     _innerjoin(gtb1, gtb2, colspec, aggfuns, pred)
   else
@@ -186,21 +190,4 @@ function _innerjoin(gtb1, gtb2, colspec, aggfuns, pred)
   newtab = (; pairs1..., pairs2...) |> Tables.materializer(tab1)
 
   georef(newtab, view(dom1, inds))
-end
-
-# utilities
-defaultagg(x) = defaultagg(nonmissingtype(elscitype(x)), eltype(x))
-defaultagg(::Type{<:Continuous}, ::Type) = _mean
-defaultagg(::Type, ::Type{<:AbstractQuantity}) = _mean
-defaultagg(::Type, ::Type{<:AffineQuantity}) = _first
-defaultagg(::Type, ::Type) = _first
-
-function _mean(x)
-  vs = skipmissing(x)
-  isempty(vs) ? missing : mean(vs)
-end
-
-function _first(x)
-  vs = skipmissing(x)
-  isempty(vs) ? missing : first(vs)
 end
