@@ -70,7 +70,7 @@
     @test dtable.minimum == GeoStatsBase._skipmissing(minimum).(columns)
     @test dtable.median == GeoStatsBase._skipmissing(median).(columns)
     @test dtable.maximum == GeoStatsBase._skipmissing(maximum).(columns)
-    @test dtable.nmissing == count.(ismissing, columns)    
+    @test dtable.nmissing == count.(ismissing, columns)
   end
 
   @testset "integrate" begin
