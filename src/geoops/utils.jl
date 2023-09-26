@@ -2,24 +2,21 @@
 # Licensed under the MIT License. See LICENSE in the project root.
 # ------------------------------------------------------------------
 
+function _skipmissing(fun)
+  x -> begin
+    vs = skipmissing(x)
+    isempty(vs) ? missing : fun(vs)
+  end
+end
+
 #-------------
 # AGGREGATION
 #-------------
 
 defaultagg(x) = defaultagg(nonmissingtype(elscitype(x)), nonmissingtype(eltype(x)))
-defaultagg(::Type{<:Continuous}, ::Type) = _mean
-defaultagg(::Type, ::Type{<:AbstractQuantity}) = _mean
-defaultagg(::Type, ::Type) = _first
-
-function _mean(x)
-  vs = skipmissing(x)
-  isempty(vs) ? missing : mean(vs)
-end
-
-function _first(x)
-  vs = skipmissing(x)
-  isempty(vs) ? missing : first(vs)
-end
+defaultagg(::Type{<:Continuous}, ::Type) = _skipmissing(mean)
+defaultagg(::Type, ::Type{<:AbstractQuantity}) = _skipmissing(mean)
+defaultagg(::Type, ::Type) = _skipmissing(first)
 
 #-------
 # UNITS
