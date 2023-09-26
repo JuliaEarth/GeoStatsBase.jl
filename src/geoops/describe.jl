@@ -2,8 +2,13 @@
 # Licensed under the MIT License. See LICENSE in the project root.
 # ------------------------------------------------------------------
 
-const DEFAULTFUNS =
-  [:mean => mean, :minimum => minimum, :median => median, :maximum => maximum, :nmissing => x -> count(ismissing, x)]
+const DEFAULTFUNS = [
+  :mean => _skipmissing(mean),
+  :minimum => _skipmissing(minimum),
+  :median => _skipmissing(median),
+  :maximum => _skipmissing(maximum),
+  :nmissing => x -> count(ismissing, x)
+]
 
 """
     describe(geotable, col₁, col₂, ..., colₙ; funs=[fun₁, fun₂, ..., funₙ])

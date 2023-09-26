@@ -55,6 +55,22 @@
       @test dtable.median == median.(columns)
       @test dtable.std == std.(columns)
     end
+
+    # missing values
+    a = shuffle([rand(10); fill(missing, 5)])
+    b = shuffle([rand(10); fill(missing, 5)])
+    table = (; a, b)
+    sdata = georef(table, rand(2, 10))
+    columns = [a, b]
+
+    dtable = describe(sdata)
+    @test Tables.schema(dtable).names == (:variable, :mean, :minimum, :median, :maximum, :nmissing)
+    @test dtable.variable == [:a, :b]
+    @test dtable.mean == GeoStatsBase._skipmissing(mean).(columns)
+    @test dtable.minimum == GeoStatsBase._skipmissing(minimum).(columns)
+    @test dtable.median == GeoStatsBase._skipmissing(median).(columns)
+    @test dtable.maximum == GeoStatsBase._skipmissing(maximum).(columns)
+    @test dtable.nmissing == count.(ismissing, columns)    
   end
 
   @testset "integrate" begin
