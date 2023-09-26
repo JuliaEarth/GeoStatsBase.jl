@@ -42,24 +42,24 @@ describe(geotable, ("a", "c", "e"), funs=[:min => minimum, :max => maximum])
 describe(geotable, r"[ace]", funs=Dict(:min => minimum, :max => maximum))
 ```
 """
-describe(geotable::AbstractGeoTable, colspec::ColSpec; funs=DEFAULTFUNS) = _describe(geotable, colspec, funs)
+describe(geotable::AbstractGeoTable, selector::ColumnSelector; funs=DEFAULTFUNS) = _describe(geotable, selector, funs)
 
-describe(geotable::AbstractGeoTable; kwargs...) = describe(geotable, AllSpec(); kwargs...)
-describe(geotable::AbstractGeoTable, spec; kwargs...) = describe(geotable, colspec(spec); kwargs...)
-describe(geotable::AbstractGeoTable, cols::T...; kwargs...) where {T<:Col} =
-  describe(geotable, colspec(cols); kwargs...)
+describe(geotable::AbstractGeoTable; kwargs...) = describe(geotable, AllSelector(); kwargs...)
+describe(geotable::AbstractGeoTable, cols; kwargs...) = describe(geotable, selector(cols); kwargs...)
+describe(geotable::AbstractGeoTable, cols::C...; kwargs...) where {C<:Column} =
+  describe(geotable, selector(cols); kwargs...)
 
-_describe(geotable::AbstractGeoTable, colspec::ColSpec, funs::Dict{Symbol}) =
-  _describe(geotable, colspec, collect(funs))
+_describe(geotable::AbstractGeoTable, selector::ColumnSelector, funs::Dict{Symbol}) =
+  _describe(geotable, selector, collect(funs))
 
-_describe(geotable::AbstractGeoTable, colspec::ColSpec, funs::AbstractVector) =
-  _describe(geotable, colspec, nameof.(funs) .=> funs)
+_describe(geotable::AbstractGeoTable, selector::ColumnSelector, funs::AbstractVector) =
+  _describe(geotable, selector, nameof.(funs) .=> funs)
 
-function _describe(geotable::AbstractGeoTable, colspec::ColSpec, funs::AbstractVector{<:Pair{Symbol}})
+function _describe(geotable::AbstractGeoTable, selector::ColumnSelector, funs::AbstractVector{<:Pair{Symbol}})
   table = values(geotable)
   cols = Tables.columns(table)
   names = Tables.columnnames(cols)
-  snames = choose(colspec, names)
+  snames = selector(names)
 
   pairs = []
   push!(pairs, :variable => snames)
