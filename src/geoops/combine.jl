@@ -9,7 +9,7 @@ Returns geospatial `data` with columns `:col₁`, `:col₂`, ..., `:colₙ`
 computed with reduction expressions `expr₁`, `expr₂`, ..., `exprₙ`.
 
 If a reduction expression is not defined for the `:geometry` column,
-the geometries will be aggregated using `Multi`.
+the geometries will be reduced using `Multi`.
 
 See also: [`@groupby`](@ref).
 
