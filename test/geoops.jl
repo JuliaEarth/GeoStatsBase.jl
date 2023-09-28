@@ -296,6 +296,14 @@
     @test domain(c) == GeometrySet([Multi(domain(sdata))])
     @test Tables.schema(values(c)).names == (:y_mean, :z_median)
 
+    # combine geometry column
+    c = @combine(sdata, :geometry = centroid(:geometry))
+    @test isnothing(values(c))
+    @test domain(c) == GeometrySet([centroid(domain(sdata))])
+    c = @combine(sdata, :y_mean = mean(:y), :geometry = centroid(:geometry))
+    @test c.y_mean == [mean(sdata.y)]
+    @test domain(c) == GeometrySet([centroid(domain(sdata))])
+
     # column name interpolation
     c = @combine(sdata, {"z"} = sum({"x"}) + prod({"y"}))
     @test c.z == [sum(sdata.x) + prod(sdata.y)]
@@ -320,6 +328,18 @@
     @test c.z_mean == [mean(data.z) for data in p]
     @test domain(c) == GeometrySet([Multi(domain(data)) for data in p])
     @test Tables.schema(values(c)).names == (:x, :y, :z_mean)
+
+    # combine geometry column
+    p = @groupby(sdata, :x, :y)
+    c = @combine(p, :geometry = centroid(:geometry))
+    @test c.x == [first(data.x) for data in p]
+    @test c.y == [first(data.y) for data in p]
+    @test domain(c) == GeometrySet([centroid(domain(data)) for data in p])
+    c = @combine(p, :z_mean = mean(:z), :geometry = centroid(:geometry))
+    @test c.x == [first(data.x) for data in p]
+    @test c.y == [first(data.y) for data in p]
+    @test c.z_mean == [mean(data.z) for data in p]
+    @test domain(c) == GeometrySet([centroid(domain(data)) for data in p])
   end
 
   @testset "geosplit" begin
