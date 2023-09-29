@@ -6,7 +6,10 @@
     @combine(data, :col₁ = expr₁, :col₂ = expr₂, ..., :colₙ = exprₙ)
 
 Returns geospatial `data` with columns `:col₁`, `:col₂`, ..., `:colₙ`
-computed with reduction expressions `expr₁`, `expr₂`, ..., `exprₙ`. 
+computed with reduction expressions `expr₁`, `expr₂`, ..., `exprₙ`.
+
+If a reduction expression is not defined for the `:geometry` column,
+the geometries will be reduced using `Multi`.
 
 See also: [`@groupby`](@ref).
 
@@ -15,10 +18,12 @@ See also: [`@groupby`](@ref).
 ```julia
 @combine(data, :x_sum = sum(:x))
 @combine(data, :x_mean = mean(:x))
+@combine(data, :x_mean = mean(:x), :geometry = centroid(:geometry))
 
 groups = @groupby(data, :y)
 @combine(groups, :x_prod = prod(:x))
 @combine(groups, :x_median = median(:x))
+@combine(groups, :x_median = median(:x), :geometry = centroid(:geometry))
 
 @combine(data, {"z"} = sum({"x"}) + prod({"y"}))
 xnm, ynm, znm = :x, :y, :z
@@ -44,10 +49,21 @@ end
 function _combine(data::D, names, columns) where {D<:AbstractGeoTable}
   table = values(data)
 
-  newdom = GeometrySet([Multi(domain(data))])
+  newdom = if :geometry ∈ names
+    i = findfirst(==(:geometry), names)
+    popat!(names, i)
+    geoms = popat!(columns, i)
+    GeometrySet(geoms)
+  else
+    GeometrySet([Multi(domain(data))])
+  end
 
-  𝒯 = (; zip(names, columns)...)
-  newtable = 𝒯 |> Tables.materializer(table)
+  newtable = if isempty(names)
+    nothing
+  else
+    𝒯 = (; zip(names, columns)...)
+    𝒯 |> Tables.materializer(table)
+  end
 
   vals = Dict(paramdim(newdom) => newtable)
   constructor(D)(newdom, vals)
@@ -57,16 +73,22 @@ function _combine(partition::Partition{D}, names, columns) where {D<:AbstractGeo
   table = values(parent(partition))
   meta = metadata(partition)
 
-  newdom = GeometrySet([Multi(domain(data)) for data in partition])
+  newdom = if :geometry ∈ names
+    i = findfirst(==(:geometry), names)
+    popat!(names, i)
+    geoms = popat!(columns, i)
+    GeometrySet(geoms)
+  else
+    GeometrySet([Multi(domain(data)) for data in partition])
+  end
 
   grows = meta[:rows]
   gnames = meta[:names]
-  gcolumns = [[row[i] for row in grows] for i in 1:length(gnames)]
+  gcolumns = Any[[row[i] for row in grows] for i in 1:length(gnames)]
+  append!(gnames, names)
+  append!(gcolumns, columns)
 
-  newnames = vcat(gnames, names)
-  newcolumns = vcat(gcolumns, columns)
-
-  𝒯 = (; zip(newnames, newcolumns)...)
+  𝒯 = (; zip(gnames, gcolumns)...)
   newtable = 𝒯 |> Tables.materializer(table)
 
   vals = Dict(paramdim(newdom) => newtable)
