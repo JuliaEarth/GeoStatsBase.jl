@@ -23,8 +23,8 @@ Group geospatial `data` by columns that match with `regex`.
 ```
 """
 macro groupby(data::Symbol, cols...)
-  spec = Expr(:tuple, esc.(cols)...)
-  :(_groupby($(esc(data)), $spec))
+  tuple = Expr(:tuple, esc.(cols)...)
+  :(_groupby($(esc(data)), $tuple))
 end
 
 macro groupby(data::Symbol, cols)
