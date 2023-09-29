@@ -23,8 +23,9 @@ using LinearAlgebra
 using Random
 
 using Unitful: AbstractQuantity, AffineUnits, Units
-using TableTransforms: ColSpec, Col, AllSpec, NoneSpec
-using TableTransforms: colspec, choose
+using ColumnSelectors: ColumnSelector, Column
+using ColumnSelectors: AllSelector, NoneSelector
+using ColumnSelectors: selector
 using TableTransforms: Rename
 
 using TypedTables # for a default table type

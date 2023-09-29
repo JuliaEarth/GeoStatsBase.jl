@@ -23,23 +23,23 @@ Group geospatial `data` by columns that match with `regex`.
 ```
 """
 macro groupby(data::Symbol, cols...)
-  spec = Expr(:tuple, esc.(cols)...)
-  :(_groupby($(esc(data)), $spec))
+  tuple = Expr(:tuple, esc.(cols)...)
+  :(_groupby($(esc(data)), $tuple))
 end
 
-macro groupby(data::Symbol, spec)
-  :(_groupby($(esc(data)), $(esc(spec))))
+macro groupby(data::Symbol, cols)
+  :(_groupby($(esc(data)), $(esc(cols))))
 end
 
-_groupby(data::AbstractGeoTable, spec) = _groupby(data, colspec(spec))
-_groupby(data::AbstractGeoTable, cols::T...) where {T<:Col} = _groupby(data, colspec(cols))
+_groupby(data::AbstractGeoTable, cols) = _groupby(data, selector(cols))
+_groupby(data::AbstractGeoTable, cols::C...) where {C<:Column} = _groupby(data, selector(cols))
 
-function _groupby(data::AbstractGeoTable, colspec::ColSpec)
+function _groupby(data::AbstractGeoTable, selector::ColumnSelector)
   table = values(data)
 
   cols = Tables.columns(table)
   names = Tables.columnnames(cols)
-  snames = choose(colspec, names)
+  snames = selector(names)
 
   scolumns = [Tables.getcolumn(cols, nm) for nm in snames]
   srows = collect(zip(scolumns...))

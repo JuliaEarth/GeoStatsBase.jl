@@ -29,15 +29,15 @@ geojoin(gtb1, gtb2, "a" => mean, pred=issubset)
 ```
 """
 geojoin(gtb1::AbstractGeoTable, gtb2::AbstractGeoTable; kwargs...) =
-  _geojoin(gtb1, gtb2, NoneSpec(), Function[]; kwargs...)
+  _geojoin(gtb1, gtb2, NoneSelector(), Function[]; kwargs...)
 
-geojoin(gtb1::AbstractGeoTable, gtb2::AbstractGeoTable, pairs::Pair{C,<:Function}...; kwargs...) where {C<:Col} =
-  _geojoin(gtb1, gtb2, colspec(first.(pairs)), collect(Function, last.(pairs)); kwargs...)
+geojoin(gtb1::AbstractGeoTable, gtb2::AbstractGeoTable, pairs::Pair{C,<:Function}...; kwargs...) where {C<:Column} =
+  _geojoin(gtb1, gtb2, selector(first.(pairs)), collect(Function, last.(pairs)); kwargs...)
 
 function _geojoin(
   gtb1::AbstractGeoTable,
   gtb2::AbstractGeoTable,
-  colspec::ColSpec,
+  selector::ColumnSelector,
   aggfuns::Vector{Function};
   kind=:left,
   pred=intersects
@@ -67,13 +67,13 @@ function _geojoin(
   gtb2 = uadjust(gtb2)
 
   if kind === :inner
-    _innerjoin(gtb1, gtb2, colspec, aggfuns, pred)
+    _innerjoin(gtb1, gtb2, selector, aggfuns, pred)
   else
-    _leftjoin(gtb1, gtb2, colspec, aggfuns, pred)
+    _leftjoin(gtb1, gtb2, selector, aggfuns, pred)
   end
 end
 
-function _leftjoin(gtb1, gtb2, colspec, aggfuns, pred)
+function _leftjoin(gtb1, gtb2, selector, aggfuns, pred)
   dom1 = domain(gtb1)
   dom2 = domain(gtb2)
   tab1 = values(gtb1)
@@ -84,7 +84,7 @@ function _leftjoin(gtb1, gtb2, colspec, aggfuns, pred)
   vars2 = Tables.columnnames(cols2)
 
   # aggregation functions
-  svars = choose(colspec, vars2)
+  svars = selector(vars2)
   agg = Dict(zip(svars, aggfuns))
   for var in vars2
     if !haskey(agg, var)
@@ -131,7 +131,7 @@ function _leftjoin(gtb1, gtb2, colspec, aggfuns, pred)
   georef(newtab, dom1)
 end
 
-function _innerjoin(gtb1, gtb2, colspec, aggfuns, pred)
+function _innerjoin(gtb1, gtb2, selector, aggfuns, pred)
   dom1 = domain(gtb1)
   dom2 = domain(gtb2)
   tab1 = values(gtb1)
@@ -142,7 +142,7 @@ function _innerjoin(gtb1, gtb2, colspec, aggfuns, pred)
   vars2 = Tables.columnnames(cols2)
 
   # aggregation functions
-  svars = choose(colspec, vars2)
+  svars = selector(vars2)
   agg = Dict(zip(svars, aggfuns))
   for var in vars2
     if !haskey(agg, var)
