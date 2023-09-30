@@ -159,10 +159,6 @@ export
   describe,
   integrate,
   geosplit,
-  geojoin,
-  @groupby,
-  @transform,
-  @combine,
 
   # rotations
   DatamineAngles,
