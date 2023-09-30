@@ -1,7 +1,7 @@
 name = "GeoStatsBase"
 uuid = "323cb8eb-fbf6-51c0-afd0-f8fba70507b2"
 author = "Júlio Hoffimann <julio.hoffimann@gmail.com>"
-version = "0.37.6"
+version = "0.38.0"
 
 [deps]
 ColumnSelectors = "9cc86067-7e36-4c61-b350-1ac9833d277f"
@@ -32,7 +32,7 @@ ColumnSelectors = "0.1"
 DensityRatioEstimation = "1.0"
 Distances = "0.10"
 Distributions = "0.25"
-GeoTables = "1.7"
+GeoTables = "1.8"
 LossFunctions = "0.11"
 MLJModelInterface = "1.0"
 Meshes = "0.35.1"
