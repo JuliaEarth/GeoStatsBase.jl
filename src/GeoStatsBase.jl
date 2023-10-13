@@ -7,6 +7,7 @@ module GeoStatsBase
 using Meshes
 using Tables
 using Unitful
+using SciTypes
 using GeoTables
 using Rotations: RotZYX
 using Distributions: median
@@ -15,9 +16,8 @@ using Distributed: CachingPool, pmap, myid
 using StatsBase: Histogram, AbstractWeights
 using StatsBase: midpoints, sample, mode
 using Transducers: Map, foldxt
-using LossFunctions: L2DistLoss
+using LossFunctions: L2DistLoss, MisclassLoss
 using DensityRatioEstimation
-using ScientificTypes
 using ProgressMeter
 using LinearAlgebra
 using Random

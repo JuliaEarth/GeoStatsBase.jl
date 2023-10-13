@@ -18,8 +18,6 @@ using ImageIO
 using FileIO: load
 using MLJ: @load
 
-import ScientificTypes as ST
-
 # environment settings
 datadir = joinpath(@__DIR__, "data")
 
