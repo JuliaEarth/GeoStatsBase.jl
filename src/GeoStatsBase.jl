@@ -8,6 +8,7 @@ using Meshes
 using Tables
 using Unitful
 using GeoTables
+using DataScienceTraits
 using Rotations: RotZYX
 using Distributions: median
 using Distances: Euclidean, pairwise
@@ -15,9 +16,8 @@ using Distributed: CachingPool, pmap, myid
 using StatsBase: Histogram, AbstractWeights
 using StatsBase: midpoints, sample, mode
 using Transducers: Map, foldxt
-using LossFunctions: L2DistLoss
+using LossFunctions: L2DistLoss, MisclassLoss
 using DensityRatioEstimation
-using ScientificTypes
 using ProgressMeter
 using LinearAlgebra
 using Random
@@ -27,6 +27,7 @@ using ColumnSelectors: ColumnSelector, Column
 using ColumnSelectors: AllSelector, NoneSelector
 using ColumnSelectors: selector
 using TableTransforms: Rename
+using DataScienceTraits: Continuous, Categorical
 
 using TypedTables # for a default table type
 using Optim # for LSIF estimation
