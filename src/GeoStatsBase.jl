@@ -7,8 +7,8 @@ module GeoStatsBase
 using Meshes
 using Tables
 using Unitful
-using SciTypes
 using GeoTables
+using DataScienceTraits
 using Rotations: RotZYX
 using Distributions: median
 using Distances: Euclidean, pairwise
@@ -27,6 +27,7 @@ using ColumnSelectors: ColumnSelector, Column
 using ColumnSelectors: AllSelector, NoneSelector
 using ColumnSelectors: selector
 using TableTransforms: Rename
+using DataScienceTraits: Continuous, Categorical
 
 using TypedTables # for a default table type
 using Optim # for LSIF estimation

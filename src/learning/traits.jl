@@ -25,5 +25,5 @@ issupervised(model::MI.Supervised) = true
 Default loss for value `val` or its scientific type `scitype`.
 """
 defaultloss(val) = defaultloss(scitype(val))
-defaultloss(::Type{SciTypes.Continuous}) = L2DistLoss()
-defaultloss(::Type{SciTypes.Categorical}) = MisclassLoss()
+defaultloss(::Type{Continuous}) = L2DistLoss()
+defaultloss(::Type{Categorical}) = MisclassLoss()
