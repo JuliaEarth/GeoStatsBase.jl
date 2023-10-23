@@ -72,7 +72,6 @@ export
   # learning models
   issupervised,
   isprobabilistic,
-  iscompatible,
 
   # learning losses
   defaultloss,
