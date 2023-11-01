@@ -5,17 +5,8 @@
 """
     Ensemble
 
-An ensemble of geostatistical realizations.
-
-The result of a geostatistical simulation solver is a
-set of geospatial data (a.k.a. realizations). This set
-can be interpreted as an empirical approximation of the
-random field of interest.
-
-### Notes
-
-`Ensemble` objects are typically created by a call to the
-`solve` function on a [`SimulationProblem`](@ref).
+An ensemble of geostatistical realizations from a
+geostatistical process.
 """
 struct Ensemble{𝒟,ℛ}
   domain::𝒟
