@@ -61,8 +61,7 @@ function _describe(
     column = map(snames) do name
       try
         x = Tables.getcolumn(cols, name)
-        newfun = skipmissing ? _skipmissing(fun) : fun
-        _applyfun(newfun, x)
+        _applyfun(skipmissing ? _skipmissing(fun) : fun, x)
       catch
         nothing
       end
