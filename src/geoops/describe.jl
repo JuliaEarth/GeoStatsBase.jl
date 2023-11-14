@@ -2,14 +2,6 @@
 # Licensed under the MIT License. See LICENSE in the project root.
 # ------------------------------------------------------------------
 
-const DEFAULTFUNS = [
-  :mean => _skipmissing(mean),
-  :minimum => _skipmissing(minimum),
-  :median => _skipmissing(median),
-  :maximum => _skipmissing(maximum),
-  :nmissing => x -> count(ismissing, x)
-]
-
 """
     describe(geotable)
     describe(geotable, fun₁, name₂ => fun₂, ..., funₙ; skipmissing=true)
@@ -81,10 +73,6 @@ function _describe(
   TypedTables.Table(; pairs...)
 end
 
-#-------
-# UTILS
-#-------
-
 _funname(fun) = Symbol(repr(fun, context=:compact => true))
 
 _funpair(fun) = _funname(fun) => fun
@@ -94,3 +82,18 @@ _funpair(pair::Pair{<:AbstractString}) = Symbol(first(pair)) => last(pair)
 _applyfun(fun, x) = _applyfun(elscitype(x), fun, x)
 _applyfun(::Type, fun, x) = fun(x)
 _applyfun(::Type{Categorical}, fun, x) = fun(categorical(x))
+
+function _skipmissing(fun)
+  x -> begin
+    vs = skipmissing(x)
+    isempty(vs) ? missing : fun(collect(vs))
+  end
+end
+
+const DEFAULTFUNS = [
+  :mean => _skipmissing(mean),
+  :minimum => _skipmissing(minimum),
+  :median => _skipmissing(median),
+  :maximum => _skipmissing(maximum),
+  :nmissing => x -> count(ismissing, x)
+]
