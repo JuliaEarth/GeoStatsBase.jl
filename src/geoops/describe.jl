@@ -54,7 +54,7 @@ end
 
 function _describe(
   geotable::AbstractGeoTable,
-  funs::AbstractVector{<:Pair{Symbol}},
+  funpairs::AbstractVector{<:Pair{Symbol}},
   selector::ColumnSelector,
   skipmissing::Bool
 )
@@ -65,7 +65,7 @@ function _describe(
 
   pairs = []
   push!(pairs, :variable => string.(snames))
-  for (name, fun) in funs
+  for (name, fun) in funpairs
     column = map(snames) do name
       try
         x = Tables.getcolumn(cols, name)
