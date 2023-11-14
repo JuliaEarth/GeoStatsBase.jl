@@ -9,6 +9,7 @@ using Tables
 using Unitful
 using GeoTables
 using DataScienceTraits
+using CategoricalArrays
 using Rotations: RotZYX
 using Distributions: median
 using Distances: Euclidean, pairwise
