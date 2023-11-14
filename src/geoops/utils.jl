@@ -5,6 +5,6 @@
 function _skipmissing(fun)
   x -> begin
     vs = skipmissing(x)
-    isempty(vs) ? missing : fun(vs)
+    isempty(vs) ? missing : fun(collect(vs))
   end
 end
