@@ -17,8 +17,8 @@ const DEFAULTFUNS = [
 Return descriptive table of all `geotable` columns using the descriptive 
 functions `fun₁`, `fun₂`, ..., `funₙ`, and skipping or not the missing values
 using the `skipmissing` keyword argument.
-Optinaly, define a `nameᵢ` to `funᵢ` by passing a pair.
-If the descriptive functions is not passed, the default functions will be used,
+Optionally, define a `nameᵢ` to `funᵢ` by passing a pair.
+If the descriptive functions are not passed, the default functions will be used,
 they are: `mean`, `minimum`, `median`, `maximum`, `nmissing`.
 
     describe(geotable; cols=[col₁, col₂, ..., colₙ])
