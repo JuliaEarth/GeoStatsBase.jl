@@ -31,7 +31,7 @@ Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 [compat]
 CategoricalArrays = "0.10"
 ColumnSelectors = "0.1"
-DataScienceTraits = "0.1"
+DataScienceTraits = "0.1, 0.2"
 DensityRatioEstimation = "1.2"
 Distances = "0.10"
 Distributed = "1.9"
