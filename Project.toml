@@ -1,7 +1,7 @@
 name = "GeoStatsBase"
 uuid = "323cb8eb-fbf6-51c0-afd0-f8fba70507b2"
 author = "Júlio Hoffimann <julio.hoffimann@gmail.com>"
-version = "0.40.2"
+version = "0.41.0"
 
 [deps]
 CategoricalArrays = "324d7699-5711-5eae-9e2f-1d82baa6b597"
