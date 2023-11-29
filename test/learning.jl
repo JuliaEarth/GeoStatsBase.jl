@@ -22,16 +22,4 @@
     @test features(t) == (:x, :y)
     @test sprint(show, t) == "Classification (x, y) → z"
   end
-
-  @testset "Traits" begin
-    kmeans = @load KMeans pkg = Clustering verbosity = 0
-    model = kmeans(k=4)
-    @test !issupervised(model)
-    @test !isprobabilistic(model)
-
-    gmm = @load GaussianMixtureClusterer pkg = BetaML verbosity = 0
-    model = gmm(n_classes=4)
-    @test !issupervised(model)
-    @test isprobabilistic(model)
-  end
 end

@@ -34,7 +34,6 @@ using TypedTables # for a default table type
 using Optim # for LSIF estimation
 
 import GeoTables: domain
-import MLJModelInterface as MI
 import LossFunctions.Traits: SupervisedLoss
 import StatsBase: fit, varcorrection, describe
 import Statistics: mean, var, quantile
@@ -69,10 +68,6 @@ export
   outputvars,
   features,
   label,
-
-  # learning models
-  issupervised,
-  isprobabilistic,
 
   # learning losses
   defaultloss,
@@ -127,14 +122,6 @@ export
   # helper macros
   @estimsolver,
   @simsolver,
-
-  # estimators
-  Estimator,
-  ProbabilisticEstimator,
-  fit,
-  predict,
-  predictprob,
-  status,
 
   # weighting
   GeoWeights,

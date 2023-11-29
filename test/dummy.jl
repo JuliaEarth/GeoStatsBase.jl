@@ -1,16 +1,12 @@
 import GeoStatsBase: solve, solvesingle
-import MLJModelInterface
-
-const MI = MLJModelInterface
 
 ########################
 # DUMMY LEARNING MODEL
 ########################
 
-struct DummyModel <: MI.Supervised end
-MI.fit(m::DummyModel, v, X, y) = rand(unique(y), length(y)), 0, 0
-MI.predict(m::DummyModel, θ, X) = rand(θ, Tables.rowcount(X))
-MI.target_scitype(m::DummyModel) = AbstractVector{<:MI.Finite}
+struct DummyModel end
+fit(::DummyModel, v, X, y) = rand(unique(y), length(y)), 0, 0
+predict(::DummyModel, θ, X) = rand(θ, Tables.rowcount(X))
 
 #################
 # DUMMY SOLVERS
@@ -60,24 +56,20 @@ function solve(problem::LearningProblem, solver::DummyLearnSolver)
   if issupervised(ptask)
     X = stable |> Select(features(ptask))
     y = Tables.getcolumn(stable, label(ptask))
-    θ, _, __ = MI.fit(model, 0, X, y)
+    θ, _, __ = fit(model, 0, X, y)
   else
     X = stable |> Select(features(ptask))
-    θ, _, __ = MI.fit(model, 0, X)
+    θ, _, __ = fit(model, 0, X)
   end
 
   # perform task with target data
   ttable = values(tdata)
   X = ttable |> Select(features(ptask))
-  ŷ = MI.predict(model, θ, X)
+  ŷ = predict(model, θ, X)
 
   # post-process result
   var = outputvars(ptask)[1]
-  val = if issupervised(ptask)
-    isprobabilistic(model) ? mode.(ŷ) : ŷ
-  else
-    ŷ
-  end
+  val = ŷ
 
   # georeference on target domain
   ctor = constructor(typeof(tdata))

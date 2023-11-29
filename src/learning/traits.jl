@@ -3,22 +3,6 @@
 # ------------------------------------------------------------------
 
 """
-    isprobabilistic(model)
-
-Check whether or not `model` is probabilistic.
-"""
-isprobabilistic(model::MI.Model) = MI.prediction_type(model) == :probabilistic
-isprobabilistic(model::MI.Probabilistic) = true
-
-"""
-    issupervised(model)
-
-Check whether or not `model` is supervised.
-"""
-issupervised(model::MI.Model) = false
-issupervised(model::MI.Supervised) = true
-
-"""
     defaultloss(val)
     defaultloss(scitype)
 
