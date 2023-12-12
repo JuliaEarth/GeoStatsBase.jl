@@ -10,18 +10,18 @@ H-scatter plot of geospatial `data` for pair of variables
 
 ## Algorithm options:
 
-* `lag`           - lag distance between points (default to `0.0`)
-* `tol`           - tolerance for lag distance (default to `1e-1`)
-* `distance`      - distance from Distances.jl (default to `Euclidean()`)
+* `lag`      - lag distance between points (default to `0.0`)
+* `tol`      - tolerance for lag distance (default to `1e-1`)
+* `distance` - distance from Distances.jl (default to `Euclidean()`)
 
 ## Aesthetics options:
 
-* `size`          - size of points in point set
-* `color`         - color of geometries or points
-* `alpha`         - transparency channel in [0,1]
-* `rcolor`        - color of regression line
-* `icolor`        - color of identity line
-* `ccolor`        - color of center lines
+* `size`   - size of points in point set
+* `color`  - color of geometries or points
+* `alpha`  - transparency channel in [0,1]
+* `rcolor` - color of regression line
+* `icolor` - color of identity line
+* `ccolor` - color of center lines
 
 ## Examples
 
@@ -32,12 +32,6 @@ hscatter(data, :Z, :Z, lag=1.0)
 # h-scatter of Z vs. W at lag 2.0
 hscatter(data, :Z, :W, lag=2.0)
 ```
-
-### Notes
-
-* This function will only work in the presence of
-  a Makie.jl backend via package extensions in
-  Julia v1.9 or later versions of the language.
 """
 function hscatter end
 function hscatter! end
