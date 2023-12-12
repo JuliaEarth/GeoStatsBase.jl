@@ -4,7 +4,6 @@
 
 module GeoStatsBaseMakieExt
 
-
 using GeoStatsBase
 
 using Meshes
