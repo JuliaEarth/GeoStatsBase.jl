@@ -52,6 +52,7 @@ include("errors.jl")
 include("statistics.jl")
 include("histograms.jl")
 include("rotations.jl")
+include("hsactter.jl")
 
 export
   # ensembles
@@ -157,6 +158,10 @@ export
   Detrend,
   Potrace,
   Rasterize,
-  UniqueCoords
+  UniqueCoords,
+
+  # plotting
+  hscatter,
+  hscatter!
 
 end
