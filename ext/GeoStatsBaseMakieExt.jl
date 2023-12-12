@@ -7,6 +7,10 @@ module GeoStatsBaseMakieExt
 
 using GeoStatsBase
 
+using Meshes
+using GeoTables
+using Distances
+
 import Makie
 import GeoStatsBase: hscatter, hscatter!
 
