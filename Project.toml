@@ -27,6 +27,12 @@ Transducers = "28d57a85-8fef-5791-bfe6-a80928e7c999"
 TypedTables = "9d95f2ec-7b3d-5a63-8d20-e2491e220bb9"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 
+[weakdeps]
+Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
+
+[extensions]
+GeoStatsBaseMakieExt = "Makie"
+
 [compat]
 CategoricalArrays = "0.10"
 ColumnSelectors = "0.1"
@@ -38,6 +44,7 @@ Distributions = "0.25"
 GeoTables = "1.9"
 LinearAlgebra = "1.9"
 LossFunctions = "0.11"
+Makie = "0.20"
 Meshes = "0.37"
 Optim = "1.7"
 ProgressMeter = "1.9"
