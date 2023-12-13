@@ -13,13 +13,18 @@ struct EmpiricalHistogram{H}
   hist::H
 end
 
-EmpiricalHistogram(d, v::Symbol, w::WeightingMethod; kwargs...) =
+EmpiricalHistogram(d::AbstractGeoTable, v, w::WeightingMethod; kwargs...) =
   EmpiricalHistogram(fit(Histogram, getproperty(d, v), weight(d, w); kwargs...))
-EmpiricalHistogram(d, v::Symbol, s::Number; kwargs...) = EmpiricalHistogram(d, v, BlockWeighting(s); kwargs...)
-EmpiricalHistogram(d, v::Symbol; kwargs...) = EmpiricalHistogram(d, v, median_heuristic(d); kwargs...)
-EmpiricalHistogram(d, w::WeightingMethod; kwargs...) =
+
+EmpiricalHistogram(d::AbstractGeoTable, v, s::Number; kwargs...) =
+  EmpiricalHistogram(d, v, BlockWeighting(s); kwargs...)
+
+EmpiricalHistogram(d::AbstractGeoTable, v; kwargs...) = EmpiricalHistogram(d, v, median_heuristic(d); kwargs...)
+
+EmpiricalHistogram(d::AbstractGeoTable, w::WeightingMethod; kwargs...) =
   Dict(v => EmpiricalHistogram(d, v, w; kwargs...) for v in setdiff(propertynames(d), [:geometry]))
-EmpiricalHistogram(d, s::Number; kwargs...) = EmpiricalHistogram(d, BlockWeighting(s); kwargs...)
+
+EmpiricalHistogram(d::AbstractGeoTable, s::Number; kwargs...) = EmpiricalHistogram(d, BlockWeighting(s); kwargs...)
 
 """
     values(histogram)

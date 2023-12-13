@@ -11,9 +11,9 @@ Declustered mean of geospatial `data`. Optionally,
 specify the variable `v` and the block side `s`.
 """
 mean(t::AbstractGeoTable) = Dict(v => mean(t, v, mode_heuristic(t)) for v in setdiff(propertynames(t), [:geometry]))
-mean(t, v::Symbol) = mean(t, v, mode_heuristic(t))
-mean(t, v::Symbol, s::Number) = mean(t, v, BlockWeighting(s))
-mean(t, v::Symbol, w::WeightingMethod) = mean(getproperty(t, v), weight(t, w))
+mean(t::AbstractGeoTable, v) = mean(t, v, mode_heuristic(t))
+mean(t::AbstractGeoTable, v, s::Number) = mean(t, v, BlockWeighting(s))
+mean(t::AbstractGeoTable, v, w::WeightingMethod) = mean(getproperty(t, v), weight(t, w))
 
 """
     var(data)
@@ -24,9 +24,9 @@ Declustered variance of geospatial `data`. Optionally,
 specify the variable `v` and the block side `s`.
 """
 var(t::AbstractGeoTable) = Dict(v => var(t, v, mode_heuristic(t)) for v in setdiff(propertynames(t), [:geometry]))
-var(t, v::Symbol) = var(t, v, mode_heuristic(t))
-var(t, v::Symbol, s::Number) = var(t, v, BlockWeighting(s))
-var(t, v::Symbol, w::WeightingMethod) = var(getproperty(t, v), weight(t, w), mean=mean(t, v, w), corrected=false)
+var(t::AbstractGeoTable, v) = var(t, v, mode_heuristic(t))
+var(t::AbstractGeoTable, v, s::Number) = var(t, v, BlockWeighting(s))
+var(t::AbstractGeoTable, v, w::WeightingMethod) = var(getproperty(t, v), weight(t, w), mean=mean(t, v, w), corrected=false)
 
 """
     quantile(data, p)
@@ -38,9 +38,9 @@ Optionally, specify the variable `v` and the block side `s`.
 """
 quantile(t::AbstractGeoTable, p) =
   Dict(v => quantile(t, v, p, mode_heuristic(t)) for v in setdiff(propertynames(t), [:geometry]))
-quantile(t, v::Symbol, p) = quantile(t, v, p, mode_heuristic(t))
-quantile(t, v::Symbol, p, s::Number) = quantile(t, v, p, BlockWeighting(s))
-quantile(t, v::Symbol, p, w::WeightingMethod) = quantile(getproperty(t, v), weight(t, w), p)
+quantile(t::AbstractGeoTable, v, p) = quantile(t, v, p, mode_heuristic(t))
+quantile(t::AbstractGeoTable, v, p, s::Number) = quantile(t, v, p, BlockWeighting(s))
+quantile(t::AbstractGeoTable, v, p, w::WeightingMethod) = quantile(getproperty(t, v), weight(t, w), p)
 
 # return a block size based on pairwise distances and
 # an aggregation function (e.g. mean, mode)
