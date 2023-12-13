@@ -19,18 +19,21 @@
   # spatial mean
   μn = mean(sdata.Au)
   μs = mean(sdata, :Au)
+  @test μs == mean(sdata, "Au")
   @test abs(μn - 0.5) > abs(μs - 0.5)
   @test mean(sdata)[:Au] ≈ μs
 
   # spatial variance
   σn = var(sdata.Au)
   σs = var(sdata, :Au)
+  @test σs == var(sdata, "Au")
   @test isapprox(σn, σs, atol=1e-2)
   @test var(sdata)[:Au] ≈ σs
 
   # spatial quantile
   qn = quantile(sdata.Au, 0.5)
   qs = quantile(sdata, :Au, 0.5)
+  @test qs == quantile(sdata, "Au", 0.5)
   @test qn ≥ qs
   @test quantile(sdata, 0.5)[:Au] ≈ qs
 end
