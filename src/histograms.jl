@@ -21,11 +21,6 @@ EmpiricalHistogram(d::AbstractGeoTable, v, s::Number; kwargs...) =
 
 EmpiricalHistogram(d::AbstractGeoTable, v; kwargs...) = EmpiricalHistogram(d, v, median_heuristic(d); kwargs...)
 
-EmpiricalHistogram(d::AbstractGeoTable, w::WeightingMethod; kwargs...) =
-  Dict(v => EmpiricalHistogram(d, v, w; kwargs...) for v in setdiff(propertynames(d), [:geometry]))
-
-EmpiricalHistogram(d::AbstractGeoTable, s::Number; kwargs...) = EmpiricalHistogram(d, BlockWeighting(s); kwargs...)
-
 """
     values(histogram)
     
