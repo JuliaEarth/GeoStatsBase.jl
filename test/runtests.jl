@@ -13,15 +13,15 @@ using LinearAlgebra
 using TableTransforms
 using CategoricalArrays
 using DensityRatioEstimation
+using GeoStatsTransforms
+using StatsLearnModels
+using GeoStatsModels
 using Test, Random
 using ImageIO
 using FileIO: load
 
 # environment settings
 datadir = joinpath(@__DIR__, "data")
-
-# dummy definitions for testing
-include("dummy.jl")
 
 # list of tests
 testfiles = [

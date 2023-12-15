@@ -24,7 +24,7 @@ for a list of supported estimators.
 * Hoffimann et al. 2020. [Geostatistical Learning: Challenges and Opportunities]
   (https://arxiv.org/abs/2102.08791)
 """
-struct DensityRatioValidation{T,E,O} <: ErrorEstimationMethod
+struct DensityRatioValidation{T,E,O} <: ErrorMethod
   k::Int
   shuffle::Bool
   lambda::T
@@ -49,7 +49,7 @@ function DensityRatioValidation(
   DensityRatioValidation{T,E,O}(k, shuffle, lambda, estimator, optlib, loss)
 end
 
-function Base.error(solver::LearningSolver, problem::LearningProblem, method::DensityRatioValidation)
+function Base.error(setup, problem::LearnProblem, method::DensityRatioValidation)
   tdata = targetdata(problem)
   vars = collect(inputvars(task(problem)))
 
@@ -61,5 +61,5 @@ function Base.error(solver::LearningSolver, problem::LearningProblem, method::De
 
   wcv = WeightedValidation(weighting, folding, lambda=method.lambda, loss=method.loss)
 
-  error(solver, problem, wcv)
+  error(setup, problem, wcv)
 end

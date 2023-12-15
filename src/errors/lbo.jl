@@ -20,7 +20,7 @@ By default, use Euclidean ball of given `radius` in space.
   for variable selection in the presence of spatial autocorrelation]
   (https://onlinelibrary.wiley.com/doi/full/10.1111/geb.12161)
 """
-struct LeaveBallOut{B<:MetricBall} <: ErrorEstimationMethod
+struct LeaveBallOut{B<:MetricBall} <: ErrorMethod
   ball::B
   loss::Dict{Symbol,SupervisedLoss}
 end
@@ -29,7 +29,7 @@ LeaveBallOut(ball; loss=Dict()) = LeaveBallOut{typeof(ball)}(ball, loss)
 
 LeaveBallOut(radius::Number; loss=Dict()) = LeaveBallOut(MetricBall(radius), loss=loss)
 
-function Base.error(solver, problem, method::LeaveBallOut)
+function Base.error(setup, problem, method::LeaveBallOut)
   # uniform weights
   weighting = UniformWeighting()
 
@@ -38,5 +38,5 @@ function Base.error(solver, problem, method::LeaveBallOut)
 
   wcv = WeightedValidation(weighting, folding, lambda=1, loss=method.loss)
 
-  error(solver, problem, wcv)
+  error(setup, problem, wcv)
 end

@@ -13,5 +13,5 @@ abstract type Problem end
 # IMPLEMENTATIONS
 # ----------------
 
-include("problems/estimation.jl")
+include("problems/interpolation.jl")
 include("problems/learning.jl")

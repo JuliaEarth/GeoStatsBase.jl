@@ -18,7 +18,7 @@ the variables.
 * Sugiyama et al. 2007. [Covariate shift adaptation by importance weighted
   cross validation](http://www.jmlr.org/papers/volume8/sugiyama07a/sugiyama07a.pdf)
 """
-struct WeightedValidation{W<:WeightingMethod,F<:FoldingMethod,T<:Real} <: ErrorEstimationMethod
+struct WeightedValidation{W<:WeightingMethod,F<:FoldingMethod,T<:Real} <: ErrorMethod
   weighting::W
   folding::F
   lambda::T
@@ -33,7 +33,7 @@ end
 WeightedValidation(weighting::W, folding::F; lambda::T=one(T), loss=Dict()) where {W,F,T} =
   WeightedValidation{W,F,T}(weighting, folding, lambda, loss)
 
-function Base.error(solver, problem, method::WeightedValidation)
+function Base.error(setup, problem, method::WeightedValidation)
   # retrieve problem info
   sdata = _foldable(problem)
   ovars = _outputvars(problem)
@@ -53,9 +53,8 @@ function Base.error(solver, problem, method::WeightedValidation)
 
   # error for a fold
   function ε(f)
-    # setup and solve sub-problem
-    subproblem = _subproblem(problem, f)
-    solution = solve(subproblem, solver)
+    # solve sub-problem
+    solution = _solution(setup, problem, f)
 
     # holdout set
     holdout = _holdout(problem, f)
@@ -82,26 +81,27 @@ function Base.error(solver, problem, method::WeightedValidation)
 end
 
 # foldable data of the problem
-_foldable(p::EstimationProblem) = data(p)
-_foldable(p::LearningProblem) = sourcedata(p)
+_foldable(p::InterpProblem) = data(p)
+_foldable(p::LearnProblem) = sourcedata(p)
 
 # output variables of the problem
-_outputvars(p::EstimationProblem) = keys(variables(p))
-_outputvars(p::LearningProblem) = outputvars(task(p))
+_outputvars(p::InterpProblem) = keys(variables(p))
+_outputvars(p::LearnProblem) = outputvars(task(p))
 
-# subproblem for a given fold
-function _subproblem(p::EstimationProblem, f)
+# solution for a given fold
+function _solution(s::InterpSetup{I}, p::InterpProblem, f) where {I}
   sdat = view(data(p), f[1])
   sdom = view(domain(data(p)), f[2])
-  vars = keys(variables(p))
-  EstimationProblem(sdat, sdom, vars)
+  sdat |> I(sdom, s.model)
 end
-function _subproblem(p::LearningProblem, f)
+
+function _solution(s::LearnSetup{L}, p::LearnProblem, f) where {L}
+  ptask = task(p)
   source = view(sourcedata(p), f[1])
   target = view(sourcedata(p), f[2])
-  LearningProblem(source, target, task(p))
+  target |> L(source, s.model, inputvars(ptask) => outputvars(ptask))
 end
 
 # holdout set for a given fold
-_holdout(p::EstimationProblem, f) = view(data(p), f[2])
-_holdout(p::LearningProblem, f) = view(sourcedata(p), f[2])
+_holdout(p::InterpProblem, f) = view(data(p), f[2])
+_holdout(p::LearnProblem, f) = view(sourcedata(p), f[2])

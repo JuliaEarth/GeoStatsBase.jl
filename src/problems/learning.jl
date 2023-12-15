@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------
 
 """
-    LearningProblem(sdata, tdata, task)
+    LearnProblem(sdata, tdata, task)
 
 A geostatistical learning problem with source data `sdata`,
 target data `tdata`, and learning `task`.
@@ -13,12 +13,12 @@ target data `tdata`, and learning `task`.
 * Hoffimann et al. 2021. [Geostatistical Learning: Challenges and Opportunities]
   (https://www.frontiersin.org/articles/10.3389/fams.2021.689393/full)
 """
-struct LearningProblem{Dₛ,Dₜ,T} <: Problem
+struct LearnProblem{Dₛ,Dₜ,T} <: Problem
   sdata::Dₛ
   tdata::Dₜ
   task::T
 
-  function LearningProblem{Dₛ,Dₜ,T}(sdata, tdata, task) where {Dₛ,Dₜ,T}
+  function LearnProblem{Dₛ,Dₜ,T}(sdata, tdata, task) where {Dₛ,Dₜ,T}
     svars = Tables.schema(sdata).names
     tvars = Tables.schema(tdata).names
 
@@ -33,38 +33,38 @@ struct LearningProblem{Dₛ,Dₜ,T} <: Problem
   end
 end
 
-LearningProblem(sdata::Dₛ, tdata::Dₜ, task::T) where {Dₛ,Dₜ,T} = LearningProblem{Dₛ,Dₜ,T}(sdata, tdata, task)
+LearnProblem(sdata::Dₛ, tdata::Dₜ, task::T) where {Dₛ,Dₜ,T} = LearnProblem{Dₛ,Dₜ,T}(sdata, tdata, task)
 
 """
     sourcedata(problem)
 
 Return the source data of the learning `problem`.
 """
-sourcedata(problem::LearningProblem) = problem.sdata
+sourcedata(problem::LearnProblem) = problem.sdata
 
 """
     targetdata(problem)
 
 Return the target data of the learning `problem`.
 """
-targetdata(problem::LearningProblem) = problem.tdata
+targetdata(problem::LearnProblem) = problem.tdata
 
 """
     task(problem)
 
 Return the learning task of the learning `problem`.
 """
-task(problem::LearningProblem) = problem.task
+task(problem::LearnProblem) = problem.task
 
 # ------------
 # IO methods
 # ------------
-function Base.show(io::IO, problem::LearningProblem)
+function Base.show(io::IO, problem::LearnProblem)
   Dim = embeddim(domain(problem.sdata))
-  print(io, "$(Dim)D LearningProblem")
+  print(io, "$(Dim)D LearnProblem")
 end
 
-function Base.show(io::IO, ::MIME"text/plain", problem::LearningProblem)
+function Base.show(io::IO, ::MIME"text/plain", problem::LearnProblem)
   println(io, problem)
   println(io, "  source: ", domain(problem.sdata))
   println(io, "  target: ", domain(problem.tdata))

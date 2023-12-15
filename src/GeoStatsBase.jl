@@ -75,8 +75,8 @@ export
 
   # problems
   Problem,
-  EstimationProblem,
-  LearningProblem,
+  InterpProblem,
+  LearnProblem,
   data,
   domain,
   sourcedata,
@@ -109,7 +109,9 @@ export
   folds,
 
   # errors
-  ErrorEstimationMethod,
+  ErrorMethod,
+  InterpSetup,
+  LearnSetup,
   LeaveOneOut,
   LeaveBallOut,
   KFoldValidation,

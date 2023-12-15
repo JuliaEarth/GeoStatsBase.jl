@@ -13,13 +13,13 @@ from `LossFunctions.jl` for some of the variables.
 * Stone. 1974. [Cross-Validatory Choice and Assessment of Statistical Predictions]
   (https://rss.onlinelibrary.wiley.com/doi/abs/10.1111/j.2517-6161.1974.tb00994.x)
 """
-struct LeaveOneOut <: ErrorEstimationMethod
+struct LeaveOneOut <: ErrorMethod
   loss::Dict{Symbol,SupervisedLoss}
 end
 
 LeaveOneOut(; loss=Dict()) = LeaveOneOut(loss)
 
-function Base.error(solver, problem, method::LeaveOneOut)
+function Base.error(setup, problem, method::LeaveOneOut)
   # uniform weights
   weighting = UniformWeighting()
 
@@ -28,5 +28,5 @@ function Base.error(solver, problem, method::LeaveOneOut)
 
   wcv = WeightedValidation(weighting, folding, lambda=1, loss=method.loss)
 
-  error(solver, problem, wcv)
+  error(setup, problem, wcv)
 end

@@ -3,19 +3,29 @@
 # ------------------------------------------------------------------
 
 """
-    ErrorEstimationMethod
+    ErrorMethod
 
-A method for estimating error of geostatistical solvers.
+A method for estimating cross-validatory error.
 """
-abstract type ErrorEstimationMethod end
+abstract type ErrorMethod end
+
+struct LearnSetup{L,M}
+  model::M
+  LearnSetup(::Type{L}, model::M) where {L,M} = new{L,M}(model)
+end
+
+struct InterpSetup{I,M}
+  model::M
+  InterpSetup(::Type{I}, model::M) where {I,M} = new{I,M}(model)
+end
 
 """
-    error(solver, problem, method)
+    error(setup, problem, method)
 
-Estimate error of `solver` in a given `problem` with
+Estimate error of `setup` in a given `problem` with
 error estimation `method`.
 """
-Base.error(solver, problem, ::ErrorEstimationMethod)
+Base.error(setup, problem, ::ErrorMethod)
 
 # ----------------
 # IMPLEMENTATIONS

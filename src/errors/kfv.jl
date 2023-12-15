@@ -17,7 +17,7 @@ for some of the variables.
   cross-validation and the repeated learning-testing methods]
   (https://www.jstor.org/stable/2336116)
 """
-struct KFoldValidation <: ErrorEstimationMethod
+struct KFoldValidation <: ErrorMethod
   k::Int
   shuffle::Bool
   loss::Dict{Symbol,SupervisedLoss}
@@ -25,7 +25,7 @@ end
 
 KFoldValidation(k::Int; shuffle=true, loss=Dict()) = KFoldValidation(k, shuffle, loss)
 
-function Base.error(solver, problem, method::KFoldValidation)
+function Base.error(setup, problem, method::KFoldValidation)
   # uniform weights
   weighting = UniformWeighting()
 
@@ -34,5 +34,5 @@ function Base.error(solver, problem, method::KFoldValidation)
 
   wcv = WeightedValidation(weighting, folding, lambda=1, loss=method.loss)
 
-  error(solver, problem, wcv)
+  error(setup, problem, wcv)
 end

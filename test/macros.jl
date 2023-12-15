@@ -1,5 +1,12 @@
 @testset "Macros" begin
   @testset "@estimsolver" begin
+    @estimsolver ESolver begin
+      @param A = 1.0
+      @param B = 2
+      @jparam J = "foo"
+      @global C = true
+    end
+
     s = ESolver(:z => (A=2, B=3), C=false)
     @test s.C == false
     @test s.progress == true

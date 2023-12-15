@@ -1,12 +1,14 @@
 @testset "Errors" begin
+  Random.seed!(123)
+
   @testset "Learning" begin
     x = rand(1:2, 1000)
     y = rand(1:2, 1000)
     X = rand(2, 1000)
     𝒮 = georef((x=x, y=y), X)
     𝒯 = ClassificationTask(:x, :y)
-    p = LearningProblem(𝒮, 𝒮, 𝒯)
-    s = DummyLearnSolver(DummyModel())
+    p = LearnProblem(𝒮, 𝒮, 𝒯)
+    s = LearnSetup(Learn, DecisionTreeClassifier())
 
     # dummy classifier → 0.5 misclassification rate
     for m in [LeaveOneOut(), LeaveBallOut(0.1), KFoldValidation(10), BlockValidation(0.1), DensityRatioValidation(10)]
@@ -15,14 +17,14 @@
     end
   end
 
-  @testset "Estimation" begin
+  @testset "Interpolation" begin
     ℐ₁ = georef((z=rand(50, 50),))
     ℐ₂ = georef((z=100rand(50, 50),))
     𝒮₁ = sample(ℐ₁, UniformSampling(100, replace=false))
     𝒮₂ = sample(ℐ₂, UniformSampling(100, replace=false))
-    p₁ = EstimationProblem(𝒮₁, domain(ℐ₁), :z)
-    p₂ = EstimationProblem(𝒮₂, domain(ℐ₂), :z)
-    s = DummyEstimSolver()
+    p₁ = InterpProblem(𝒮₁, domain(ℐ₁), :z)
+    p₂ = InterpProblem(𝒮₂, domain(ℐ₂), :z)
+    s = InterpSetup(Interpolate, NN())
 
     # low variance + dummy (mean) estimator → low error
     # high variance + dummy (mean) estimator → high error

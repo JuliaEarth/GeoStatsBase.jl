@@ -19,14 +19,14 @@ become cubes.
   of spatial models via spatial k-fold cross-validation]
   (https://www.tandfonline.com/doi/full/10.1080/13658816.2017.1346255)
 """
-struct BlockValidation{S} <: ErrorEstimationMethod
+struct BlockValidation{S} <: ErrorMethod
   sides::S
   loss::Dict{Symbol,SupervisedLoss}
 end
 
 BlockValidation(sides; loss=Dict()) = BlockValidation{typeof(sides)}(sides, loss)
 
-function Base.error(solver, problem, method::BlockValidation)
+function Base.error(setup, problem, method::BlockValidation)
   # uniform weights
   weighting = UniformWeighting()
 
@@ -35,5 +35,5 @@ function Base.error(solver, problem, method::BlockValidation)
 
   wcv = WeightedValidation(weighting, folding, lambda=1, loss=method.loss)
 
-  error(solver, problem, wcv)
+  error(setup, problem, wcv)
 end
