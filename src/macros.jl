@@ -32,7 +32,7 @@ of the problem, and a global parameter that specifies whether or not
 to use the GPU:
 
 ```julia
-julia> @metasolver MySolver SimulationSolver begin
+julia> @metasolver MySolver SolverType begin
   @param mean = 0.0
   @param variogram = GaussianVariogram()
   @jparam rho = 0.7
@@ -43,7 +43,7 @@ end
 ### Notes
 
 This macro is not intended to be used directly, see other macros defined
-below for estimation and simulation solvers.
+below for estimation solvers.
 """
 macro metasolver(solver, solvertype, body)
   # discard any content that doesn't start with @param or @global
@@ -218,18 +218,5 @@ specified in `body`. For examples, please check the documentation for
 macro estimsolver(solver, body)
   esc(quote
     GeoStatsBase.@metasolver $solver GeoStatsBase.EstimationSolver $body
-  end)
-end
-
-"""
-    @simsolver solver body
-
-A helper macro to create a simulation solver named `solver` with parameters
-specified in `body`. For examples, please check the documentation for
-`@metasolver`.
-"""
-macro simsolver(solver, body)
-  esc(quote
-    GeoStatsBase.@metasolver $solver GeoStatsBase.SimulationSolver $body
   end)
 end

@@ -23,43 +23,6 @@
           "2D EstimationProblem\n  domain:    100×100 CartesianGrid{2,Float64}\n  samples:   3 PointSet{2,Float64}\n  targets:   value (Float64)"
   end
 
-  @testset "Simulation" begin
-    # test basic problem interface
-    problem3D = SimulationProblem(data3D, grid3D, :value, 100)
-    @test data(problem3D) == data3D
-    @test domain(problem3D) == grid3D
-    @test variables(problem3D) == (; value=Float64)
-    @test nreals(problem3D) == 100
-
-    # problems with missing data have types inferred correctly
-    Z = Array{Union{Float64,Missing}}(rand(10, 10))
-    problem = SimulationProblem(georef((Z=Z,)), grid2D, :Z, 3)
-    @test variables(problem) == (; Z=Float64)
-
-    # specify type of variable explicitly
-    problem = SimulationProblem(data3D, grid3D, :value => Float64, 100)
-    @test variables(problem) == (; value=Float64)
-
-    # add variable not present in spatial data
-    problem = SimulationProblem(data3D, grid3D, (:value => Float64, :other => Int), 100)
-    @test variables(problem) == (; value=Float64, other=Int)
-
-    # infer type of variables in spatial data whenever possible
-    problem = SimulationProblem(data3D, grid3D, (:value, :other => Int), 100)
-    @test variables(problem) == (; value=Float64, other=Int)
-
-    # constructors without spatial data require variables with types
-    problem = SimulationProblem(grid3D, :value => Float64, 100)
-    @test variables(problem) == (; value=Float64)
-    @test_throws MethodError SimulationProblem(grid3D, :value, 100)
-
-    # show methods
-    problem2D = SimulationProblem(data2D, grid2D, :value, 100)
-    @test sprint(show, problem2D) == "2D SimulationProblem (conditional)"
-    @test sprint(show, MIME"text/plain"(), problem2D) ==
-          "2D SimulationProblem (conditional)\n  domain:    100×100 CartesianGrid{2,Float64}\n  samples:   3 PointSet{2,Float64}\n  targets:   value (Float64)\n  N° reals:  100"
-  end
-
   @testset "Learning" begin
     rng = MersenneTwister(42)
     sdata = georef((x=rand(rng, 10), y=rand(rng, 10), z=rand(rng, 10)), 10rand(rng, 2, 10))

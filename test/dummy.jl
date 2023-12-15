@@ -1,4 +1,4 @@
-import GeoStatsBase: solve, solvesingle
+import GeoStatsBase: solve
 
 ########################
 # DUMMY LEARNING MODEL
@@ -28,17 +28,6 @@ end
   @param B = 2
   @jparam J = "foo"
   @global C = true
-end
-
-@simsolver SSolver begin
-  @param A = 1.0
-  @param B = 2
-  @jparam J = "foo"
-  @global C = true
-end
-
-function solvesingle(problem::SimulationProblem, covars, ::SSolver, preproc)
-  Dict(var => rand(100) for var in covars.names)
 end
 
 struct DummyLearnSolver{M} <: LearningSolver
