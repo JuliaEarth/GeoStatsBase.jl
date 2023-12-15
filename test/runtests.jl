@@ -30,7 +30,6 @@ testfiles = [
   "geoops.jl",
   "learning.jl",
   "problems.jl",
-  "solvers.jl",
   "initbuff.jl",
   "folding.jl",
   "errors.jl",

@@ -17,13 +17,6 @@ A solver for a geostatistical estimation problem.
 abstract type EstimationSolver <: Solver end
 
 """
-    SimulationSolver
-
-A solver for a geostatistical simulation problem.
-"""
-abstract type SimulationSolver <: Solver end
-
-"""
     LearningSolver
 
 A solver for a geostatistical learning problem.
@@ -37,91 +30,6 @@ Solve the `problem` with the `solver`, optionally
 passing `options`.
 """
 function solve end
-
-"""
-    solve(problem, solver; procs=[myid()])
-
-Solve the simulation `problem` with the simulation `solver`,
-optionally using multiple distributed processes `procs`.
-"""
-function solve(problem::SimulationProblem, solver::SimulationSolver; procs=[myid()])
-  # retrieve problem variables
-  pvars = variables(problem)
-
-  # sanity checks
-  @assert targets(solver) ⊆ keys(pvars) "invalid variables in solver"
-
-  # optional preprocessing
-  preproc = preprocess(problem, solver)
-
-  # pool of worker processes
-  pool = CachingPool(procs)
-
-  # list of covariables
-  allcovars = covariables(problem, solver)
-
-  # simulation loop
-  results = []
-  for covars in allcovars
-    reals = if solver.progress
-      message = "Simulating $(join(covars.names, " ,", " and ")):"
-      @showprogress desc = message pmap(pool, 1:nreals(problem)) do _
-        solvesingle(problem, covars, solver, preproc)
-      end
-    else
-      pmap(pool, 1:nreals(problem)) do _
-        solvesingle(problem, covars, solver, preproc)
-      end
-    end
-
-    # rearrange realizations
-    vnames = covars.names
-    vtypes = [pvars[var] for var in vnames]
-    vvects = [Vector{V}[] for V in vtypes]
-    rtuple = (; zip(vnames, vvects)...)
-    for real in reals
-      for var in vnames
-        push!(rtuple[var], real[var])
-      end
-    end
-
-    push!(results, rtuple)
-  end
-
-  # merge results into a single dictionary
-  pdomain = domain(problem)
-  preals = reduce(merge, results)
-
-  Ensemble(pdomain, preals)
-end
-
-"""
-    preprocess(problem, solver)
-
-Preprocess the simulation `problem` once before generating each realization
-with simulation `solver`.
-
-### Notes
-
-The output of the function is defined by the solver developer.
-Default implementation returns nothing.
-"""
-preprocess(::SimulationProblem, ::SimulationSolver) = nothing
-
-"""
-    solvesingle(problem, covariables, solver, preproc)
-
-Solve a single realization of `covariables` in the simulation `problem`
-with the simulation `solver`, optionally using preprocessed data in `preproc`.
-
-### Notes
-
-By implementing this function instead of `solve`, the developer is
-informing the framework that realizations generated with his/her
-solver are independent one from another. GeoStats.jl will trigger
-the algorithm in parallel (if enough processes are available).
-"""
-function solvesingle end
 
 """
     covariables(var, solver)

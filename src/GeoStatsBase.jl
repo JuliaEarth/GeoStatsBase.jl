@@ -76,7 +76,6 @@ export
   # problems
   Problem,
   EstimationProblem,
-  SimulationProblem,
   LearningProblem,
   data,
   domain,
@@ -89,13 +88,11 @@ export
   # solvers
   Solver,
   EstimationSolver,
-  SimulationSolver,
   LearningSolver,
   targets,
   covariables,
   preprocess,
   solve,
-  solvesingle,
 
   # initialization
   InitMethod,
@@ -122,7 +119,6 @@ export
 
   # helper macros
   @estimsolver,
-  @simsolver,
 
   # weighting
   GeoWeights,
