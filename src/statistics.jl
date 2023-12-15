@@ -22,7 +22,8 @@ specify the variable `v` and the block side `s`.
 """
 var(t::AbstractGeoTable, v) = var(t, v, mode_heuristic(t))
 var(t::AbstractGeoTable, v, s::Number) = var(t, v, BlockWeighting(s))
-var(t::AbstractGeoTable, v, w::WeightingMethod) = var(getproperty(t, v), weight(t, w), mean=mean(t, v, w), corrected=false)
+var(t::AbstractGeoTable, v, w::WeightingMethod) =
+  var(getproperty(t, v), weight(t, w), mean=mean(t, v, w), corrected=false)
 
 """
     quantile(data, v, p)
