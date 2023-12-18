@@ -16,8 +16,6 @@ using Distances: Euclidean, pairwise
 using Distributed: CachingPool, pmap, myid
 using StatsBase: Histogram, AbstractWeights
 using StatsBase: midpoints, sample, mode
-using Transducers: Map, foldxt
-using LossFunctions: L2DistLoss, MisclassLoss
 using DensityRatioEstimation
 using ProgressMeter
 using LinearAlgebra
@@ -28,27 +26,21 @@ using ColumnSelectors: ColumnSelector, Column
 using ColumnSelectors: AllSelector, NoneSelector
 using ColumnSelectors: selector
 using TableTransforms: Rename
-using DataScienceTraits: Continuous, Categorical
+using DataScienceTraits: Categorical
 
 using TypedTables # for a default table type
 using Optim # for LSIF estimation
 
 import GeoTables: domain
-import LossFunctions.Traits: SupervisedLoss
 import StatsBase: fit, varcorrection, describe
 import Statistics: mean, var, quantile
 import Base: ==
 
 include("ensembles.jl")
-include("macros.jl")
 include("weighting.jl")
 include("geoops.jl")
-include("learning.jl")
-include("problems.jl")
-include("solvers.jl")
 include("initbuff.jl")
 include("folding.jl")
-include("errors.jl")
 include("statistics.jl")
 include("histograms.jl")
 include("rotations.jl")
@@ -57,42 +49,6 @@ include("hsactter.jl")
 export
   # ensembles
   Ensemble,
-
-  # learning tasks
-  LearningTask,
-  SupervisedLearningTask,
-  UnsupervisedLearningTask,
-  RegressionTask,
-  ClassificationTask,
-  issupervised,
-  inputvars,
-  outputvars,
-  features,
-  label,
-
-  # learning losses
-  defaultloss,
-
-  # problems
-  Problem,
-  EstimationProblem,
-  LearningProblem,
-  data,
-  domain,
-  sourcedata,
-  targetdata,
-  task,
-  variables,
-  nreals,
-
-  # solvers
-  Solver,
-  EstimationSolver,
-  LearningSolver,
-  targets,
-  covariables,
-  preprocess,
-  solve,
 
   # initialization
   InitMethod,
@@ -107,18 +63,6 @@ export
   BlockFolding,
   BallFolding,
   folds,
-
-  # errors
-  ErrorEstimationMethod,
-  LeaveOneOut,
-  LeaveBallOut,
-  KFoldValidation,
-  BlockValidation,
-  WeightedValidation,
-  DensityRatioValidation,
-
-  # helper macros
-  @estimsolver,
 
   # weighting
   GeoWeights,

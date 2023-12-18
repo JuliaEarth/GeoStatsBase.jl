@@ -20,23 +20,16 @@ using FileIO: load
 # environment settings
 datadir = joinpath(@__DIR__, "data")
 
-# dummy definitions for testing
-include("dummy.jl")
-
 # list of tests
 testfiles = [
   "ensembles.jl",
   "weighting.jl",
   "geoops.jl",
-  "learning.jl",
-  "problems.jl",
   "initbuff.jl",
   "folding.jl",
-  "errors.jl",
   "statistics.jl",
   "histograms.jl",
   "rotations.jl",
-  "macros.jl"
 ]
 
 @testset "GeoStatsBase.jl" begin
