@@ -6,26 +6,17 @@ module GeoStatsBase
 
 using Meshes
 using Tables
-using Unitful
 using GeoTables
 using DataScienceTraits
 using CategoricalArrays
 using Rotations: RotZYX
-using Distributions: median
 using Distances: Euclidean, pairwise
-using Distributed: CachingPool, pmap, myid
 using StatsBase: Histogram, AbstractWeights
-using StatsBase: midpoints, sample, mode
+using StatsBase: midpoints, sample, median
 using DensityRatioEstimation
-using ProgressMeter
 using LinearAlgebra
-using Random
 
-using Unitful: AbstractQuantity, AffineUnits, Units
-using ColumnSelectors: ColumnSelector, Column
-using ColumnSelectors: AllSelector, NoneSelector
-using ColumnSelectors: selector
-using TableTransforms: Rename
+using ColumnSelectors: ColumnSelector, AllSelector, selector
 using DataScienceTraits: Categorical
 
 using TypedTables # for a default table type
@@ -72,10 +63,6 @@ export
   DensityRatioWeighting,
   weight,
 
-  # trends
-  polymat,
-  trend,
-
   # histograms
   EmpiricalHistogram,
 
@@ -93,12 +80,6 @@ export
   DatamineAngles,
   GslibAngles,
   VulcanAngles,
-
-  # transforms
-  Detrend,
-  Potrace,
-  Rasterize,
-  UniqueCoords,
 
   # plotting
   hscatter,
