@@ -44,7 +44,7 @@ include("folding.jl")
 include("statistics.jl")
 include("histograms.jl")
 include("rotations.jl")
-include("hsactter.jl")
+include("hscatter.jl")
 
 export
   # ensembles
