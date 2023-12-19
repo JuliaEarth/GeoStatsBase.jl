@@ -29,7 +29,7 @@ testfiles = [
   "folding.jl",
   "statistics.jl",
   "histograms.jl",
-  "rotations.jl",
+  "rotations.jl"
 ]
 
 @testset "GeoStatsBase.jl" begin
