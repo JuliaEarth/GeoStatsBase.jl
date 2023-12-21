@@ -19,12 +19,6 @@ StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 Tables = "bd369af6-aec1-5ad0-b16a-f7cc5008161c"
 TypedTables = "9d95f2ec-7b3d-5a63-8d20-e2491e220bb9"
 
-[weakdeps]
-Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
-
-[extensions]
-GeoStatsBaseMakieExt = "Makie"
-
 [compat]
 CategoricalArrays = "0.10"
 ColumnSelectors = "0.1"
@@ -34,7 +28,7 @@ Distances = "0.10"
 GeoTables = "1.9"
 LinearAlgebra = "1.9"
 Makie = "0.20"
-Meshes = "0.37"
+Meshes = "0.37, 0.38"
 Optim = "1.7"
 Rotations = "1.6"
 Statistics = "1.9"
@@ -42,3 +36,9 @@ StatsBase = "0.33, 0.34"
 Tables = "1.11"
 TypedTables = "1.4"
 julia = "1.9"
+
+[extensions]
+GeoStatsBaseMakieExt = "Makie"
+
+[weakdeps]
+Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
