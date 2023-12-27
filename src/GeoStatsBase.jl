@@ -7,10 +7,11 @@ module GeoStatsBase
 using Meshes
 using Tables
 using GeoTables
+using Rotations
 using StaticArrays
 using DataScienceTraits
 using CategoricalArrays
-using Rotations: Rotation, rot_eltype
+using Rotations: rot_eltype
 using Distances: Euclidean, pairwise
 using StatsBase: Histogram, AbstractWeights
 using StatsBase: midpoints, sample, median

@@ -28,4 +28,17 @@
   # rotation conversion
   rot = RotZXY(0.1, 0.2, 0.3)
   @test DatamineAngles(rot) ≈ GslibAngles(rot) ≈ VulcanAngles(rot) ≈ rot
+
+  α, β, θ = -15, 45, 30
+  rot = RotZYX(deg2rad(θ), -deg2rad(β), deg2rad(α - 90))
+  datamine = DatamineAngles(rot)
+  @test Rotations.params(datamine) ≈ [α, β, θ]
+
+  rot = RotZYX(deg2rad(θ), deg2rad(β), deg2rad(α - 90))
+  vulcan = VulcanAngles(rot)
+  @test Rotations.params(vulcan) ≈ [α, β, θ]
+
+  rot = RotZYX(-deg2rad(θ), deg2rad(β), deg2rad(α - 90))
+  gslib = GslibAngles(rot)
+  @test Rotations.params(gslib) ≈ [α, β, θ]
 end

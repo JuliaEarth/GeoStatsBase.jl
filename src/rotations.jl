@@ -8,60 +8,21 @@ function toangles end
 
 function rotparams end
 
+Rotations.params(r::IndustryRotation) = SVector(r.α, r.β, r.θ)
+
 function (::Type{Rot})(t::NTuple{9}) where {Rot<:IndustryRotation}
-  R = SMatrix{3,3}(t)
-
-  θ₁ = atan(R[2, 1], R[1, 1])
-  θ₂ = atan(-R[3, 1], (R[3, 2] * R[3, 2] + R[3, 3] * R[3, 3])^(1 / 2))
-  sinθ₁, cosθ₁ = sincos(θ₁)
-  θ₃ = atan(R[1, 3] * sinθ₁ - R[2, 3] * cosθ₁, R[2, 2] * cosθ₁ - R[1, 2] * sinθ₁)
-
+  θ₁, θ₂, θ₃ = Rotations.params(RotZYX(t))
   Rot(toangles(Rot, θ₁, θ₂, θ₃)...)
 end
 
-function Base.Tuple(r::IndustryRotation)
-  θ₁, θ₂, θ₃ = rotparams(r)
-
-  sinθ₁, cosθ₁ = sincos(θ₁)
-  sinθ₂, cosθ₂ = sincos(θ₂)
-  sinθ₃, cosθ₃ = sincos(θ₃)
-
-  # transposed representation
-  (
-    cosθ₁ * cosθ₂,
-    sinθ₁ * cosθ₂,
-    -sinθ₂,
-    -sinθ₁ * cosθ₃ + cosθ₁ * sinθ₂ * sinθ₃,
-    cosθ₁ * cosθ₃ + sinθ₁ * sinθ₂ * sinθ₃,
-    cosθ₂ * sinθ₃,
-    sinθ₁ * sinθ₃ + cosθ₁ * sinθ₂ * cosθ₃,
-    cosθ₁ * -sinθ₃ + sinθ₁ * sinθ₂ * cosθ₃,
-    cosθ₂ * cosθ₃
-  )
-end
+Base.Tuple(r::IndustryRotation) = Tuple(RotZYX(rotparams(r)...))
 
 function Base.:*(r::IndustryRotation, v::StaticVector)
   if length(v) != 3
     throw("Dimension mismatch: cannot rotate a vector of length $(length(v))")
   end
-
-  θ₁, θ₂, θ₃ = rotparams(r)
-
-  sinθ₁, cosθ₁ = sincos(θ₁)
-  sinθ₂, cosθ₂ = sincos(θ₂)
-  sinθ₃, cosθ₃ = sincos(θ₃)
-
-  T = Base.promote_op(*, typeof(sinθ₁), eltype(v))
-
-  return similar_type(v, T)(
-    cosθ₁ * cosθ₂ * v[1] +
-    (-sinθ₁ * cosθ₃ + cosθ₁ * sinθ₂ * sinθ₃) * v[2] +
-    (sinθ₁ * sinθ₃ + cosθ₁ * sinθ₂ * cosθ₃) * v[3],
-    sinθ₁ * cosθ₂ * v[1] +
-    (cosθ₁ * cosθ₃ + sinθ₁ * sinθ₂ * sinθ₃) * v[2] +
-    (cosθ₁ * -sinθ₃ + sinθ₁ * sinθ₂ * cosθ₃) * v[3],
-    -sinθ₂ * v[1] + cosθ₂ * sinθ₃ * v[2] + cosθ₂ * cosθ₃ * v[3]
-  )
+  rot = RotZYX(rotparams(r)...)
+  rot * v
 end
 
 Base.getindex(r::IndustryRotation, i::Int) = getindex(Tuple(r), i)
