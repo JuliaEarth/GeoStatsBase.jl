@@ -10,7 +10,7 @@ using GeoTables
 using StaticArrays
 using DataScienceTraits
 using CategoricalArrays
-using Rotations: RotZYX, Rotation
+using Rotations: Rotation, rot_eltype
 using Distances: Euclidean, pairwise
 using StatsBase: Histogram, AbstractWeights
 using StatsBase: midpoints, sample, median

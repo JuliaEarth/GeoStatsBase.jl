@@ -24,4 +24,8 @@
   @test datamine ≈ gslib
   @test datamine ≈ vulcan
   @test gslib ≈ vulcan
+
+  # rotation conversion
+  rot = RotZXY(0.1, 0.2, 0.3)
+  @test DatamineAngles(rot) ≈ GslibAngles(rot) ≈ VulcanAngles(rot) ≈ rot
 end
