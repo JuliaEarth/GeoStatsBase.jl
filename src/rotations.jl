@@ -117,7 +117,7 @@ end
     MinesightAngles(θ₁, θ₂, θ₃)
 
 MineSight YZX rotation convention following the right-hand rule.
-All angles are in degrees and the signal convention is CW, CCW, CW positive.
+All angles are in degrees and the sign convention is CW, CCW, CW positive.
 
 The first rotation is a horizontal rotation around the Z-axis, with positive being clockwise.
 The second rotation is a rotation around the new X-axis, which moves the Y-axis into the
