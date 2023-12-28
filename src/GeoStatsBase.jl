@@ -82,6 +82,7 @@ export
   DatamineAngles,
   GslibAngles,
   VulcanAngles,
+  MinesightAngles,
 
   # plotting
   hscatter,
