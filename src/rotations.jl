@@ -7,7 +7,7 @@ abstract type IndustryRotation{T} <: Rotation{3,T} end
 """
     rottype(R::Type{<:IndustryRotation}) -> Rotation
 
-Returns the equivalent rotation of the idustry rotation `R`.
+Returns the equivalent rotation of the industry rotation `R`.
 """
 rottype(::Type{<:IndustryRotation}) = RotZYX
 
