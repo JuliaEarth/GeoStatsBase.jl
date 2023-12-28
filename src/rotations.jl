@@ -43,7 +43,7 @@ function Base.convert(::Type{R}, rot::RotZYX) where {R<:DatamineAngles}
 end
 
 function Base.convert(::Type{R}, rot::DatamineAngles) where {R<:RotZYX}
-  θ₁, θ₂, θ₃ = Rotations.params(rot)
+  θ₁, θ₂, θ₃ = rot.theta1, rot.theta2, rot.theta3
   R(deg2rad(θ₃), -deg2rad(θ₂), deg2rad(θ₁ - 90))
 end
 
@@ -70,7 +70,7 @@ function Base.convert(::Type{R}, rot::RotZYX) where {R<:VulcanAngles}
 end
 
 function Base.convert(::Type{R}, rot::VulcanAngles) where {R<:RotZYX}
-  θ₁, θ₂, θ₃ = Rotations.params(rot)
+  θ₁, θ₂, θ₃ = rot.theta1, rot.theta2, rot.theta3
   R(deg2rad(θ₃), deg2rad(θ₂), deg2rad(θ₁ - 90))
 end
 
@@ -102,6 +102,6 @@ function Base.convert(::Type{R}, rot::RotZYX) where {R<:GslibAngles}
 end
 
 function Base.convert(::Type{R}, rot::GslibAngles) where {R<:RotZYX}
-  θ₁, θ₂, θ₃ = Rotations.params(rot)
+  θ₁, θ₂, θ₃ = rot.theta1, rot.theta2, rot.theta3
   R(-deg2rad(θ₃), deg2rad(θ₂), deg2rad(θ₁ - 90))
 end
