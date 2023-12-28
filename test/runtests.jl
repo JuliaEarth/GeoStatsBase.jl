@@ -6,6 +6,7 @@ using CoDa
 using Tables
 using Unitful
 using TypedTables
+using Rotations
 using Distances
 using Statistics
 using Distributions
