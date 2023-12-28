@@ -84,9 +84,13 @@ end
 """
     GslibAngles(θ₁, θ₂, θ₃)
 
-GSLIB ZXY rotation convention following the left-hand rule.
-All angles are in degrees and the signal convention is CW, CCW, CCW
-positive. Y is the principal axis.
+GSLIB YXZ rotation convention following the left-hand rule.
+All angles are in degrees and the sign convention is CW, CCW, CW positive.
+Y is the principal axis.
+
+The first rotation `θ₁` is a rotation around the Z-axis, this is also called the azimuth. 
+The second rotation `θ₂` is a rotation around the X-axis, this is also called the dip. 
+The third rotation `θ₃` is a rotation around the Y-axis, this is also called the tilt. 
 
 ## References
 
@@ -103,26 +107,28 @@ end
 GslibAngles(θ₁::T, θ₂::T, θ₃::T) where {T} = GslibAngles{T}(θ₁, θ₂, θ₃)
 GslibAngles(θ₁, θ₂, θ₃) = GslibAngles(promote(θ₁, θ₂, θ₃)...)
 
-function Base.convert(::Type{R}, rot::RotZYX) where {R<:GslibAngles}
+rottype(::Type{<:GslibAngles}) = RotYXZ
+
+function Base.convert(::Type{R}, rot::RotYXZ) where {R<:GslibAngles}
   θ₁, θ₂, θ₃ = Rotations.params(rot)
-  R(rad2deg(θ₃) + 90, rad2deg(θ₂), -rad2deg(θ₁))
+  R(-rad2deg(θ₃), rad2deg(θ₂), -rad2deg(θ₁))
 end
 
-function Base.convert(::Type{R}, rot::GslibAngles) where {R<:RotZYX}
+function Base.convert(::Type{R}, rot::GslibAngles) where {R<:RotYXZ}
   (; θ₁, θ₂, θ₃) = rot
-  R(-deg2rad(θ₃), deg2rad(θ₂), deg2rad(θ₁ - 90))
+  R(-deg2rad(θ₃), deg2rad(θ₂), -deg2rad(θ₁))
 end
 
 """
     MinesightAngles(θ₁, θ₂, θ₃)
 
-MineSight YZX rotation convention following the right-hand rule.
+MineSight YXZ rotation convention following the right-hand rule.
 All angles are in degrees and the sign convention is CW, CCW, CW positive.
 
-The first rotation is a horizontal rotation around the Z-axis, with positive being clockwise.
-The second rotation is a rotation around the new X-axis, which moves the Y-axis into the
+The first rotation `θ₁` is a horizontal rotation around the Z-axis, with positive being clockwise.
+The second rotation `θ₂` is a rotation around the new X-axis, which moves the Y-axis into the
 desired position, with positive direction of rotation is up.
-The third rotation is a rotation around the new Y-axis, which moves the X-axis into the 
+The third rotation `θ₃` is a rotation around the new Y-axis, which moves the X-axis into the 
 desired position, with positive direction of rotation is up.
 
 ## References
