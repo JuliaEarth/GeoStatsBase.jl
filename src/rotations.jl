@@ -127,7 +127,7 @@ desired position, with positive direction of rotation is up.
 
 ## References
 
-* MINESIGHT® TUTORIALS (https://pdfcoffee.com/manual-minesight-6-pdf-free.html)
+* Jorge Sanchez. [MINESIGHT® TUTORIALS](https://pdfcoffee.com/manual-minesight-6-pdf-free.html)
 """
 struct MinesightAngles{T} <: IndustryRotation{T}
   θ₁::T
