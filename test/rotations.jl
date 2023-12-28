@@ -20,6 +20,12 @@
   @test vulcan * v₁ ≈ [3.0810411262386967, 1.2425629737653001, 1.7214014158973259]
   @test vulcan * v₂ ≈ [0.7601180732526871, 0.5597366702348654, 0.09442126195411826]
 
+  # MineSight convention
+  minisight = MinesightAngles(30, 15, -15)
+
+  @test minisight * v₁ ≈ [3.7410191941252595, -0.034675177060507156, 0.059774754555877996]
+  @test minisight * v₂ ≈ [0.8592918193713616, 0.4018496819077273, -0.011593201115905286]
+
   # comparing conventions
   @test datamine ≈ gslib
   @test datamine ≈ vulcan
@@ -41,4 +47,10 @@
   rot = RotZYX(-deg2rad(θ₃), deg2rad(θ₂), deg2rad(θ₁ - 90))
   gslib = GslibAngles(rot)
   @test Rotations.params(gslib) ≈ [θ₁, θ₂, θ₃]
+
+  θ₁, θ₂, θ₃ = 30, 15, -15
+  rot = RotYXZ(-deg2rad(θ₃), deg2rad(θ₂), -deg2rad(θ₁))
+  minisight = MinesightAngles(rot)
+  @test minisight ≈ rot
+  @test Rotations.params(minisight) ≈ [θ₁, θ₂, θ₃]
 end
