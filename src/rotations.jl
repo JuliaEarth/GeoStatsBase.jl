@@ -4,73 +4,78 @@
 
 abstract type IndustryRotation{T} <: Rotation{3,T} end
 
-function toangles end
+Rotations.params(r::IndustryRotation) = SVector(r.theta1, r.theta2, r.theta3)
 
-function rotparams end
+(::Type{R})(t::NTuple{9}) where {R<:IndustryRotation} = convert(R, RotZYX(t))
 
-Rotations.params(r::IndustryRotation) = SVector(r.α, r.β, r.θ)
-
-function (::Type{Rot})(t::NTuple{9}) where {Rot<:IndustryRotation}
-  θ₁, θ₂, θ₃ = Rotations.params(RotZYX(t))
-  Rot(toangles(Rot, θ₁, θ₂, θ₃)...)
-end
-
-Base.Tuple(r::IndustryRotation) = Tuple(RotZYX(rotparams(r)...))
+Base.Tuple(r::IndustryRotation) = Tuple(convert(RotZYX, r))
 
 function Base.:*(r::IndustryRotation, v::StaticVector)
   if length(v) != 3
     throw("Dimension mismatch: cannot rotate a vector of length $(length(v))")
   end
-  rot = RotZYX(rotparams(r)...)
+  rot = convert(RotZYX, r)
   rot * v
 end
 
 Base.getindex(r::IndustryRotation, i::Int) = getindex(Tuple(r), i)
 
 """
-    DatamineAngles(α, β, θ)
+    DatamineAngles(θ₁, θ₂, θ₃)
 
 Datamine ZXY rotation convention following the left-hand rule.
 All angles are in degrees and the signal convention is CW, CW, CW
 positive. Y is the principal axis.
 """
 struct DatamineAngles{T} <: IndustryRotation{T}
-  α::T
-  β::T
-  θ::T
-  DatamineAngles{T}(α, β, θ) where {T} = new{rot_eltype(T)}(α, β, θ)
+  theta1::T
+  theta2::T
+  theta3::T
+  DatamineAngles{T}(theta1, theta2, theta3) where {T} = new{rot_eltype(T)}(theta1, theta2, theta3)
 end
 
-DatamineAngles(α::T, β::T, θ::T) where {T} = DatamineAngles{T}(α, β, θ)
-DatamineAngles(α, β, θ) = DatamineAngles(promote(α, β, θ)...)
+DatamineAngles(theta1::T, theta2::T, theta3::T) where {T} = DatamineAngles{T}(theta1, theta2, theta3)
+DatamineAngles(theta1, theta2, theta3) = DatamineAngles(promote(theta1, theta2, theta3)...)
 
-toangles(::Type{<:DatamineAngles}, θ₁, θ₂, θ₃) = (rad2deg(θ₃) + 90, -rad2deg(θ₂), rad2deg(θ₁))
+function Base.convert(::Type{R}, rot::RotZYX) where {R<:DatamineAngles}
+  θ₁, θ₂, θ₃ = Rotations.params(rot)
+  R(rad2deg(θ₃) + 90, -rad2deg(θ₂), rad2deg(θ₁))
+end
 
-rotparams(r::DatamineAngles) = (deg2rad(r.θ), -deg2rad(r.β), deg2rad(r.α - 90))
+function Base.convert(::Type{R}, rot::DatamineAngles) where {R<:RotZYX}
+  θ₁, θ₂, θ₃ = Rotations.params(rot)
+  R(deg2rad(θ₃), -deg2rad(θ₂), deg2rad(θ₁ - 90))
+end
 
 """
-    VulcanAngles(α, β, θ)
+    VulcanAngles(θ₁, θ₂, θ₃)
 
 GSLIB ZYX rotation convention following the right-hand rule.
 All angles are in degrees and the signal convention is CW, CCW, CW
 positive. X is the principal axis.
 """
 struct VulcanAngles{T} <: IndustryRotation{T}
-  α::T
-  β::T
-  θ::T
-  VulcanAngles{T}(α, β, θ) where {T} = new{rot_eltype(T)}(α, β, θ)
+  theta1::T
+  theta2::T
+  theta3::T
+  VulcanAngles{T}(theta1, theta2, theta3) where {T} = new{rot_eltype(T)}(theta1, theta2, theta3)
 end
 
-VulcanAngles(α::T, β::T, θ::T) where {T} = VulcanAngles{T}(α, β, θ)
-VulcanAngles(α, β, θ) = VulcanAngles(promote(α, β, θ)...)
+VulcanAngles(theta1::T, theta2::T, theta3::T) where {T} = VulcanAngles{T}(theta1, theta2, theta3)
+VulcanAngles(theta1, theta2, theta3) = VulcanAngles(promote(theta1, theta2, theta3)...)
 
-toangles(::Type{<:VulcanAngles}, θ₁, θ₂, θ₃) = (rad2deg(θ₃) + 90, rad2deg(θ₂), rad2deg(θ₁))
+function Base.convert(::Type{R}, rot::RotZYX) where {R<:VulcanAngles}
+  θ₁, θ₂, θ₃ = Rotations.params(rot)
+  R(rad2deg(θ₃) + 90, rad2deg(θ₂), rad2deg(θ₁))
+end
 
-rotparams(r::VulcanAngles) = (deg2rad(r.θ), deg2rad(r.β), deg2rad(r.α - 90))
+function Base.convert(::Type{R}, rot::VulcanAngles) where {R<:RotZYX}
+  θ₁, θ₂, θ₃ = Rotations.params(rot)
+  R(deg2rad(θ₃), deg2rad(θ₂), deg2rad(θ₁ - 90))
+end
 
 """
-    GslibAngles(α, β, θ)
+    GslibAngles(θ₁, θ₂, θ₃)
 
 GSLIB ZXY rotation convention following the left-hand rule.
 All angles are in degrees and the signal convention is CW, CCW, CCW
@@ -82,15 +87,21 @@ positive. Y is the principal axis.
   (https://geostatisticslessons.com/lessons/anglespecification)
 """
 struct GslibAngles{T} <: IndustryRotation{T}
-  α::T
-  β::T
-  θ::T
-  GslibAngles{T}(α, β, θ) where {T} = new{rot_eltype(T)}(α, β, θ)
+  theta1::T
+  theta2::T
+  theta3::T
+  GslibAngles{T}(theta1, theta2, theta3) where {T} = new{rot_eltype(T)}(theta1, theta2, theta3)
 end
 
-GslibAngles(α::T, β::T, θ::T) where {T} = GslibAngles{T}(α, β, θ)
-GslibAngles(α, β, θ) = GslibAngles(promote(α, β, θ)...)
+GslibAngles(theta1::T, theta2::T, theta3::T) where {T} = GslibAngles{T}(theta1, theta2, theta3)
+GslibAngles(theta1, theta2, theta3) = GslibAngles(promote(theta1, theta2, theta3)...)
 
-toangles(::Type{<:GslibAngles}, θ₁, θ₂, θ₃) = (rad2deg(θ₃) + 90, rad2deg(θ₂), -rad2deg(θ₁))
+function Base.convert(::Type{R}, rot::RotZYX) where {R<:GslibAngles}
+  θ₁, θ₂, θ₃ = Rotations.params(rot)
+  R(rad2deg(θ₃) + 90, rad2deg(θ₂), -rad2deg(θ₁))
+end
 
-rotparams(r::GslibAngles) = (-deg2rad(r.θ), deg2rad(r.β), deg2rad(r.α - 90))
+function Base.convert(::Type{R}, rot::GslibAngles) where {R<:RotZYX}
+  θ₁, θ₂, θ₃ = Rotations.params(rot)
+  R(-deg2rad(θ₃), deg2rad(θ₂), deg2rad(θ₁ - 90))
+end
