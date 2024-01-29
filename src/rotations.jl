@@ -84,13 +84,13 @@ end
 """
     GslibAngles(θ₁, θ₂, θ₃)
 
-GSLIB YXZ rotation convention following the left-hand rule.
+GSLIB z-x'-y'' intrinsic rotation convention following the left-hand rule.
 All angles are in degrees and the sign convention is CW, CCW, CW positive.
 Y is the principal axis.
 
 The first rotation `θ₁` is a rotation around the Z-axis, this is also called the azimuth. 
-The second rotation `θ₂` is a rotation around the X-axis, this is also called the dip. 
-The third rotation `θ₃` is a rotation around the Y-axis, this is also called the tilt. 
+The second rotation `θ₂` is a rotation around the new X-axis, this is also called the dip. 
+The third rotation `θ₃` is a rotation around the new Y-axis, this is also called the tilt. 
 
 ## References
 
@@ -107,22 +107,22 @@ end
 GslibAngles(θ₁::T, θ₂::T, θ₃::T) where {T} = GslibAngles{T}(θ₁, θ₂, θ₃)
 GslibAngles(θ₁, θ₂, θ₃) = GslibAngles(promote(θ₁, θ₂, θ₃)...)
 
-rottype(::Type{<:GslibAngles}) = RotYXZ
+rottype(::Type{<:GslibAngles}) = RotZXY
 
-function Base.convert(::Type{R}, rot::RotYXZ) where {R<:GslibAngles}
+function Base.convert(::Type{R}, rot::RotZXY) where {R<:GslibAngles}
   θ₁, θ₂, θ₃ = Rotations.params(rot)
-  R(-rad2deg(θ₃), rad2deg(θ₂), -rad2deg(θ₁))
+  R(-rad2deg(θ₁), rad2deg(θ₂), -rad2deg(θ₃))
 end
 
-function Base.convert(::Type{R}, rot::GslibAngles) where {R<:RotYXZ}
+function Base.convert(::Type{R}, rot::GslibAngles) where {R<:RotZXY}
   (; θ₁, θ₂, θ₃) = rot
-  R(-deg2rad(θ₃), deg2rad(θ₂), -deg2rad(θ₁))
+  R(-deg2rad(θ₁), deg2rad(θ₂), -deg2rad(θ₃))
 end
 
 """
     MinesightAngles(θ₁, θ₂, θ₃)
 
-MineSight YXZ rotation convention following the right-hand rule.
+MineSight z-x'-y'' intrinsic rotation convention following the right-hand rule.
 All angles are in degrees and the sign convention is CW, CCW, CW positive.
 
 The first rotation `θ₁` is a horizontal rotation around the Z-axis, with positive being clockwise.
@@ -145,14 +145,14 @@ end
 MinesightAngles(θ₁::T, θ₂::T, θ₃::T) where {T} = MinesightAngles{T}(θ₁, θ₂, θ₃)
 MinesightAngles(θ₁, θ₂, θ₃) = MinesightAngles(promote(θ₁, θ₂, θ₃)...)
 
-rottype(::Type{<:MinesightAngles}) = RotYXZ
+rottype(::Type{<:MinesightAngles}) = RotZXY
 
-function Base.convert(::Type{R}, rot::RotYXZ) where {R<:MinesightAngles}
+function Base.convert(::Type{R}, rot::RotZXY) where {R<:MinesightAngles}
   θ₁, θ₂, θ₃ = Rotations.params(rot)
-  R(-rad2deg(θ₃), rad2deg(θ₂), -rad2deg(θ₁))
+  R(-rad2deg(θ₁), rad2deg(θ₂), -rad2deg(θ₃))
 end
 
-function Base.convert(::Type{R}, rot::MinesightAngles) where {R<:RotYXZ}
+function Base.convert(::Type{R}, rot::MinesightAngles) where {R<:RotZXY}
   (; θ₁, θ₂, θ₃) = rot
-  R(-deg2rad(θ₃), deg2rad(θ₂), -deg2rad(θ₁))
+  R(-deg2rad(θ₁), deg2rad(θ₂), -deg2rad(θ₃))
 end

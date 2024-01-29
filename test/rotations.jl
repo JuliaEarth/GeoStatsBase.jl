@@ -17,14 +17,14 @@
   # GSLIB convention
   gslib = GslibAngles(30, 15, -15)
 
-  @test gslib * v₁ ≈ [3.7410191941252595, -0.034675177060507156, 0.059774754555877996]
-  @test gslib * v₂ ≈ [0.8592918193713616, 0.4018496819077273, -0.011593201115905286]
+  @test gslib * v₁ ≈ [3.6750995527061767, 0.05226610022130146, 0.700650792097261]
+  @test gslib * v₂ ≈ [0.8312896937156777, 0.422146350014352, 0.17535650627123855]
 
   # MineSight convention
   minesight = MinesightAngles(30, 15, -15)
 
-  @test minesight * v₁ ≈ [3.7410191941252595, -0.034675177060507156, 0.059774754555877996]
-  @test minesight * v₂ ≈ [0.8592918193713616, 0.4018496819077273, -0.011593201115905286]
+  @test minesight * v₁ ≈ [3.6750995527061767, 0.05226610022130146, 0.700650792097261]
+  @test minesight * v₂ ≈ [0.8312896937156777, 0.422146350014352, 0.17535650627123855]
 
   # comparing conventions
   @test datamine ≈ vulcan
@@ -44,7 +44,7 @@
   @test Rotations.params(vulcan) ≈ [θ₁, θ₂, θ₃]
 
   θ₁, θ₂, θ₃ = 30, 15, -15
-  rot = RotYXZ(-deg2rad(θ₃), deg2rad(θ₂), -deg2rad(θ₁))
+  rot = RotZXY(-deg2rad(θ₁), deg2rad(θ₂), -deg2rad(θ₃))
   gslib = GslibAngles(rot)
   minesight = MinesightAngles(rot)
   @test gslib ≈ minesight ≈ rot
