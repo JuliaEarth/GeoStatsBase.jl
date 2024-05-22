@@ -115,8 +115,8 @@
     @test nelements(r) == 50
     lpts = [centroid(l, i) for i in 1:nelements(l)]
     rpts = [centroid(r, i) for i in 1:nelements(r)]
-    cl = mean(coordinates.(lpts))
-    cr = mean(coordinates.(rpts))
+    cl = mean(to.(lpts))
+    cr = mean(to.(rpts))
     @test cl[1] < cr[1]
     @test cl[2] == cr[2]
     l, r = geosplit(d, 0.5, (0.0, 1.0))
@@ -124,8 +124,8 @@
     @test nelements(r) == 50
     lpts = [centroid(l, i) for i in 1:nelements(l)]
     rpts = [centroid(r, i) for i in 1:nelements(r)]
-    cl = mean(coordinates.(lpts))
-    cr = mean(coordinates.(rpts))
+    cl = mean(to.(lpts))
+    cr = mean(to.(rpts))
     @test cl[1] == cr[1]
     @test cl[2] < cr[2]
   end

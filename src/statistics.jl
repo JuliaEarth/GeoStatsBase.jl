@@ -55,7 +55,7 @@ function dist_matrix_random_sample(𝒟)
   # select a maximum number of points at random
   nobs = nelements(𝒟)
   inds = sample(1:nobs, min(nobs, 1000), replace=false)
-  X = (coordinates(centroid(𝒟, ind)) for ind in inds)
+  X = (to(centroid(𝒟, ind)) for ind in inds)
   pairwise(Euclidean(), X)
 end
 

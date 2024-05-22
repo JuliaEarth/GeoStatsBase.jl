@@ -89,7 +89,7 @@ end
 function _integrate(face::Connectivity{<:Triangle}, vert, vals)
   i, j, k = indices(face)
   pᵢ, pⱼ, pₖ = vert[[i, j, k]]
-  c = norm((pⱼ - pᵢ) × (pₖ - pᵢ))
+  c = ustrip(norm((pⱼ - pᵢ) × (pₖ - pᵢ)))
   [c * (f[i] + f[j] + f[k]) / 6 for f in vals]
 end
 

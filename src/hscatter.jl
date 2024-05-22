@@ -10,8 +10,8 @@ H-scatter plot of geospatial `data` for pair of variables
 
 ## Algorithm options:
 
-* `lag`      - lag distance between points (default to `0.0`)
-* `tol`      - tolerance for lag distance (default to `1e-1`)
+* `lag`      - lag distance between points in length units (default to `0.0u"m"`)
+* `tol`      - tolerance for lag distance in length units (default to `1e-1u"m"`)
 * `distance` - distance from Distances.jl (default to `Euclidean()`)
 
 ## Aesthetics options:
