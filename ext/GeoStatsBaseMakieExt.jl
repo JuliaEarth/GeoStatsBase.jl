@@ -7,6 +7,7 @@ module GeoStatsBaseMakieExt
 using GeoStatsBase
 
 using Meshes
+using Unitful
 using GeoTables
 using Distances
 
@@ -28,8 +29,8 @@ Makie.convert_arguments(P::Type{<:Makie.Hist}, h::EmpiricalHistogram) = Makie.co
 Makie.@recipe(HScatter, data, var₁, var₂) do scene
   Makie.Attributes(;
     # h-scatter options
-    lag=0.0,
-    tol=1e-1,
+    lag=0.0u"m",
+    tol=1e-1u"m",
     distance=Euclidean(),
 
     # aesthetics options
@@ -49,8 +50,8 @@ function Makie.plot!(plot::HScatter)
   var₂ = plot[:var₂]
 
   # retrieve h-scatter options
-  lag = plot[:lag]
-  tol = plot[:tol]
+  lag = Makie.@lift aslen($(plot[:lag]), u"m")
+  tol = Makie.@lift aslen($(plot[:tol]), u"m")
   distance = plot[:distance]
 
   # h-scatter coordinates
@@ -94,8 +95,8 @@ function _hscatter(data, var₁, var₂, lag, tol, distance)
   𝒮₂ = view(data, findall(!ismissing, data[:, var₂]))
   𝒟₁ = domain(𝒮₁)
   𝒟₂ = domain(𝒮₂)
-  x₁ = [coordinates(centroid(𝒟₁, i)) for i in 1:nelements(𝒟₁)]
-  x₂ = [coordinates(centroid(𝒟₂, i)) for i in 1:nelements(𝒟₂)]
+  x₁ = [to(centroid(𝒟₁, i)) for i in 1:nelements(𝒟₁)]
+  x₂ = [to(centroid(𝒟₂, i)) for i in 1:nelements(𝒟₂)]
   z₁ = getproperty(𝒮₁, var₁)
   z₂ = getproperty(𝒮₂, var₂)
 
@@ -118,5 +119,11 @@ function _hscatter(data, var₁, var₂, lag, tol, distance)
 
   x, y
 end
+
+const Len{T} = Quantity{T,u"𝐋"}
+
+aslen(x, u) = x * u
+aslen(x::Len, _) = x
+aslen(::Quantity, _) = throw(ArgumentError("invalid units, please check the documentation"))
 
 end

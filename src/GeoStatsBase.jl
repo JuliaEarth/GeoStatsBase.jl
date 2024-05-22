@@ -6,6 +6,7 @@ module GeoStatsBase
 
 using Meshes
 using Tables
+using Unitful
 using GeoTables
 using Rotations
 using StaticArrays
