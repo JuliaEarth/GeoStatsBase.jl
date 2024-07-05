@@ -28,6 +28,7 @@ Ensemble(domain::𝒟, reals::ℛ) where {𝒟,ℛ} = Ensemble{𝒟,ℛ}(domain,
 # -------------
 
 Base.getindex(e::Ensemble, var::Symbol) = e.reals[var]
+Base.getindex(e::Ensemble, var::AbstractString) = getindex(e, Symbol(var))
 
 # -------------
 # ITERATOR API

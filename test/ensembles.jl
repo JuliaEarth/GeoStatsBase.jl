@@ -2,7 +2,7 @@
   d = PointSet(rand(2, 100))
   r = (z=[1:100 for i in 1:10],)
   s = Ensemble(d, r)
-  @test s[:z] == r[:z]
+  @test s[:z] == s["z"] == r[:z]
   for i in 1:10
     @test s[i] == georef((z=1:100,), d)
   end
