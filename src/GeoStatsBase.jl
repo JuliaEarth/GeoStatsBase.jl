@@ -25,7 +25,6 @@ using DataScienceTraits: Categorical
 using TypedTables # for a default table type
 using Optim # for LSIF estimation
 
-import GeoTables: domain
 import StatsBase: fit, varcorrection, describe
 import Statistics: mean, var, quantile
 import Base: ==

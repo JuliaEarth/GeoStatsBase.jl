@@ -19,16 +19,15 @@ end
 
 GeoWeights(domain::D, values::V) where {D,V} = GeoWeights(domain, values, sum(values))
 
-domain(w::GeoWeights) = w.domain
-
 @inline function varcorrection(w::GeoWeights, corrected::Bool=false)
   corrected && throw(ArgumentError("GeoWeights type does not support bias correction."))
   1 / w.sum
 end
 
-# ------------
-# IO methods
-# ------------
+# -----------
+# IO METHODS
+# -----------
+
 function Base.show(io::IO, w::GeoWeights)
   npts = nelements(w.domain)
   print(io, "$npts GeoWeights")

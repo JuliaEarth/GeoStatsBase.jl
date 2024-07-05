@@ -5,8 +5,7 @@
 """
     Ensemble
 
-An ensemble of geostatistical realizations from a
-geostatistical process.
+An ensemble of geostatistical realizations from a geostatistical process.
 """
 struct Ensemble{𝒟,ℛ}
   domain::𝒟
@@ -24,81 +23,79 @@ Ensemble(domain::𝒟, reals::ℛ) where {𝒟,ℛ} = Ensemble{𝒟,ℛ}(domain,
 
 ==(e₁::Ensemble, e₂::Ensemble) = e₁.domain == e₂.domain && e₁.reals == e₂.reals
 
-domain(ensemble::Ensemble) = ensemble.domain
-
 # -------------
 # VARIABLE API
 # -------------
 
-Base.getindex(ensemble::Ensemble, var::Symbol) = ensemble.reals[var]
+Base.getindex(e::Ensemble, var::Symbol) = e.reals[var]
 
 # -------------
 # ITERATOR API
 # -------------
 
-Base.iterate(ensemble::Ensemble, state=1) = state > ensemble.nreals ? nothing : (ensemble[state], state + 1)
-Base.length(ensemble::Ensemble) = ensemble.nreals
+Base.iterate(e::Ensemble, state=1) = state > e.nreals ? nothing : (e[state], state + 1)
+Base.length(e::Ensemble) = e.nreals
 
 # --------------
 # INDEXABLE API
 # --------------
 
-function Base.getindex(ensemble::Ensemble, ind::Int)
-  sdomain = ensemble.domain
-  sreals = pairs(ensemble.reals)
+function Base.getindex(e::Ensemble, ind::Int)
+  sdomain = e.domain
+  sreals = pairs(e.reals)
   idata = (; (var => reals[ind] for (var, reals) in sreals)...)
   georef(idata, sdomain)
 end
-Base.getindex(ensemble::Ensemble, inds::AbstractVector{Int}) = [getindex(ensemble, ind) for ind in inds]
-Base.firstindex(ensemble::Ensemble) = 1
-Base.lastindex(ensemble::Ensemble) = length(ensemble)
+Base.getindex(e::Ensemble, inds::AbstractVector{Int}) = [getindex(e, ind) for ind in inds]
+Base.firstindex(e::Ensemble) = 1
+Base.lastindex(e::Ensemble) = length(e)
 
 # -----------
 # STATISTICS
 # -----------
 
-function mean(ensemble::Ensemble)
-  varreals = pairs(ensemble.reals)
+function mean(e::Ensemble)
+  varreals = pairs(e.reals)
   μs = (; (v => mean(rs) for (v, rs) in varreals)...)
-  georef(μs, ensemble.domain)
+  georef(μs, e.domain)
 end
 
-function var(ensemble::Ensemble)
-  varreals = pairs(ensemble.reals)
+function var(e::Ensemble)
+  varreals = pairs(e.reals)
   σs = (; (v => var(rs) for (v, rs) in varreals)...)
-  georef(σs, ensemble.domain)
+  georef(σs, e.domain)
 end
 
-function quantile(ensemble::Ensemble, p::Number)
+function quantile(e::Ensemble, p::Number)
   cols = []
-  for (variable, reals) in pairs(ensemble.reals)
-    quantiles = map(1:nelements(ensemble.domain)) do location
+  for (variable, reals) in pairs(e.reals)
+    quantiles = map(1:nelements(e.domain)) do location
       slice = getindex.(reals, location)
       quantile(slice, p)
     end
     push!(cols, variable => quantiles)
   end
-  georef((; cols...), ensemble.domain)
+  georef((; cols...), e.domain)
 end
 
-quantile(ensemble::Ensemble, ps::AbstractVector) = [quantile(ensemble, p) for p in ps]
+quantile(e::Ensemble, ps::AbstractVector) = [quantile(e, p) for p in ps]
 
 # -----------
 # IO METHODS
 # -----------
 
-function Base.show(io::IO, ensemble::Ensemble)
-  N = embeddim(ensemble.domain)
+function Base.show(io::IO, e::Ensemble)
+  N = embeddim(e.domain)
   print(io, "$(N)D Ensemble")
 end
 
-function Base.show(io::IO, ::MIME"text/plain", ensemble::Ensemble)
-  names = keys(ensemble.reals)
-  rvals = values(ensemble.reals)
+function Base.show(io::IO, ::MIME"text/plain", e::Ensemble)
+  names = keys(e.reals)
+  rvals = values(e.reals)
   types = eltype.(first.(rvals))
   vars = ["$n ($t)" for (n, t) in zip(names, types)]
-  println(io, ensemble)
-  println(io, "  domain:    ", ensemble.domain)
+  println(io, e)
+  println(io, "  domain:    ", e.domain)
   println(io, "  variables: ", join(vars, ", ", " and "))
-  print(io, "  N° reals:  ", ensemble.nreals)
+  print(io, "  N° reals:  ", e.nreals)
 end
