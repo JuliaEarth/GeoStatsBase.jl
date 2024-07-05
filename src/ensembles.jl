@@ -55,27 +55,26 @@ Base.lastindex(e::Ensemble) = length(e)
 # -----------
 
 function mean(e::Ensemble)
-  varreals = pairs(e.reals)
-  μs = (; (v => mean(rs) for (v, rs) in varreals)...)
-  georef(μs, e.domain)
+  mtable = (; (variable => mean(reals) for (variable, reals) in pairs(e.reals))...)
+  georef(mtable, e.domain)
 end
 
 function var(e::Ensemble)
-  varreals = pairs(e.reals)
-  σs = (; (v => var(rs) for (v, rs) in varreals)...)
-  georef(σs, e.domain)
+  vtable = (; (variable => var(reals) for (variable, reals) in pairs(e.reals))...)
+  georef(vtable, e.domain)
 end
 
 function quantile(e::Ensemble, p::Number)
   cols = []
-  for (variable, reals) in pairs(e.reals)
-    quantiles = map(1:nelements(e.domain)) do location
-      slice = getindex.(reals, location)
+  for (var, reals) in pairs(e.reals)
+    vals = map(1:nelements(e.domain)) do ind
+      slice = getindex.(reals, ind)
       quantile(slice, p)
     end
-    push!(cols, variable => quantiles)
+    push!(cols, var => vals)
   end
-  georef((; cols...), e.domain)
+  qtable = (; cols...)
+  georef(qtable, e.domain)
 end
 
 quantile(e::Ensemble, ps::AbstractVector) = [quantile(e, p) for p in ps]
