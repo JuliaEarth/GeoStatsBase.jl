@@ -29,8 +29,8 @@
     z1 = sort(rand(rng, r1, n))
     z2 = sort(rand(rng, r2, n))
 
-    d1 = georef((z=z1,), PointSet(reshape(1:n, 1, :)))
-    d2 = georef((z=z2,), PointSet(reshape(1:n, 1, :)))
+    d1 = georef((z=z1,), PointSet([(i,) for i in 1:n]))
+    d2 = georef((z=z2,), PointSet([(i,) for i in 1:n]))
 
     dre = LSIF(rng=rng)
     w = weight(d1, DensityRatioWeighting(d2, estimator=dre))

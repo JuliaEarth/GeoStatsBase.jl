@@ -1,5 +1,5 @@
 @testset "Ensembles" begin
-  d = PointSet(rand(2, 100))
+  d = PointSet(rand(Point{2}, 100))
   r = (z=[1:100 for i in 1:10],)
   s = Ensemble(d, r)
   @test s[:z] == s["z"] == r[:z]

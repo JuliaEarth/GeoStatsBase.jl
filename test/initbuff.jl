@@ -17,7 +17,7 @@
       @test mask[:value][i] == true
     end
 
-    pset = PointSet([25.0 50.0 75.0; 25.0 75.0 50.0])
+    pset = PointSet([(25, 25), (50, 75), (75, 50)])
     buff, mask = initbuff(pset, (; value=Float64), NearestInit(), data=data2D)
     for (i, j) in (2 => 2, 3 => 3, 1 => 1)
       @test buff[:value][i] == data2D.value[j]
