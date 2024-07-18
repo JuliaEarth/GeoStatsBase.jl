@@ -26,8 +26,8 @@
   end
 
   @testset "explicit" begin
-    data = georef((z=rand(10),), rand(2, 10))
-    grid = CartesianGrid(10, 10)
+    data = georef((z=rand(10),), rand(Point, 10))
+    grid = CartesianGrid(10, 10, 10)
 
     # copy data to first locations in domain
     buff, mask = initbuff(grid, (; z=Float64), ExplicitInit(), data=data)
@@ -37,15 +37,15 @@
     end
 
     # copy data to last locations in domain
-    buff, mask = initbuff(grid, (; z=Float64), ExplicitInit(91:100), data=data)
-    for (i, j) in (j => i for (i, j) in enumerate(91:100))
+    buff, mask = initbuff(grid, (; z=Float64), ExplicitInit(991:1000), data=data)
+    for (i, j) in (j => i for (i, j) in enumerate(991:1000))
       @test buff[:z][i] == data.z[j]
       @test mask[:z][i] == true
     end
 
     # copy first 3 data points to last 3 domain locations
-    buff, mask = initbuff(grid, (; z=Float64), ExplicitInit(1:3, 98:100), data=data)
-    for (i, j) in (j => i for (i, j) in enumerate(98:100))
+    buff, mask = initbuff(grid, (; z=Float64), ExplicitInit(1:3, 998:1000), data=data)
+    for (i, j) in (j => i for (i, j) in enumerate(998:1000))
       @test buff[:z][i] == data.z[j]
       @test mask[:z][i] == true
     end

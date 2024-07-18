@@ -1,7 +1,7 @@
 @testset "Geometric operations" begin
   @testset "describe" begin
     table = (x=rand(10), y=rand(10), z=rand(10))
-    sdata = georef(table, rand(2, 10))
+    sdata = georef(table, rand(Point, 10))
     columns = [table.x, table.y, table.z]
 
     dtable = describe(sdata)
@@ -54,7 +54,7 @@
     # categorical values
     a = rand(1:9, 10)
     b = rand('a':'z', 10)
-    sdata = georef((; a, b), rand(2, 10))
+    sdata = georef((; a, b), rand(Point, 10))
     columns = [a, b]
 
     dtable = describe(sdata, mean, last, first)
@@ -67,7 +67,7 @@
     # missing values
     a = shuffle([rand(10); fill(missing, 5)])
     b = shuffle([rand(10); fill(missing, 5)])
-    sdata = georef((; a, b), rand(2, 10))
+    sdata = georef((; a, b), rand(Point, 10))
     columns = [a, b]
 
     dtable = describe(sdata)
