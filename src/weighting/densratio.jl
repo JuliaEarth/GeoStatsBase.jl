@@ -16,14 +16,14 @@ variables in target data `tdata`. Default to all variables.
 ### Notes
 
 Estimators from [DensityRatioEstimation.jl]
-(https://github.com/JuliaEarth/DensityRatioEstimation.jl)
+(https://github.com/JuliaML/DensityRatioEstimation.jl)
 are supported.
 """
-struct DensityRatioWeighting <: WeightingMethod
-  tdata::Any
-  vars::Any
-  dre::Any
-  optlib::Any
+struct DensityRatioWeighting{D,V,E,O} <: WeightingMethod
+  tdata::D
+  vars::V
+  dre::E
+  optlib::O
 end
 
 function DensityRatioWeighting(tdata, vars=nothing; estimator=LSIF(), optlib=default_optlib(estimator))
