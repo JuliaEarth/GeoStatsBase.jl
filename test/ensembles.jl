@@ -41,11 +41,11 @@
 
   # cdf
   cdf2D = cdf(ensemble, 1)
-  @test cdf2D.z == 1/3 * ones(nrow(cdf2D))
+  @test cdf2D.z == 1 / 3 * ones(nrow(cdf2D))
   cdf2D = cdf(ensemble, 2)
-  @test cdf2D.z == 2/3 * ones(nrow(cdf2D))
+  @test cdf2D.z == 2 / 3 * ones(nrow(cdf2D))
   cdf2D = cdf(ensemble, 3)
-  @test cdf2D.z == 3/3 * ones(nrow(cdf2D))
+  @test cdf2D.z == 3 / 3 * ones(nrow(cdf2D))
 
   # quantile (scalar)
   p = 0.5
