@@ -65,6 +65,19 @@ function var(e::Ensemble)
   georef(vtable, e.domain)
 end
 
+function cdf(e::Ensemble, x::Number)
+  cols = []
+  for (var, reals) in pairs(e.reals)
+    vals = map(1:nelements(e.domain)) do ind
+      slice = getindex.(reals, ind)
+      _cdf(slice, x)
+    end
+    push!(cols, var => vals)
+  end
+  ctable = (; cols...)
+  georef(ctable, e.domain)
+end
+
 function quantile(e::Ensemble, p::Number)
   cols = []
   for (var, reals) in pairs(e.reals)
@@ -79,6 +92,12 @@ function quantile(e::Ensemble, p::Number)
 end
 
 quantile(e::Ensemble, ps::AbstractVector) = [quantile(e, p) for p in ps]
+
+# -----------------
+# HELPER FUNCTIONS
+# -----------------
+
+_cdf(xs, x) = count(≤(x), xs) / length(xs)
 
 # -----------
 # IO METHODS
