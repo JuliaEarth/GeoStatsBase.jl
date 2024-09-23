@@ -26,7 +26,7 @@ using TypedTables # for a default table type
 using Optim # for LSIF estimation
 
 import StatsBase: fit, varcorrection, describe
-import Statistics: mean, var, quantile
+import Distributions: mean, var, cdf, quantile
 import Base: ==
 
 include("ensembles.jl")
@@ -71,6 +71,7 @@ export
   # statistics
   mean,
   var,
+  cdf,
   quantile,
 
   # utilities
