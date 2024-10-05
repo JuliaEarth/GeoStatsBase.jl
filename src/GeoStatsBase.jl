@@ -26,13 +26,10 @@ using TypedTables # for a default table type
 using Optim # for LSIF estimation
 
 import StatsBase: fit, varcorrection, describe
-import Distributions: mean, var, cdf, quantile
-import Base: ==
+import StatsBase: mean, var, quantile
 
-include("ensembles.jl")
 include("weighting.jl")
 include("geoops.jl")
-include("initbuff.jl")
 include("folding.jl")
 include("statistics.jl")
 include("histograms.jl")
@@ -40,15 +37,6 @@ include("rotations.jl")
 include("hscatter.jl")
 
 export
-  # ensembles
-  Ensemble,
-
-  # initialization
-  InitMethod,
-  NearestInit,
-  ExplicitInit,
-  initbuff,
-
   # folding
   FoldingMethod,
   UniformFolding,
@@ -71,7 +59,6 @@ export
   # statistics
   mean,
   var,
-  cdf,
   quantile,
 
   # utilities

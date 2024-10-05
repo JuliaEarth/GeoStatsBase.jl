@@ -22,16 +22,7 @@ using FileIO: load
 datadir = joinpath(@__DIR__, "data")
 
 # list of tests
-testfiles = [
-  "ensembles.jl",
-  "weighting.jl",
-  "geoops.jl",
-  "initbuff.jl",
-  "folding.jl",
-  "statistics.jl",
-  "histograms.jl",
-  "rotations.jl"
-]
+testfiles = ["weighting.jl", "geoops.jl", "folding.jl", "statistics.jl", "histograms.jl", "rotations.jl"]
 
 @testset "GeoStatsBase.jl" begin
   for testfile in testfiles
