@@ -20,7 +20,6 @@ using DensityRatioEstimation
 using LinearAlgebra
 
 using ColumnSelectors: ColumnSelector, AllSelector, selector
-using DataScienceTraits: Categorical
 
 using TypedTables # for a default table type
 using Optim # for LSIF estimation
