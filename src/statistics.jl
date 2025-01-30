@@ -3,22 +3,22 @@
 # ------------------------------------------------------------------
 
 """
-    mean(data, v)
-    mean(data, v, s)
+    mean(geotable, column)
+    mean(geotable, column, side)
 
-Declustered mean of geospatial `data`. Optionally,
-specify the variable `v` and the block side `s`.
+Declustered mean of given `column` in `geotable`.
+Optionally, specify the declustering block `side`.
 """
 mean(t::AbstractGeoTable, v) = mean(t, v, mode_heuristic(t))
 mean(t::AbstractGeoTable, v, s::Number) = mean(t, v, BlockWeighting(s))
 mean(t::AbstractGeoTable, v, w::WeightingMethod) = mean(getproperty(t, v), weight(t, w))
 
 """
-    var(data, v)
-    var(data, v, s)
+    var(data, column)
+    var(data, column, side)
 
-Declustered variance of geospatial `data`. Optionally,
-specify the variable `v` and the block side `s`.
+Declustered variance of given `column` in `geotable`.
+Optionally, specify the declustering block `side`.
 """
 var(t::AbstractGeoTable, v) = var(t, v, mode_heuristic(t))
 var(t::AbstractGeoTable, v, s::Number) = var(t, v, BlockWeighting(s))
@@ -26,11 +26,12 @@ var(t::AbstractGeoTable, v, w::WeightingMethod) =
   var(getproperty(t, v), weight(t, w), mean=mean(t, v, w), corrected=false)
 
 """
-    quantile(data, v, p)
-    quantile(data, v, p, s)
+    quantile(data, column, prob)
+    quantile(data, column, prob, side)
 
-Declustered quantile of geospatial `data` at probability `p`.
-Optionally, specify the variable `v` and the block side `s`.
+Declustered quantile of given `column` in `geotable`
+at given `prob`ability. Optionally, specify the
+declustering block `side`.
 """
 quantile(t::AbstractGeoTable, v, p) = quantile(t, v, p, mode_heuristic(t))
 quantile(t::AbstractGeoTable, v, p, s::Number) = quantile(t, v, p, BlockWeighting(s))
