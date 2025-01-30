@@ -3,11 +3,12 @@
 # ------------------------------------------------------------------
 
 """
-    EmpiricalHistogram(sdata, var, [s]; kwargs...)
+    EmpiricalHistogram(geotable, column, [side]; kwargs...)
 
-Spatial histogram of variable `var` in spatial data `sdata`.
-Optionally, specify the block side `s` and the keyword
-arguments `kwargs` for the `fit(Histogram, ...)` call.
+Declustered histogram of given `column` in `geotable`.
+Optionally, specify the declustering block `side`, and
+the keyword arguments `kwargs` for the underlying
+`fit(Histogram, ...)` call.
 """
 struct EmpiricalHistogram{H}
   hist::H
