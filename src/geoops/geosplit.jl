@@ -13,6 +13,6 @@ function geosplit(object, fraction::Real, normal=nothing)
   if isnothing(normal)
     partition(object, FractionPartition(fraction))
   else
-    partition(object, BisectFractionPartition(normal, fraction))
+    partition(object, BisectFractionPartition(normal; fraction))
   end
 end
