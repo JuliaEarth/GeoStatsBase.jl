@@ -10,18 +10,18 @@ H-scatter plot of geospatial `data` for pair of variables
 
 ## Algorithm options:
 
-* `lag`      - lag distance between points in length units (default to `0.0u"m"`)
-* `tol`      - tolerance for lag distance in length units (default to `1e-1u"m"`)
-* `distance` - distance from Distances.jl (default to `Euclidean()`)
+* `lag`      - Lag distance between points in length units (default to `0.0u"m"`)
+* `tol`      - Tolerance for lag distance in length units (default to `1e-1u"m"`)
+* `distance` - Distance from Distances.jl (default to `Euclidean()`)
 
 ## Aesthetics options:
 
-* `size`   - size of points in point set
-* `color`  - color of geometries or points
-* `alpha`  - transparency channel in [0,1]
-* `rcolor` - color of regression line
-* `icolor` - color of identity line
-* `ccolor` - color of center lines
+* `size`   - Size of points in point set
+* `color`  - Color of geometries or points
+* `alpha`  - Transparency channel in [0,1]
+* `rcolor` - Color of regression line
+* `icolor` - Color of identity line
+* `ccolor` - Color of center lines
 
 ## Examples
 
