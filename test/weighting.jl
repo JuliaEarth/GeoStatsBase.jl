@@ -20,7 +20,7 @@
   end
 
   @testset "DensityRatioWeighting" begin
-    rng = MersenneTwister(123)
+    rng = Xoshiro(123)
 
     r1 = Normal(0, 2)
     r2 = MixtureModel([Normal(-2, 1), Normal(2, 2)], [0.2, 0.8])

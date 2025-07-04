@@ -1,5 +1,5 @@
 @testset "Statistics" begin
-  rng = MersenneTwister(2023)
+  rng = Xoshiro(2023)
 
   # half sample mode
   d = LogNormal(0, 1)
