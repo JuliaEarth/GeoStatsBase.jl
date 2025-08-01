@@ -27,7 +27,7 @@ Return descriptive table of columns `col₁`, `col₂`, ..., `colₙ`.
 
 Return descriptive table of columns that match with `regex`.
 
-# Examples
+## Examples
 
 ```julia
 describe(geotable)
