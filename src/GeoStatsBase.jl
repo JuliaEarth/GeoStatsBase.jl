@@ -27,12 +27,15 @@ using Optim # for LSIF estimation
 import StatsBase: fit, varcorrection, describe
 import StatsBase: mean, var, quantile
 
+# main source files
 include("weighting.jl")
 include("geoops.jl")
 include("folding.jl")
 include("statistics.jl")
 include("histograms.jl")
 include("rotations.jl")
+
+# plot recipes
 include("hscatter.jl")
 
 export
@@ -71,7 +74,7 @@ export
   VulcanAngles,
   MinesightAngles,
 
-  # plotting
+  # plot recipes
   hscatter,
   hscatter!
 

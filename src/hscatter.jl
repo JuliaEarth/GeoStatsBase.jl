@@ -32,6 +32,12 @@ hscatter(data, :Z, :Z, lag=1.0)
 # h-scatter of Z vs. W at lag 2.0
 hscatter(data, :Z, :W, lag=2.0)
 ```
+
+### Notes
+
+This function will only work in the presence of
+a Makie.jl backend via package extensions in
+Julia v1.9 or later versions of the language.
 """
 function hscatter end
 function hscatter! end
