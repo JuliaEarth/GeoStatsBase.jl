@@ -50,8 +50,8 @@ function Makie.plot!(plot::HScatter)
   var₂ = plot[:var₂]
 
   # retrieve h-scatter options
-  lag = Makie.@lift aslen($(plot[:lag]), u"m")
-  tol = Makie.@lift aslen($(plot[:tol]), u"m")
+  lag = Makie.@lift aslen($(plot[:lag]))
+  tol = Makie.@lift aslen($(plot[:tol]))
   distance = plot[:distance]
 
   # h-scatter coordinates
@@ -122,8 +122,8 @@ end
 
 const Len{T} = Quantity{T,u"𝐋"}
 
-aslen(x, u) = x * u
-aslen(x::Len, _) = x
-aslen(::Quantity, _) = throw(ArgumentError("invalid units, please check the documentation"))
+aslen(x::Len) = x
+aslen(x::Number) = x * u"m"
+aslen(::Quantity) = throw(ArgumentError("invalid length unit"))
 
 end
