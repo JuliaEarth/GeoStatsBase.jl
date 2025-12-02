@@ -15,8 +15,6 @@ using TableTransforms
 using CategoricalArrays
 using DensityRatioEstimation
 using Test, Random
-using ImageIO
-using FileIO: load
 
 # environment settings
 datadir = joinpath(@__DIR__, "data")
