@@ -79,7 +79,7 @@ end
 # Finally, for the limits of integration u ∈ [0,1]
 # and v ∈ [0,1-u] we can solve the integrand as:
 #
-# ∫ᵤ(∫ᵥf(u,v)dv)dv = ∫ᵤ(f₁(1-u) + (f₂-f₁)u(1-u) + (f₃-f₁)(1-u)²/2)du
+# ∫ᵤ(∫ᵥf(u,v)dv)du = ∫ᵤ(f₁(1-u) + (f₂-f₁)u(1-u) + (f₃-f₁)(1-u)²/2)du
 #                  = ∫ᵤ((f₁+f₃)/2 + (f₂-f₃-f₁)u + (f₁+f₃-2f₂)u²/2)du
 #                  = (f₁+f₃)/2 + (f₂-f₃-f₁)/2 + (f₁+f₃-2f₂)/6
 #                  = (f₁+f₂+f₃)/6
