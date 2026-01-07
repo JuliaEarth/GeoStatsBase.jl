@@ -3,19 +3,20 @@
 # ------------------------------------------------------------------
 
 """
-    integrate(data, var; rank=nothing)
+    integrate(data, vars...; rank=nothing)
 
-Integrate geospatial `data` for variable `var` over geometries of
-given `rank`. Default rank is the parametric dimension of the
-underlying geospatial domain.
+Integrate variables `vars` in vertex table of geospatial `data` over
+geometries of given `rank`. Default rank is the parametric dimension
+of the underlying geospatial domain.
 """
 function integrate(t::AbstractGeoTable, vars...; rank=nothing)
   # domain and vertex table
   𝒟 = domain(t)
   𝒯 = values(t, 0)
 
+  svars = Symbol.(vars)
   valid = Tables.schema(𝒯).names
-  @assert vars ⊆ valid "invalid variables for vertex table"
+  @assert svars ⊆ valid "invalid variables for vertex table"
 
   # vertices and topology
   vert = vertices(𝒟)
@@ -23,7 +24,7 @@ function integrate(t::AbstractGeoTable, vars...; rank=nothing)
 
   # retrieve columns
   cols = Tables.columns(𝒯)
-  vals = [Tables.getcolumn(cols, var) for var in vars]
+  vals = [Tables.getcolumn(cols, var) for var in svars]
 
   # rank of integration
   R = isnothing(rank) ? paramdim(𝒟) : rank
@@ -34,7 +35,7 @@ function integrate(t::AbstractGeoTable, vars...; rank=nothing)
     ints = _integrate(face, vert, vals)
 
     # row of table with results
-    (; zip(vars, ints)...)
+    (; zip(svars, ints)...)
   end
 
   GeoTable(𝒟, Dict(R => table))

@@ -101,6 +101,10 @@
     minte = integrate(mdata, :z, :w)
     @test ginte.z == [3.0, 4.0, 6.0, 7.0]
     @test ginte.w == [1.5, 1.5, 2.5, 2.5]
+    ginte = integrate(gdata, "z", "w")
+    minte = integrate(mdata, "z", "w")
+    @test ginte.z == [3.0, 4.0, 6.0, 7.0]
+    @test ginte.w == [1.5, 1.5, 2.5, 2.5]
     @test sum.(Iterators.partition(minte.z, 2)) == ginte.z
     @test sum.(Iterators.partition(minte.w, 2)) == ginte.w
   end
