@@ -89,7 +89,9 @@ end
 # ∫ᵤ∫ᵥf(u,v)||rᵤ×rᵥ||dudv = c(f₁+f₂+f₃)/6
 function _integrate(face::Connectivity{<:Triangle}, vert, vals)
   i, j, k = indices(face)
-  pᵢ, pⱼ, pₖ = vert[[i, j, k]]
+  pᵢ = vert[i]
+  pⱼ = vert[j]
+  pₖ = vert[k]
   c = ustrip(norm((pⱼ - pᵢ) × (pₖ - pᵢ)))
   [c * (f[i] + f[j] + f[k]) / 6 for f in vals]
 end
@@ -97,6 +99,8 @@ end
 # fallback method ignores geometry and simply averages
 # values of the variables at the vertices
 function _integrate(face, vert, vals)
-  inds = collect(indices(face))
-  [mean(val[inds]) for val in vals]
+  inds = indices(face)
+  map(vals) do val
+    sum(i -> val[i], inds) / length(inds)
+  end
 end
