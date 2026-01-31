@@ -53,13 +53,13 @@ function integrate(t::AbstractGeoTable, vars...; rank=nothing)
 
     # perform integration for all variables
     ints = map(vals) do val
-      # retrive function values
+      # retrieve variable values
       fs = map(i -> val[i], inds)
 
       # interpolant function
       func = interpolant(geom, fs, ps)
 
-      # ∫fdΩ / ∫dΩ
+      # average = ∫fdΩ / ∫dΩ
       integral(func, geom, rule) / gmeasure
     end
 
