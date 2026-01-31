@@ -1,7 +1,7 @@
 name = "GeoStatsBase"
 uuid = "323cb8eb-fbf6-51c0-afd0-f8fba70507b2"
-author = "Júlio Hoffimann <julio.hoffimann@gmail.com>"
 version = "0.47.8"
+author = "Júlio Hoffimann <julio.hoffimann@gmail.com>"
 
 [deps]
 CategoricalArrays = "324d7699-5711-5eae-9e2f-1d82baa6b597"
@@ -12,6 +12,7 @@ Distances = "b4f34e82-e78d-54a5-968a-f98e89d6e8f7"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 GeoTables = "e502b557-6362-48c1-8219-d30d308dcdb0"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+MeshIntegrals = "dadec2fd-bbe0-4da4-9dbe-476c782c8e47"
 Meshes = "eacbb407-ea5a-433e-ab97-5258b1ca43fa"
 Optim = "429524aa-4258-5aef-a3af-852621145aeb"
 Rotations = "6038ab10-8711-5258-84ad-4b1120ba62dc"
@@ -20,6 +21,12 @@ StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 Tables = "bd369af6-aec1-5ad0-b16a-f7cc5008161c"
 TypedTables = "9d95f2ec-7b3d-5a63-8d20-e2491e220bb9"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
+
+[weakdeps]
+Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
+
+[extensions]
+GeoStatsBaseMakieExt = "Makie"
 
 [compat]
 CategoricalArrays = "1.0"
@@ -31,6 +38,7 @@ Distributions = "0.25"
 GeoTables = "1.25"
 LinearAlgebra = "1.10"
 Makie = "0.24"
+MeshIntegrals = "0.17"
 Meshes = "0.56"
 Optim = "2.0"
 Rotations = "1.6"
@@ -40,9 +48,3 @@ Tables = "1.11"
 TypedTables = "1.4"
 Unitful = "1.20"
 julia = "1.10"
-
-[extensions]
-GeoStatsBaseMakieExt = "Makie"
-
-[weakdeps]
-Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"

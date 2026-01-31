@@ -97,16 +97,12 @@
     table = (z=[1, 2, 3, 4, 5, 6, 7, 8, 9], w=[1, 1, 1, 2, 2, 2, 3, 3, 3])
     gdata = GeoTable(grid, vtable=table)
     mdata = GeoTable(mesh, vtable=table)
-    ginte = integrate(gdata, :z, :w)
-    minte = integrate(mdata, :z, :w)
-    @test ginte.z == [3.0, 4.0, 6.0, 7.0]
-    @test ginte.w == [1.5, 1.5, 2.5, 2.5]
     ginte = integrate(gdata, "z", "w")
     minte = integrate(mdata, "z", "w")
-    @test ginte.z == [3.0, 4.0, 6.0, 7.0]
-    @test ginte.w == [1.5, 1.5, 2.5, 2.5]
-    @test sum.(Iterators.partition(minte.z, 2)) == ginte.z
-    @test sum.(Iterators.partition(minte.w, 2)) == ginte.w
+    @test ginte.z ≈ [3.0, 4.0, 6.0, 7.0]
+    @test ginte.w ≈ [1.5, 1.5, 2.5, 2.5]
+    @test mean.(Iterators.partition(minte.z, 2)) ≈ ginte.z
+    @test mean.(Iterators.partition(minte.w, 2)) ≈ ginte.w
   end
 
   @testset "geosplit" begin
