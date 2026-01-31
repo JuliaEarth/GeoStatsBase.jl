@@ -56,8 +56,8 @@ function integrate(t::AbstractGeoTable, vars...; rank=nothing)
       # retrieve variable values
       fs = map(i -> val[i], inds)
 
-      # interpolant function
-      func = interpolant(geom, fs, ps)
+      # integrand function
+      func = integrand(geom, fs, ps)
 
       # average = ∫fdΩ / ∫dΩ
       integral(func, geom, rule) / gmeasure
@@ -70,7 +70,7 @@ function integrate(t::AbstractGeoTable, vars...; rank=nothing)
   GeoTable(dom, Dict(R => table))
 end
 
-function interpolant(geom, fs, ps)
+function integrand(geom, fs, ps)
   p -> let
     n = length(fs)
     sum(eachindex(fs)) do i
