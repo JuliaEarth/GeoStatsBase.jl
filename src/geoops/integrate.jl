@@ -42,6 +42,9 @@ function integrate(t::AbstractGeoTable, vars...; rank=nothing)
     # materialize geometry
     geom = materialize(face, vert)
 
+    # compute measure
+    gmeasure = measure(geom)
+
     # retrieve face indices
     inds = indices(face)
 
@@ -57,7 +60,7 @@ function integrate(t::AbstractGeoTable, vars...; rank=nothing)
       func = interpolant(geom, fs, ps)
 
       # ∫fdΩ / ∫dΩ
-      integral(func, geom, rule) / measure(geom)
+      integral(func, geom, rule) / gmeasure
     end
 
     # row of table with results
