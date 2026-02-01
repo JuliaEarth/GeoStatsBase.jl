@@ -65,7 +65,7 @@ function integrand(tri::Triangle, fval)
     # retrieve vertices
     v = vertices(tri)
 
-    # barycentric system
+    # linear system for barycentric coordinates
     A = [(v[2] - v[1]) (v[3] - v[1])]
     b = (p - v[1])
 
@@ -74,9 +74,10 @@ function integrand(tri::Triangle, fval)
     Am = A / m
     bm = b / m
 
-    # solve system
+    # solve for barycentric coordinates
     w₂, w₃ = Am \ bm
 
+    # linear interpolation inside triangle
     fval[1] + w₂ * (fval[2] - fval[1]) + w₃ * (fval[3] - fval[1])
   end
 end
