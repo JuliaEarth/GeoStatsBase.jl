@@ -3,5 +3,5 @@
 # ------------------------------------------------------------------
 
 include("geoops/describe.jl")
-include("geoops/integrate.jl")
+include("geoops/average.jl")
 include("geoops/geosplit.jl")

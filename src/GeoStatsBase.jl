@@ -94,7 +94,7 @@ export
 
   # utilities
   describe,
-  integrate,
+  average,
   geosplit,
 
   # rotations

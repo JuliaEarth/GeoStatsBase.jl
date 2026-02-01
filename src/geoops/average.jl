@@ -3,13 +3,13 @@
 # ------------------------------------------------------------------
 
 """
-    integrate(data; rank=nothing)
+    average(data; rank=nothing)
 
 Average variables in vertex table of geospatial `data` over
 geometries of given `rank`. Default rank is the parametric
 dimension of the underlying geospatial domain.
 """
-function integrate(t::AbstractGeoTable; rank=nothing)
+function average(t::AbstractGeoTable; rank=nothing)
   # domain and vertex table
   dom = domain(t)
   tab = values(t, 0)
