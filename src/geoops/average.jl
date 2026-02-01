@@ -82,6 +82,29 @@ function integrand(tri::Triangle, fval)
   end
 end
 
+# barycentric interpolant for tetrahedron
+function integrand(tetra::Tetrahedron, fval)
+  p -> let
+    # retrieve vertices
+    v = vertices(tetra)
+
+    # linear system for barycentric coordinates
+    A = [(v[2] - v[1]) (v[3] - v[1]) (v[4] - v[1])]
+    b = (p - v[1])
+
+    # normalize by maximum absolute coordinate
+    m = maximum(abs, A)
+    Am = A / m
+    bm = b / m
+
+    # solve for barycentric coordinates
+    w₂, w₃, w₄ = Am \ bm
+
+    # linear interpolation inside tetrahedron
+    fval[1] + w₂ * (fval[2] - fval[1]) + w₃ * (fval[3] - fval[1]) + w₄ * (fval[4] - fval[1])
+  end
+end
+
 # bilinear interpolant for quadrangle
 function integrand(quad::Quadrangle, fval)
   p -> let

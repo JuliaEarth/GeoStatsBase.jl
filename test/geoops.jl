@@ -92,6 +92,29 @@
   end
 
   @testset "average" begin
+    # barycentric interpolation in triangle
+    t = Triangle((0, 0), (1, 0), (0, 1))
+    f = GeoStatsBase.integrand(t, [1, 2, 3])
+    @test f(Point(0, 0)) == 1
+    @test f(Point(1, 0)) == 2
+    @test f(Point(0, 1)) == 3
+
+    # barycentric interpolation for tetrahedron
+    t = Tetrahedron((0, 0, 0), (1, 0, 0), (0, 1, 0), (0, 0, 1))
+    f = GeoStatsBase.integrand(t, [1, 2, 3, 4])
+    @test f(Point(0, 0, 0)) == 1
+    @test f(Point(1, 0, 0)) == 2
+    @test f(Point(0, 1, 0)) == 3
+    @test f(Point(0, 0, 1)) == 4
+
+    # bilinear interpolation for quadrangle
+    q = Quadrangle((0, 0), (1, 0), (1, 1), (0, 1))
+    f = GeoStatsBase.integrand(q, [1, 2, 3, 4])
+    @test f(Point(0, 0)) == 1
+    @test f(Point(1, 0)) == 2
+    @test f(Point(1, 1)) == 3
+    @test f(Point(0, 1)) == 4
+
     grid = CartesianGrid(2, 2)
     mesh = simplexify(grid)
     table = (z=[1, 2, 3, 4, 5, 6, 7, 8, 9], w=[1, 1, 1, 2, 2, 2, 3, 3, 3])
