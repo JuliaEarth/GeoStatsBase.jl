@@ -59,7 +59,35 @@ function integrate(t::AbstractGeoTable; rank=nothing)
   GeoTable(dom, Dict(rdim => table))
 end
 
-function integrand(geom, fval)
+# bilinear interpolant for quadrangle
+function integrand(quad::Quadrangle, fval)
+  p -> let
+    v = vertices(quad)
+
+    # interpolate along bottom segment
+    v₁₂ = v[2] - v[1]
+    v₁ₚ = p - v[1]
+    α₁ₚ = (v₁ₚ ⋅ v₁₂) / (v₁₂ ⋅ v₁₂)
+    f₁ₚ = (1 - α₁ₚ) * fval[1] + α₁ₚ * fval[2]
+    p₁ₚ = v[1] + α₁ₚ * v₁₂
+
+    # interpolate along top segment
+    v₄₃ = v[3] - v[4]
+    v₄ₚ = p - v[4]
+    α₄ₚ = (v₄ₚ ⋅ v₄₃) / (v₄₃ ⋅ v₄₃)
+    f₄ₚ = (1 - α₄ₚ) * fval[4] + α₄ₚ * fval[3]
+    p₄ₚ = v[4] + α₄ₚ * v₄₃
+
+    # interpolate along bisecting segment
+    v₁₄ = p₄ₚ - p₁ₚ
+    v₁ₚ = p - p₁ₚ
+    α₁ₚ = (v₁ₚ ⋅ v₁₄) / (v₁₄ ⋅ v₁₄)
+    (1 - α₁ₚ) * f₁ₚ + α₁ₚ * f₄ₚ
+  end
+end
+
+# fallback to Lagrange interpolant
+function integrand(geom::Geometry, fval)
   p -> let
     n = length(fval)
     v = vertices(geom)
