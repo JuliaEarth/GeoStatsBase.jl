@@ -26,7 +26,7 @@ function integrate(t::AbstractGeoTable; rank=nothing)
   rdim = isnothing(rank) ? paramdim(dom) : rank
 
   # integration rule
-  rule = GaussLegendre(1)
+  rule = GaussLegendre(2)
 
   # loop over faces
   table = map(faces(topo, rdim)) do face
@@ -59,9 +59,32 @@ function integrate(t::AbstractGeoTable; rank=nothing)
   GeoTable(dom, Dict(rdim => table))
 end
 
+# barycentric interpolant for triangle
+function integrand(tri::Triangle, fval)
+  p -> let
+    # retrieve vertices
+    v = vertices(tri)
+
+    # barycentric system
+    A = [(v[2] - v[1]) (v[3] - v[1])]
+    b = (p - v[1])
+
+    # normalize by maximum absolute coordinate
+    m = maximum(abs, A)
+    Am = A / m
+    bm = b / m
+
+    # solve system
+    w₂, w₃ = Am \ bm
+
+    fval[1] + w₂ * (fval[2] - fval[1]) + w₃ * (fval[3] - fval[1])
+  end
+end
+
 # bilinear interpolant for quadrangle
 function integrand(quad::Quadrangle, fval)
   p -> let
+    # retrieve vertices
     v = vertices(quad)
 
     # interpolate along bottom segment
