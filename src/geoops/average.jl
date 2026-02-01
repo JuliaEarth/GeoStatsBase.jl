@@ -43,10 +43,9 @@ function average(t::AbstractGeoTable; rank=nothing)
     averages = map(vars) do var
       # retrieve function values at vertices
       vals = Tables.getcolumn(cols, var)
-      fval = map(i -> vals[i], inds)
 
       # integrand function
-      func = integrand(geom, fval)
+      func = integrand(geom, map(i -> vals[i], inds))
 
       # average = ∫fdΩ / ∫dΩ
       integral(func, geom, rule) / gmeasure
@@ -60,7 +59,7 @@ function average(t::AbstractGeoTable; rank=nothing)
 end
 
 # barycentric interpolant for triangle
-function integrand(tri::Triangle, fval)
+function integrand(tri::Triangle, f)
   p -> let
     # retrieve vertices
     v = vertices(tri)
@@ -71,19 +70,19 @@ function integrand(tri::Triangle, fval)
 
     # normalize by maximum absolute coordinate
     m = maximum(abs, A)
-    Am = A / m
-    bm = b / m
+    Aₘ = A / m
+    bₘ = b / m
 
     # solve for barycentric coordinates
-    w₂, w₃ = Am \ bm
+    w₂, w₃ = Aₘ \ bₘ
 
     # linear interpolation inside triangle
-    fval[1] + w₂ * (fval[2] - fval[1]) + w₃ * (fval[3] - fval[1])
+    f[1] + w₂ * (f[2] - f[1]) + w₃ * (f[3] - f[1])
   end
 end
 
 # barycentric interpolant for tetrahedron
-function integrand(tetra::Tetrahedron, fval)
+function integrand(tetra::Tetrahedron, f)
   p -> let
     # retrieve vertices
     v = vertices(tetra)
@@ -94,56 +93,56 @@ function integrand(tetra::Tetrahedron, fval)
 
     # normalize by maximum absolute coordinate
     m = maximum(abs, A)
-    Am = A / m
-    bm = b / m
+    Aₘ = A / m
+    bₘ = b / m
 
     # solve for barycentric coordinates
-    w₂, w₃, w₄ = Am \ bm
+    w₂, w₃, w₄ = Aₘ \ bₘ
 
     # linear interpolation inside tetrahedron
-    fval[1] + w₂ * (fval[2] - fval[1]) + w₃ * (fval[3] - fval[1]) + w₄ * (fval[4] - fval[1])
+    f[1] + w₂ * (f[2] - f[1]) + w₃ * (f[3] - f[1]) + w₄ * (f[4] - f[1])
   end
 end
 
 # bilinear interpolant for quadrangle
-function integrand(quad::Quadrangle, fval)
+function integrand(quad::Quadrangle, f)
   p -> let
     # retrieve vertices
     v = vertices(quad)
 
     # interpolate along bottom segment
-    p₁, f₁ = interpsegment(p, v[1], v[2], fval[1], fval[2])
+    p₁, f₁ = interpsegment(p, v[1], v[2], f[1], f[2])
 
     # interpolate along top segment
-    p₂, f₂ = interpsegment(p, v[3], v[4], fval[3], fval[4])
+    p₂, f₂ = interpsegment(p, v[3], v[4], f[3], f[4])
 
     # interpolate along bisecting segment
-    _, f = interpsegment(p, p₁, p₂, f₁, f₂)
+    _, fₚ = interpsegment(p, p₁, p₂, f₁, f₂)
 
-    f
+    fₚ
   end
 end
 
 # trilinear interpolant for hexahedron
-function integrand(hex::Hexahedron, fval)
+function integrand(hex::Hexahedron, f)
   p -> let
     # retrieve vertices
     v = vertices(hex)
 
     # interpolate along bottom quadrangle
-    p₁, f₁ = interpsegment(p, v[1], v[2], fval[1], fval[2])
-    p₂, f₂ = interpsegment(p, v[3], v[4], fval[3], fval[4])
+    p₁, f₁ = interpsegment(p, v[1], v[2], f[1], f[2])
+    p₂, f₂ = interpsegment(p, v[3], v[4], f[3], f[4])
     p₃, f₃ = interpsegment(p, p₁, p₂, f₁, f₂)
 
     # interpolate along top quadrangle
-    p₄, f₄ = interpsegment(p, v[5], v[6], fval[5], fval[6])
-    p₅, f₅ = interpsegment(p, v[7], v[8], fval[7], fval[8])
+    p₄, f₄ = interpsegment(p, v[5], v[6], f[5], f[6])
+    p₅, f₅ = interpsegment(p, v[7], v[8], f[7], f[8])
     p₆, f₆ = interpsegment(p, p₄, p₅, f₄, f₅)
 
     # interpolate across bottom and top quadrangles
-    _, f = interpsegment(p, p₃, p₆, f₃, f₆)
+    _, fₚ = interpsegment(p, p₃, p₆, f₃, f₆)
 
-    f
+    fₚ
   end
 end
 
@@ -153,17 +152,17 @@ function interpsegment(p, v₁, v₂, f₁, f₂)
   v₁ₚ = p - v₁
   α = (v₁ₚ ⋅ v₁₂) / (v₁₂ ⋅ v₁₂)
   f = (1 - α) * f₁ + α * f₂
-  c = v₁ + α * v₁₂
-  c, f
+  o = v₁ + α * v₁₂
+  o, f
 end
 
 # fallback to Lagrange interpolant
-function integrand(geom::Geometry, fval)
+function integrand(geom::Geometry, f)
   p -> let
-    n = length(fval)
+    n = length(f)
     v = vertices(geom)
-    sum(eachindex(fval)) do i
-      fval[i] * prod([1:(i - 1); (i + 1):n]) do j
+    sum(eachindex(f)) do i
+      f[i] * prod([1:(i - 1); (i + 1):n]) do j
         norm(p - v[j]) / norm(v[i] - v[j])
       end
     end
