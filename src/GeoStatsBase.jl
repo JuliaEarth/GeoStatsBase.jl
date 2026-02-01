@@ -5,6 +5,7 @@
 module GeoStatsBase
 
 using Meshes
+using MeshIntegrals
 using Tables
 using Unitful
 using GeoTables
@@ -93,7 +94,7 @@ export
 
   # utilities
   describe,
-  integrate,
+  average,
   geosplit,
 
   # rotations
