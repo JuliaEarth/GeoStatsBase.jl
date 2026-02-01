@@ -112,25 +112,26 @@ function integrand(quad::Quadrangle, fval)
     v = vertices(quad)
 
     # interpolate along bottom segment
-    v₁₂ = v[2] - v[1]
-    v₁ₚ = p - v[1]
-    α₁ₚ = (v₁ₚ ⋅ v₁₂) / (v₁₂ ⋅ v₁₂)
-    f₁ₚ = (1 - α₁ₚ) * fval[1] + α₁ₚ * fval[2]
-    p₁ₚ = v[1] + α₁ₚ * v₁₂
+    p₁, f₁ = interpsegment(p, v[1], v[2], fval[1], fval[2])
 
     # interpolate along top segment
-    v₄₃ = v[3] - v[4]
-    v₄ₚ = p - v[4]
-    α₄ₚ = (v₄ₚ ⋅ v₄₃) / (v₄₃ ⋅ v₄₃)
-    f₄ₚ = (1 - α₄ₚ) * fval[4] + α₄ₚ * fval[3]
-    p₄ₚ = v[4] + α₄ₚ * v₄₃
+    p₂, f₂ = interpsegment(p, v[3], v[4], fval[3], fval[4])
 
     # interpolate along bisecting segment
-    v₁₄ = p₄ₚ - p₁ₚ
-    v₁ₚ = p - p₁ₚ
-    α₁ₚ = (v₁ₚ ⋅ v₁₄) / (v₁₄ ⋅ v₁₄)
-    (1 - α₁ₚ) * f₁ₚ + α₁ₚ * f₄ₚ
+    _, f = interpsegment(p, p₁, p₂, f₁, f₂)
+
+    f
   end
+end
+
+# interpolate along segment
+function interpsegment(p, v₁, v₂, f₁, f₂)
+  v₁₂ = v₂ - v₁
+  v₁ₚ = p - v₁
+  α = (v₁ₚ ⋅ v₁₂) / (v₁₂ ⋅ v₁₂)
+  f = (1 - α) * f₁ + α * f₂
+  c = v₁ + α * v₁₂
+  c, f
 end
 
 # fallback to Lagrange interpolant
