@@ -124,6 +124,29 @@ function integrand(quad::Quadrangle, fval)
   end
 end
 
+# trilinear interpolant for hexahedron
+function integrand(hex::Hexahedron, fval)
+  p -> let
+    # retrieve vertices
+    v = vertices(hex)
+
+    # interpolate along bottom quadrangle
+    p₁, f₁ = interpsegment(p, v[1], v[2], fval[1], fval[2])
+    p₂, f₂ = interpsegment(p, v[3], v[4], fval[3], fval[4])
+    p₃, f₃ = interpsegment(p, p₁, p₂, f₁, f₂)
+
+    # interpolate along top quadrangle
+    p₄, f₄ = interpsegment(p, v[5], v[6], fval[5], fval[6])
+    p₅, f₅ = interpsegment(p, v[7], v[8], fval[7], fval[8])
+    p₆, f₆ = interpsegment(p, p₄, p₅, f₄, f₅)
+
+    # interpolate across bottom and top quadrangles
+    _, f = interpsegment(p, p₃, p₆, f₃, f₆)
+
+    f
+  end
+end
+
 # interpolate along segment
 function interpsegment(p, v₁, v₂, f₁, f₂)
   v₁₂ = v₂ - v₁

@@ -115,6 +115,18 @@
     @test f(Point(1, 1)) == 3
     @test f(Point(0, 1)) == 4
 
+    # trilinear interpolation for hexahedron
+    h = Hexahedron((0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0), (0, 0, 1), (1, 0, 1), (1, 1, 1), (0, 1, 1))
+    f = GeoStatsBase.integrand(h, [1, 2, 3, 4, 5, 6, 7, 8])
+    @test f(Point(0, 0, 0)) == 1
+    @test f(Point(1, 0, 0)) == 2
+    @test f(Point(1, 1, 0)) == 3
+    @test f(Point(0, 1, 0)) == 4
+    @test f(Point(0, 0, 1)) == 5
+    @test f(Point(1, 0, 1)) == 6
+    @test f(Point(1, 1, 1)) == 7
+    @test f(Point(0, 1, 1)) == 8
+
     grid = CartesianGrid(2, 2)
     mesh = simplexify(grid)
     table = (z=[1, 2, 3, 4, 5, 6, 7, 8, 9], w=[1, 1, 1, 2, 2, 2, 3, 3, 3])
