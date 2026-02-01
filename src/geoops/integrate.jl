@@ -14,7 +14,7 @@ function integrate(t::AbstractGeoTable; rank=nothing)
   dom = domain(t)
   tab = values(t, 0)
 
-  # retrieve columns
+  # retrieve vertex variables
   cols = Tables.columns(tab)
   vars = Tables.columnnames(cols)
 
@@ -23,13 +23,13 @@ function integrate(t::AbstractGeoTable; rank=nothing)
   topo = topology(dom)
 
   # rank of integration
-  R = isnothing(rank) ? paramdim(dom) : rank
+  rdim = isnothing(rank) ? paramdim(dom) : rank
 
   # integration rule
   rule = GaussLegendre(1)
 
   # loop over faces
-  table = map(faces(topo, R)) do face
+  table = map(faces(topo, rdim)) do face
     # retrieve face indices
     inds = indices(face)
 
@@ -56,7 +56,7 @@ function integrate(t::AbstractGeoTable; rank=nothing)
     (; zip(vars, averages)...)
   end
 
-  GeoTable(dom, Dict(R => table))
+  GeoTable(dom, Dict(rdim => table))
 end
 
 function integrand(geom, fval)
