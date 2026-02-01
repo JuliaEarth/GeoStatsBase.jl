@@ -97,8 +97,8 @@
     table = (z=[1, 2, 3, 4, 5, 6, 7, 8, 9], w=[1, 1, 1, 2, 2, 2, 3, 3, 3])
     gdata = GeoTable(grid, vtable=table)
     mdata = GeoTable(mesh, vtable=table)
-    ginte = integrate(gdata, "z", "w")
-    minte = integrate(mdata, "z", "w")
+    ginte = integrate(gdata)
+    minte = integrate(mdata)
     @test ginte.z ≈ [3.0, 4.0, 6.0, 7.0]
     @test ginte.w ≈ [1.5, 1.5, 2.5, 2.5]
     @test mean.(Iterators.partition(minte.z, 2)) ≈ ginte.z
