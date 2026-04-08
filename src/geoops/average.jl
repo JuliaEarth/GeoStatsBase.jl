@@ -25,9 +25,6 @@ function average(t::AbstractGeoTable; rank=nothing)
   # rank of integration
   rdim = isnothing(rank) ? paramdim(dom) : rank
 
-  # integration rule
-  rule = GaussLegendre(2)
-
   # loop over faces
   table = map(faces(topo, rdim)) do face
     # retrieve face indices
@@ -48,7 +45,7 @@ function average(t::AbstractGeoTable; rank=nothing)
       func = integrand(geom, map(i -> vals[i], inds))
 
       # average = ∫fdΩ / ∫dΩ
-      integral(func, geom, rule) / gmeasure
+      integral(func, geom) / gmeasure
     end
 
     # row of table with results

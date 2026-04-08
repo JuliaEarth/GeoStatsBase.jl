@@ -5,7 +5,6 @@
 module GeoStatsBase
 
 using Meshes
-using MeshIntegrals
 using Tables
 using Unitful
 using GeoTables
