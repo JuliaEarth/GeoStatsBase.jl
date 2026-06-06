@@ -19,14 +19,13 @@ import GeoStatsBase: hscatter, hscatter!
 # --------------------
 
 Makie.plottype(::EmpiricalHistogram) = Makie.Hist
-
 Makie.convert_arguments(P::Type{<:Makie.Hist}, h::EmpiricalHistogram) = Makie.convert_arguments(P, h.hist)
 
 # ---------
 # HSCATTER
 # ---------
 
-Makie.@recipe(HScatter, data, var₁, var₂) do scene
+Makie.@recipe(HScatter, gtb, var₁, var₂) do scene
   Makie.Attributes(;
     # h-scatter options
     lag=0.0u"m",
@@ -37,62 +36,51 @@ Makie.@recipe(HScatter, data, var₁, var₂) do scene
     size=2,
     color=:black,
     alpha=1.0,
-    rcolor=:maroon,
+    rcolor=:salmon,
     icolor=:black,
     ccolor=:teal
   )
 end
 
+Makie.preferred_axis_attributes(_, plot::HScatter) =
+  (aspect=Makie.DataAspect(), xlabel=string(plot.var₁[]), ylabel=string(plot.var₂[]))
+
 function Makie.plot!(plot::HScatter)
-  # retrieve data and variables
-  data = plot[:data]
-  var₁ = plot[:var₁]
-  var₂ = plot[:var₂]
+  # visualize h-scatter
+  Makie.map!(plot, [:gtb, :var₁, :var₂, :lag, :tol, :distance], [:x, :y]) do gtb, var₁, var₂, lag, tol, distance
+    _hscatter(gtb, var₁, var₂, aslen(lag), aslen(tol), distance)
+  end
 
-  # retrieve h-scatter options
-  lag = Makie.@lift aslen($(plot[:lag]))
-  tol = Makie.@lift aslen($(plot[:tol]))
-  distance = plot[:distance]
+  # compute regression line and identity line limits
+  Makie.map!(plot, [:x, :y], [:x̄, :ȳ, :ŷ, :minmax]) do x, y
+    x̄, ȳ = mean(x), mean(y)
+    X = [x ones(length(x))]
+    ŷ = X * (X \ y)
+    a, b = extrema([extrema(x)..., extrema(y)...])
+    x̄, ȳ, ŷ, [(a, a), (b, b)]
+  end
 
-  # h-scatter coordinates
-  xy = Makie.@lift _hscatter($data, $var₁, $var₂, $lag, $tol, $distance)
-  x = Makie.@lift $xy[1]
-  y = Makie.@lift $xy[2]
-
-  # visualizat h-scatter
-  Makie.scatter!(plot, x, y, color=plot[:color], alpha=plot[:alpha], markersize=plot[:size])
+  # visualize h-scatter points
+  Makie.scatter!(plot, plot.x, plot.y, color=plot.color, alpha=plot.alpha, markersize=plot.size)
 
   # visualize regression line
-  ŷ = Makie.@lift let
-    X = [$x ones(length($x))]
-    X * (X \ $y)
-  end
-  Makie.lines!(plot, x, ŷ, color=plot[:rcolor])
+  Makie.lines!(plot, plot.x, plot.ŷ, color=plot.rcolor)
 
   # visualize identity line
-  vv = Makie.@lift let
-    xmin, xmax = extrema($x)
-    ymin, ymax = extrema($y)
-    vmin = min(xmin, ymin)
-    vmax = max(xmax, ymax)
-    [vmin, vmax]
-  end
-  Makie.lines!(plot, vv, vv, color=plot[:icolor])
+  Makie.lines!(plot, plot.minmax, color=plot.icolor)
 
   # visualize center lines
-  x̄ = Makie.@lift mean($x)
-  ȳ = Makie.@lift mean($y)
-  xx = Makie.@lift [$x̄, $x̄]
-  yy = Makie.@lift [$ȳ, $ȳ]
-  Makie.lines!(plot, xx, vv, color=plot[:ccolor])
-  Makie.lines!(plot, vv, yy, color=plot[:ccolor])
-  Makie.scatter!(plot, x̄, ȳ, color=plot[:ccolor], marker=:rect, markersize=16)
+  Makie.vlines!(plot, plot.x̄, color=plot.ccolor)
+  Makie.hlines!(plot, plot.ȳ, color=plot.ccolor)
+
+  # visualize center point
+  Makie.scatter!(plot, plot.x̄, plot.ȳ, color=plot.ccolor, marker=:rect, markersize=16)
 end
 
-function _hscatter(data, var₁, var₂, lag, tol, distance)
+function _hscatter(gtb, var₁, var₂, lag, tol, distance)
   # lookup valid data
-  𝒮₁ = view(data, findall(!ismissing, data[:, var₁]))
-  𝒮₂ = view(data, findall(!ismissing, data[:, var₂]))
+  𝒮₁ = view(gtb, findall(!ismissing, gtb[:, var₁]))
+  𝒮₂ = view(gtb, findall(!ismissing, gtb[:, var₂]))
   𝒟₁ = domain(𝒮₁)
   𝒟₂ = domain(𝒮₂)
   x₁ = [to(centroid(𝒟₁, i)) for i in 1:nelements(𝒟₁)]
