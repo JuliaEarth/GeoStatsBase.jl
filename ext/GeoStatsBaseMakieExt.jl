@@ -25,21 +25,16 @@ Makie.convert_arguments(P::Type{<:Makie.Hist}, h::EmpiricalHistogram) = Makie.co
 # HSCATTER
 # ---------
 
-Makie.@recipe(HScatter, gtb, var₁, var₂) do scene
-  Makie.Attributes(;
-    # h-scatter options
-    lag=0.0u"m",
-    tol=1e-1u"m",
-    distance=Euclidean(),
-
-    # aesthetics options
-    size=2,
-    color=:black,
-    alpha=1.0,
-    rcolor=:salmon,
-    icolor=:black,
-    ccolor=:teal
-  )
+Makie.@recipe HScatter (gtb, var₁, var₂) begin
+  lag = 0.0u"m"
+  tol = 0.1u"m"
+  distance = Euclidean()
+  size = 2
+  color = :black
+  alpha = 1.0
+  rcolor = :salmon
+  icolor = :black
+  ccolor = :teal
 end
 
 Makie.preferred_axis_attributes(_, plot::HScatter) =
