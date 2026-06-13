@@ -25,15 +25,27 @@ Makie.convert_arguments(P::Type{<:Makie.Hist}, h::EmpiricalHistogram) = Makie.co
 # HSCATTER
 # ---------
 
+"""
+    HScatter
+"""
 Makie.@recipe HScatter (gtb, var₁, var₂) begin
+  "lag distance between points in length units"
   lag = 0.0u"m"
+  "tolerance for lag distance in length units"
   tol = 0.1u"m"
+  "distance from Distances.jl"
   distance = Euclidean()
+  "size of points in point set"
   size = 2
+  "color of geometries or points"
   color = :black
+  "transparency of points in [0,1]"
   alpha = 1.0
+  "color of regression line"
   rcolor = :salmon
+  "color of identity line"
   icolor = :black
+  "color of center lines"
   ccolor = :teal
 end
 
