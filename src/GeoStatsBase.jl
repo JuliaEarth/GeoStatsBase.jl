@@ -27,43 +27,11 @@ using Optim # for LSIF estimation
 import StatsBase: fit, varcorrection, describe
 import StatsBase: mean, var, quantile
 
-# main source files
 include("weighting.jl")
 include("geoops.jl")
 include("folding.jl")
 include("statistics.jl")
 include("rotations.jl")
-
-# plot recipes
-include("hscatter.jl")
-
-function __init__()
-  # register error hint for visualization functions
-  # since this is a recurring issue for new users
-  Base.Experimental.register_error_hint(MethodError) do io, exc, argtypes, kwargs
-    if exc.f == hscatter || exc.f == hscatter!
-      if isnothing(Base.get_extension(GeoStatsBase, :GeoStatsBaseMakieExt))
-        print(
-          io,
-          """
-
-          Did you import a Makie.jl backend (e.g., GLMakie.jl, CairoMakie.jl) for visualization?
-
-          """
-        )
-        printstyled(
-          io,
-          """
-          julia> using GeoStatsBase
-          julia> import GLMakie # or CairoMakie, WGLMakie, etc.
-          """,
-          color=:cyan,
-          bold=true
-        )
-      end
-    end
-  end
-end
 
 export
   # folding
@@ -97,10 +65,6 @@ export
   DatamineAngles,
   GslibAngles,
   VulcanAngles,
-  MinesightAngles,
-
-  # plot recipes
-  hscatter,
-  hscatter!
+  MinesightAngles
 
 end
