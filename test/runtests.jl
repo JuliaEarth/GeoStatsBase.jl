@@ -20,7 +20,7 @@ using Test, Random
 datadir = joinpath(@__DIR__, "data")
 
 # list of tests
-testfiles = ["weighting.jl", "geoops.jl", "folding.jl", "statistics.jl", "histograms.jl", "rotations.jl"]
+testfiles = ["weighting.jl", "geoops.jl", "folding.jl", "statistics.jl", "rotations.jl"]
 
 @testset "GeoStatsBase.jl" begin
   for testfile in testfiles

@@ -1,36 +1,40 @@
 @testset "Statistics" begin
-  rng = Xoshiro(2023)
+  @testset "Mode estimator" begin
+    rng = Xoshiro(2023)
+    d = LogNormal(0, 1)
+    x = rand(rng, d, 1000)
+    @test GeoStatsBase.hsm_mode([1, 2, 2, 3]) == 2.0
+    @test GeoStatsBase.hsm_mode([1, 2, 2, 3, 5]) == 2.0
+    @test GeoStatsBase.hsm_mode(x) < mean(x)
+    @test GeoStatsBase.hsm_mode(x) < median(x)
+    d = MixtureModel([Normal(), Normal(3, 0.2)], [0.7, 0.3])
+    x = rand(rng, d, 1000)
+    @test GeoStatsBase.hsm_mode(x) < mean(x)
+    @test GeoStatsBase.hsm_mode(x) < median(x)
+  end
 
-  # half sample mode
-  d = LogNormal(0, 1)
-  x = rand(rng, d, 1000)
-  @test GeoStatsBase.hsm_mode([1, 2, 2, 3]) == 2.0
-  @test GeoStatsBase.hsm_mode([1, 2, 2, 3, 5]) == 2.0
-  @test GeoStatsBase.hsm_mode(x) < mean(x)
-  @test GeoStatsBase.hsm_mode(x) < median(x)
-  d = MixtureModel([Normal(), Normal(3, 0.2)], [0.7, 0.3])
-  x = rand(rng, d, 1000)
-  @test GeoStatsBase.hsm_mode(x) < mean(x)
-  @test GeoStatsBase.hsm_mode(x) < median(x)
+  @testset "Declustering" begin
+    # load data with bias towards large values (gold mine)
+    gtb = georef(CSV.File(joinpath(datadir, "clustered.csv")), ("x", "y"))
 
-  # load data with bias towards large values (gold mine)
-  sdata = georef(CSV.File(joinpath(datadir, "clustered.csv")), (:x, :y))
+    # declustered mean
+    μs = mean(gtb.Au)
+    μd = mean(gtb, "Au")
+    @test μd < μs
 
-  # spatial mean
-  μn = mean(sdata.Au)
-  μs = mean(sdata, :Au)
-  @test μs == mean(sdata, "Au")
-  @test abs(μn - 0.5) > abs(μs - 0.5)
+    # declustered variance
+    σs = var(gtb.Au)
+    σd = var(gtb, "Au")
+    @test σd < σs
 
-  # spatial variance
-  σn = var(sdata.Au)
-  σs = var(sdata, :Au)
-  @test σs == var(sdata, "Au")
-  @test isapprox(σn, σs, atol=1e-2)
+    # declustered quantile
+    qs = quantile(gtb.Au, 0.5)
+    qd = quantile(gtb, "Au", 0.5)
+    @test qd < qs
 
-  # spatial quantile
-  qn = quantile(sdata.Au, 0.5)
-  qs = quantile(sdata, :Au, 0.5)
-  @test qs == quantile(sdata, "Au", 0.5)
-  @test qn ≥ qs
+    # declustered histogram
+    hs = histogram(gtb, "Au", UniformWeighting(), nbins=10)
+    hd = histogram(gtb, "Au", nbins=10)
+    @test last(hd.weights) < last(hs.weights)
+  end
 end

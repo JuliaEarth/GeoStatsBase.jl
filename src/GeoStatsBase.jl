@@ -32,7 +32,6 @@ include("weighting.jl")
 include("geoops.jl")
 include("folding.jl")
 include("statistics.jl")
-include("histograms.jl")
 include("rotations.jl")
 
 # plot recipes
@@ -83,13 +82,11 @@ export
   DensityRatioWeighting,
   weight,
 
-  # histograms
-  EmpiricalHistogram,
-
   # statistics
   mean,
   var,
   quantile,
+  histogram,
 
   # utilities
   describe,

@@ -14,13 +14,6 @@ using Distances
 import Makie
 import GeoStatsBase: hscatter, hscatter!
 
-# --------------------
-# EMPIRICAL HISTOGRAM
-# --------------------
-
-Makie.plottype(::EmpiricalHistogram) = Makie.Hist
-Makie.convert_arguments(P::Type{<:Makie.Hist}, h::EmpiricalHistogram) = Makie.convert_arguments(P, h.hist)
-
 # ---------
 # HSCATTER
 # ---------

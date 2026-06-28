@@ -37,6 +37,18 @@ quantile(t::AbstractGeoTable, v, p) = quantile(t, v, p, mode_heuristic(t))
 quantile(t::AbstractGeoTable, v, p, s::Number) = quantile(t, v, p, BlockWeighting(s))
 quantile(t::AbstractGeoTable, v, p, w::WeightingMethod) = quantile(getproperty(t, v), weight(t, w), p)
 
+"""
+    histogram(geotable, column; kwargs...)
+    histogram(geotable, column, side; kwargs...)
+
+Declustered histogram of given `column` in `geotable`.
+Optionally, specify the declustering block `side` and
+forward keyword arguments `kwargs` to `StatsBase.fit(Histogram, ...)`.
+"""
+histogram(t::AbstractGeoTable, v; kwargs...) = histogram(t, v, mode_heuristic(t); kwargs...)
+histogram(t::AbstractGeoTable, v, s::Number; kwargs...) = histogram(t, v, BlockWeighting(s); kwargs...)
+histogram(t::AbstractGeoTable, v, w::WeightingMethod; kwargs...) = fit(Histogram, getproperty(t, v), weight(t, w); kwargs...)
+
 # return a block size based on pairwise distances and
 # an aggregation function (e.g. mean, mode)
 function heuristic(t, fun)
