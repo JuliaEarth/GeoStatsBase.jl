@@ -47,7 +47,8 @@ forward keyword arguments `kwargs` to `StatsBase.fit(Histogram, ...)`.
 """
 histogram(t::AbstractGeoTable, v; kwargs...) = histogram(t, v, mode_heuristic(t); kwargs...)
 histogram(t::AbstractGeoTable, v, s::Number; kwargs...) = histogram(t, v, BlockWeighting(s); kwargs...)
-histogram(t::AbstractGeoTable, v, w::WeightingMethod; kwargs...) = fit(Histogram, getproperty(t, v), weight(t, w); kwargs...)
+histogram(t::AbstractGeoTable, v, w::WeightingMethod; kwargs...) =
+  fit(Histogram, getproperty(t, v), weight(t, w); kwargs...)
 
 # return a block size based on pairwise distances and
 # an aggregation function (e.g. mean, mode)
