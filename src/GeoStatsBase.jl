@@ -15,7 +15,7 @@ using CategoricalArrays
 using Rotations: rot_eltype
 using Distances: Euclidean, pairwise
 using StatsBase: Histogram, AbstractWeights
-using StatsBase: midpoints, sample, median
+using StatsBase: sample, median
 using DensityRatioEstimation
 using LinearAlgebra
 
