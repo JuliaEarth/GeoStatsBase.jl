@@ -100,6 +100,16 @@
     @test dtable.nmissing == [5, 5]
   end
 
+  @testset "lagstats" begin
+    gtb = georef((; z=rand(10, 10)))
+    stats = lagstats(gtb)
+    @test stats.mean == 5.239264869912407u"m"
+    @test stats.mode == 4.123105625617661u"m"
+    @test stats.minimum == 1.0u"m"
+    @test stats.median == 5.0990195135927845u"m"
+    @test stats.maximum == 12.727922061357855u"m"
+  end
+
   @testset "average" begin
     # barycentric interpolation in triangle
     t = Triangle((0, 0), (1, 0), (0, 1))

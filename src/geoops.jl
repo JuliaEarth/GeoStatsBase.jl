@@ -3,5 +3,6 @@
 # ------------------------------------------------------------------
 
 include("geoops/describe.jl")
+include("geoops/lagstats.jl")
 include("geoops/average.jl")
 include("geoops/geosplit.jl")

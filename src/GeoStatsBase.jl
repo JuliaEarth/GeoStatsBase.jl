@@ -13,11 +13,12 @@ using StaticArrays
 using DataScienceTraits
 using CategoricalArrays
 using Rotations: rot_eltype
-using Distances: Euclidean, pairwise
+using Distances: Euclidean, pairwise, evaluate
 using StatsBase: Histogram, AbstractWeights
 using StatsBase: sample, median
 using DensityRatioEstimation
 using LinearAlgebra
+using Random
 
 using ColumnSelectors: ColumnSelector, AllSelector, selector
 
@@ -58,6 +59,7 @@ export
 
   # utilities
   describe,
+  lagstats,
   average,
   geosplit,
 
