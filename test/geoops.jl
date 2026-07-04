@@ -5,8 +5,9 @@
     columns = [table.x, table.y, table.z]
 
     dtable = describe(sdata)
-    @test Tables.schema(dtable).names == (:variable, :mean, :minimum, :median, :maximum, :nmissing)
+    @test Tables.schema(dtable).names == (:variable, :scitype, :mean, :minimum, :median, :maximum, :nmissing)
     @test dtable.variable == ["x", "y", "z"]
+    @test dtable.scitype == elscitype.(columns)
     @test dtable.mean == mean.(columns)
     @test dtable.minimum == minimum.(columns)
     @test dtable.median == median.(columns)
@@ -14,15 +15,17 @@
     @test dtable.nmissing == count.(ismissing, columns)
 
     dtable = describe(sdata, mean, median, std)
-    @test Tables.schema(dtable).names == (:variable, :mean, :median, :std)
+    @test Tables.schema(dtable).names == (:variable, :scitype, :mean, :median, :std)
     @test dtable.variable == ["x", "y", "z"]
+    @test dtable.scitype == elscitype.(columns)
     @test dtable.mean == mean.(columns)
     @test dtable.median == median.(columns)
     @test isapprox(dtable.std, std.(columns))
 
     dtable = describe(sdata, :mean => x -> sum(x) / length(x), "min" => minimum, sin ∘ mean)
-    @test Tables.schema(dtable).names == (:variable, :mean, :min, Symbol("sin ∘ mean"))
+    @test Tables.schema(dtable).names == (:variable, :scitype, :mean, :min, Symbol("sin ∘ mean"))
     @test dtable.variable == ["x", "y", "z"]
+    @test dtable.scitype == elscitype.(columns)
     @test dtable.mean == sum.(columns) ./ length.(columns)
     @test dtable.min == minimum.(columns)
     @test dtable.var"sin ∘ mean" == (sin ∘ mean).(columns)
@@ -33,8 +36,9 @@
 
     for selector in selectors
       dtable = describe(sdata, cols=selector)
-      @test Tables.schema(dtable).names == (:variable, :mean, :minimum, :median, :maximum, :nmissing)
+      @test Tables.schema(dtable).names == (:variable, :scitype, :mean, :minimum, :median, :maximum, :nmissing)
       @test dtable.variable == ["y", "z"]
+      @test dtable.scitype == elscitype.(columns)
       @test dtable.mean == mean.(columns)
       @test dtable.minimum == minimum.(columns)
       @test dtable.median == median.(columns)
@@ -44,8 +48,9 @@
 
     for selector in selectors
       dtable = describe(sdata, mean, median, std, cols=selector)
-      @test Tables.schema(dtable).names == (:variable, :mean, :median, :std)
+      @test Tables.schema(dtable).names == (:variable, :scitype, :mean, :median, :std)
       @test dtable.variable == ["y", "z"]
+      @test dtable.scitype == elscitype.(columns)
       @test dtable.mean == mean.(columns)
       @test dtable.median == median.(columns)
       @test isapprox(dtable.std, std.(columns))
@@ -58,8 +63,9 @@
     columns = [a, b]
 
     dtable = describe(sdata, mean, last, first)
-    @test Tables.schema(dtable).names == (:variable, :mean, :last, :first)
+    @test Tables.schema(dtable).names == (:variable, :scitype, :mean, :last, :first)
     @test dtable.variable == ["a", "b"]
+    @test dtable.scitype == elscitype.(columns)
     @test dtable.mean == [nothing, nothing]
     @test dtable.last == last.(columns)
     @test dtable.first == first.(columns)
@@ -71,8 +77,9 @@
     columns = [a, b]
 
     dtable = describe(sdata)
-    @test Tables.schema(dtable).names == (:variable, :mean, :minimum, :median, :maximum, :nmissing)
+    @test Tables.schema(dtable).names == (:variable, :scitype, :mean, :minimum, :median, :maximum, :nmissing)
     @test dtable.variable == ["a", "b"]
+    @test dtable.scitype == elscitype.(columns)
     @test dtable.mean == GeoStatsBase._skipmissing(mean).(columns)
     @test dtable.minimum == GeoStatsBase._skipmissing(minimum).(columns)
     @test dtable.median == GeoStatsBase._skipmissing(median).(columns)
@@ -80,14 +87,16 @@
     @test dtable.nmissing == count.(ismissing, columns)
 
     dtable = describe(sdata, minimum, maximum)
-    @test Tables.schema(dtable).names == (:variable, :minimum, :maximum)
+    @test Tables.schema(dtable).names == (:variable, :scitype, :minimum, :maximum)
     @test dtable.variable == ["a", "b"]
+    @test dtable.scitype == elscitype.(columns)
     @test dtable.minimum == GeoStatsBase._skipmissing(minimum).(columns)
     @test dtable.maximum == GeoStatsBase._skipmissing(maximum).(columns)
 
     dtable = describe(sdata, :nmissing => x -> count(ismissing, x), skipmissing=false)
-    @test Tables.schema(dtable).names == (:variable, :nmissing)
+    @test Tables.schema(dtable).names == (:variable, :scitype, :nmissing)
     @test dtable.variable == ["a", "b"]
+    @test dtable.scitype == elscitype.(columns)
     @test dtable.nmissing == [5, 5]
   end
 
