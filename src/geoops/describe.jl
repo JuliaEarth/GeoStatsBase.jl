@@ -56,7 +56,11 @@ function _describe(
   snames = selector(names)
 
   pairs = []
-  push!(pairs, :variable => string.(snames))
+  push!(pairs, :variable => map(string, snames))
+  push!(pairs, :scitype => map(snames) do name
+    x = Tables.getcolumn(cols, name)
+    elscitype(x)
+  end)
   for (name, fun) in funpairs
     column = map(snames) do name
       try
