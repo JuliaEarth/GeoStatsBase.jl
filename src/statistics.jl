@@ -14,8 +14,8 @@ mean(t::AbstractGeoTable, v, s::Number) = mean(t, v, BlockWeighting(s))
 mean(t::AbstractGeoTable, v, w::WeightingMethod) = mean(getproperty(t, v), weight(t, w))
 
 """
-    var(data, column)
-    var(data, column, side)
+    var(geotable, column)
+    var(geotable, column, side)
 
 Declustered variance of given `column` in `geotable`.
 Optionally, specify the declustering block `side`.
@@ -26,8 +26,8 @@ var(t::AbstractGeoTable, v, w::WeightingMethod) =
   var(getproperty(t, v), weight(t, w), mean=mean(t, v, w), corrected=false)
 
 """
-    quantile(data, column, prob)
-    quantile(data, column, prob, side)
+    quantile(geotable, column, prob)
+    quantile(geotable, column, prob, side)
 
 Declustered quantile of given `column` in `geotable`
 at given `prob`ability. Optionally, specify the
