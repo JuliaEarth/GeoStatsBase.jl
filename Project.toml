@@ -1,6 +1,6 @@
 name = "GeoStatsBase"
 uuid = "323cb8eb-fbf6-51c0-afd0-f8fba70507b2"
-version = "0.49.2"
+version = "0.49.3"
 author = "Júlio Hoffimann <julio.hoffimann@gmail.com>"
 
 [deps]
@@ -31,7 +31,7 @@ Distances = "0.10"
 Distributions = "0.25"
 GeoTables = "1.25"
 LinearAlgebra = "1.10"
-Meshes = "0.57"
+Meshes = "0.58"
 Optim = "2.0"
 Random = "1.10"
 Rotations = "1.6"
