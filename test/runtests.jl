@@ -15,6 +15,7 @@ using TableTransforms
 using CategoricalArrays
 using DensityRatioEstimation
 using DataScienceTraits
+using StableRNGs
 using Test, Random
 
 # environment settings
