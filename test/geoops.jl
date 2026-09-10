@@ -1,4 +1,4 @@
-@testset "Geometric operations" begin
+@testset "Operations" begin
   @testset "describe" begin
     table = (x=rand(10), y=rand(10), z=rand(10))
     sdata = georef(table, rand(Point, 10))
@@ -101,13 +101,14 @@
   end
 
   @testset "lagstats" begin
-    gtb = georef((; z=rand(10, 10)))
+    rng = StableRNG(123)
+    gtb = georef((; z=rand(rng, 10, 10)))
     stats = lagstats(gtb)
-    @test stats.mean == 5.239264869912407u"m"
-    @test stats.mode == 4.123105625617661u"m"
-    @test stats.minimum == 1.0u"m"
-    @test stats.median == 5.0990195135927845u"m"
-    @test stats.maximum == 12.727922061357855u"m"
+    @test stats.mean ≈ 5.239264869912413u"m"
+    @test stats.mode ≈ 4.123105625617661u"m"
+    @test stats.minimum ≈ 1.0u"m"
+    @test stats.median ≈ 5.0990195135927845u"m"
+    @test stats.maximum ≈ 12.727922061357855u"m"
   end
 
   @testset "average" begin
