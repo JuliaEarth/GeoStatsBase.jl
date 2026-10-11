@@ -13,7 +13,6 @@ using StaticArrays
 using DataScienceTraits
 using CategoricalArrays
 using Rotations: rot_eltype
-using Distances: Euclidean, pairwise, evaluate
 using StatsBase: Histogram, AbstractWeights
 using StatsBase: sample, median
 using DensityRatioEstimation

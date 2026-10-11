@@ -69,8 +69,12 @@ function dist_matrix_random_sample(𝒟)
   # select a maximum number of points at random
   nobs = nelements(𝒟)
   inds = sample(1:nobs, min(nobs, 1000), replace=false)
-  X = (to(centroid(𝒟, ind)) for ind in inds)
-  pairwise(Euclidean(), X)
+
+  # compute pairwise Euclidean distances
+  n = length(inds)
+  d = EuclideanDistance()
+  c(i) = centroid(𝒟, inds[i])
+  [d(c(i), c(j)) for i in 1:n, j in 1:n]
 end
 
 bound_box_constr(𝒟) = minimum(sides(boundingbox(𝒟)))
