@@ -53,31 +53,25 @@ histogram(t::AbstractGeoTable, v, w::WeightingMethod; kwargs...) =
 # return a block size based on pairwise distances and
 # an aggregation function (e.g. mean, mode)
 function heuristic(t, fun)
-  𝒟 = domain(t)
-  D = dist_matrix_random_sample(𝒟)
-  n = size(D, 1)
-  d = fun([D[i, j] for i in 1:n for j in 1:n if i > j])
-  l = bound_box_constr(𝒟)
-  min(d, l)
+  D = domain(t)
+  d = dist_random_sample(D)
+  l = bound_box_constr(D)
+  min(fun(d), l)
 end
 
 median_heuristic(t) = heuristic(t, median)
 
 mode_heuristic(t) = heuristic(t, hsm_mode)
 
-function dist_matrix_random_sample(𝒟)
-  # select a maximum number of points at random
-  nobs = nelements(𝒟)
-  inds = sample(1:nobs, min(nobs, 1000), replace=false)
-
-  # compute pairwise Euclidean distances
-  n = length(inds)
+function dist_random_sample(dom)
+  n = nelements(dom)
   d = EuclideanDistance()
-  c(i) = centroid(𝒟, inds[i])
-  [d(c(i), c(j)) for i in 1:n, j in 1:n]
+  c(i) = centroid(dom, i)
+  I = sample(1:n, min(n, 1000), replace=false)
+  [d(c(i), c(j)) for i in I for j in I if i > j]
 end
 
-bound_box_constr(𝒟) = minimum(sides(boundingbox(𝒟)))
+bound_box_constr(dom) = minimum(sides(boundingbox(dom)))
 
 """
     hsm_mode(x)
